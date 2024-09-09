@@ -527,6 +527,10 @@ video {
   left: calc(50% - 11rem);
 }
 
+.top-\[3px\] {
+  top: 3px;
+}
+
 .isolate {
   isolation: isolate;
 }
@@ -542,6 +546,14 @@ video {
 
 .mb-1 {
   margin-bottom: 0.25rem;
+}
+
+.ml-4 {
+  margin-left: 1rem;
+}
+
+.mr-\[12px\] {
+  margin-right: 12px;
 }
 
 .mt-10 {
@@ -564,6 +576,10 @@ video {
   aspect-ratio: 1155/678;
 }
 
+.aspect-square {
+  aspect-ratio: 1 / 1;
+}
+
 .h-10 {
   height: 2.5rem;
 }
@@ -576,12 +592,20 @@ video {
   height: 2.25rem;
 }
 
-.h-full {
-  height: 100%;
+.h-\[18px\] {
+  height: 18px;
 }
 
-.h-screen {
-  height: 100vh;
+.h-\[26px\] {
+  height: 26px;
+}
+
+.h-\[36px\] {
+  height: 36px;
+}
+
+.h-full {
+  height: 100%;
 }
 
 .max-h-\[calc\(100vh-48px\)\] {
@@ -592,12 +616,28 @@ video {
   min-height: calc(100vh - 48px);
 }
 
+.w-10 {
+  width: 2.5rem;
+}
+
 .w-9 {
   width: 2.25rem;
 }
 
+.w-\[18px\] {
+  width: 18px;
+}
+
+.w-\[27px\] {
+  width: 27px;
+}
+
 .w-\[36\.125rem\] {
   width: 36.125rem;
+}
+
+.w-\[36px\] {
+  width: 36px;
 }
 
 .w-full {
@@ -610,6 +650,10 @@ video {
 
 .max-w-7xl {
   max-width: 80rem;
+}
+
+.shrink-0 {
+  flex-shrink: 0;
 }
 
 .-translate-x-1\/2 {
@@ -626,8 +670,8 @@ video {
   transform: translate3d(var(--tw-translate-x), var(--tw-translate-y), 0) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
-.flex-row {
-  flex-direction: row;
+.cursor-pointer {
+  cursor: pointer;
 }
 
 .items-center {
@@ -638,12 +682,20 @@ video {
   justify-content: center;
 }
 
+.justify-between {
+  justify-content: space-between;
+}
+
 .overflow-hidden {
   overflow: hidden;
 }
 
 .whitespace-nowrap {
   white-space: nowrap;
+}
+
+.rounded-full {
+  border-radius: 9999px;
 }
 
 .rounded-lg {
@@ -658,12 +710,21 @@ video {
   border-width: 1px;
 }
 
+.border-r-\[1px\] {
+  border-right-width: 1px;
+}
+
 .border-destructive\/50 {
   border-color: hsl(var(--destructive) / 0.5);
 }
 
 .border-input {
   border-color: hsl(var(--input));
+}
+
+.bg-\[\#1A557F\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(26 85 127 / var(--tw-bg-opacity));
 }
 
 .bg-background {
@@ -674,14 +735,28 @@ video {
   background-color: hsl(var(--destructive));
 }
 
-.bg-gray-100 {
+.bg-dhisGrey900 {
   --tw-bg-opacity: 1;
-  background-color: rgb(243 244 246 / var(--tw-bg-opacity));
+  background-color: rgb(33 41 52 / var(--tw-bg-opacity));
+}
+
+.bg-dhisMainBlue {
+  --tw-bg-opacity: 1;
+  background-color: rgb(44 102 147 / var(--tw-bg-opacity));
+}
+
+.bg-dhisMainGreen {
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 137 123 / var(--tw-bg-opacity));
 }
 
 .bg-gray-900 {
   --tw-bg-opacity: 1;
   background-color: rgb(17 24 39 / var(--tw-bg-opacity));
+}
+
+.bg-muted {
+  background-color: hsl(var(--muted));
 }
 
 .bg-primary {
@@ -711,6 +786,18 @@ video {
      object-fit: cover;
 }
 
+.p-\[10px\] {
+  padding: 10px;
+}
+
+.p-\[12px\] {
+  padding: 12px;
+}
+
+.p-\[6px\] {
+  padding: 6px;
+}
+
 .px-3 {
   padding-left: 0.75rem;
   padding-right: 0.75rem;
@@ -729,6 +816,11 @@ video {
 .px-8 {
   padding-left: 2rem;
   padding-right: 2rem;
+}
+
+.px-\[4px\] {
+  padding-left: 4px;
+  padding-right: 4px;
 }
 
 .py-2 {
@@ -768,6 +860,14 @@ video {
   line-height: 2.25rem;
 }
 
+.text-\[13px\] {
+  font-size: 13px;
+}
+
+.text-\[14px\] {
+  font-size: 14px;
+}
+
 .text-base {
   font-size: 1rem;
   line-height: 1.5rem;
@@ -781,6 +881,14 @@ video {
 .text-xs {
   font-size: 0.75rem;
   line-height: 1rem;
+}
+
+.font-\[500\] {
+  font-weight: 500;
+}
+
+.font-\[600\] {
+  font-weight: 600;
 }
 
 .font-bold {
@@ -821,11 +929,6 @@ video {
 
 .text-foreground {
   color: hsl(var(--foreground));
-}
-
-.text-orange-400 {
-  --tw-text-opacity: 1;
-  color: rgb(251 146 60 / var(--tw-text-opacity));
 }
 
 .text-primary {
@@ -902,12 +1005,22 @@ video {
 
 /* Your custom CSS here */
 
+.hover\:bg-\[\#1A557F\]:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(26 85 127 / var(--tw-bg-opacity));
+}
+
 .hover\:bg-accent:hover {
   background-color: hsl(var(--accent));
 }
 
 .hover\:bg-destructive\/90:hover {
   background-color: hsl(var(--destructive) / 0.9);
+}
+
+.hover\:bg-dhisDarkBlue:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(26 85 127 / var(--tw-bg-opacity));
 }
 
 .hover\:bg-primary\/90:hover {
