@@ -1,17 +1,13 @@
 
-import ParentComponent from '../header/header';
-import React, { ReactNode } from 'react';
+import { Outlet } from 'react-router-dom';
+import Header from './../header/Header';
 
-interface MainLayoutProps {
-  children: ReactNode;
-}
-
-export default function MainLayout({ children }: MainLayoutProps) {
+export default function MainLayout() {
   return (
     <div>
       <div>
-        <ParentComponent />
-        {children}
+        <Header />
+        <Outlet />
       </div>
     </div>
   );
