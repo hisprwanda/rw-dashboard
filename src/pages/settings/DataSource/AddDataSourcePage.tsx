@@ -88,34 +88,36 @@ const AddDataSourcePage = () => {
     };
 
     return (
-        <div className="max-w-3xl mx-auto p-8 bg-white shadow-lg rounded-lg">
+      
+            
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 border-blue-800 max-w-[500px]">
             <h1 className="text-2xl font-bold mb-6 text-gray-700">Add Data Source</h1>
 
-            {/* Success and Error AlertBars */}
-            {successMessage && (
-                <AlertBar
-                    duration={2000}
-                    onHidden={() => setSuccessMessage(null)}
-                    success
-                    title="Success"
-                >
-                    {successMessage}
-                </AlertBar>
-            )}
-            {errorMessage && (
-                <AlertBar
-                    duration={4000}
-                    onHidden={() => setErrorMessage(null)}
-                    critical
-                    title="Error"
-                >
-                    {errorMessage}
-                </AlertBar>
-            )}
+{/* Success and Error AlertBars */}
+{successMessage && (
+    <AlertBar
+        duration={2000}
+        onHidden={() => setSuccessMessage(null)}
+        success
+        title="Success"
+    >
+        {successMessage}
+    </AlertBar>
+)}
+{errorMessage && (
+    <AlertBar
+        duration={4000}
+        onHidden={() => setErrorMessage(null)}
+        critical
+        title="Error"
+    >
+        {errorMessage}
+    </AlertBar>
+)}
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 border-blue-800 max-w-[500px]">
+               
                 {/* Data Source Type */}
-                <div className="flex flex-col">
+                <div className="flex flex-col w-full ">
                     <label className="text-gray-600 mb-1">Data Source Type</label>
                     <select
                         className="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
@@ -202,7 +204,7 @@ const AddDataSourcePage = () => {
                     </button>
                 </div>
             </form>
-        </div>
+        
     );
 };
 
