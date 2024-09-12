@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@dhis2/app-runtime": "^3.10.6",
-    "@dhis2/ui": "^9.11.3",
+    "@dhis2/ui": "^9.11.4",
     "@emotion/react": "^11.13.3",
     "@hookform/resolvers": "^3.9.0",
     "@mantine/core": "6.0.21",
