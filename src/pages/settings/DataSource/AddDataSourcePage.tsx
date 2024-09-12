@@ -94,7 +94,7 @@ const AddDataSourcePage = () => {
             {/* Success and Error AlertBars */}
             {successMessage && (
                 <AlertBar
-                    duration={4000}
+                    duration={2000}
                     onHidden={() => setSuccessMessage(null)}
                     success
                     title="Success"
