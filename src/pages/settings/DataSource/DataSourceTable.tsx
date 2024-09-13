@@ -5,14 +5,17 @@ import {
 } from 'mantine-react-table';
 import { Button } from '@mantine/core';
 import { GenericModal } from '../../../components';
-import { DataSourceForm, SavedDataSourceCard } from './Components';
+import { DataSourceForm, DeleteDataSourceCard, SavedDataSourceCard } from './Components';
+import { useDataSourceData } from '../../../hooks/DataSourceHooks';
 
 const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }) => {
+  const  { refetch }= useDataSourceData()
   // Ensure savedDataSourceData is an array
   const data = Array.isArray(savedDataSourceData) ? savedDataSourceData : [];
 
   const [isShowViewDataSource,setIsShowViewDataSource] = useState(false)
   const [isShowDataSourceForm,setIsShowDataSourceForm] = useState(false)
+  const [isShowDeleteDataSource,setIsShowDeleteDataSource] = useState(false)
   const [selectedDataSource, setSelectedDataSource] = useState<any[] | undefined>([]);
 
 
@@ -67,6 +70,7 @@ const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }
 
   const handleDelete = (data:any) => {
     setSelectedDataSource(data)
+    setIsShowDeleteDataSource(true);  // Show modal to confirm delete
     console.log('Delete key:', data);
   };
 
@@ -84,8 +88,16 @@ const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }
        <GenericModal
        isOpen={isShowDataSourceForm}
        setIsOpen={setIsShowDataSourceForm}
+
        >
-         <DataSourceForm title="Edit Data Source" action="update" data={selectedDataSource}  />
+         <DataSourceForm title="Edit Data Source" action="update" data={selectedDataSource} refetch={refetch}  />
+       </GenericModal>
+       {/* delete data source */}
+       <GenericModal
+       isOpen={isShowDeleteDataSource}
+       setIsOpen={setIsShowDeleteDataSource}
+       >
+       <DeleteDataSourceCard id={selectedDataSource?.key} setIsShowDeleteDataSource={setIsShowDeleteDataSource}  refetch={refetch} />
        </GenericModal>
       {/* delete goog */}
     <MantineReactTable

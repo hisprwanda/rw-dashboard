@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { generateUid } from '../../../../lib/uid'
+import { generateUid } from '../../../../lib/uid';
 import { useDataEngine } from '@dhis2/app-runtime';
 import { AlertBar } from '@dhis2/ui';
 
@@ -12,7 +12,7 @@ const DataSourceSchema = z.object({
     type: z.enum(['DHIS2', 'API']),
     authentication: z.object({
         url: z.string().url({ message: 'Must be a valid URL' }),
-        username: z.string({ message: 'username is required' }),
+        username: z.string({ message: 'Username is required' }),
         password: z.string(),
     }),
     isCurrentDHIS2: z.boolean(),
@@ -28,20 +28,17 @@ const dataSourceOptions = [
     { name: 'API' }
 ];
 
-
 type DataSourceFormProps = {
-    title:string;
-    action?:string;
-    refetch?:any;
-    data?:any
-}
+    title: string;
+    action?: 'create' | 'update';
+    refetch?: any;
+    data?: any;
+};
 
-const DataSourceForm: React.FC<DataSourceFormProps> = ({title,action,refetch,data}) => {
+const DataSourceForm: React.FC<DataSourceFormProps> = ({ title, action, refetch, data }) => {
+    const savedDataSource = data?.value;
 
-
-    const savedDataSource = data?.value
-
-    const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<DataSourceFormFields>({
+    const { register, handleSubmit, reset, setValue, formState: { errors, isSubmitting } } = useForm<DataSourceFormFields>({
         defaultValues: {
             isCurrentDHIS2: false,
             id: generateUid(),
@@ -59,31 +56,40 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({title,action,refetch,dat
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-    const engine = useDataEngine(); 
+    const engine = useDataEngine();
+
+    // Auto-populate form fields if action is "update"
+    useEffect(() => {
+        if (action === 'update' && savedDataSource) {
+            reset(savedDataSource); // Populate form with saved data
+        }
+    }, [action, savedDataSource, reset]);
 
     // Handle form submission
-    const onSubmit: SubmitHandler<DataSourceFormFields> = async (data) => {
+    const onSubmit: SubmitHandler<DataSourceFormFields> = async (formData) => {
         setSuccessMessage(null);
         setErrorMessage(null);
 
         try {
-            const uid = data.id || generateUid();
+            const uid = action === 'update' && data?.key ? data.key : generateUid();
             await engine.mutate({
                 resource: `dataStore/r-data-source/${uid}`,
-                type: action,
-                data: { ...data },
+                type: action === 'update' ? 'update' : 'create',
+                data: { ...formData },
             });
-            refetch()
-            // Show success message and reset form
+            refetch();
             setSuccessMessage('Data source saved successfully!');
-            reset({
-                id: generateUid(),
-                type: 'DHIS2',
-                isCurrentDHIS2: false,
-                authentication: { url: '', username: '', password: '' },
-                instanceName: '',
-                description: '',
-            });
+
+            if (action === 'create') {
+                reset({
+                    id: generateUid(),
+                    type: 'DHIS2',
+                    isCurrentDHIS2: false,
+                    authentication: { url: '', username: '', password: '' },
+                    instanceName: '',
+                    description: '',
+                });
+            }
         } catch (error) {
             console.error('Error saving data source:', error);
             setErrorMessage('Failed to save data source. Please try again.');
@@ -94,7 +100,7 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({title,action,refetch,dat
         <div className="max-w-md mx-auto p-6 border border-gray-300 rounded-md">
             <h1 className="text-2xl font-bold mb-4">{title}</h1>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4  ">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 {/* Success and Error AlertBars */}
                 {successMessage && (
                     <AlertBar duration={3000} onHidden={() => setSuccessMessage(null)} success>
@@ -109,13 +115,15 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({title,action,refetch,dat
 
                 {/* Data Source Type */}
                 <div className="flex flex-col">
-                    <label className="text-gray-700 ">Data Source Type</label>
+                    <label className="text-gray-700">Data Source Type</label>
                     <select
                         className="p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-500"
                         {...register('type')}
                     >
-                        {dataSourceOptions.map(option => (
-                            <option key={option.name} value={option.name}>{option.name}</option>
+                        {dataSourceOptions.map((option) => (
+                            <option key={option.name} value={option.name}>
+                                {option.name}
+                            </option>
                         ))}
                     </select>
                     {errors.type && <span className="text-red-500">{errors.type.message}</span>}
@@ -129,7 +137,7 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({title,action,refetch,dat
                         type="text"
                         {...register('instanceName', {
                             required: 'Instance name is required',
-                            maxLength: { value: 50, message: 'Maximum length is 50 characters' }
+                            maxLength: { value: 50, message: 'Maximum length is 50 characters' },
                         })}
                     />
                     {errors.instanceName && <span className="text-red-500">{errors.instanceName.message}</span>}
@@ -143,7 +151,9 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({title,action,refetch,dat
                         type="text"
                         {...register('authentication.url', { required: 'URL is required' })}
                     />
-                    {errors.authentication?.url && <span className="text-red-500">{errors.authentication.url.message}</span>}
+                    {errors.authentication?.url && (
+                        <span className="text-red-500">{errors.authentication.url.message}</span>
+                    )}
                 </div>
 
                 {/* Username */}
@@ -154,7 +164,9 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({title,action,refetch,dat
                         type="text"
                         {...register('authentication.username', { required: 'Username is required' })}
                     />
-                    {errors.authentication?.username && <span className="text-red-500">{errors.authentication.username.message}</span>}
+                    {errors.authentication?.username && (
+                        <span className="text-red-500">{errors.authentication.username.message}</span>
+                    )}
                 </div>
 
                 {/* Password */}
@@ -165,7 +177,9 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({title,action,refetch,dat
                         type="password"
                         {...register('authentication.password', { required: 'Password is required' })}
                     />
-                    {errors.authentication?.password && <span className="text-red-500">{errors.authentication.password.message}</span>}
+                    {errors.authentication?.password && (
+                        <span className="text-red-500">{errors.authentication.password.message}</span>
+                    )}
                 </div>
 
                 {/* Instance Description */}
@@ -179,16 +193,15 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({title,action,refetch,dat
                 </div>
 
                 {/* Submit Button */}
-             <div className="flex justify-end mt-4">
+                <div className="flex justify-end mt-4">
                     <button
                         type="submit"
                         className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
                         disabled={isSubmitting}
                     >
-                        {isSubmitting ? "Loading..." : "Submit"}
+                        {isSubmitting ? 'Loading...' : action === 'update' ? 'Update' : 'Submit'}
                     </button>
-                </div> 
-            
+                </div>
             </form>
         </div>
     );
