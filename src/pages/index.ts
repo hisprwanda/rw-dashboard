@@ -3,7 +3,7 @@ export { default as AdminPage, } from "./AdminPage";
 export { default as UnauthorizedPage, } from "./UnauthorizedPage";
 export { default as UserPage, } from "./UserPage";
 export { default as HomePage, } from "./home/HomePage";
-export { default as ChartsPage, } from "./charts/ChartsPage";
+export { default as VisualizersPage, } from "./visualizers/VisualizersPage";
 export { default as AlertsPage, } from "./alerts/AlertsPage";
 export { default as SettingsPage, } from "./settings/SettingsPage";
 export { default as DashboardsPage, } from "./dashboards/DashboardsPage";

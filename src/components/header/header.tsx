@@ -2,21 +2,23 @@ import { IconApps24, IconMail24, IconMessages24, LogoIconWhite } from '@dhis2/ui
 import { Link, NavLink } from 'react-router-dom';
 import { menuItems } from '../../data/menuLinks';
 import './header.css';
+import UserProfile from './UserProfile';
+import HeaderApps from './HeaderApps';
 
+const baseUrl = process.env.BASE_URL || "https://online.hisprwanda.org/eidsrdev";
 
-
-export default function header() {
+export default function Header() {
   return (
     <nav className='bg-dhisMainBlue text-white flex items-center justify-between '>
       <div className='flex items-center justify-center'>
         <div className='flex items-center justify-center'>
-          <div className='cursor-pointer hover:bg-[#1A557F] flex items-center justify-center mr-[12px] border-r-[1px] border-dhisGrey50 p-[10px]'>
-            <Link to='/'>
+          <Link to={baseUrl}>
+            <div className='cursor-pointer hover:bg-[#1A557F] flex items-center justify-center mr-[12px] border-r-[1px] border-dhisGrey50 p-[10px]'>
               <LogoIconWhite className='h-[26px] w-[27px]' />
-            </Link>
-          </div>
+            </div>
+          </Link>
           <Link to={'/'} className='text-[14px] font-[500] border-r-[1px] border-dhisGrey50 p-[12px]'>
-            <p>Rwanda Integrated Disease Surveillance - rw-dashbaord</p>
+            <p>Rwanda Integrated Disease Surveillance - Visualizer ISDSR</p>
           </Link>
         </div>
         <menu>
@@ -47,12 +49,8 @@ export default function header() {
               <span className='bg-dhisMainGreen rounded-full w-[18px] h-[18px] px-[4px] text-[13px] font-[600] top-[3px] absolute ml-4'>5</span>
             </Link>
           </div>
-          <div className='p-[12px] cursor-pointer hover:bg-dhisDarkBlue'>
-            <IconApps24 />
-          </div>
-          <div className='p-[6px] cursor-pointer hover:bg-dhisDarkBlue'>
-            <div className='rounded-full bg-dhisGrey900 h-[36px] w-[36px] flex items-center justify-center'>DI</div>
-          </div>
+          <HeaderApps />
+          <UserProfile />
         </div>
       </div>
     </nav>

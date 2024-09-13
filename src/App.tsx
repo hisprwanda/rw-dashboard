@@ -11,7 +11,7 @@ import {
   UnauthorizedPage,
   UserPage,
   HomePage,
-  ChartsPage,
+  VisualizersPage,
   AlertsPage,
   SettingsPage,
   DashboardsPage,
@@ -35,7 +35,7 @@ const App: React.FC = () => {
               <Route index element={<HomePage />} />
               <Route path="*" element={<NotFoundPage />} />
               <Route path="/dashboards" element={<DashboardsPage />} />
-              <Route path="/charts" element={<ChartsPage />} />
+              <Route path="/visualizers" element={<VisualizersPage />} />
               <Route path="/alerts" element={<AlertsPage />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/unauthorized" element={<UnauthorizedPage />} />

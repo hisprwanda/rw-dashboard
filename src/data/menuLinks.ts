@@ -4,8 +4,8 @@ export const menuItems = [
         link: "dashboards"
     },
     {
-        name: "Charts",
-        link: "charts"
+        name: "Visualizers",
+        link: "visualizers"
     },
     {
         name: "Alerts",
