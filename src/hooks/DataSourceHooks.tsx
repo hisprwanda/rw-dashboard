@@ -11,8 +11,8 @@ export const useDataSourceData = ()=>{
         },
     };
 
-    const { data, loading, error ,isError} = useDataQuery(query);
+    const { data, loading, error ,isError,refetch} = useDataQuery(query);
 
-    return { data, loading, error,isError };
+    return { data, loading, error,isError,refetch };
 
 }

@@ -5,11 +5,12 @@ import DataSourceTable from "./DataSourceTable"
 import { GenericError, Loading } from "./../../../components"
 import {GenericModal} from "../../../components"
 import { useState } from "react"
-import AddDataSourcePage from "./AddDataSourcePage"
+import { DataSourceForm } from "./Components"
+
 
 const DataSourcePage = () => {
 
-  const  { data, loading, error }= useDataSourceData()
+  const  { data, loading, error,refetch }= useDataSourceData()
 
   const [isShowDataSourceForm,setIsShowDataSourceForm ] = useState<boolean>(false)
 
@@ -46,15 +47,13 @@ const DataSourcePage = () => {
       {/* testing modal */}
 
       <GenericModal 
-       
             isOpen={isShowDataSourceForm}
             setIsOpen={setIsShowDataSourceForm}
-        
          >
-      <AddDataSourcePage/>
+      <DataSourceForm title="Add Data Source"  action="create" refetch={refetch} />
           </GenericModal>
       {/* tables of saved data source */}
-< DataSourceTable savedDataSourceData={data?.dataStore?.entries?.reverse()} />
+< DataSourceTable savedDataSourceData={data?.dataStore?.entries} />
 
     </div>
   )

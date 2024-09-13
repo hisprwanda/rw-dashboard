@@ -1,13 +1,20 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
   MantineReactTable,
   type MRT_ColumnDef,
 } from 'mantine-react-table';
 import { Button } from '@mantine/core';
+import { GenericModal } from '../../../components';
+import { DataSourceForm, SavedDataSourceCard } from './Components';
 
 const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }) => {
   // Ensure savedDataSourceData is an array
   const data = Array.isArray(savedDataSourceData) ? savedDataSourceData : [];
+
+  const [isShowViewDataSource,setIsShowViewDataSource] = useState(false)
+  const [isShowDataSourceForm,setIsShowDataSourceForm] = useState(false)
+  const [selectedDataSource, setSelectedDataSource] = useState<any[] | undefined>([]);
+
 
   // Columns definition
   const columns = useMemo<MRT_ColumnDef<any>[]>(
@@ -28,13 +35,13 @@ const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }
 
           return (
             <div className="flex space-x-2"> {/* Adjust spacing here */}
-              <Button variant="outline" color="blue" size="xs" onClick={() => handleView(key)}>
+              <Button variant="outline" color="blue" size="xs" onClick={() => handleView(row?.original)}>
                 View
               </Button>
-              <Button variant="outline" color="green" size="xs" onClick={() => handleEdit(key)}>
+              <Button variant="outline" color="green" size="xs" onClick={() => handleEdit(row?.original)}>
                 Edit
               </Button>
-              <Button variant="outline" color="red" size="xs" onClick={() => handleDelete(key)}>
+              <Button variant="outline" color="red" size="xs" onClick={() => handleDelete(row?.original)}>
                 Delete
               </Button>
             </div>
@@ -46,24 +53,47 @@ const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }
   );
 
   // Handlers that log the key
-  const handleView = (key: string) => {
-    console.log('View key:', key);
+  const handleView = (data:any) => {
+    setIsShowViewDataSource(true); 
+    setSelectedDataSource(data)
+    console.log('P-View key:', data);
   };
 
-  const handleEdit = (key: string) => {
-    console.log('Edit key:', key);
+  const handleEdit = (data:any) => {
+    setIsShowDataSourceForm(true); 
+    setSelectedDataSource(data) 
+    console.log('Y-Edit key x:', data);
   };
 
-  const handleDelete = (key: string) => {
-    console.log('Delete key:', key);
+  const handleDelete = (data:any) => {
+    setSelectedDataSource(data)
+    console.log('Delete key:', data);
   };
 
   // Table component
   return (
+    <div>
+       {/* view data source */}
+       <GenericModal
+       isOpen={isShowViewDataSource}
+       setIsOpen={setIsShowViewDataSource}
+       >
+        <SavedDataSourceCard data={selectedDataSource?.value}/>
+       </GenericModal>
+       {/* edit data source */}
+       <GenericModal
+       isOpen={isShowDataSourceForm}
+       setIsOpen={setIsShowDataSourceForm}
+       >
+         <DataSourceForm title="Edit Data Source" action="update" data={selectedDataSource}  />
+       </GenericModal>
+      {/* delete goog */}
     <MantineReactTable
       columns={columns}
-      data={data} // Pass dynamic data
+      data={data} 
     />
+    </div>
+
   );
 };
 

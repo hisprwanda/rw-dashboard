@@ -12,7 +12,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./index.css";
 import MainLayout from "./components/layout/MainLayout";
 import { DataSourcePage} from "./pages/settings";
-import { AddDataSourcePage } from "./pages/settings/DataSource";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -44,13 +43,7 @@ const App: React.FC = () => {
 
               }
             />
-            <Route
-              path="/add-data-source"
-              element={
-                  <AddDataSourcePage />
-
-              }
-            />
+      
 
             <Route
               path="/admin"
