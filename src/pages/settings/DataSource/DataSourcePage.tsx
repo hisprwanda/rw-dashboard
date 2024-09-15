@@ -33,7 +33,7 @@ const DataSourcePage = () => {
   return (<div className="container w-full m-auto  p-2" >
       {/* data source header */}
       <div className=" container flex justify-between p-7 " >
-        <h3 className="text-[#2C6693]" >Data source</h3>
+        <h3 className="text-[#2C6693] text-3xl " >Data source</h3>
         <button
   //to="/add-data-source"
   onClick={handleShowDataSourceForm}
@@ -50,7 +50,7 @@ const DataSourcePage = () => {
             isOpen={isShowDataSourceForm}
             setIsOpen={setIsShowDataSourceForm}
          >
-      <DataSourceForm title="Add Data Source"  action="create" refetch={refetch} />
+      <DataSourceForm title="Add Data Source"  action="create" refetch={refetch}  setIsShowDataSourceForm={setIsShowDataSourceForm}  />
           </GenericModal>
       {/* tables of saved data source */}
 < DataSourceTable savedDataSourceData={data?.dataStore?.entries} />

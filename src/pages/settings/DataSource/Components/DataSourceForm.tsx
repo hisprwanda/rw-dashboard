@@ -6,6 +6,7 @@ import { generateUid } from '../../../../lib/uid';
 import { useDataEngine } from '@dhis2/app-runtime';
 import { AlertBar } from '@dhis2/ui';
 
+
 // Schema definition using zod
 const DataSourceSchema = z.object({
     id: z.string(),
@@ -33,9 +34,11 @@ type DataSourceFormProps = {
     action?: 'create' | 'update';
     refetch?: any;
     data?: any;
+   setIsShowDataSourceForm?:any;
+   setIsShowDataSourceFormEdit:any
 };
 
-const DataSourceForm: React.FC<DataSourceFormProps> = ({ title, action, refetch, data }) => {
+const DataSourceForm: React.FC<DataSourceFormProps> = ({ title, action, refetch, data,setIsShowDataSourceForm ,setIsShowDataSourceFormEdit}) => {
     const savedDataSource = data?.value;
 
     const { register, handleSubmit, reset, setValue, formState: { errors, isSubmitting } } = useForm<DataSourceFormFields>({
@@ -55,6 +58,7 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({ title, action, refetch,
 
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+   
 
     const engine = useDataEngine();
 
@@ -77,8 +81,30 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({ title, action, refetch,
                 type: action === 'update' ? 'update' : 'create',
                 data: { ...formData },
             });
+             
             refetch();
+         
+          
             setSuccessMessage('Data source saved successfully!');
+
+            if(action === 'create'){
+                //// delay a bit to show success message
+                await new Promise((resolve:any) => setTimeout(() => {
+                    console.log("");  // Your code here
+                    resolve();
+                }, 2000));
+                
+                setIsShowDataSourceForm(false)
+             }else{
+                   //// delay a bit to show success message
+                   await new Promise((resolve:any) => setTimeout(() => {
+                    console.log("");  // Your code here
+                    resolve();
+                }, 2000));
+                
+                setIsShowDataSourceFormEdit(false)
+             }
+
 
             if (action === 'create') {
                 reset({
@@ -89,7 +115,9 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({ title, action, refetch,
                     instanceName: '',
                     description: '',
                 });
+             
             }
+    
         } catch (error) {
             console.error('Error saving data source:', error);
             setErrorMessage('Failed to save data source. Please try again.');

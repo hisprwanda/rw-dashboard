@@ -1,4 +1,7 @@
 import { useMemo, useState } from 'react';
+import { FaRegEdit } from "react-icons/fa";
+import { RiDeleteBin5Line } from "react-icons/ri";
+import { IoIosMore } from "react-icons/io";
 import {
   MantineReactTable,
   type MRT_ColumnDef,
@@ -14,7 +17,7 @@ const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }
   const data = Array.isArray(savedDataSourceData) ? savedDataSourceData : [];
 
   const [isShowViewDataSource,setIsShowViewDataSource] = useState(false)
-  const [isShowDataSourceForm,setIsShowDataSourceForm] = useState(false)
+  const [isShowDataSourceFormEdit,setIsShowDataSourceFormEdit] = useState(false)
   const [isShowDeleteDataSource,setIsShowDeleteDataSource] = useState(false)
   const [selectedDataSource, setSelectedDataSource] = useState<any[] | undefined>([]);
 
@@ -37,16 +40,14 @@ const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }
           const { key } = row.original; // Extract the key from the row data
 
           return (
-            <div className="flex space-x-2"> {/* Adjust spacing here */}
-              <Button variant="outline" color="blue" size="xs" onClick={() => handleView(row?.original)}>
-                View
-              </Button>
-              <Button variant="outline" color="green" size="xs" onClick={() => handleEdit(row?.original)}>
-                Edit
-              </Button>
-              <Button variant="outline" color="red" size="xs" onClick={() => handleDelete(row?.original)}>
-                Delete
-              </Button>
+            <div className="flex gap-5"> {/* Adjust spacing here */}
+            {/* view more */}
+    
+              <IoIosMore className='text-2xl'   onClick={() => handleView(row?.original)} />
+              {/* edit */}
+              <FaRegEdit className='text-2xl'   onClick={() => handleEdit(row?.original)} />
+                {/* Delete */}
+              <RiDeleteBin5Line className='text-2xl'    onClick={() => handleDelete(row?.original)} />
             </div>
           );
         },
@@ -63,7 +64,7 @@ const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }
   };
 
   const handleEdit = (data:any) => {
-    setIsShowDataSourceForm(true); 
+    setIsShowDataSourceFormEdit(true); 
     setSelectedDataSource(data) 
     console.log('Y-Edit key x:', data);
   };
@@ -86,11 +87,11 @@ const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }
        </GenericModal>
        {/* edit data source */}
        <GenericModal
-       isOpen={isShowDataSourceForm}
-       setIsOpen={setIsShowDataSourceForm}
+       isOpen={isShowDataSourceFormEdit}
+       setIsOpen={setIsShowDataSourceFormEdit}
 
        >
-         <DataSourceForm title="Edit Data Source" action="update" data={selectedDataSource} refetch={refetch}  />
+         <DataSourceForm title="Edit Data Source" action="update" data={selectedDataSource} refetch={refetch} setIsShowDataSourceFormEdit={setIsShowDataSourceFormEdit}   />
        </GenericModal>
        {/* delete data source */}
        <GenericModal
