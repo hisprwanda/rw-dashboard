@@ -1,6 +1,6 @@
 
 import { useDataSourceData } from "../../../hooks/DataSourceHooks"
-import {Button} from "../../../components/ui/button"
+// import {Button} from "../../../components/ui/button"
 import { IconApps16 } from '@dhis2/ui'
 import { Link } from "react-router-dom"
 import DataSourceTable from "./DataSourceTable"
@@ -10,6 +10,7 @@ import { useState } from "react"
 import { DataSourceForm } from "./Components"
 import { RiAddFill } from "react-icons/ri"
 import { IoIosAddCircle } from "react-icons/io"
+import Button from "../../../components/Button"
 
 
 const DataSourcePage = () => {
@@ -46,11 +47,19 @@ const DataSourcePage = () => {
 
 
 
-<Button   onClick={handleShowDataSourceForm} className=" bg-white border 2 border-slate-300 text-slate-900  hover:bg-white hover:text-primary">
+{/* <Button   onClick={handleShowDataSourceForm} className=" bg-white border 2 border-slate-300 text-slate-900  hover:bg-white hover:text-primary">
 <IoIosAddCircle/>&nbsp; Add Data Source
-</Button>
-
-
+</Button> */}
+<Button 
+      onClick={handleShowDataSourceForm}
+      text="Add Data Source"
+      backgroundColor="white"
+      textColor="slate-900"
+      borderColor="slate-300"
+      hoverBackgroundColor="white"
+      hoverTextColor="primary"
+      icon={<IoIosAddCircle />} 
+/>
 
       </div>
 

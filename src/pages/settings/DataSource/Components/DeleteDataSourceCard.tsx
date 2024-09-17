@@ -36,9 +36,9 @@ const DeleteDataSourceCard: React.FC<DeleteProps> = ({ id, refetch,setIsShowDele
                 resolve();
             }, 2000));
             
-          
-            setIsShowDeleteDataSource(false)
             refetch();
+            setIsShowDeleteDataSource(false)
+         
         
         } catch (error) {
             console.error('Error deleting data source:', error);

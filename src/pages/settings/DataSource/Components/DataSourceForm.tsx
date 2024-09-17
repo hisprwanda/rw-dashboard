@@ -6,9 +6,11 @@ import { generateUid } from '../../../../lib/uid';
 import { useDataEngine } from '@dhis2/app-runtime';
 import { AlertBar } from '@dhis2/ui';
 import { useDataSourceData } from '../../../../hooks/DataSourceHooks';
-import {  Button } from '@dhis2/ui'; 
+//import {  Button } from '@dhis2/ui'; 
+import Button from "../../../../components/Button"
 import { DataSourceFormFields, DataSourceSchema} from '../../../../types/DataSource';
 import { encryptCredentials,decryptCredentials } from '../../../../lib/utils';
+import { IoSaveOutline } from "react-icons/io5";
 
 
 
@@ -248,14 +250,26 @@ const onSubmit: SubmitHandler<DataSourceFormFields> = async (formData) => {
 
                 {/* Submit Button */}
                 <div className="flex justify-end mt-4">
-                    <Button
+                    {/* <Button
                     primary
                         type="submit"
                         className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
                         disabled={isSubmitting}
                     >
                         {isSubmitting ? 'Loading...' : action === 'update' ? 'Update' : 'Submit'}
-                    </Button>
+                    </Button> */}
+
+                    <Button 
+                    
+                    type='submit'
+      text="Save Data Source"
+      backgroundColor="primary"
+      textColor="white"
+      borderColor="slate-300"
+      hoverBackgroundColor="white"
+      hoverTextColor="primary"
+      icon={<IoSaveOutline />} 
+                               />
                 </div>
             </form>
         </div>
