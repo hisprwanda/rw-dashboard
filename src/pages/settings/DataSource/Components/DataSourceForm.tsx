@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { generateUid } from '../../../../lib/uid';
 import { useDataEngine } from '@dhis2/app-runtime';
 import { AlertBar } from '@dhis2/ui';
+import { useDataSourceData } from '../../../../hooks/DataSourceHooks';
 
 
 // Schema definition using zod
@@ -26,7 +27,7 @@ type DataSourceFormFields = z.infer<typeof DataSourceSchema>;
 
 const dataSourceOptions = [
     { name: 'DHIS2' },
-    { name: 'API' }
+    { name: 'Other' }
 ];
 
 type DataSourceFormProps = {
@@ -38,7 +39,9 @@ type DataSourceFormProps = {
    setIsShowDataSourceFormEdit:any
 };
 
-const DataSourceForm: React.FC<DataSourceFormProps> = ({ title, action, refetch, data,setIsShowDataSourceForm ,setIsShowDataSourceFormEdit}) => {
+const DataSourceForm: React.FC<DataSourceFormProps> = ({ title, action, refetch, data, setIsShowDataSourceForm, setIsShowDataSourceFormEdit }) => {
+    const { data: allSavedDataSources } = useDataSourceData();
+    
     const savedDataSource = data?.value;
 
     const { register, handleSubmit, reset, setValue, formState: { errors, isSubmitting } } = useForm<DataSourceFormFields>({
@@ -58,14 +61,13 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({ title, action, refetch,
 
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-   
 
     const engine = useDataEngine();
 
     // Auto-populate form fields if action is "update"
     useEffect(() => {
         if (action === 'update' && savedDataSource) {
-            reset(savedDataSource); // Populate form with saved data
+            reset(savedDataSource); 
         }
     }, [action, savedDataSource, reset]);
 
@@ -73,6 +75,17 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({ title, action, refetch,
     const onSubmit: SubmitHandler<DataSourceFormFields> = async (formData) => {
         setSuccessMessage(null);
         setErrorMessage(null);
+
+        // Check for duplicate URL
+        const existingUrl = allSavedDataSources?.dataStore?.entries?.some(
+            (entry: any) => entry.value.authentication.url === formData.authentication.url
+        );
+
+        if (existingUrl) {
+            // Show error if URL already exists
+            setErrorMessage('The URL already exists. Please use a different URL.');
+            return;
+        }
 
         try {
             const uid = action === 'update' && data?.key ? data.key : generateUid();
@@ -83,29 +96,19 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({ title, action, refetch,
             });
              
             refetch();
-         
-          
             setSuccessMessage('Data source saved successfully!');
 
-            if(action === 'create'){
-                //// delay a bit to show success message
-                await new Promise((resolve:any) => setTimeout(() => {
-                    console.log("");  // Your code here
-                    resolve();
-                }, 2000));
-                
-                setIsShowDataSourceForm(false)
-             }else{
-                   //// delay a bit to show success message
-                   await new Promise((resolve:any) => setTimeout(() => {
-                    console.log("");  // Your code here
-                    resolve();
-                }, 2000));
-                
-                setIsShowDataSourceFormEdit(false)
-             }
+            // Delay a bit to show success message
+            await new Promise((resolve) => setTimeout(() => resolve(), 2000));
 
+            // Hide form after saving
+            if (action === 'create') {
+                setIsShowDataSourceForm(false);
+            } else {
+                setIsShowDataSourceFormEdit(false);
+            }
 
+            // Reset form after saving if it's a create action
             if (action === 'create') {
                 reset({
                     id: generateUid(),
@@ -115,9 +118,8 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({ title, action, refetch,
                     instanceName: '',
                     description: '',
                 });
-             
             }
-    
+
         } catch (error) {
             console.error('Error saving data source:', error);
             setErrorMessage('Failed to save data source. Please try again.');

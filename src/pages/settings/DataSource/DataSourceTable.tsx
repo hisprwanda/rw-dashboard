@@ -4,13 +4,14 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import { IoIosMore } from "react-icons/io";
 import {
   MantineReactTable,
+  useMantineReactTable,
   type MRT_ColumnDef,
 } from 'mantine-react-table';
 import { Button } from '@mantine/core';
 import { GenericModal } from '../../../components';
 import { DataSourceForm, DeleteDataSourceCard, SavedDataSourceCard } from './Components';
 import { useDataSourceData } from '../../../hooks/DataSourceHooks';
-
+import "./DataSourceTable.css"
 const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }) => {
   const  { refetch }= useDataSourceData()
   // Ensure savedDataSourceData is an array
@@ -26,32 +27,14 @@ const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
       {
-        accessorKey: 'value.instanceName', // Path to instance name in savedDataSourceData
+        accessorKey: 'value.instanceName', 
         header: 'Instance Name',
       },
       {
-        accessorKey: 'value.description', // Path to description
+        accessorKey: 'value.description',
         header: 'Description',
       },
-      {
-        id: 'actions', // Action column
-        header: 'Actions',
-        Cell: ({ row }: { row: any }) => {
-          const { key } = row.original; // Extract the key from the row data
-
-          return (
-            <div className="flex gap-5"> {/* Adjust spacing here */}
-            {/* view more */}
-    
-              <IoIosMore className='text-2xl'   onClick={() => handleView(row?.original)} />
-              {/* edit */}
-              <FaRegEdit className='text-2xl'   onClick={() => handleEdit(row?.original)} />
-                {/* Delete */}
-              <RiDeleteBin5Line className='text-2xl'    onClick={() => handleDelete(row?.original)} />
-            </div>
-          );
-        },
-      },
+     
     ],
     []
   );
@@ -60,21 +43,44 @@ const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }
   const handleView = (data:any) => {
     setIsShowViewDataSource(true); 
     setSelectedDataSource(data)
-    console.log('P-View key:', data);
+
   };
 
   const handleEdit = (data:any) => {
     setIsShowDataSourceFormEdit(true); 
     setSelectedDataSource(data) 
-    console.log('Y-Edit key x:', data);
+
   };
 
   const handleDelete = (data:any) => {
     setSelectedDataSource(data)
     setIsShowDeleteDataSource(true);  // Show modal to confirm delete
-    console.log('Delete key:', data);
+
   };
 
+  const table = useMantineReactTable({
+    columns,
+    data,
+    enableRowActions: true,
+    positionActionsColumn: 'last',
+    displayColumnDefOptions: {
+      'mrt-row-actions': {
+        header: 'Actions ',
+        size: 55, 
+        
+      },
+      
+    },
+    renderRowActions: ({ row }) => (
+      <div className="flex gap-2 justify-end "> 
+      <IoIosMore className='text-xl'   onClick={() => handleView(row?.original)} />
+      <FaRegEdit className='text-xl'   onClick={() => handleEdit(row?.original)} />
+      <RiDeleteBin5Line className='text-xl '    onClick={() => handleDelete(row?.original)} />
+       </div>
+    ),
+   
+  });
+  
   // Table component
   return (
     <div>
@@ -101,10 +107,12 @@ const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }
        <DeleteDataSourceCard id={selectedDataSource?.key} setIsShowDeleteDataSource={setIsShowDeleteDataSource}  refetch={refetch} />
        </GenericModal>
       {/* delete goog */}
-    <MantineReactTable
+
+      <MantineReactTable table={table} />
+    {/* <MantineReactTable
       columns={columns}
       data={data} 
-    />
+    /> */}
     </div>
 
   );
