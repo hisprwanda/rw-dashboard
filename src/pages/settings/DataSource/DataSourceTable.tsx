@@ -16,10 +16,11 @@ import { useDataSourceData } from '../../../hooks/DataSourceHooks';
 
 const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }) => {
 
-  console.log("k dot",savedDataSourceData)
   const  { refetch }= useDataSourceData()
   // Ensure savedDataSourceData is an array
   const data = Array.isArray(savedDataSourceData) ? savedDataSourceData : [];
+
+  console.log("dto",data)
 
   const [isShowViewDataSource,setIsShowViewDataSource] = useState(false)
   const [isShowDataSourceFormEdit,setIsShowDataSourceFormEdit] = useState(false)
@@ -27,16 +28,21 @@ const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }
   const [selectedDataSource, setSelectedDataSource] = useState<any[] | undefined>([]);
 
 
-  // Columns definition
+  /// Columns definition
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
       {
         accessorKey: 'value.instanceName', 
         header: 'Instance Name',
       },
+
       {
-        accessorKey: 'value.description',
-        header: 'Description',
+        accessorKey: 'value.type',
+        header: 'Type',
+      },
+      {
+        accessorKey: 'value.authentication.url',
+        header: 'Url',
       },
      
     ],
@@ -76,7 +82,7 @@ const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }
       
     },
     renderRowActions: ({ row }) => (
-      <div className="flex gap-2 justify-end "> 
+      <div className="flex gap-2  "> 
       <IoIosMore className='text-xl'   onClick={() => handleView(row?.original)} />
       <CiEdit className='text-xl'   onClick={() => handleEdit(row?.original)} />
       <RiDeleteBin5Line className='text-xl '    onClick={() => handleDelete(row?.original)} />

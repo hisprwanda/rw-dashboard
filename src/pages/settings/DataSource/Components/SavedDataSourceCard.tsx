@@ -1,4 +1,5 @@
 import React from 'react';
+import { encryptCredentials,decryptCredentials } from '../../../..//lib/utils';
 
 type SavedDataProps = {
     data: {
@@ -36,11 +37,11 @@ const SavedDataSourceCard: React.FC<SavedDataProps> = ({ data }) => {
                 <p className="text-base text-gray-700 mb-2">
                     <strong>URL:</strong> {data.authentication.url}
                 </p>
-                <p className="text-base text-gray-700 mb-2">
-                    <strong>Username:</strong> {data.authentication.username}
-                </p>
                 {/* <p className="text-base text-gray-700 mb-2">
-                    <strong>Password:</strong> {data.authentication.password}
+                    <strong>Username:</strong> { decryptCredentials( data.authentication.username)}
+                </p>
+                <p className="text-base text-gray-700 mb-2">
+                    <strong>Password:</strong> {  decryptCredentials(data.authentication.password)}
                 </p> */}
             </div>
         </div>

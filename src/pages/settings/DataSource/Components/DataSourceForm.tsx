@@ -7,24 +7,10 @@ import { useDataEngine } from '@dhis2/app-runtime';
 import { AlertBar } from '@dhis2/ui';
 import { useDataSourceData } from '../../../../hooks/DataSourceHooks';
 import {  Button } from '@dhis2/ui'; 
+import { DataSourceFormFields, DataSourceSchema} from '../../../../types/DataSource';
+import { encryptCredentials,decryptCredentials } from '../../../../lib/utils';
 
 
-// Schema definition using zod
-const DataSourceSchema = z.object({
-    id: z.string(),
-    type: z.enum(['DHIS2', 'API']),
-    authentication: z.object({
-        url: z.string().url({ message: 'Must be a valid URL' }),
-        username: z.string({ message: 'Username is required' }),
-        password: z.string(),
-    }),
-    isCurrentDHIS2: z.boolean(),
-    instanceName: z.string(),
-    description: z.string(),
-});
-
-// Infer form fields from the schema
-type DataSourceFormFields = z.infer<typeof DataSourceSchema>;
 
 const dataSourceOptions = [
     { name: 'DHIS2' },
@@ -42,6 +28,9 @@ type DataSourceFormProps = {
 
 const DataSourceForm: React.FC<DataSourceFormProps> = ({ title, action, refetch, data, setIsShowDataSourceForm, setIsShowDataSourceFormEdit }) => {
     const { data: allSavedDataSources } = useDataSourceData();
+
+
+
     
     const savedDataSource = data?.value;
 
@@ -68,64 +57,98 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({ title, action, refetch,
     // Auto-populate form fields if action is "update"
     useEffect(() => {
         if (action === 'update' && savedDataSource) {
-            reset(savedDataSource); 
+            // Decrypt the username and password before setting the form values
+            const decryptedUsername = decryptCredentials(savedDataSource.authentication.username);
+            const decryptedPassword = decryptCredentials(savedDataSource.authentication.password);
+    
+            // Populate the form with decrypted credentials
+            reset({
+                ...savedDataSource,
+                authentication: {
+                    ...savedDataSource.authentication,
+                    username: decryptedUsername,
+                    password: decryptedPassword,
+                }
+            });
         }
     }, [action, savedDataSource, reset]);
+    
 
-    // Handle form submission
-    const onSubmit: SubmitHandler<DataSourceFormFields> = async (formData) => {
-        setSuccessMessage(null);
-        setErrorMessage(null);
+// Handle form submission
+const onSubmit: SubmitHandler<DataSourceFormFields> = async (formData) => {
+    setSuccessMessage(null);
+    setErrorMessage(null);
 
-        // Check for duplicate URL
-        const existingUrl = allSavedDataSources?.dataStore?.entries?.some(
-            (entry: any) => entry.value.authentication.url === formData.authentication.url
-        );
+    // Determine if we're updating an existing entry
+    const isUpdate = action === 'update' && data?.key;
+    const currentUrl = isUpdate ? savedDataSource?.authentication?.url : '';
 
-        if (existingUrl) {
-            // Show error if URL already exists
-            setErrorMessage('The URL already exists. Please use a different URL.');
-            return;
+    // Check for duplicate URL, excluding the current item's URL if we're updating
+    const existingUrl = allSavedDataSources?.dataStore?.entries?.some(
+        (entry: any) =>
+            entry.value.authentication.url === formData.authentication.url &&
+            entry.key !== data?.key // Ensure we exclude the current entry being edited
+    );
+
+    if (existingUrl) {
+        // Show error if URL already exists
+        setErrorMessage('The URL already exists. Please use a different URL.');
+        return;
+    }
+
+    try {
+        // Encrypt username and password before saving to the DB
+        const encryptedUsername = encryptCredentials(formData.authentication.username);
+        const encryptedPassword = encryptCredentials(formData.authentication.password);
+
+        // Create a copy of formData with the encrypted username and password
+        const encryptedFormData = {
+            ...formData,
+            authentication: {
+                ...formData.authentication,
+                username: encryptedUsername,
+                password: encryptedPassword,
+            },
+        };
+
+        const uid = isUpdate ? data.key : generateUid();
+        await engine.mutate({
+            resource: `dataStore/r-data-source/${uid}`,
+            type: isUpdate ? 'update' : 'create',
+            data: { ...encryptedFormData }, // Save the encrypted form data
+        });
+
+        refetch();
+        setSuccessMessage('Data source saved successfully!');
+
+        // Delay a bit to show success message
+        await new Promise((resolve) => setTimeout(() => resolve(), 2000));
+
+        // Hide form after saving
+        if (!isUpdate) {
+            setIsShowDataSourceForm(false);
+        } else {
+            setIsShowDataSourceFormEdit(false);
         }
 
-        try {
-            const uid = action === 'update' && data?.key ? data.key : generateUid();
-            await engine.mutate({
-                resource: `dataStore/r-data-source/${uid}`,
-                type: action === 'update' ? 'update' : 'create',
-                data: { ...formData },
+        // Reset form after saving if it's a create action
+        if (!isUpdate) {
+            reset({
+                id: generateUid(),
+                type: 'DHIS2',
+                isCurrentDHIS2: false,
+                authentication: { url: '', username: '', password: '' },
+                instanceName: '',
+                description: '',
             });
-             
-            refetch();
-            setSuccessMessage('Data source saved successfully!');
-
-            // Delay a bit to show success message
-            await new Promise((resolve) => setTimeout(() => resolve(), 2000));
-
-            // Hide form after saving
-            if (action === 'create') {
-                setIsShowDataSourceForm(false);
-            } else {
-                setIsShowDataSourceFormEdit(false);
-            }
-
-            // Reset form after saving if it's a create action
-            if (action === 'create') {
-                reset({
-                    id: generateUid(),
-                    type: 'DHIS2',
-                    isCurrentDHIS2: false,
-                    authentication: { url: '', username: '', password: '' },
-                    instanceName: '',
-                    description: '',
-                });
-            }
-
-        } catch (error) {
-            console.error('Error saving data source:', error);
-            setErrorMessage('Failed to save data source. Please try again.');
         }
-    };
+
+    } catch (error) {
+        console.error('Error saving data source:', error);
+        setErrorMessage('Failed to save data source. Please try again.');
+    }
+};
+
 
     return (
         <div className="max-w-md mx-auto p-6 border border-gray-300 rounded-md">
