@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDataEngine } from '@dhis2/app-runtime';
-import { AlertBar } from '@dhis2/ui'; 
+import { AlertBar, Button } from '@dhis2/ui'; 
 
 type DeleteProps = {
     id: string;
@@ -67,13 +67,15 @@ const DeleteDataSourceCard: React.FC<DeleteProps> = ({ id, refetch,setIsShowDele
                 Are you sure you want to delete this data source?
             </h2>
             <div className="flex justify-end space-x-4">
-                <button
+                <Button
                     onClick={deleteDataSource}
-                    className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-gray-400 transition"
+                   // className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-gray-400 transition"
+                   
                     disabled={isLoading}
+                    destructive
                 >
                  {isLoading ? "Loading..." : "Confirm" }   
-                </button>
+                </Button>
             </div>
 </>}
           

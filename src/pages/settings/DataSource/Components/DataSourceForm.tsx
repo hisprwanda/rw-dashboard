@@ -6,6 +6,7 @@ import { generateUid } from '../../../../lib/uid';
 import { useDataEngine } from '@dhis2/app-runtime';
 import { AlertBar } from '@dhis2/ui';
 import { useDataSourceData } from '../../../../hooks/DataSourceHooks';
+import {  Button } from '@dhis2/ui'; 
 
 
 // Schema definition using zod
@@ -224,13 +225,14 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({ title, action, refetch,
 
                 {/* Submit Button */}
                 <div className="flex justify-end mt-4">
-                    <button
+                    <Button
+                    primary
                         type="submit"
                         className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
                         disabled={isSubmitting}
                     >
                         {isSubmitting ? 'Loading...' : action === 'update' ? 'Update' : 'Submit'}
-                    </button>
+                    </Button>
                 </div>
             </form>
         </div>

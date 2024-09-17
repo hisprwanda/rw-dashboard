@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react';
+
 import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { IoIosMore } from "react-icons/io";
+import { CiEdit } from "react-icons/ci";
 import {
   MantineReactTable,
   useMantineReactTable,
@@ -11,8 +13,10 @@ import { Button } from '@mantine/core';
 import { GenericModal } from '../../../components';
 import { DataSourceForm, DeleteDataSourceCard, SavedDataSourceCard } from './Components';
 import { useDataSourceData } from '../../../hooks/DataSourceHooks';
-import "./DataSourceTable.css"
+
 const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }) => {
+
+  console.log("k dot",savedDataSourceData)
   const  { refetch }= useDataSourceData()
   // Ensure savedDataSourceData is an array
   const data = Array.isArray(savedDataSourceData) ? savedDataSourceData : [];
@@ -54,7 +58,7 @@ const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }
 
   const handleDelete = (data:any) => {
     setSelectedDataSource(data)
-    setIsShowDeleteDataSource(true);  // Show modal to confirm delete
+    setIsShowDeleteDataSource(true); 
 
   };
 
@@ -74,7 +78,7 @@ const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }
     renderRowActions: ({ row }) => (
       <div className="flex gap-2 justify-end "> 
       <IoIosMore className='text-xl'   onClick={() => handleView(row?.original)} />
-      <FaRegEdit className='text-xl'   onClick={() => handleEdit(row?.original)} />
+      <CiEdit className='text-xl'   onClick={() => handleEdit(row?.original)} />
       <RiDeleteBin5Line className='text-xl '    onClick={() => handleDelete(row?.original)} />
        </div>
     ),
@@ -109,10 +113,7 @@ const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }
       {/* delete goog */}
 
       <MantineReactTable table={table} />
-    {/* <MantineReactTable
-      columns={columns}
-      data={data} 
-    /> */}
+
     </div>
 
   );
