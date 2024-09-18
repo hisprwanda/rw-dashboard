@@ -1,12 +1,29 @@
 export default function joinPath(...parts: string[]): string {
-    const [base, ...otherParts] = parts;
+    let baseUrl: URL | null = null;
 
-    const url = new URL(base);
+    parts.forEach(part => {
+        try {
+            if (!baseUrl) {
+                baseUrl = new URL(part);
+            } else {
+                if (part.startsWith('../')) {
+                    const cleanPart = part.replace(/^\.\.\//, '');
+                    baseUrl.pathname = baseUrl.pathname.replace(/\/+$/, '') + '/' + cleanPart;
+                } else {
+                    const newUrl = new URL(part, baseUrl.toString());
+                    baseUrl = newUrl;
+                }
+            }
+        } catch (error) {
+            console.log(error);
+            if (baseUrl) {
+                const cleanPart = part.replace(/^\/+|\/+$/g, '');
+                baseUrl.pathname = baseUrl.pathname.replace(/\/+$/, '') + '/' + cleanPart;
+            }
+            console.log(error);
 
-    otherParts.forEach(part => {
-        const cleanPart = part.replace(/^\/+|\/+$/g, '');
-        url.pathname = url.pathname.replace(/\/+$/, '') + '/' + cleanPart;
+        }
     });
 
-    return url.toString();
+    return baseUrl ? baseUrl.toString() : '';
 }

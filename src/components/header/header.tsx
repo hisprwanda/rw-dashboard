@@ -10,10 +10,6 @@ export default function Header() {
   const { loading, error, data } = useSystemInfo();
   const baseUrl = useBaseUrl();
 
-  console.log(baseUrl);
-  console.log(data);
-
-
   if (loading) {
     return <CircularLoader />;
   }

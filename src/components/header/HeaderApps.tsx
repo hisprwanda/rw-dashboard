@@ -5,6 +5,7 @@ import { useSystemInfo, useBaseUrl } from '../../services/fetchSystemInfo';
 import { Link } from 'react-router-dom';
 import { ModuleApps } from '@/types/moduleApp';
 import formatImagePath from './../../lib/imagePath';
+import joinPath from './../../lib/joinPath';
 
 function escapeRegExpCharacters(text: string): string {
     return text.replace(/[/.*+?^${}()|[\]\\]/g, '\\$&');
@@ -93,13 +94,18 @@ export default function HeaderApps() {
                         <div className="flex flex-wrap items-start justify-start  m-2 min-h-[200px] max-h-[465px] overflow-auto">
                             {filteredModules.length > 0 ? (
                                 filteredModules.map((module: ModuleApps) => {
+                                    const linkToGo = joinPath(baseUrl, module.defaultAction);
+                                    const imgSrc = joinPath(baseUrl, module.icon);
+
+                                    console.log({ linkToGo, imgSrc });
+
                                     return (
                                         <Link
-                                            to={`${baseUrl}${module.namespace}`}
+                                            to={linkToGo}
                                             key={module.namespace}
                                             className='flex flex-col text-center gap-2 items-center m-2 text-xs border border-transparent rounded-[12px] w-24 hover:bg-[#f5fbff]'
                                         >
-                                            <img src={`${baseUrl}${formatImagePath(module.icon)}`} alt={`${module.displayName} icon`} className='size-12 m-2' />
+                                            <img src={imgSrc} alt={`${module.displayName} icon`} className='size-12 m-2' />
                                             <p className='mt-3'>{module.displayName}</p>
                                         </Link>
                                     );
