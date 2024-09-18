@@ -1,13 +1,27 @@
-import { IconApps24, IconMail24, IconMessages24, LogoIconWhite } from '@dhis2/ui';
+import { CircularLoader, IconMail24, IconMessages24, LogoIconWhite } from '@dhis2/ui';
 import { Link, NavLink } from 'react-router-dom';
 import { menuItems } from '../../data/menuLinks';
 import './header.css';
 import UserProfile from './UserProfile';
 import HeaderApps from './HeaderApps';
-
-const baseUrl = process.env.BASE_URL || "https://online.hisprwanda.org/eidsrdev";
+import { useBaseUrl, useSystemInfo } from './../../services/fetchSystemInfo';
 
 export default function Header() {
+  const { loading, error, data } = useSystemInfo();
+  const baseUrl = useBaseUrl();
+
+  console.log(baseUrl);
+  console.log(data);
+
+
+  if (loading) {
+    return <CircularLoader />;
+  }
+
+  if (error) {
+    return <p className="text-red-500">Error: {error.message}</p>;
+  }
+
   return (
     <nav className='bg-dhisMainBlue text-white flex items-center justify-between '>
       <div className='flex items-center justify-center'>
@@ -17,8 +31,8 @@ export default function Header() {
               <LogoIconWhite className='h-[26px] w-[27px]' />
             </div>
           </Link>
-          <Link to={'/'} className='text-[14px] font-[500] border-r-[1px] border-dhisGrey50 p-[12px]'>
-            <p>Rwanda Integrated Disease Surveillance - Visualizer ISDSR</p>
+          <Link to={'/'} className='text-[14px] font-[500] border-r-[1px] border-dhisGrey50 p-[12px] min-w-[30vw]'>
+            <p>{data?.title?.applicationTitle} - Visualizer Studio</p>
           </Link>
         </div>
         <menu>
@@ -37,16 +51,23 @@ export default function Header() {
       </div>
       <div>
         <div className='flex items-center'>
-          <div className='p-[12px] cursor-pointer hover:bg-dhisDarkBlue'>
+          <div className='relative p-[12px] cursor-pointer hover:bg-dhisDarkBlue'>
             <Link to={`${baseUrl}/dhis-web-interpretation`}>
               <IconMessages24 />
-              <span className='bg-dhisMainGreen rounded-full w-[18px] h-[18px] px-[4px] text-[13px] font-[600] top-[3px] absolute ml-4'>5</span>
+              {data?.notifications?.unreadInterpretations > 0 && (
+                <span className='bg-dhisMainGreen rounded-full w-[18px] h-[18px] px-[4px] text-[13px] font-[600] top-[3px] absolute ml-4'>
+                </span>
+              )}
             </Link>
           </div>
-          <div className='p-[12px] cursor-pointer hover:bg-dhisDarkBlue'>
+          <div className='relative p-[12px] cursor-pointer hover:bg-dhisDarkBlue'>
             <Link to={`${baseUrl}/dhis-web-messaging`}>
               <IconMail24 />
-              <span className='bg-dhisMainGreen rounded-full w-[18px] h-[18px] px-[4px] text-[13px] font-[600] top-[3px] absolute ml-4'>5</span>
+              {data?.notifications?.unreadMessageConversations > 0 && (
+                <span className='bg-dhisMainGreen rounded-full w-[18px] h-[18px] px-[4px] text-[13px] font-[600] top-[3px] absolute ml-4'>
+                  {data?.notifications?.unreadMessageConversations}
+                </span>
+              )}
             </Link>
           </div>
           <HeaderApps />

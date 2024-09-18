@@ -1,8 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
-import { IconSettings24, IconUser24, IconQuestion24, IconInfo24, IconLogOut24 } from '@dhis2/ui';
+import { IconSettings24, IconUser24, IconQuestion24, IconInfo24, IconLogOut24, CircularLoader } from '@dhis2/ui';
 import { Link } from 'react-router-dom';
+import { useBaseUrl, useSystemInfo } from "./../../services/fetchSystemInfo";
+import getNameValues from './../../lib/getNameValues';
+const listFlex = 'flex gap-3 hover:bg-[#F3F5F7] px-5 py-3';
 
 export default function UserProfile() {
+    const { loading, error, data } = useSystemInfo();
+    const baseUrl = useBaseUrl();
     const [isProfileVisible, setIsProfileVisible] = useState(false);
     const profileRef = useRef(null);
 
@@ -26,6 +31,15 @@ export default function UserProfile() {
         };
     }, [isProfileVisible]);
 
+    if (loading) {
+        return <CircularLoader />;
+    }
+
+    if (error) {
+        return <p className="text-red-500">Error: {error.message}</p>;
+    }
+
+
     return (
         <div className='relative'>
             <div
@@ -37,14 +51,23 @@ export default function UserProfile() {
 
             {isProfileVisible && (
                 <section ref={profileRef} className='bg-white text-[#212934] h-96 absolute top-12 right-0 w-80 shadow-md'>
-                    <div className='p-4'>
-                        <h3 className='font-bold mb-4'>User Profile</h3>
+                    <div className='border-b'>
+                        <div className="flex gap-4 pl-6 py-5 border-b">
+                            <div className="text-xl size-12 rounded-full bg-[#666F7B] flex items-center justify-center font-bold text-white cursor-pointer">
+                                {getNameValues(data?.user?.name)}
+                            </div>
+                            <div>
+                                <p className="text-base">{data?.user?.name}</p>
+                                <p className="text-sm">{data?.user?.email}</p>
+                                <Link className="text-xs underline" to={`${baseUrl}/dhis-web-user-profile/#/profile`}>Edit profile</Link>
+                            </div>
+                        </div>
                         <ul>
-                            <li><IconUser24 /> Profile</li>
-                            <li><IconSettings24 /> Settings</li>
-                            <li><IconQuestion24 /> Help</li>
-                            <li><IconInfo24 /> About</li>
-                            <li><IconLogOut24 /> Log Out</li>
+                            <Link className={listFlex} to={`${baseUrl}/dhis-web-user-profile/#/settings`}><IconSettings24 /> Settings</Link>
+                            <Link className={listFlex} to={`${baseUrl}/dhis-web-user-profile/#/account`}><IconUser24 /> Account</Link>
+                            <Link className={listFlex} to={`${baseUrl}/dhis-web-commons-about/help.action`}><IconQuestion24 /> Help</Link>
+                            <Link className={listFlex} to={`${baseUrl}/dhis-web-user-profile/#/aboutPage`}><IconInfo24 /> About</Link>
+                            <Link className={listFlex} to={`${baseUrl}/dhis-web-commons-security/logout.action`}><IconLogOut24 /> Log Out</Link>
                         </ul>
                     </div>
                 </section>

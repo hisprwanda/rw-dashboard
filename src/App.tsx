@@ -33,12 +33,12 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<MainLayout />}>
               <Route index element={<HomePage />} />
-              <Route path="*" element={<NotFoundPage />} />
               <Route path="/dashboards" element={<DashboardsPage />} />
               <Route path="/visualizers" element={<VisualizersPage />} />
               <Route path="/alerts" element={<AlertsPage />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/unauthorized" element={<UnauthorizedPage />} />
+              <Route path="*" element={<NotFoundPage />} />
             </Route>
 
             <Route path="/admin" element={

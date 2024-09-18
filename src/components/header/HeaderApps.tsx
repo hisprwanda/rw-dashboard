@@ -1,58 +1,113 @@
 import { useState, useEffect, useRef } from 'react';
-import { IconApps24 } from '@dhis2/ui';
-import React from 'react';
+import { CircularLoader, IconApps24, InputChangeHandler } from '@dhis2/ui';
+import { IconSettings24, Input } from '@dhis2/ui';
+import { useSystemInfo, useBaseUrl } from '../../services/fetchSystemInfo';
+import { Link } from 'react-router-dom';
+import { ModuleApps } from '@/types/moduleApp';
+import formatImagePath from './../../lib/imagePath';
+
+function escapeRegExpCharacters(text: string): string {
+    return text.replace(/[/.*+?^${}()|[\]\\]/g, '\\$&');
+}
 
 export default function HeaderApps() {
+    const { loading, error, data } = useSystemInfo();
+    const baseUrl = useBaseUrl();
+
     const [isAppsVisible, setIsAppsVisible] = useState(false);
     const appsRef = useRef(null);
-    const iconRef = useRef(null); // Add a ref for the icon
+    const iconRef = useRef(null);
 
-    // Toggle the visibility of the apps section
     const toggleApps = () => {
         setIsAppsVisible(!isAppsVisible);
     };
 
-    // Click outside logic
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (
                 appsRef.current &&
                 !(appsRef.current as HTMLElement).contains(event.target as Node) &&
                 iconRef.current &&
-                !(iconRef.current as HTMLElement).contains(event.target as Node) // Exclude the icon click
+                !(iconRef.current as HTMLElement).contains(event.target as Node)
             ) {
                 setIsAppsVisible(false);
             }
         };
 
-        // Attach event listener when apps section is visible
         if (isAppsVisible) {
             document.addEventListener('mousedown', handleClickOutside);
         }
 
-        // Cleanup event listener when apps section is hidden
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [isAppsVisible]);
 
+    const [filter, setFilter] = useState<string>('');
+
+    const handleFilterChange: InputChangeHandler = (payload, event) => {
+        const newValue = payload.value || '';
+        setFilter(newValue);
+    };
+
+
+    const filteredModules = data?.apps?.modules?.filter((module: ModuleApps) => {
+        const appName = module.displayName || module.name;
+        const formattedAppName = appName.toLowerCase();
+        const formattedFilter = escapeRegExpCharacters(filter).toLowerCase();
+        return filter.length > 0 ? formattedAppName.match(formattedFilter) : true;
+    }) || [];
+
+    if (loading) {
+        return <CircularLoader />;
+    }
+
+    if (error) {
+        return <p className="text-red-500">Error: {error.message}</p>;
+    }
     return (
         <div className='relative'>
-            {/* Apps icon */}
             <div
-                ref={iconRef} // Reference the icon
+                ref={iconRef}
                 className='p-[12px] cursor-pointer hover:bg-dhisDarkBlue'
-                onClick={toggleApps} // Click handler to toggle visibility
+                onClick={toggleApps}
             >
                 <IconApps24 />
             </div>
-
-            {/* Apps section, visible based on the state */}
             {isAppsVisible && (
-                <section ref={appsRef} className='bg-white text-[#212934] h-96 absolute top-12 right-0 w-80 shadow-md'>
-                    <div className='p-4'>
-                        <h3 className='font-bold mb-4'>Available Apps</h3>
-                        <p>Some apps here...</p>
+                <section ref={appsRef} className='bg-white text-[#212934] absolute top-12 right-0 shadow-md'>
+                    <div className="w-[30vw] min-w-[300px] max-w-[560px]">
+                        <div className='flex gap-2 items-center p-4'>
+                            <Input
+                                type="text"
+                                value={filter}
+                                onChange={handleFilterChange}
+                                placeholder="Search apps"
+                                className="border border-transparent rounded-lg w-full p-2 text-xs"
+                            />
+                            <Link to={`${baseUrl}/dhis-web-menu-management`}>
+                                <IconSettings24 />
+                            </Link>
+                        </div>
+
+                        <div className="flex flex-wrap items-start justify-start  m-2 min-h-[200px] max-h-[465px] overflow-auto">
+                            {filteredModules.length > 0 ? (
+                                filteredModules.map((module: ModuleApps) => {
+                                    return (
+                                        <Link
+                                            to={`${baseUrl}${module.namespace}`}
+                                            key={module.namespace}
+                                            className='flex flex-col text-center gap-2 items-center m-2 text-xs border border-transparent rounded-[12px] w-24 hover:bg-[#f5fbff]'
+                                        >
+                                            <img src={`${baseUrl}${formatImagePath(module.icon)}`} alt={`${module.displayName} icon`} className='size-12 m-2' />
+                                            <p className='mt-3'>{module.displayName}</p>
+                                        </Link>
+                                    );
+                                })
+                            ) : (
+                                <p>No App available, Search again</p>
+                            )}
+                        </div>
                     </div>
                 </section>
             )}
