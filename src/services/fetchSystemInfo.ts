@@ -1,4 +1,3 @@
-import { useConfig } from '@dhis2/app-runtime';
 import { useDataQuery } from '@dhis2/app-runtime';
 
 export const useSystemInfo = () => {
@@ -28,7 +27,20 @@ export const useSystemInfo = () => {
 };
 
 export const useBaseUrl = () => {
-    const { baseUrl } = useConfig();
+    const query = {
+        baseUrl: {
+            resource: 'system/info'
+        }
+    };
 
-    return baseUrl;
+    const { loading, error, data } = useDataQuery(query);
+
+    if (loading) {
+        return "loading...";
+    }
+    if (error) {
+        return "error in fetching baseurl...";
+    }
+
+    return data?.baseUrl?.contextPath;
 };
