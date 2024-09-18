@@ -1,5 +1,5 @@
 export default function joinPath(...parts: string[]): string {
-    let baseUrl: URL | null = null;
+    let baseUrl: URL | undefined;
 
     parts.forEach(part => {
         try {
