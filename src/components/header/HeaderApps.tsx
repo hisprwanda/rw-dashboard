@@ -97,8 +97,6 @@ export default function HeaderApps() {
                                     const linkToGo = joinPath(baseUrl, module.defaultAction);
                                     const imgSrc = joinPath(baseUrl, module.icon);
 
-                                    console.log({ linkToGo, imgSrc });
-
                                     return (
                                         <Link
                                             to={linkToGo}
