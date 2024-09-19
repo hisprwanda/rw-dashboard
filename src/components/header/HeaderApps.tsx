@@ -86,9 +86,9 @@ export default function HeaderApps() {
                                 placeholder="Search apps"
                                 className="border border-transparent rounded-lg w-full p-2 text-xs"
                             />
-                            <Link to={`${baseUrl}/dhis-web-menu-management`}>
+                            <a href={`${baseUrl}/dhis-web-menu-management`}>
                                 <IconSettings24 />
-                            </Link>
+                            </a>
                         </div>
 
                         <div className="flex flex-wrap items-start justify-start  m-2 min-h-[200px] max-h-[465px] overflow-auto">
@@ -98,14 +98,14 @@ export default function HeaderApps() {
                                     const imgSrc = joinPath(baseUrl, module.icon);
 
                                     return (
-                                        <Link
-                                            to={linkToGo}
+                                        <a
+                                            href={linkToGo}
                                             key={module.namespace}
                                             className='flex flex-col text-center gap-2 items-center m-2 text-xs border border-transparent rounded-[12px] w-24 hover:bg-[#f5fbff]'
                                         >
                                             <img src={imgSrc} alt={`${module.displayName} icon`} className='size-12 m-2' />
                                             <p className='mt-3'>{module.displayName}</p>
-                                        </Link>
+                                        </a>
                                     );
                                 })
                             ) : (

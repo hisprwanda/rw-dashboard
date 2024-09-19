@@ -59,15 +59,15 @@ export default function UserProfile() {
                             <div>
                                 <p className="text-base">{data?.user?.name}</p>
                                 <p className="text-sm">{data?.user?.email}</p>
-                                <Link className="text-xs underline" to={`${baseUrl}/dhis-web-user-profile/#/profile`}>Edit profile</Link>
+                                <a className="text-xs underline" href={`${baseUrl}/dhis-web-user-profile/#/profile`}>Edit profile</a>
                             </div>
                         </div>
                         <ul>
-                            <Link className={listFlex} to={`${baseUrl}/dhis-web-user-profile/#/settings`}><IconSettings24 /> Settings</Link>
-                            <Link className={listFlex} to={`${baseUrl}/dhis-web-user-profile/#/account`}><IconUser24 /> Account</Link>
-                            <Link className={listFlex} to={`${baseUrl}/dhis-web-commons-about/help.action`}><IconQuestion24 /> Help</Link>
-                            <Link className={listFlex} to={`${baseUrl}/dhis-web-user-profile/#/aboutPage`}><IconInfo24 /> About</Link>
-                            <Link className={listFlex} to={`${baseUrl}/dhis-web-commons-security/logout.action`}><IconLogOut24 /> Log Out</Link>
+                            <a className={listFlex} href={`${baseUrl}/dhis-web-user-profile/#/settings`}><IconSettings24 /> Settings</a>
+                            <a className={listFlex} href={`${baseUrl}/dhis-web-user-profile/#/account`}><IconUser24 /> Account</a>
+                            <a className={listFlex} href={`${baseUrl}/dhis-web-commons-about/help.action`}><IconQuestion24 /> Help</a>
+                            <a className={listFlex} href={`${baseUrl}/dhis-web-user-profile/#/aboutPage`}><IconInfo24 /> About</a>
+                            <a className={listFlex} href={`${baseUrl}/dhis-web-commons-security/logout.action`}><IconLogOut24 /> Log Out</a>
                         </ul>
                     </div>
                 </section>

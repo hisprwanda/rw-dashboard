@@ -22,11 +22,11 @@ export default function Header() {
     <nav className='bg-dhisMainBlue text-white flex items-center justify-between '>
       <div className='flex items-center justify-center'>
         <div className='flex items-center justify-center'>
-          <Link to={baseUrl}>
+          <a href={baseUrl}>
             <div className='cursor-pointer hover:bg-[#1A557F] flex items-center justify-center mr-[12px] border-r-[1px] border-dhisGrey50 p-[10px]'>
               <LogoIconWhite className='h-[26px] w-[27px]' />
             </div>
-          </Link>
+          </a>
           <Link to={'/'} className='text-[14px] font-[500] border-r-[1px] border-dhisGrey50 p-[12px] min-w-[30vw]'>
             <p>{data?.title?.applicationTitle} - Visualizer Studio</p>
           </Link>
@@ -48,23 +48,23 @@ export default function Header() {
       <div>
         <div className='flex items-center'>
           <div className='relative p-[12px] cursor-pointer hover:bg-dhisDarkBlue'>
-            <Link to={`${baseUrl}/dhis-web-interpretation`}>
+            <a href={`${baseUrl}/dhis-web-interpretation`}>
               <IconMessages24 />
               {data?.notifications?.unreadInterpretations > 0 && (
                 <span className='bg-dhisMainGreen rounded-full w-[18px] h-[18px] px-[4px] text-[13px] font-[600] top-[3px] absolute ml-4'>
                 </span>
               )}
-            </Link>
+            </a>
           </div>
           <div className='relative p-[12px] cursor-pointer hover:bg-dhisDarkBlue'>
-            <Link to={`${baseUrl}/dhis-web-messaging`}>
+            <a href={`${baseUrl}/dhis-web-messaging`}>
               <IconMail24 />
               {data?.notifications?.unreadMessageConversations > 0 && (
                 <span className='bg-dhisMainGreen rounded-full w-[18px] h-[18px] px-[4px] text-[13px] font-[600] top-[3px] absolute ml-4'>
                   {data?.notifications?.unreadMessageConversations}
                 </span>
               )}
-            </Link>
+            </a>
           </div>
           <HeaderApps />
           <UserProfile />
