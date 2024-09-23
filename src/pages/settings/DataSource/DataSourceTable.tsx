@@ -83,9 +83,9 @@ const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }
     },
     renderRowActions: ({ row }) => (
       <div className="flex gap-2  "> 
-      <IoIosMore className='text-xl'   onClick={() => handleView(row?.original)} />
-      <CiEdit className='text-xl'   onClick={() => handleEdit(row?.original)} />
-      <RiDeleteBin5Line className='text-xl '    onClick={() => handleDelete(row?.original)} />
+      <IoIosMore className='text-xl hover:cursor-pointer  hover:text-primary '   onClick={() => handleView(row?.original)} />
+      <CiEdit className='text-xl hover:cursor-pointer  hover:text-primary '   onClick={() => handleEdit(row?.original)} />
+      <RiDeleteBin5Line className='text-xl  hover:cursor-pointer  hover:text-red-600 '    onClick={() => handleDelete(row?.original)} />
        </div>
     ),
    

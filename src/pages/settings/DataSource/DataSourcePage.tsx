@@ -37,7 +37,7 @@ const DataSourcePage = () => {
   return (<div className="container w-full m-auto  p-2" >
       {/* data source header */}
       <div className=" container flex justify-between py-5" >
-        <h3 className="text-[#2C6693] text-xl " >Data source</h3>
+        <h3 className="text-[#2C6693] text-xl font-bold " >Data source</h3>
         {/* <button
   onClick={handleShowDataSourceForm}
   className="px-4 py-2 bg-[#2C6693] text-white font-medium rounded-lg shadow-sm hover:bg-[#1d4f73] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2C6693] transition-all duration-200 flex items-center justify-center h-[45px]"
@@ -51,15 +51,18 @@ const DataSourcePage = () => {
 <IoIosAddCircle/>&nbsp; Add Data Source
 </Button> */}
 <Button 
+      type="button"
       onClick={handleShowDataSourceForm}
       text="Add Data Source"
-      backgroundColor="white"
-      textColor="slate-900"
+      backgroundColor="primary"
+      textColor="white"
       borderColor="slate-300"
       hoverBackgroundColor="white"
       hoverTextColor="primary"
       icon={<IoIosAddCircle />} 
 />
+
+
 
       </div>
 

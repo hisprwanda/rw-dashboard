@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useDataEngine } from '@dhis2/app-runtime';
-import { AlertBar, Button } from '@dhis2/ui'; 
+import { AlertBar } from '@dhis2/ui';
+import Button from "../../../../components/Button" 
+import { MdDelete } from "react-icons/md";
 
 type DeleteProps = {
     id: string;
@@ -66,8 +68,8 @@ const DeleteDataSourceCard: React.FC<DeleteProps> = ({ id, refetch,setIsShowDele
     <h2 className="text-xl font-semibold mb-4 text-gray-800">
                 Are you sure you want to delete this data source?
             </h2>
-            <div className="flex justify-end space-x-4">
-                <Button
+            <div className="flex justify-end space-x-4 ">
+                {/* <Button
                     onClick={deleteDataSource}
                    // className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-gray-400 transition"
                    
@@ -75,7 +77,23 @@ const DeleteDataSourceCard: React.FC<DeleteProps> = ({ id, refetch,setIsShowDele
                     destructive
                 >
                  {isLoading ? "Loading..." : "Confirm" }   
-                </Button>
+                </Button> */}
+
+                <Button 
+                 type='button'
+       onClick={deleteDataSource}
+      text={isLoading ? "Loading..." : "Confirm" }
+      disabled={isLoading}
+      backgroundColor="destructive"
+      textColor="white"
+      borderColor="slate-300"
+
+    //   hoverBackgroundColor="white"
+    //   hoverTextColor="primary"
+    
+
+      icon={<MdDelete />}  />
+
             </div>
 </>}
           

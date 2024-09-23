@@ -11,4 +11,5 @@ export interface ButtonProps {
     hoverBackgroundColor?: string;
     hoverTextColor?: string;
     icon?: React.ReactNode;
+    disabled?: boolean;
   }
