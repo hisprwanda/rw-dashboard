@@ -91,9 +91,8 @@ const onSubmit: SubmitHandler<DataSourceFormFields> = async (formData) => {
             entry.value.authentication.url === formData.authentication.url &&
             entry.key !== data?.key // Ensure we exclude the current entry being edited
     );
-
+  // Show error if URL already exists
     if (existingUrl) {
-        // Show error if URL already exists
         setErrorMessage('The URL already exists. Please use a different URL.');
         return;
     }
