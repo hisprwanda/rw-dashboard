@@ -10,9 +10,9 @@ import {
   type MRT_ColumnDef,
 } from 'mantine-react-table';
 import { Button } from '@mantine/core';
-import { GenericModal } from '../../../components';
-import { DataSourceForm, DeleteDataSourceCard, SavedDataSourceCard } from './Components';
-import { useDataSourceData } from '../../../hooks/DataSourceHooks';
+import { GenericModal } from '../../../../components';
+import { DataSourceForm, DeleteDataSourceCard, SavedDataSourceCard } from '.';
+import { useDataSourceData } from '../../../../services/DataSourceHooks';
 
 const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }) => {
 

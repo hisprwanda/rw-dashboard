@@ -1,16 +1,13 @@
 
-import { useDataSourceData } from "../../../hooks/DataSourceHooks"
-// import {Button} from "../../../components/ui/button"
-import { IconApps16 } from '@dhis2/ui'
-import { Link } from "react-router-dom"
-import DataSourceTable from "./DataSourceTable"
+import { useDataSourceData } from "../../../services/DataSourceHooks"
+import DataSourceTable from "./Components/DataSourceTable"
 import { GenericError, Loading } from "./../../../components"
 import {GenericModal} from "../../../components"
 import { useState } from "react"
 import { DataSourceForm } from "./Components"
-import { RiAddFill } from "react-icons/ri"
 import { IoIosAddCircle } from "react-icons/io"
 import Button from "../../../components/Button"
+
 
 
 const DataSourcePage = () => {
@@ -38,18 +35,7 @@ const DataSourcePage = () => {
       {/* data source header */}
       <div className=" container flex justify-between py-5" >
         <h3 className="text-[#2C6693] text-xl font-bold " >Data source</h3>
-        {/* <button
-  onClick={handleShowDataSourceForm}
-  className="px-4 py-2 bg-[#2C6693] text-white font-medium rounded-lg shadow-sm hover:bg-[#1d4f73] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2C6693] transition-all duration-200 flex items-center justify-center h-[45px]"
->
-  Add Data Source
-</button> */}
 
-
-
-{/* <Button   onClick={handleShowDataSourceForm} className=" bg-white border 2 border-slate-300 text-slate-900  hover:bg-white hover:text-primary">
-<IoIosAddCircle/>&nbsp; Add Data Source
-</Button> */}
 <Button 
       type="button"
       onClick={handleShowDataSourceForm}
