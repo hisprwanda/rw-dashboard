@@ -7,3 +7,4 @@ export { default as VisualizersPage, } from "./visualizers/VisualizersPage";
 export { default as AlertsPage, } from "./alerts/AlertsPage";
 export { default as SettingsPage, } from "./settings/SettingsPage";
 export { default as DashboardsPage, } from "./dashboards/DashboardsPage";
+export { default as DataSourcePage, } from "./settings/DataSource/DataSourcePage";
