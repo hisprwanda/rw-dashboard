@@ -39,18 +39,17 @@ const App: React.FC = () => {
               <Route path="settings" element={<SettingsPage />} />
               <Route path="unauthorized" element={<UnauthorizedPage />} />
               <Route path="*" element={<NotFoundPage />} />
+              <Route path="admin" element={
+                <ProtectedRoute requiredAuthorities={["F_SYSTEM_SETTING"]}>
+                  <AdminPage />
+                </ProtectedRoute>
+              } />
+              <Route path="user" element={
+                <ProtectedRoute requiredAuthorities={["M_dhis-web-dashboard"]}>
+                  <UserPage />
+                </ProtectedRoute>
+              } />
             </Route>
-
-            <Route path="admin" element={
-              <ProtectedRoute requiredAuthorities={["F_SYSTEM_SETTING"]}>
-                <AdminPage />
-              </ProtectedRoute>
-            } />
-            <Route path="user" element={
-              <ProtectedRoute requiredAuthorities={["M_dhis-web-dashboard"]}>
-                <UserPage />
-              </ProtectedRoute>
-            } />
           </Routes>
         </Router>
       </AuthProvider>
