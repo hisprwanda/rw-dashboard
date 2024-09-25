@@ -15,6 +15,7 @@ import {
   AlertsPage,
   SettingsPage,
   DashboardsPage,
+  DataSourcePage
 } from './pages';
 
 const queryClient = new QueryClient({
@@ -37,6 +38,7 @@ const App: React.FC = () => {
               <Route path="visualizers" element={<VisualizersPage />} />
               <Route path="alerts" element={<AlertsPage />} />
               <Route path="settings" element={<SettingsPage />} />
+              <Route path="data-source" element={<DataSourcePage />} />
               <Route path="unauthorized" element={<UnauthorizedPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Route>

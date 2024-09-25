@@ -13,7 +13,11 @@ export default {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
-			
+			dhisMainBlue: '#2C6693',
+			dhisGrey900: '#212934',
+			dhisDarkBlue: '#1A557F',
+			dhisMainGreen: '#00897b',
+			dhisGrey500: '#A0ADBA',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {

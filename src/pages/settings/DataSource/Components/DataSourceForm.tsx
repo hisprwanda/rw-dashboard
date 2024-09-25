@@ -250,18 +250,8 @@ const onSubmit: SubmitHandler<DataSourceFormFields> = async (formData) => {
                 {/* Submit Button */}
                 <div className="flex justify-end mt-4">
                   
-                    <Button 
-                    
-                    type='submit'
-      text= {isSubmitting ? 'Loading...' : action === 'update' ? 'Update' : 'Save'}
-      backgroundColor="primary"
-      textColor="white"
-      borderColor="slate-300"
-      hoverBackgroundColor="white"
-      hoverTextColor="primary"
-      icon={<IoSaveOutline />} 
-      disabled={isSubmitting}
-                               />
+
+        <Button variant="primary"    text= {isSubmitting ? 'Loading...' : action === 'update' ? 'Update' : 'Save'}     type="submit"  icon={<IoSaveOutline />} />
                 </div>
             </form>
         </div>

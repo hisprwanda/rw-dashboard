@@ -7,6 +7,7 @@ import { useState } from "react"
 import { DataSourceForm } from "./Components"
 import { IoIosAddCircle } from "react-icons/io"
 import Button from "../../../components/Button"
+import { FaCheck } from "react-icons/fa"
 
 
 
@@ -36,18 +37,8 @@ const DataSourcePage = () => {
       <div className=" container flex justify-between py-5" >
         <h3 className="text-[#2C6693] text-xl font-bold " >Data source</h3>
 
-<Button 
-      type="button"
-      onClick={handleShowDataSourceForm}
-      text="Add Data Source"
-      backgroundColor="primary"
-      textColor="white"
-      borderColor="slate-300"
-      hoverBackgroundColor="white"
-      hoverTextColor="primary"
-      icon={<IoIosAddCircle />} 
-/>
-
+<Button variant="primary" text="Add data source"     type="button"
+      onClick={handleShowDataSourceForm}  icon={<IoIosAddCircle />} />
 
 
       </div>
