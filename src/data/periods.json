@@ -1,0 +1,149 @@
+{
+    "Relative periods": {
+        "Days": {
+            "TODAY": "Today",
+            "YESTERDAY": "Yesterday",
+            "LAST_3_DAYS": "Last 3 days",
+            "LAST_7_DAYS": "Last 7 days",
+            "LAST_14_DAYS": "Last 14 days",
+            "LAST_30_DAYS": "Last 30 days",
+            "LAST_60_DAYS": "Last 60 days",
+            "LAST_90_DAYS": "Last 90 days",
+            "LAST_180_DAYS": "Last 180 days"
+        },
+        "Weeks": {
+            "THIS_WEEK": "This week",
+            "LAST_WEEK": "Last week",
+            "LAST_4_WEEKS": "Last 4 weeks",
+            "LAST_12_WEEKS": "Last 12 weeks",
+            "LAST_52_WEEKS": "Last 52 weeks",
+            "WEEKS_THIS_YEAR": "Weeks this year"
+        },
+        "Months": {
+            "THIS_MONTH": "This month",
+            "LAST_MONTH": "Last month",
+            "LAST_3_MONTHS": "Last 3 months",
+            "LAST_6_MONTHS": "Last 6 months",
+            "LAST_12_MONTHS": "Last 12 months",
+            "MONTHS_THIS_YEAR": "Months this year",
+            "MONTHS_LAST_YEAR": "Months last year"
+        },
+        "Bi_months": {
+            "THIS_BIMONTH": "This bimonth",
+            "LAST_BIMONTH": "Last bimonth",
+            "LAST_6_BIMONTHS": "Last 6 bimonths",
+            "BI_MONTHS_THIS_YEAR": "Bi-months this year"
+        },
+        "Quarters": {
+            "THIS_QUARTER": "This quarter",
+            "LAST_QUARTER": "Last quarter",
+            "LAST_4_QUARTERS": "Last 4 quarters",
+            "QUARTERS_THIS_YEAR": "Quarters this year",
+            "QUARTERS_LAST_YEAR": "Quarters last year"
+        },
+        "Six_months": {
+            "THIS_SIX_MONTH": "This six-month",
+            "LAST_SIX_MONTH": "Last six-month",
+            "LAST_2_SIXMONTHS": "Last 2 six-months"
+        },
+        "Years": {
+            "THIS_YEAR": "This year",
+            "LAST_YEAR": "Last year",
+            "LAST_5_YEARS": "Last 5 years",
+            "LAST_10_YEARS": "Last 10 years"
+        },
+        "Financial_Years": {
+            "THIS_FINANCIAL_YEAR": "This financial year",
+            "LAST_FINANCIAL_YEAR": "Last financial year",
+            "LAST_5_FINANCIAL_YEARS": "Last 5 financial years"
+        }
+    },
+    "Fixed periods": {
+        "Daily": {
+            "2024-01-01": "2024-01-01",
+            "2024-01-02": "2024-01-02",
+            "2024-01-03": "2024-01-03",
+            "2024-01-04": "2024-01-04",
+            "2024-01-05": "2024-01-05"
+        },
+        "Weekly": {
+            "WEEK_1": "Week 1 - 2023-12-31 - 2024-01-06",
+            "WEEK_2": "Week 2 - 2024-01-07 - 2024-01-13",
+            "WEEK_3": "Week 3 - 2024-01-14 - 2024-01-20",
+            "WEEK_4": "Week 4 - 2024-01-21 - 2024-01-27",
+            "WEEK_5": "Week 5 - 2024-01-28 - 2024-02-03",
+            "WEEK_6": "Week 6 - 2024-02-04 - 2024-02-10",
+            "WEEK_7": "Week 7 - 2024-02-11 - 2024-02-17"
+        },
+        "Weekly_Start_Wednesday": {
+            "WEEK_1": "Week 1 - 2024-01-03 - 2024-01-09",
+            "WEEK_2": "Week 2 - 2024-01-10 - 2024-01-16",
+            "WEEK_3": "Week 3 - 2024-01-17 - 2024-01-23"
+        },
+        "Weekly_Start_Thursday": {
+            "WEEK_1": "Week 1 - 2024-01-04 - 2024-01-10",
+            "WEEK_2": "Week 2 - 2024-01-11 - 2024-01-17",
+            "WEEK_3": "Week 3 - 2024-01-18 - 2024-01-24"
+        },
+        "Weekly_Start_Saturday": {
+            "WEEK_1": "Week 1 - 2023-12-30 - 2024-01-05",
+            "WEEK_2": "Week 2 - 2024-01-06 - 2024-01-12",
+            "WEEK_3": "Week 3 - 2024-01-13 - 2024-01-19"
+        },
+        "Weekly_Start_Sunday": {
+            "WEEK_1": "Week 1 - 2023-12-31 - 2024-01-06",
+            "WEEK_2": "Week 2 - 2024-01-07 - 2024-01-13",
+            "WEEK_3": "Week 3 - 2024-01-14 - 2024-01-20"
+        },
+        "Bi_weekly": {
+            "BI_WEEK_1": "Bi-week 1 - 2023-12-31 - 2024-01-13",
+            "BI_WEEK_2": "Bi-week 2 - 2024-01-14 - 2024-01-27",
+            "BI_WEEK_3": "Bi-week 3 - 2024-01-28 - 2024-02-10"
+        },
+        "Monthly": {
+            "JANUARY_2024": "January 2024",
+            "FEBRUARY_2024": "February 2024",
+            "MARCH_2024": "March 2024"
+        },
+        "Bi_monthly": {
+            "JAN_FEB_2024": "January-February 2024",
+            "MAR_APR_2024": "March-April 2024",
+            "MAY_JUN_2024": "May-June 2024"
+        },
+        "Quarterly": {
+            "Q1_2024": "Q1 2024 - January to March",
+            "Q2_2024": "Q2 2024 - April to June",
+            "Q3_2024": "Q3 2024 - July to September",
+            "Q4_2024": "Q4 2024 - October to December"
+        },
+        "Six_monthly": {
+            "H1_2024": "H1 2024 - January to June",
+            "H2_2024": "H2 2024 - July to December"
+        },
+        "Six_monthly_April": {
+            "H1_2024_APRIL": "H1 2024 - April to September",
+            "H2_2024_APRIL": "H2 2024 - October to March"
+        },
+        "Yearly": {
+            "2024": "2024",
+            "2025": "2025",
+            "2026": "2026"
+        },
+        "Financial_year_Start_November": {
+            "FY_2024": "FY 2024 - November 2023 to October 2024",
+            "FY_2025": "FY 2025 - November 2024 to October 2025"
+        },
+        "Financial_year_Start_October": {
+            "FY_2024": "FY 2024 - October 2023 to September 2024",
+            "FY_2025": "FY 2025 - October 2024 to September 2025"
+        },
+        "Financial_year_Start_July": {
+            "FY_2024": "FY 2024 - July 2023 to June 2024",
+            "FY_2025": "FY 2025 - July 2024 to June 2025"
+        },
+        "Financial_year_Start_April": {
+            "FY_2024": "FY 2024 - April 2023 to March 2024",
+            "FY_2025": "FY 2025 - April 2024 to March 2025"
+        }
+    }
+}
