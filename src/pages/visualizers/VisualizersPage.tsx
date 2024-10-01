@@ -5,17 +5,30 @@ import { IoSaveOutline } from 'react-icons/io5';
 import { useDataSourceData } from '../../services/DataSourceHooks';
 import { generateUid } from '../../lib/uid';
 import {GenericModal} from "../../components"
-import DataModal from './Test/DataModal';
+import {DataModal,OrganizationModal,PeriodModal} from './Components/MetaDataModals';
 
 
 export default function Visualizers() {
     const  { data, loading, error,refetch }= useDataSourceData()
     const [isShowDataModal, setIsShowDataModal] = useState(false)
+    const [isShowOrganizationUnit, setIsShowOrganizationUnit] = useState(false)
+    const [isShowPeriod, setIsShowPeriod] = useState(false)
+
     const dataSourceOptions = data?.dataStore?.entries?.map((entry:any,index:number)=><option  key={entry?.key} value={entry?.key}>{entry?.value?.instanceName}</option>)
    
    /// handle show data select modal
     const handleShowDataModal = ()=>{
         setIsShowDataModal(true)
+    }
+
+   /// handle show data select modal
+    const handleShowOrganizationUnitModal = ()=>{
+        setIsShowOrganizationUnit(true)
+    }
+
+   /// handle show data select modal
+    const handleShowPeriodModal = ()=>{
+        setIsShowPeriod(true)
     }
    
     /// main return
@@ -44,19 +57,19 @@ export default function Visualizers() {
                     </div>
                     {/* Indicators */}
                     <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Indicators</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Data</label>
                 
                         <Button variant="source" text="Add +"   onClick={handleShowDataModal}  />
                     </div>
                     {/* Organization Unit */}
                     <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-1">Organisation Unit</label>
-                        <Button variant="source" text="Add +"  />
+                        <Button variant="source" text="Add +"  onClick={handleShowOrganizationUnitModal} />
                     </div>
                     {/* Period */}
                     <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-1">Period</label>
-                        <Button variant="source" text="Add +"  />
+                        <Button variant="source" text="Add +"  onClick={handleShowPeriodModal} />
                     </div>
                 </div>
 
@@ -79,7 +92,20 @@ export default function Visualizers() {
          >
               <DataModal/>
           </GenericModal>
-
+          {/* Organization unit */}
+          <GenericModal 
+            isOpen={isShowOrganizationUnit}
+            setIsOpen={setIsShowOrganizationUnit}
+         >
+              <OrganizationModal/>
+          </GenericModal>
+          {/* Period */}
+          <GenericModal 
+            isOpen={isShowPeriod}
+            setIsOpen={setIsShowPeriod}
+         >
+              <PeriodModal/>
+          </GenericModal>
         </div>
     );
 }
