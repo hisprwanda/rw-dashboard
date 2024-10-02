@@ -77,7 +77,7 @@ export default function Visualizers() {
                 <div className="flex-grow bg-white shadow-md p-4 rounded-lg mx-4">
                     <div className="flex justify-end mb-4">
                        
-                        <Button variant="primary" text="Save"     type="button"
+                        <Button variant="primary" text="Save"   type="button"
         icon={<IoSaveOutline />} />
                     </div>
                     <div className="h-[600px] flex items-center justify-center border border-gray-300 rounded-lg bg-gray-100">

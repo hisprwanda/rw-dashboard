@@ -3,6 +3,7 @@ import { Transfer, TransferOption } from "@dhis2/ui"
 import Button from "../../../../components/Button"
 import { IoSaveOutline } from 'react-icons/io5'
 import { useDataItems } from '../../../../services/fetchDataItems'
+import Loading  from '../../../../components/Loading'
 
 interface DataModalProps {}
 
@@ -36,7 +37,7 @@ const DataModal: React.FC<DataModalProps> = () => {
         // Perform your update logic here using selectedOptions
     }
 
-    if (loading) return <div>Loading...</div>
+   // if (loading) return <Loading/>
     if (error) return <div>Error loading data...</div>
 
     return (
@@ -47,6 +48,7 @@ const DataModal: React.FC<DataModalProps> = () => {
                 options={availableOptions}            
                 selected={selectedOptions}            
                 onChange={({ selected }) => handleChange(selected)}  
+                loading={loading}
             />
             <div className="mt-4 flex justify-end">
                 <Button 

@@ -21,7 +21,7 @@ const GenericModal: React.FC<GenericModalProps> = ({  isOpen, setIsOpen, childre
            
             {isOpen && (
               
-   <Modal onClose={handleClose} position='middle' >
+   <Modal onClose={handleClose} position='middle' large={true}  >
   
                 <ModalContent   >{children}</ModalContent> 
                 </Modal>

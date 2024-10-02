@@ -1,7 +1,8 @@
 import React from 'react';
-import { InputField, SingleSelectField, SingleSelectOption, OrganisationUnitTree, Button, CircularLoader } from '@dhis2/ui';
+import { InputField, SingleSelectField, SingleSelectOption, OrganisationUnitTree, CircularLoader } from '@dhis2/ui';
 import { useOrgUnitData } from '../../services/fetchOrgunitData';
 import { useOrgUnitSelection } from '../../hooks/useOrgUnitSelection';
+import Button from "../Button"
 
 const OrganisationUnitMultiSelect = () => {
   const { loading, error, data } = useOrgUnitData();
@@ -79,18 +80,21 @@ const OrganisationUnitMultiSelect = () => {
       {/* Buttons */}
       <div className="flex justify-between items-center">
         <Button
-          className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-full"
+          text='Deselect All'
+          variant='danger'
+          type='button'
           onClick={handleDeselectAll}
-        >
-          Deselect All
-        </Button>
+       />
+        
+     
+
 
         <Button
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full"
-          onClick={() => console.log('Selected org units:', selectedOrgUnits)}
-        >
-          Submit Selected Org Units
-        </Button>
+         variant='primary'
+         text=' Submit Selected Org Units'
+          onClick={() => console.log('Selected org units:', selectedOrgUnits)} />
+         
+        
       </div>
     </div>
   );
