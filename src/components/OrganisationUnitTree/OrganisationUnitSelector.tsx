@@ -3,8 +3,11 @@ import { InputField, SingleSelectField, SingleSelectOption, OrganisationUnitTree
 import { useOrgUnitData } from '../../services/fetchOrgunitData';
 import { useOrgUnitSelection } from '../../hooks/useOrgUnitSelection';
 import Button from "../Button"
+import { useAuthorities } from '../../context/AuthContext';
+
 
 const OrganisationUnitMultiSelect = () => {
+  const {analyticsDimensions,setAnalyticsDimensions} = useAuthorities()
   const { loading, error, data } = useOrgUnitData();
   const orgUnits = data?.orgUnits?.organisationUnits || [];
   const orgUnitLevels = data?.orgUnitLevels?.organisationUnitLevels || [];

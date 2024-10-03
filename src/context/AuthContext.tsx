@@ -7,10 +7,14 @@ import React, {
   ReactNode,
 } from "react";
 import { useDataQuery } from "@dhis2/app-runtime";
+import { useDataEngine } from '@dhis2/app-runtime';
 
 interface AuthContextProps {
   userDatails: {};
   authorities: string[];
+  analyticsDimensions:any;
+  setAnalyticsDimensions:any;
+  fetchAnalyticsData:any
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -33,6 +37,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [authorities, setAuthorities] = useState<string[]>([]);
   const [userDatails, setUserDatails] = useState<{}>({});
 
+  const [analyticsDimensions, setAnalyticsDimensions] = useState<any>({dx:[],pe:['LAST_12_MONTHS'],ou:[]})
+
   useEffect(() => {
     if (data) {
       setUserDatails(data);
@@ -43,8 +49,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading user authorities</div>;
 
+  // testing
+  const engine = useDataEngine();
+  const fetchAnalyticsData = async (dimension:any) => {
+    const data = await engine.query({
+        myData: {
+            resource: 'analytics',
+            params: {
+                dimension
+              }
+        },
+    });
+    console.log("analytics returned data",data);
+};
   return (
-    <AuthContext.Provider value={{ userDatails, authorities }}>
+    <AuthContext.Provider value={{ userDatails, authorities,analyticsDimensions, setAnalyticsDimensions,fetchAnalyticsData }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Tab, Tabs, TabBar, SingleSelectField, SingleSelectOption, Transfer } from '@dhis2/ui'
+import { useAuthorities } from '../../../../context/AuthContext'
 
 const relativePeriods = {
     Months: [
@@ -30,11 +31,12 @@ const fixedPeriods = {
 }
 
 const PeriodModal = () => {
+    const { analyticsDimensions, setAnalyticsDimensions } = useAuthorities()
     const [selectedTab, setSelectedTab] = useState('relative')
     const [selectedPeriodType, setSelectedPeriodType] = useState('Months')
     const [selectedYear, setSelectedYear] = useState('2023')
     const [availablePeriods, setAvailablePeriods] = useState([])
-    const [selectedPeriods, setSelectedPeriods] = useState([])
+    const [selectedPeriods, setSelectedPeriods] = useState<any>([])
 
     // Handle switching between tabs
     const handleTabChange = (tab) => {
@@ -58,6 +60,29 @@ const PeriodModal = () => {
         setAvailablePeriods(fixedPeriods[selected] || [])
     }
 
+    // handle selected period on change
+    const handlePeriodSelect = ({ selected }) => {
+        setSelectedPeriods(selected)
+
+        setAnalyticsDimensions((prev: any) => {
+            return {
+                ...prev,
+                pe: [...selected], // Update the pe array with selected periods
+            };
+        });
+    }
+  
+    useEffect(()=>{
+        console.log("Period dimension changed",analyticsDimensions)
+    },[analyticsDimensions])
+    // handle update
+    const handleUpdate = () => {
+        console.log('Update data with selected periods x:', selectedPeriods)
+        // Perform your update logic here using selectedPeriods
+        console.log("run analytics api here")
+    }
+
+    // main return
     return (
         <div style={{ width: '600px', padding: '20px' }}>
             <TabBar>
@@ -101,13 +126,13 @@ const PeriodModal = () => {
             <Transfer
                 options={availablePeriods}
                 selected={selectedPeriods}
-                onChange={({ selected }) => setSelectedPeriods(selected)}
+                onChange={handlePeriodSelect} // Use handlePeriodSelect here
                 leftHeader="Available Periods"
                 rightHeader="Selected Periods"
             />
 
             <div style={{ marginTop: '20px' }}>
-                <button onClick={() => console.log(selectedPeriods)}>Update</button>
+                <button onClick={handleUpdate}>Update</button>
             </div>
         </div>
     )

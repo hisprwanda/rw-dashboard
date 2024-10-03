@@ -5,17 +5,6 @@ const OrganizationModal = () => {
     <div>
       <OrganizationUnitSelector/>
     </div>
-
-//     <OrgUnitSelector
-//     orgUnitLevels={data?.orgUnitLevels?.organisationUnitLevels}
-//     rootOrgUnitsInfo={
-//         data?.me?.dataViewOrganisationUnits?.length
-//             ? data.me.dataViewOrganisationUnits
-//             : data.me.organisationUnits
-//     }
-//     selectedOrgUnit={selectedOrgUnit}
-//     setSelectedOrgUnit={setSelectedOrgUnit}
-// />
   )
 }
 

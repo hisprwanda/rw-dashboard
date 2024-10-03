@@ -4,12 +4,15 @@ import Button from "../../../../components/Button"
 import { IoSaveOutline } from 'react-icons/io5'
 import { useDataItems } from '../../../../services/fetchDataItems'
 import Loading  from '../../../../components/Loading'
+import { useAuthorities } from '../../../../context/AuthContext'
+
 
 interface DataModalProps {}
 
 const DataModal: React.FC<DataModalProps> = () => {
     // Fetch data using your custom hook
     const { data, error, loading, refetch } = useDataItems()
+    const {analyticsDimensions,setAnalyticsDimensions} = useAuthorities()
 
     // Initialize state for available options and selected options
     const [availableOptions, setAvailableOptions] = useState<TransferOption[]>([])
@@ -28,14 +31,27 @@ const DataModal: React.FC<DataModalProps> = () => {
 
     // Function to handle the transfer of options between available and selected lists
     const handleChange = (newSelected: string[]) => {
-        setSelectedOptions(newSelected)
-    }
+        setSelectedOptions(newSelected);
+    
+        setAnalyticsDimensions((prev: any) => {
+            return {
+                ...prev,
+                dx: [...newSelected], 
+            };
+        });
+    };
+    
 
     // Function to handle the update logic
     const handleUpdate = () => {
         console.log('Update data with selected options:', selectedOptions)
-        // Perform your update logic here using selectedOptions
+        
+     console.log("Run analytics")
     }
+
+    useEffect(()=>{
+        console.log("data dimensions changed",analyticsDimensions)
+    },[analyticsDimensions])
 
    // if (loading) return <Loading/>
     if (error) return <div>Error loading data...</div>

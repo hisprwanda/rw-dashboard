@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from "../../components/Button"
 import { IoIosAddCircle } from 'react-icons/io';
 import { IoSaveOutline } from 'react-icons/io5';
@@ -6,14 +6,42 @@ import { useDataSourceData } from '../../services/DataSourceHooks';
 import { generateUid } from '../../lib/uid';
 import {GenericModal} from "../../components"
 import {DataModal,OrganizationModal,PeriodModal} from './Components/MetaDataModals';
+import { useAnalyticsData } from '../../services/Analytics';
+import { useAuthorities } from '../../context/AuthContext';
 
+type DataObject = {
+    dx: string[],
+    pe: string[],
+    ou: string[]
+}
+
+function formatAnalyticsData(data: DataObject): string[] {
+    const result: string[] = [];
+
+    if (data.dx.length > 0) {
+        result.push(`dx:${data.dx.join(';')}`);
+    }
+    
+    if (data.pe.length > 0) {
+        result.push(`pe:${data.pe.join(';')}`);
+    }
+    
+    if (data.ou.length > 0) {
+        result.push(`ou:${data.ou.join(',')}`);
+    }
+
+    return result;
+}
 
 export default function Visualizers() {
     const  { data, loading, error,refetch }= useDataSourceData()
+    const {analyticsDimensions,setAnalyticsDimensions,fetchAnalyticsData} = useAuthorities();
+    console.log("tets name",analyticsDimensions)
     const [isShowDataModal, setIsShowDataModal] = useState(false)
     const [isShowOrganizationUnit, setIsShowOrganizationUnit] = useState(false)
     const [isShowPeriod, setIsShowPeriod] = useState(false)
-
+    const {data:analyticsData,error:analyticsError,isError:isAnalyticsError,loading:analyticsDataLoading,refetch:refetchAnalytics } = useAnalyticsData()
+    console.log("test log",{analyticsData,analyticsError,isAnalyticsError,analyticsDataLoading,refetchAnalytics})
     const dataSourceOptions = data?.dataStore?.entries?.map((entry:any,index:number)=><option  key={entry?.key} value={entry?.key}>{entry?.value?.instanceName}</option>)
    
    /// handle show data select modal
@@ -30,8 +58,13 @@ export default function Visualizers() {
     const handleShowPeriodModal = ()=>{
         setIsShowPeriod(true)
     }
-   
-    /// main return
+
+  
+    const handleFetchAnalyticsData = ()=>{
+  console.log("test formatter -",formatAnalyticsData(analyticsDimensions))
+
+        fetchAnalyticsData(formatAnalyticsData(analyticsDimensions));
+    }
     return (
         <div className="min-h-screen bg-gray-50 p-4">
             <div className="flex justify-between items-start">
@@ -41,9 +74,8 @@ export default function Visualizers() {
                         <button className="text-lg font-semibold border-b-2 border-blue-500">
                             SELECT DATA
                         </button>
+                        <button onClick={handleFetchAnalyticsData} >Test analytics</button>
                        
-                  
-
                         <button className="text-lg font-semibold">
                             CUSTOMIZE
                         </button>
@@ -61,16 +93,17 @@ export default function Visualizers() {
                 
                         <Button variant="source" text="Add +"   onClick={handleShowDataModal}  />
                     </div>
+                      {/* Period */}
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Period</label>
+                        <Button variant="source" text="Add +"  onClick={handleShowPeriodModal} />
+                    </div>
                     {/* Organization Unit */}
                     <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-1">Organisation Unit</label>
                         <Button variant="source" text="Add +"  onClick={handleShowOrganizationUnitModal} />
                     </div>
-                    {/* Period */}
-                    <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Period</label>
-                        <Button variant="source" text="Add +"  onClick={handleShowPeriodModal} />
-                    </div>
+                  
                 </div>
 
                 {/* Visualization Area */}
