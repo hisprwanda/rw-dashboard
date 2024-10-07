@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Tab, Tabs, TabBar, SingleSelectField, SingleSelectOption, Transfer } from '@dhis2/ui'
 import { useAuthorities } from '../../../../context/AuthContext'
+import { formatAnalyticsDimensions } from '../../../../lib/formatAnalyticsDimensions'
+import Button from '../../../../components/Button'
+import { IoSaveOutline } from 'react-icons/io5'
 
 const relativePeriods = {
     Months: [
@@ -30,8 +33,13 @@ const fixedPeriods = {
     ],
 }
 
-const PeriodModal = () => {
-    const { analyticsDimensions, setAnalyticsDimensions } = useAuthorities()
+
+interface PeriodModalProps {
+    setIsShowPeriod:any
+}
+
+const PeriodModal:React.FC<PeriodModalProps> = ({setIsShowPeriod}) => {
+    const { analyticsDimensions, setAnalyticsDimensions ,fetchAnalyticsData,isFetchAnalyticsDataLoading} = useAuthorities()
     const [selectedTab, setSelectedTab] = useState('relative')
     const [selectedPeriodType, setSelectedPeriodType] = useState('Months')
     const [selectedYear, setSelectedYear] = useState('2023')
@@ -76,9 +84,11 @@ const PeriodModal = () => {
         console.log("Period dimension changed",analyticsDimensions)
     },[analyticsDimensions])
     // handle update
-    const handleUpdate = () => {
+    const handleUpdate = async() => {
         console.log('Update data with selected periods x:', selectedPeriods)
-        // Perform your update logic here using selectedPeriods
+        // Run analytics
+        await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions))
+        setIsShowPeriod(false)
         console.log("run analytics api here")
     }
 
@@ -131,8 +141,8 @@ const PeriodModal = () => {
                 rightHeader="Selected Periods"
             />
 
-            <div style={{ marginTop: '20px' }}>
-                <button onClick={handleUpdate}>Update</button>
+            <div  className='flex justify-end mt-2 ' >
+            <Button text={isFetchAnalyticsDataLoading ? "Loading": "Update"} onClick={handleUpdate}  variant='primary'  type='button'   icon={<IoSaveOutline />}  />  
             </div>
         </div>
     )

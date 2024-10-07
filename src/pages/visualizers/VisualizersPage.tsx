@@ -4,7 +4,7 @@ import { IoIosAddCircle } from 'react-icons/io';
 import { IoSaveOutline } from 'react-icons/io5';
 import { useDataSourceData } from '../../services/DataSourceHooks';
 import { generateUid } from '../../lib/uid';
-import {GenericModal} from "../../components"
+import {GenericModal, Loading} from "../../components"
 import {DataModal,OrganizationModal,PeriodModal} from './Components/MetaDataModals';
 import { useAnalyticsData } from '../../services/Analytics';
 import { useAuthorities } from '../../context/AuthContext';
@@ -34,14 +34,14 @@ function formatAnalyticsData(data: DataObject): string[] {
 }
 
 export default function Visualizers() {
-    const  { data, loading, error,refetch }= useDataSourceData()
-    const {analyticsDimensions,setAnalyticsDimensions,fetchAnalyticsData} = useAuthorities();
-    console.log("tets name",analyticsDimensions)
+    const  { data, loading, error }= useDataSourceData()
+    const {analyticsDimensions,setAnalyticsDimensions,fetchAnalyticsData,analyticsData,isFetchAnalyticsDataLoading,fetchAnalyticsDataError} = useAuthorities();
+   // console.log("tets name",analyticsDimensions)
     const [isShowDataModal, setIsShowDataModal] = useState(false)
     const [isShowOrganizationUnit, setIsShowOrganizationUnit] = useState(false)
     const [isShowPeriod, setIsShowPeriod] = useState(false)
-    const {data:analyticsData,error:analyticsError,isError:isAnalyticsError,loading:analyticsDataLoading,refetch:refetchAnalytics } = useAnalyticsData()
-    console.log("test log",{analyticsData,analyticsError,isAnalyticsError,analyticsDataLoading,refetchAnalytics})
+
+
     const dataSourceOptions = data?.dataStore?.entries?.map((entry:any,index:number)=><option  key={entry?.key} value={entry?.key}>{entry?.value?.instanceName}</option>)
    
    /// handle show data select modal
@@ -60,11 +60,15 @@ export default function Visualizers() {
     }
 
   
-    const handleFetchAnalyticsData = ()=>{
-  console.log("test formatter -",formatAnalyticsData(analyticsDimensions))
-
-        fetchAnalyticsData(formatAnalyticsData(analyticsDimensions));
+    const handleFetchAnalyticsData = async()=>{
+    await fetchAnalyticsData(formatAnalyticsData(analyticsDimensions));
     }
+
+    useEffect(()=>{
+        console.log("fetch thug",{analyticsData,isFetchAnalyticsDataLoading})
+    },[analyticsData])
+
+    /// main return
     return (
         <div className="min-h-screen bg-gray-50 p-4">
             <div className="flex justify-between items-start">
@@ -74,8 +78,7 @@ export default function Visualizers() {
                         <button className="text-lg font-semibold border-b-2 border-blue-500">
                             SELECT DATA
                         </button>
-                        <button onClick={handleFetchAnalyticsData} >Test analytics</button>
-                       
+                   
                         <button className="text-lg font-semibold">
                             CUSTOMIZE
                         </button>
@@ -114,8 +117,19 @@ export default function Visualizers() {
         icon={<IoSaveOutline />} />
                     </div>
                     <div className="h-[600px] flex items-center justify-center border border-gray-300 rounded-lg bg-gray-100">
-                        <p className="text-gray-500">[ Visualization Area ]</p>
-                    </div>
+  {isFetchAnalyticsDataLoading ? (
+    <Loading />
+  ) : (
+    <div className="text-gray-500">
+      [ Visualization Area ]
+      <div className="overflow-y-auto max-w-[500px] max-h-[500px] w-full h-full border border-gray-300 bg-white p-2 rounded-md">
+        <pre className="whitespace-pre-wrap break-words">{JSON.stringify(analyticsData?.metaData, null, 2)}</pre>
+      </div>
+    </div>
+  )}
+</div>
+
+
                 </div>
             </div>
             {/* select data modal */}
@@ -123,7 +137,7 @@ export default function Visualizers() {
             isOpen={isShowDataModal}
             setIsOpen={setIsShowDataModal}
          >
-              <DataModal/>
+              <DataModal setIsShowDataModal={setIsShowDataModal}  />
           </GenericModal>
           {/* Organization unit */}
           <GenericModal 
@@ -137,7 +151,7 @@ export default function Visualizers() {
             isOpen={isShowPeriod}
             setIsOpen={setIsShowPeriod}
          >
-              <PeriodModal/>
+              <PeriodModal setIsShowPeriod={setIsShowPeriod} />
           </GenericModal>
         </div>
     );

@@ -5,14 +5,17 @@ import { IoSaveOutline } from 'react-icons/io5'
 import { useDataItems } from '../../../../services/fetchDataItems'
 import Loading  from '../../../../components/Loading'
 import { useAuthorities } from '../../../../context/AuthContext'
+import { formatAnalyticsDimensions } from '../../../../lib/formatAnalyticsDimensions'
 
 
-interface DataModalProps {}
+interface DataModalProps {
+    setIsShowDataModal:any
+}
 
-const DataModal: React.FC<DataModalProps> = () => {
+const DataModal: React.FC<DataModalProps> = ({setIsShowDataModal}) => {
     // Fetch data using your custom hook
     const { data, error, loading, refetch } = useDataItems()
-    const {analyticsDimensions,setAnalyticsDimensions} = useAuthorities()
+    const {analyticsDimensions,setAnalyticsDimensions,fetchAnalyticsData,isFetchAnalyticsDataLoading} = useAuthorities()
 
     // Initialize state for available options and selected options
     const [availableOptions, setAvailableOptions] = useState<TransferOption[]>([])
@@ -43,10 +46,11 @@ const DataModal: React.FC<DataModalProps> = () => {
     
 
     // Function to handle the update logic
-    const handleUpdate = () => {
+    const handleUpdate = async() => {
         console.log('Update data with selected options:', selectedOptions)
         
-     console.log("Run analytics")
+     await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions))
+     setIsShowDataModal(false)
     }
 
     useEffect(()=>{
@@ -69,7 +73,7 @@ const DataModal: React.FC<DataModalProps> = () => {
             <div className="mt-4 flex justify-end">
                 <Button 
                     variant="primary" 
-                    text="Update" 
+                    text={isFetchAnalyticsDataLoading ? "Loading" :"Update"} 
                     type="button" 
                     icon={<IoSaveOutline />} 
                     onClick={handleUpdate}  

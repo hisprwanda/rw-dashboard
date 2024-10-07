@@ -14,7 +14,15 @@ interface AuthContextProps {
   authorities: string[];
   analyticsDimensions:any;
   setAnalyticsDimensions:any;
-  fetchAnalyticsData:any
+  fetchAnalyticsData:any;
+  analyticsData:any;
+  isFetchAnalyticsDataLoading:any;
+  fetchAnalyticsDataError:any;
+  setSelectedOrganizationUnits:any;
+  selectedOrganizationUnits:any;
+  isUseCurrentUserOrgUnits:boolean;
+   setIsUseCurrentUserOrgUnits:any
+
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -34,10 +42,22 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const { data, loading, error } = useDataQuery(query);
+
+
   const [authorities, setAuthorities] = useState<string[]>([]);
   const [userDatails, setUserDatails] = useState<{}>({});
+  const [isFetchAnalyticsDataLoading, setIsFetchAnalyticsDataLoading] = useState(false)
+  const [analyticsData, setAnalyticsData] = useState<any>(null)
+  const [fetchAnalyticsDataError, setFetchAnalyticsDataError] = useState<any>(false)
+  const [analyticsDimensions, setAnalyticsDimensions] = useState<any>({dx:[],pe:['LAST_12_MONTHS']})
+  const [selectedOrganizationUnits,setSelectedOrganizationUnits] = useState<any>([])
+  const [isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits] = useState<boolean>(true)
+  const USER_ORGUNIT = 'USER_ORGUNIT';
 
-  const [analyticsDimensions, setAnalyticsDimensions] = useState<any>({dx:[],pe:['LAST_12_MONTHS'],ou:[]})
+  
+  useEffect(()=>{
+    console.log("curren stat",isUseCurrentUserOrgUnits)
+  },[isUseCurrentUserOrgUnits])
 
   useEffect(() => {
     if (data) {
@@ -52,18 +72,38 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // testing
   const engine = useDataEngine();
   const fetchAnalyticsData = async (dimension:any) => {
-    const data = await engine.query({
-        myData: {
-            resource: 'analytics',
-            params: {
-                dimension
-              }
-        },
-    });
-    console.log("analytics returned data",data);
+   try {
+    setIsFetchAnalyticsDataLoading(true)
+    setFetchAnalyticsDataError(false)
+    const orgUnitIds = selectedOrganizationUnits?.map((unit:any) => unit).join(';');
+     const result = await engine.query({
+      myData: {
+          resource: 'analytics',
+          params: {
+              dimension,
+              // if current org unit is checked use keyword, if not use other org units
+               filter: `ou:${ isUseCurrentUserOrgUnits ? USER_ORGUNIT : orgUnitIds}` ,
+              displayProperty: 'NAME',        
+              includeNumDen: true,            
+              skipMeta: false,               
+              skipData: true,               
+              includeMetadataDetails: true 
+            }
+      },
+     });
+   setAnalyticsData(result?.myData)
+   } catch (error) {
+    setFetchAnalyticsDataError(true)
+    console.log("error fetching analytics data",error)
+   }finally{
+    setIsFetchAnalyticsDataLoading(false)
+   }
+
+
+ 
 };
   return (
-    <AuthContext.Provider value={{ userDatails, authorities,analyticsDimensions, setAnalyticsDimensions,fetchAnalyticsData }}>
+    <AuthContext.Provider value={{ userDatails, authorities,analyticsDimensions, setAnalyticsDimensions,fetchAnalyticsData ,analyticsData,isFetchAnalyticsDataLoading,fetchAnalyticsDataError,setSelectedOrganizationUnits,selectedOrganizationUnits,isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits}}>
       {children}
     </AuthContext.Provider>
   );
