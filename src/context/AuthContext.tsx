@@ -21,7 +21,9 @@ interface AuthContextProps {
   setSelectedOrganizationUnits:any;
   selectedOrganizationUnits:any;
   isUseCurrentUserOrgUnits:boolean;
-   setIsUseCurrentUserOrgUnits:any
+   setIsUseCurrentUserOrgUnits:any;
+   selectedOrganizationUnitsLevels:any;
+   setSelectedOrganizationUnitsLevels:any
 
 }
 
@@ -51,6 +53,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [fetchAnalyticsDataError, setFetchAnalyticsDataError] = useState<any>(false)
   const [analyticsDimensions, setAnalyticsDimensions] = useState<any>({dx:[],pe:['LAST_12_MONTHS']})
   const [selectedOrganizationUnits,setSelectedOrganizationUnits] = useState<any>([])
+  const [selectedOrganizationUnitsLevels,setSelectedOrganizationUnitsLevels] = useState<any>([])
   const [isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits] = useState<boolean>(true)
   const USER_ORGUNIT = 'USER_ORGUNIT';
 
@@ -103,7 +106,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
  
 };
   return (
-    <AuthContext.Provider value={{ userDatails, authorities,analyticsDimensions, setAnalyticsDimensions,fetchAnalyticsData ,analyticsData,isFetchAnalyticsDataLoading,fetchAnalyticsDataError,setSelectedOrganizationUnits,selectedOrganizationUnits,isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits}}>
+    <AuthContext.Provider value={{ userDatails, authorities,analyticsDimensions, setAnalyticsDimensions,fetchAnalyticsData ,analyticsData,isFetchAnalyticsDataLoading,fetchAnalyticsDataError,setSelectedOrganizationUnits,selectedOrganizationUnits,isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits,selectedOrganizationUnitsLevels,setSelectedOrganizationUnitsLevels}}>
       {children}
     </AuthContext.Provider>
   );

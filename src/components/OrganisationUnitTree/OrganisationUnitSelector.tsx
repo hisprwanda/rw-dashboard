@@ -1,14 +1,13 @@
 import React, { useEffect } from 'react';
-import { InputField, SingleSelectField, SingleSelectOption, OrganisationUnitTree, CircularLoader } from '@dhis2/ui';
+import { InputField, MultiSelectField, MultiSelectOption, OrganisationUnitTree, CircularLoader } from '@dhis2/ui';
 import { useOrgUnitData } from '../../services/fetchOrgunitData';
 import { useOrgUnitSelection } from '../../hooks/useOrgUnitSelection';
-import Button from "../Button"
+import Button from "../Button";
 import { useAuthorities } from '../../context/AuthContext';
 import { formatAnalyticsDimensions } from '../../lib/formatAnalyticsDimensions';
 
-
-const OrganisationUnitMultiSelect = () => {
-  const {analyticsDimensions,setAnalyticsDimensions,fetchAnalyticsData,fetchAnalyticsDataError,isFetchAnalyticsDataLoading,setSelectedOrganizationUnits,selectedOrganizationUnits,isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits} = useAuthorities()
+const OrganisationUnitSelect = () => {
+  const { analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, fetchAnalyticsDataError, isFetchAnalyticsDataLoading, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits,selectedOrganizationUnitsLevels,setSelectedOrganizationUnitsLevels } = useAuthorities();
   const { loading, error, data } = useOrgUnitData();
   const orgUnits = data?.orgUnits?.organisationUnits || [];
   const orgUnitLevels = data?.orgUnitLevels?.organisationUnitLevels || [];
@@ -23,57 +22,49 @@ const OrganisationUnitMultiSelect = () => {
     handleOrgUnitClick,
     handleDeselectAll,
     filteredOrgUnitPaths,
-    
   } = useOrgUnitSelection(orgUnits);
 
-  // handle onchange of currentOrgUnit
-   const handleCurrentOrgUnitChange = (e: React.ChangeEvent<HTMLInputElement>)=>{
+  // Handle change of currentOrgUnit
+  const handleCurrentOrgUnitChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsUseCurrentUserOrgUnits(e.target.checked);
-
-   }
-
-
-  // handle update analytics API
-  const handleUpdateAnalytics = async() => {
-    // Set analytics dimensions based on selected org units
-    console.log("selected org units",selectedOrgUnits)
-    // Extract the last org unit ID from the path
-    const lastSelectedOrgUnit = selectedOrgUnits.length
-        ? selectedOrgUnits[selectedOrgUnits.length - 1].split('/').filter(Boolean).pop()  // Get the last path and extract the last org unit
-        : null;
-
-        await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions) )
-
-    console.log("Last selected org unit:", lastSelectedOrgUnit);
-
   };
 
+  // Handle update analytics API
+  const handleUpdateAnalytics = async () => {
+    console.log("selected org units", selectedOrgUnits);
 
-  // testing 
-     useEffect(()=>{
-      const lastSelectedOrgUnit = selectedOrgUnits.length
-      ? selectedOrgUnits[selectedOrgUnits.length - 1].split('/').filter(Boolean).pop()  // Get the last path and extract the last org unit
+    // Extract the last org unit ID from the path
+    const lastSelectedOrgUnit = selectedOrgUnits.length
+      ? selectedOrgUnits[selectedOrgUnits.length - 1].split('/').filter(Boolean).pop()
       : null;
 
-      setSelectedOrganizationUnits((prev:any) => {
-        // Check if lastSelectedOrgUnit is valid (not null, undefined, or an empty string)
-        if (lastSelectedOrgUnit) {
-            return [...prev, lastSelectedOrgUnit];
+    // Continue with analytics fetch
+    // await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions))
+
+    console.log("selected org unit:", selectedOrganizationUnits);
+    // Log the selected level IDs
+    const selectedLevelIds = orgUnitLevels.filter(level => selectedLevel?.includes(level.level))?.map(level => level.id);
+    console.log("selected level IDs:", selectedLevelIds);
+  };
+
+  // Testing useEffect for selecting organization units
+  useEffect(() => {
+    const lastSelectedOrgUnit = selectedOrgUnits.length
+      ? selectedOrgUnits[selectedOrgUnits.length - 1].split('/').filter(Boolean).pop()
+      : null;
+
+    setSelectedOrganizationUnits((prev: any) => {
+      if (lastSelectedOrgUnit) {
+        // Check if the last selected org unit already exists in the previous selection
+        if (!prev.includes(lastSelectedOrgUnit)) {
+          return [...prev, lastSelectedOrgUnit];
         }
-        
-        // If lastSelectedOrgUnit is invalid, return the previous state without changes
-        return prev;
+      }
+      return prev;
     });
-    
-  console.log("Last selected org unit tets:", lastSelectedOrgUnit);
-     },[selectedOrgUnits])
 
+  }, [selectedOrgUnits]);
 
-
-     /// test total selected org units
-     useEffect(()=>{
-     console.log("Total selected org units final x:",selectedOrganizationUnits);
-     },[selectedOrganizationUnits])
   if (loading) {
     return <CircularLoader />;
   }
@@ -86,57 +77,44 @@ const OrganisationUnitMultiSelect = () => {
     <div className="container mx-auto p-6 bg-white shadow-md rounded-lg">
       <h2 className="text-2xl font-semibold mb-4 text-center">Select Organization Units</h2>
 
-      {/* Search input field */}
-      {/* <div className="mb-4">
-        <InputField
-          className="w-full"
-          label="Search Organization Unit"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.value || '')}
-          placeholder="Type to search..."
-        />
-      </div> */}
-           {/* check if you want to use current user org unit */}
-           <div className="flex items-center space-x-2 p-2 bg-gray-50 border rounded-md shadow-sm mb-8">
-  <input type="checkbox" className="form-checkbox h-5 w-5 text-blue-600 rounded"  checked={isUseCurrentUserOrgUnits} onChange={handleCurrentOrgUnitChange} />
-  <span className="text-gray-700 font-medium ml-3">User Organization Unit</span>
-</div>
+      {/* Current User Org Unit Checkbox */}
+      <div className="flex items-center space-x-2 p-2 bg-gray-50 border rounded-md shadow-sm mb-8">
+        <input type="checkbox" className="form-checkbox h-5 w-5 text-blue-600 rounded" checked={isUseCurrentUserOrgUnits} onChange={handleCurrentOrgUnitChange} />
+        <span className="text-gray-700 font-medium ml-3">User Organization Unit</span>
+      </div>
 
       {/* Organization Unit Tree */}
       <div className="bg-gray-50 p-4 rounded-lg mb-6 shadow-inner">
         {currentUserOrgUnit && (
           <div>
-      
-             <OrganisationUnitTree
-             disableSelection={isUseCurrentUserOrgUnits} 
-            roots={[currentUserOrgUnit.id]}
-            selected={selectedOrgUnits}
-            onChange={({ path }) => handleOrgUnitClick(path)}
-            singleSelection={false}
-            renderNodeLabel={({ node }) => (
-              <span className="text-blue-600 font-medium">{node.displayName}</span>
-            )}
-            filter={filteredOrgUnitPaths.length ? filteredOrgUnitPaths : undefined}
-          />
-            
-            </div>
-         
+            <OrganisationUnitTree
+              disableSelection={isUseCurrentUserOrgUnits}
+              roots={[currentUserOrgUnit.id]}
+              selected={selectedOrgUnits}
+              onChange={({ path }) => handleOrgUnitClick(path)}
+              singleSelection={false}
+              renderNodeLabel={({ node }) => (
+                <span className="text-blue-600 font-medium">{node.displayName}</span>
+              )}
+              filter={filteredOrgUnitPaths.length ? filteredOrgUnitPaths : undefined}
+            />
+          </div>
         )}
       </div>
 
-      {/* Select field for organization unit level */}
+      {/* MultiSelectField for Organization Unit Level */}
       <div className="mb-6">
-        <SingleSelectField
+        <MultiSelectField
           className="w-full"
-          label="Choose an Organisation Unit Level"
-          onChange={({ selected }) => setSelectedLevel(Number(selected))}
-          selected={selectedLevel ? String(selectedLevel) : undefined}
-          placeholder="Select level"
+          label="Choose Organisation Unit Levels"
+          onChange={({ selected }) => setSelectedLevel(selected.map(Number))} // Accept multiple selections
+          selected={selectedLevel ? selectedLevel.map(String) : []}
+          placeholder="Select levels"
         >
-          {orgUnitLevels.map((level: { id: string; displayName: string; level: number; }) => (
-            <SingleSelectOption key={level.id} value={String(level.level)} label={level.displayName} />
+          {orgUnitLevels.map((level) => (
+            <MultiSelectOption key={level.id} value={String(level.level)} label={level.displayName} />
           ))}
-        </SingleSelectField>
+        </MultiSelectField>
       </div>
 
       {/* Buttons */}
@@ -146,20 +124,16 @@ const OrganisationUnitMultiSelect = () => {
           variant='danger'
           type='button'
           onClick={handleDeselectAll}
-       />
-        
-     
-
+        />
 
         <Button
-         variant='primary'
-         text=' Submit Selected Org Units'
-          onClick={handleUpdateAnalytics} />
-         
-        
+          variant='primary'
+          text='Submit Selected Org Units'
+          onClick={handleUpdateAnalytics}
+        />
       </div>
     </div>
   );
 };
 
-export default OrganisationUnitMultiSelect;
+export default OrganisationUnitSelect;
