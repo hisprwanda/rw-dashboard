@@ -25,7 +25,9 @@ interface AuthContextProps {
    selectedOrganizationUnitsLevels:any;
    setSelectedOrganizationUnitsLevels:any;
    selectedOrgUnitGroups:any;
-   setSelectedOrgUnitGroups:any
+   setSelectedOrgUnitGroups:any;
+   isSetPredifinedUserOrgUnits:any;
+   setIsSetPredifinedUserOrgUnits:any
 
 }
 
@@ -57,8 +59,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [selectedOrganizationUnits,setSelectedOrganizationUnits] = useState<any>([])
   const [selectedOrganizationUnitsLevels,setSelectedOrganizationUnitsLevels] = useState<any>([])
   const [isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits] = useState<boolean>(true)
-  const [selectedOrgUnitGroups, setSelectedOrgUnitGroups] = useState([]);
+  const [selectedOrgUnitGroups, setSelectedOrgUnitGroups] = useState<any>([]);
+
+  const [isSetPredifinedUserOrgUnits,setIsSetPredifinedUserOrgUnits] = useState<any>({
+    is_USER_ORGUNIT:true,
+    is_USER_ORGUNIT_CHILDREN:false,
+    is_USER_ORGUNIT_GRANDCHILDREN:false
+  })
+
   const USER_ORGUNIT = 'USER_ORGUNIT';
+  const USER_ORGUNIT_CHILDREN = "USER_ORGUNIT_CHILDREN" 
+   const USER_ORGUNIT_GRANDCHILDREN = "USER_ORGUNIT_GRANDCHILDREN"
 
   
   useEffect(()=>{
@@ -91,7 +102,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           params: {
               dimension,
               // if current org unit is checked use keyword, if not use other org units
-               filter: `ou:${ isUseCurrentUserOrgUnits ? USER_ORGUNIT : `${orgUnitIds};${orgUnitLevelIds};${orgUnitGroupIds}`}` ,
+               filter:`ou:${
+  isUseCurrentUserOrgUnits
+    ? `${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT ? 'USER_ORGUNIT;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_CHILDREN ? 'USER_ORGUNIT_CHILDREN;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_GRANDCHILDREN ? 'USER_ORGUNIT_GRANDCHILDREN;' : ''}`.slice(0, -1)
+    : `${orgUnitIds};${orgUnitLevelIds};${orgUnitGroupIds}`
+}`,
               displayProperty: 'NAME',        
               includeNumDen: true,            
               skipMeta: false,               
@@ -112,7 +127,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
  
 };
   return (
-    <AuthContext.Provider value={{ userDatails, authorities,analyticsDimensions, setAnalyticsDimensions,fetchAnalyticsData ,analyticsData,isFetchAnalyticsDataLoading,fetchAnalyticsDataError,setSelectedOrganizationUnits,selectedOrganizationUnits,isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits,selectedOrganizationUnitsLevels,setSelectedOrganizationUnitsLevels,selectedOrgUnitGroups,setSelectedOrgUnitGroups}}>
+    <AuthContext.Provider value={{  userDatails, authorities,analyticsDimensions, setAnalyticsDimensions,fetchAnalyticsData ,analyticsData,isFetchAnalyticsDataLoading,fetchAnalyticsDataError,setSelectedOrganizationUnits,selectedOrganizationUnits,isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits,selectedOrganizationUnitsLevels,setSelectedOrganizationUnitsLevels,selectedOrgUnitGroups,setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits,setIsSetPredifinedUserOrgUnits}}>
       {children}
     </AuthContext.Provider>
   );

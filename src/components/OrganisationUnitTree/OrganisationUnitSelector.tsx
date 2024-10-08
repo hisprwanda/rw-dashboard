@@ -25,7 +25,8 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
     setIsUseCurrentUserOrgUnits,
     selectedOrganizationUnitsLevels,
     setSelectedOrganizationUnitsLevels,
-    setSelectedOrgUnitGroups
+    setSelectedOrgUnitGroups,
+    isSetPredifinedUserOrgUnits,setIsSetPredifinedUserOrgUnits
   } = useAuthorities();
 
   const { loading, error, data } = useOrgUnitData();
@@ -45,8 +46,19 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
   } = useOrgUnitSelection(orgUnits);
 
   // Handle change of currentOrgUnit
-  const handleCurrentOrgUnitChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsUseCurrentUserOrgUnits(e.target.checked);
+  const handleCurrentOrgUnitChange = (e: React.ChangeEvent<HTMLInputElement>, key: string) => {
+    const updatedPredifinedUserOrgUnits = {
+      ...isSetPredifinedUserOrgUnits,
+      [key]: e.target.checked,
+    };
+  
+    setIsSetPredifinedUserOrgUnits(updatedPredifinedUserOrgUnits);
+  
+    // Check if any of the properties are true; if none are true, set isUseCurrentUserOrgUnits to false
+    const isAnyTrue = Object.values(updatedPredifinedUserOrgUnits).some(value => value === true);
+    setIsUseCurrentUserOrgUnits(isAnyTrue);
+    // clear existing other org units
+    handleDeselect()
   };
 
 
@@ -77,7 +89,7 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
   }, [selectedLevel, orgUnitLevels, setSelectedOrganizationUnitsLevels]);
 
   /// handle deselect
-  const handleDeselect = () => {
+  function handleDeselect (){
     handleDeselectAll()
     setSelectedOrgUnitGroups([])
   };
@@ -107,14 +119,43 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
       <h2 className="text-xl font-semibold mb-4 ">Organisation Units</h2>
 
       {/* Current User Org Unit Checkbox */}
-      <div className="flex items-center space-x-2 p-2 bg-gray-50 border rounded-md shadow-sm mb-8">
-        <input type="checkbox" className="form-checkbox h-5 w-5 text-blue-600 rounded" checked={isUseCurrentUserOrgUnits} onChange={handleCurrentOrgUnitChange} />
-        <span className="text-gray-700 font-medium ml-3">User Organization Unit</span>
-      </div>
+      <div className="flex items-center gap-5 space-x-2 p-2 bg-gray-50 border rounded-md shadow-sm mb-8">
+    {/* User Organization Unit */}
+    <div className="flex items-center gap-2">
+      <input
+        type="checkbox"
+        className="form-checkbox h-5 w-5 text-blue-600 rounded"
+        checked={isSetPredifinedUserOrgUnits?.is_USER_ORGUNIT}
+        onChange={(e) => handleCurrentOrgUnitChange(e, 'is_USER_ORGUNIT')}
+      />
+      <span className="text-gray-700 font-medium">User Organization Unit</span>
+    </div>
+    
+    {/* User sub-units */}
+    <div className="flex items-center gap-2">
+      <input
+        type="checkbox"
+        className="form-checkbox h-5 w-5 text-blue-600 rounded"
+        checked={isSetPredifinedUserOrgUnits?.is_USER_ORGUNIT_CHILDREN}
+        onChange={(e) => handleCurrentOrgUnitChange(e, 'is_USER_ORGUNIT_CHILDREN')}
+      />
+      <span className="text-gray-700 font-medium">User sub-units</span>
+    </div>
+    
+    {/* User sub-x2-units */}
+    <div className="flex items-center gap-2">
+      <input
+        type="checkbox"
+        className="form-checkbox h-5 w-5 text-blue-600 rounded"
+        checked={isSetPredifinedUserOrgUnits?.is_USER_ORGUNIT_GRANDCHILDREN}
+        onChange={(e) => handleCurrentOrgUnitChange(e, 'is_USER_ORGUNIT_GRANDCHILDREN')}
+      />
+      <span className="text-gray-700 font-medium">User sub-x2-units</span>
+    </div>
+  </div>
 
       {/* Organization Unit Tree */}
       <div className=" p-4 rounded-lg mb-6 ">
-        {currentUserOrgUnit && (
           <div>
             <OrganisationUnitTree
               disableSelection={isUseCurrentUserOrgUnits}
@@ -128,7 +169,6 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
               filter={filteredOrgUnitPaths.length ? filteredOrgUnitPaths : undefined}
             />
           </div>
-        )}
       </div>
 
       {/* MultiSelectField for Organization Unit Level */}
