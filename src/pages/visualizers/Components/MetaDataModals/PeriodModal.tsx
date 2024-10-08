@@ -5,15 +5,16 @@ import {
     SingleSelectField,
     SingleSelectOption,
     Transfer,
-    Button,
     CircularLoader,
 } from '@dhis2/ui';
+import Button from "../../../../components/Button";
 import {
     getFixedPeriodsOptionsById,
     getFixedPeriodsOptions,
     getRelativePeriodsOptionsById,
     getRelativePeriodsOptions,
 } from './utils';
+import { IoSaveOutline } from 'react-icons/io5';
 
 interface Period {
     id: string;
@@ -157,16 +158,14 @@ const PeriodModal: React.FC<PeriodModalProps> = ({
                 </div>
 
                 <div className="mt-4 flex justify-end space-x-2">
-                    <Button secondary onClick={onClose}>
-                        Cancel
-                    </Button>
                     <Button
-                        primary
+                        variant="primary"
+                        text="Confirm Selection"
+                        type="button"
+                        icon={<IoSaveOutline />}
                         onClick={handleConfirm}
                         disabled={selectedPeriods.length === 0}
-                    >
-                        Confirm Selection
-                    </Button>
+                    />
                 </div>
             </div>
         </div>
