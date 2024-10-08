@@ -23,7 +23,9 @@ interface AuthContextProps {
   isUseCurrentUserOrgUnits:boolean;
    setIsUseCurrentUserOrgUnits:any;
    selectedOrganizationUnitsLevels:any;
-   setSelectedOrganizationUnitsLevels:any
+   setSelectedOrganizationUnitsLevels:any;
+   selectedOrgUnitGroups:any;
+   setSelectedOrgUnitGroups:any
 
 }
 
@@ -55,6 +57,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [selectedOrganizationUnits,setSelectedOrganizationUnits] = useState<any>([])
   const [selectedOrganizationUnitsLevels,setSelectedOrganizationUnitsLevels] = useState<any>([])
   const [isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits] = useState<boolean>(true)
+  const [selectedOrgUnitGroups, setSelectedOrgUnitGroups] = useState([]);
   const USER_ORGUNIT = 'USER_ORGUNIT';
 
   
@@ -79,13 +82,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setIsFetchAnalyticsDataLoading(true)
     setFetchAnalyticsDataError(false)
     const orgUnitIds = selectedOrganizationUnits?.map((unit:any) => unit).join(';');
+    const orgUnitLevelIds = selectedOrganizationUnitsLevels?.map((unit:any) => `LEVEL-${unit}`).join(';');
+    const orgUnitGroupIds = selectedOrgUnitGroups?.map((item:any) => `OU_GROUP-${item}`).join(';');
+    console.log({orgUnitGroupIds,orgUnitIds,orgUnitLevelIds})
      const result = await engine.query({
       myData: {
           resource: 'analytics',
           params: {
               dimension,
               // if current org unit is checked use keyword, if not use other org units
-               filter: `ou:${ isUseCurrentUserOrgUnits ? USER_ORGUNIT : orgUnitIds}` ,
+               filter: `ou:${ isUseCurrentUserOrgUnits ? USER_ORGUNIT : `${orgUnitIds};${orgUnitLevelIds};${orgUnitGroupIds}`}` ,
               displayProperty: 'NAME',        
               includeNumDen: true,            
               skipMeta: false,               
@@ -106,7 +112,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
  
 };
   return (
-    <AuthContext.Provider value={{ userDatails, authorities,analyticsDimensions, setAnalyticsDimensions,fetchAnalyticsData ,analyticsData,isFetchAnalyticsDataLoading,fetchAnalyticsDataError,setSelectedOrganizationUnits,selectedOrganizationUnits,isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits,selectedOrganizationUnitsLevels,setSelectedOrganizationUnitsLevels}}>
+    <AuthContext.Provider value={{ userDatails, authorities,analyticsDimensions, setAnalyticsDimensions,fetchAnalyticsData ,analyticsData,isFetchAnalyticsDataLoading,fetchAnalyticsDataError,setSelectedOrganizationUnits,selectedOrganizationUnits,isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits,selectedOrganizationUnitsLevels,setSelectedOrganizationUnitsLevels,selectedOrgUnitGroups,setSelectedOrgUnitGroups}}>
       {children}
     </AuthContext.Provider>
   );

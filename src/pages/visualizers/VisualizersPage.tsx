@@ -144,7 +144,7 @@ export default function Visualizers() {
             isOpen={isShowOrganizationUnit}
             setIsOpen={setIsShowOrganizationUnit}
          >
-              <OrganizationModal/>
+              <OrganizationModal  setIsShowOrganizationUnit={setIsShowOrganizationUnit} />
           </GenericModal>
           {/* Period */}
           <GenericModal 

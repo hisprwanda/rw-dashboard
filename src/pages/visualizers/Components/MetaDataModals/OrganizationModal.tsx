@@ -1,9 +1,14 @@
 import React from 'react'
 import OrganizationUnitSelector from "../../../../components/OrganisationUnitTree/OrganisationUnitSelector"
-const OrganizationModal = () => {
+
+
+interface OrganizationUnitModalProps {
+  setIsShowOrganizationUnit:any
+}
+const OrganizationModal:React.FC<OrganizationUnitModalProps> = ({setIsShowOrganizationUnit}) => {
   return (
     <div>
-      <OrganizationUnitSelector/>
+      <OrganizationUnitSelector setIsShowOrganizationUnit={setIsShowOrganizationUnit} />
     </div>
   )
 }

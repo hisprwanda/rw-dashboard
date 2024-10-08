@@ -5,9 +5,29 @@ import { useOrgUnitSelection } from '../../hooks/useOrgUnitSelection';
 import Button from "../Button";
 import { useAuthorities } from '../../context/AuthContext';
 import { formatAnalyticsDimensions } from '../../lib/formatAnalyticsDimensions';
+import { IoSaveOutline } from 'react-icons/io5';
+import OrganizationUnitGroup from '../../pages/visualizers/Components/MetaDataModals/OrganizationUnitGroup';
 
-const OrganisationUnitSelect = () => {
-  const { analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, fetchAnalyticsDataError, isFetchAnalyticsDataLoading, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits,selectedOrganizationUnitsLevels,setSelectedOrganizationUnitsLevels } = useAuthorities();
+interface OrganisationUnitSelectProps {
+  setIsShowOrganizationUnit:any
+}
+
+const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsShowOrganizationUnit}) => {
+  const {
+    analyticsDimensions,
+    setAnalyticsDimensions,
+    fetchAnalyticsData,
+    fetchAnalyticsDataError,
+    isFetchAnalyticsDataLoading,
+    setSelectedOrganizationUnits,
+    selectedOrganizationUnits,
+    isUseCurrentUserOrgUnits,
+    setIsUseCurrentUserOrgUnits,
+    selectedOrganizationUnitsLevels,
+    setSelectedOrganizationUnitsLevels,
+    setSelectedOrgUnitGroups
+  } = useAuthorities();
+
   const { loading, error, data } = useOrgUnitData();
   const orgUnits = data?.orgUnits?.organisationUnits || [];
   const orgUnitLevels = data?.orgUnitLevels?.organisationUnitLevels || [];
@@ -29,25 +49,8 @@ const OrganisationUnitSelect = () => {
     setIsUseCurrentUserOrgUnits(e.target.checked);
   };
 
-  // Handle update analytics API
-  const handleUpdateAnalytics = async () => {
-    console.log("selected org units", selectedOrgUnits);
 
-    // Extract the last org unit ID from the path
-    const lastSelectedOrgUnit = selectedOrgUnits.length
-      ? selectedOrgUnits[selectedOrgUnits.length - 1].split('/').filter(Boolean).pop()
-      : null;
-
-    // Continue with analytics fetch
-    // await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions))
-
-    console.log("selected org unit:", selectedOrganizationUnits);
-    // Log the selected level IDs
-    const selectedLevelIds = orgUnitLevels.filter(level => selectedLevel?.includes(level.level))?.map(level => level.id);
-    console.log("selected level IDs:", selectedLevelIds);
-  };
-
-  // Testing useEffect for selecting organization units
+  // Update selectedOrgUnit
   useEffect(() => {
     const lastSelectedOrgUnit = selectedOrgUnits.length
       ? selectedOrgUnits[selectedOrgUnits.length - 1].split('/').filter(Boolean).pop()
@@ -65,17 +68,43 @@ const OrganisationUnitSelect = () => {
 
   }, [selectedOrgUnits]);
 
+  // Set selected organization unit levels when selectedLevel changes
+  useEffect(() => {
+    const selectedLevelIds = orgUnitLevels
+      .filter(level => selectedLevel?.includes(level.level))
+      .map(level => level.id);
+    setSelectedOrganizationUnitsLevels(selectedLevelIds);
+  }, [selectedLevel, orgUnitLevels, setSelectedOrganizationUnitsLevels]);
+
+  /// handle deselect
+  const handleDeselect = () => {
+    handleDeselectAll()
+    setSelectedOrgUnitGroups([])
+  };
+
+   // Handle update analytics API
+   const handleUpdateAnalytics = async () => {
+     console.log({selectedOrganizationUnitsLevels})
+     console.log({selectedOrganizationUnits})
+    // Continue with analytics fetch
+    await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions))
+    setIsShowOrganizationUnit(false)
+  };
+
+  /// handle loading
   if (loading) {
     return <CircularLoader />;
   }
 
+  /// handle error
   if (error) {
     return <p className="text-red-500">Error: {error.message}</p>;
   }
 
+  /// main return 
   return (
     <div className="container mx-auto p-6 bg-white shadow-md rounded-lg">
-      <h2 className="text-2xl font-semibold mb-4 text-center">Select Organization Units</h2>
+      <h2 className="text-xl font-semibold mb-4 ">Organisation Units</h2>
 
       {/* Current User Org Unit Checkbox */}
       <div className="flex items-center space-x-2 p-2 bg-gray-50 border rounded-md shadow-sm mb-8">
@@ -84,7 +113,7 @@ const OrganisationUnitSelect = () => {
       </div>
 
       {/* Organization Unit Tree */}
-      <div className="bg-gray-50 p-4 rounded-lg mb-6 shadow-inner">
+      <div className=" p-4 rounded-lg mb-6 ">
         {currentUserOrgUnit && (
           <div>
             <OrganisationUnitTree
@@ -104,10 +133,19 @@ const OrganisationUnitSelect = () => {
 
       {/* MultiSelectField for Organization Unit Level */}
       <div className="mb-6">
+        <div className='flex gap-2'   >
         <MultiSelectField
+          disabled={isUseCurrentUserOrgUnits}
           className="w-full"
           label="Choose Organisation Unit Levels"
-          onChange={({ selected }) => setSelectedLevel(selected.map(Number))} // Accept multiple selections
+          onChange={({ selected }) => {
+            setSelectedLevel(selected?.map(Number)); // Accept multiple selections
+            // Set the selected levels directly as IDs
+            const selectedLevelIds = orgUnitLevels
+              .filter(level => selected?.includes(String(level.level)))
+              .map(level => level.id);
+            setSelectedOrganizationUnitsLevels(selectedLevelIds); // Update organization unit levels
+          }}
           selected={selectedLevel ? selectedLevel.map(String) : []}
           placeholder="Select levels"
         >
@@ -115,22 +153,33 @@ const OrganisationUnitSelect = () => {
             <MultiSelectOption key={level.id} value={String(level.level)} label={level.displayName} />
           ))}
         </MultiSelectField>
+        {/* organization unit group */}
+        <OrganizationUnitGroup isUseCurrentUserOrgUnits={isUseCurrentUserOrgUnits} />
+        </div>
+ 
+        <button
+  disabled={isUseCurrentUserOrgUnits}
+  className="text-gray-500 mt-2 hover:text-gray-700 border border-gray-300 rounded-xl px-2 py-1"
+  onClick={handleDeselect}
+>
+  Deselect all
+</button>
+
+
       </div>
 
       {/* Buttons */}
-      <div className="flex justify-between items-center">
-        <Button
-          text='Deselect All'
-          variant='danger'
-          type='button'
-          onClick={handleDeselectAll}
-        />
-
+      <div className="flex justify-end items-center">
+        <div>
         <Button
           variant='primary'
-          text='Submit Selected Org Units'
+          text={isFetchAnalyticsDataLoading ? "Loading" : "Update"}
           onClick={handleUpdateAnalytics}
+          disabled={isFetchAnalyticsDataLoading}
+          icon={<IoSaveOutline />} 
         />
+        </div>
+      
       </div>
     </div>
   );
