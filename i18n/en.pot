@@ -5,17 +5,209 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-10-01T09:38:55.262Z\n"
-"PO-Revision-Date: 2024-10-01T09:38:55.265Z\n"
+"POT-Creation-Date: 2024-10-07T10:21:39.042Z\n"
+"PO-Revision-Date: 2024-10-07T10:21:39.042Z\n"
 
-msgid "No organization unit selected"
-msgstr "No organization unit selected"
+msgid "Daily"
+msgstr "Daily"
 
-msgid "Organisation unit"
-msgstr "Organisation unit"
+msgid "Weekly"
+msgstr "Weekly"
 
-msgid "Choose an organisation unit"
-msgstr "Choose an organisation unit"
+msgid "Weekly (Start Wednesday)"
+msgstr "Weekly (Start Wednesday)"
 
-msgid "Hide menu"
-msgstr "Hide menu"
+msgid "Weekly (Start Thursday)"
+msgstr "Weekly (Start Thursday)"
+
+msgid "Weekly (Start Saturday)"
+msgstr "Weekly (Start Saturday)"
+
+msgid "Weekly (Start Sunday)"
+msgstr "Weekly (Start Sunday)"
+
+msgid "Bi-weekly"
+msgstr "Bi-weekly"
+
+msgid "Monthly"
+msgstr "Monthly"
+
+msgid "Bi-monthly"
+msgstr "Bi-monthly"
+
+msgid "Quarterly"
+msgstr "Quarterly"
+
+msgid "Six-monthly"
+msgstr "Six-monthly"
+
+msgid "Six-monthly April"
+msgstr "Six-monthly April"
+
+msgid "Yearly"
+msgstr "Yearly"
+
+msgid "Financial year (Start November)"
+msgstr "Financial year (Start November)"
+
+msgid "Financial year (Start October)"
+msgstr "Financial year (Start October)"
+
+msgid "Financial year (Start July)"
+msgstr "Financial year (Start July)"
+
+msgid "Financial year (Start April)"
+msgstr "Financial year (Start April)"
+
+msgid "Today"
+msgstr "Today"
+
+msgid "Yesterday"
+msgstr "Yesterday"
+
+msgid "Last 3 days"
+msgstr "Last 3 days"
+
+msgid "Last 7 days"
+msgstr "Last 7 days"
+
+msgid "Last 14 days"
+msgstr "Last 14 days"
+
+msgid "Last 30 days"
+msgstr "Last 30 days"
+
+msgid "Last 60 days"
+msgstr "Last 60 days"
+
+msgid "Last 90 days"
+msgstr "Last 90 days"
+
+msgid "Last 180 days"
+msgstr "Last 180 days"
+
+msgid "This week"
+msgstr "This week"
+
+msgid "Last week"
+msgstr "Last week"
+
+msgid "Last 4 weeks"
+msgstr "Last 4 weeks"
+
+msgid "Last 12 weeks"
+msgstr "Last 12 weeks"
+
+msgid "Last 52 weeks"
+msgstr "Last 52 weeks"
+
+msgid "Weeks this year"
+msgstr "Weeks this year"
+
+msgid "This bi-week"
+msgstr "This bi-week"
+
+msgid "Last bi-week"
+msgstr "Last bi-week"
+
+msgid "Last 4 bi-weeks"
+msgstr "Last 4 bi-weeks"
+
+msgid "This month"
+msgstr "This month"
+
+msgid "Last month"
+msgstr "Last month"
+
+msgid "Last 3 months"
+msgstr "Last 3 months"
+
+msgid "Last 6 months"
+msgstr "Last 6 months"
+
+msgid "Last 12 months"
+msgstr "Last 12 months"
+
+msgid "Months this year"
+msgstr "Months this year"
+
+msgid "This bi-month"
+msgstr "This bi-month"
+
+msgid "Last bi-month"
+msgstr "Last bi-month"
+
+msgid "Last 6 bi-months"
+msgstr "Last 6 bi-months"
+
+msgid "Bi-months this year"
+msgstr "Bi-months this year"
+
+msgid "This quarter"
+msgstr "This quarter"
+
+msgid "Last quarter"
+msgstr "Last quarter"
+
+msgid "Last 4 quarters"
+msgstr "Last 4 quarters"
+
+msgid "Quarters this year"
+msgstr "Quarters this year"
+
+msgid "This six-month"
+msgstr "This six-month"
+
+msgid "Last six-month"
+msgstr "Last six-month"
+
+msgid "Last 2 six-month"
+msgstr "Last 2 six-month"
+
+msgid "This financial year"
+msgstr "This financial year"
+
+msgid "Last financial year"
+msgstr "Last financial year"
+
+msgid "Last 5 financial years"
+msgstr "Last 5 financial years"
+
+msgid "This year"
+msgstr "This year"
+
+msgid "Last year"
+msgstr "Last year"
+
+msgid "Last 5 years"
+msgstr "Last 5 years"
+
+msgid "Last 10 years"
+msgstr "Last 10 years"
+
+msgid "Days"
+msgstr "Days"
+
+msgid "Weeks"
+msgstr "Weeks"
+
+msgid "Bi-weeks"
+msgstr "Bi-weeks"
+
+msgid "Months"
+msgstr "Months"
+
+msgid "Bi-months"
+msgstr "Bi-months"
+
+msgid "Quarters"
+msgstr "Quarters"
+
+msgid "Six-months"
+msgstr "Six-months"
+
+msgid "Financial Years"
+msgstr "Financial Years"
+
+msgid "Years"
+msgstr "Years"

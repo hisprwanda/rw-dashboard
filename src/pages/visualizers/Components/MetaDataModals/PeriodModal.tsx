@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Tab,
     TabBar,
@@ -23,23 +23,23 @@ interface Period {
 interface PeriodOption {
     id: string;
     name: string;
-    getPeriods: (config?: any) => Period[];
+    getPeriods: (config: Record<string, unknown>) => Period[];
 }
 
 type TabType = 'relative' | 'fixed';
 
 interface PeriodModalProps {
     onSelect: (selectedPeriods: string[]) => void;
-    periodSettings?: any;
+    onClose: () => void;
+    periodSettings?: Record<string, unknown>;
     maxSelections?: number;
-    className?: string;
 }
 
 const PeriodModal: React.FC<PeriodModalProps> = ({
     onSelect,
+    onClose,
     periodSettings = {},
     maxSelections = Infinity,
-    className = '',
 }) => {
     const [selectedTab, setSelectedTab] = useState<TabType>('relative');
     const [selectedPeriodType, setSelectedPeriodType] = useState<string>('');
@@ -48,17 +48,18 @@ const PeriodModal: React.FC<PeriodModalProps> = ({
     const [selectedPeriods, setSelectedPeriods] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
-    // Load available period types based on the selected tab
     useEffect(() => {
         const options = selectedTab === 'fixed'
             ? getFixedPeriodsOptions()
             : getRelativePeriodsOptions();
         setAvailablePeriodTypes(options);
-        setSelectedPeriodType(options[0]?.id || '');
+
+        if (options.length > 0 && !selectedPeriodType) {
+            setSelectedPeriodType(options[0].id);
+        }
     }, [selectedTab]);
 
-    // Load periods when period type changes
-    const loadPeriods = useCallback(() => {
+    useEffect(() => {
         if (!selectedPeriodType) return;
 
         setIsLoading(true);
@@ -67,22 +68,25 @@ const PeriodModal: React.FC<PeriodModalProps> = ({
                 ? getFixedPeriodsOptionsById(selectedPeriodType, periodSettings)
                 : getRelativePeriodsOptionsById(selectedPeriodType);
 
-            const periods = periodsOption?.getPeriods() || [];
-            setAvailablePeriods(periods);
+            if (periodsOption) {
+                // Always pass the periodSettings object to getPeriods
+                const periods = periodsOption.getPeriods(periodSettings);
+                setAvailablePeriods(periods);
+            } else {
+                setAvailablePeriods([]);
+            }
         } catch (error) {
             console.error('Error loading periods:', error);
+            setAvailablePeriods([]);
         } finally {
             setIsLoading(false);
         }
     }, [selectedPeriodType, selectedTab, periodSettings]);
 
-    useEffect(() => {
-        loadPeriods();
-    }, [loadPeriods]);
-
     const handleTabChange = (tab: TabType) => {
         setSelectedTab(tab);
         setSelectedPeriods([]);
+        setSelectedPeriodType('');
     };
 
     const handlePeriodTypeChange = ({ selected }: { selected: string; }) => {
@@ -91,9 +95,8 @@ const PeriodModal: React.FC<PeriodModalProps> = ({
     };
 
     const handleTransferChange = ({ selected }: { selected: string[]; }) => {
-        if (selected.length <= maxSelections) {
-            setSelectedPeriods(selected);
-        }
+        const newSelection = selected.slice(0, maxSelections);
+        setSelectedPeriods(newSelection);
     };
 
     const handleConfirm = () => {
@@ -101,58 +104,62 @@ const PeriodModal: React.FC<PeriodModalProps> = ({
     };
 
     return (
-        <div className={`bg-white rounded-lg shadow-md ${className}`}>
-            <TabBar className="border-b border-gray-200">
+        <div className="w-full">
+            <TabBar>
                 <Tab
                     selected={selectedTab === 'relative'}
                     onClick={() => handleTabChange('relative')}
-                    className="px-4 py-2 text-sm font-medium"
                 >
                     Relative periods
                 </Tab>
                 <Tab
                     selected={selectedTab === 'fixed'}
                     onClick={() => handleTabChange('fixed')}
-                    className="px-4 py-2 text-sm font-medium"
                 >
                     Fixed periods
                 </Tab>
             </TabBar>
 
             <div className="p-4">
-                <SingleSelectField
-                    label="Select Period Type"
-                    selected={selectedPeriodType}
-                    onChange={handlePeriodTypeChange}
-                    className="mb-4"
-                >
-                    {availablePeriodTypes.map(type => (
-                        <SingleSelectOption
-                            key={type.id}
-                            value={type.id}
-                            label={type.name}
+                <div className="relative z-50 mb-4">
+                    <SingleSelectField
+                        label="Select Period Type"
+                        selected={selectedPeriodType}
+                        onChange={handlePeriodTypeChange}
+                    >
+                        {availablePeriodTypes.map(type => (
+                            <SingleSelectOption
+                                key={type.id}
+                                value={type.id}
+                                label={type.name}
+                            />
+                        ))}
+                    </SingleSelectField>
+                </div>
+
+                <div className="relative z-40">
+                    {isLoading ? (
+                        <div className="flex justify-center items-center h-64">
+                            <CircularLoader />
+                        </div>
+                    ) : (
+                        <Transfer
+                            options={availablePeriods.map(period => ({
+                                label: period.name,
+                                value: period.id
+                            }))}
+                            selected={selectedPeriods}
+                            onChange={handleTransferChange}
+                            height="300px"
+                            filterable
                         />
-                    ))}
-                </SingleSelectField>
+                    )}
+                </div>
 
-                {isLoading ? (
-                    <div className="flex justify-center items-center h-64">
-                        <CircularLoader />
-                    </div>
-                ) : (
-                    <Transfer
-                        options={availablePeriods.map(period => ({
-                            label: period.name,
-                            value: period.id
-                        }))}
-                        selected={selectedPeriods}
-                        onChange={handleTransferChange}
-                        height="300px"
-                        filterable
-                    />
-                )}
-
-                <div className="mt-4 flex justify-end">
+                <div className="mt-4 flex justify-end space-x-2">
+                    <Button secondary onClick={onClose}>
+                        Cancel
+                    </Button>
                     <Button
                         primary
                         onClick={handleConfirm}
