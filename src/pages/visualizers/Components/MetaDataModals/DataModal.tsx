@@ -16,10 +16,9 @@ const DataModal: React.FC<DataModalProps> = ({setIsShowDataModal}) => {
     // Fetch data using your custom hook
     const { data, error, loading, refetch } = useDataItems()
     const {analyticsDimensions,setAnalyticsDimensions,fetchAnalyticsData,isFetchAnalyticsDataLoading} = useAuthorities()
-
+    console.log("helo data",data?.dataItems)
     // Initialize state for available options and selected options
     const [availableOptions, setAvailableOptions] = useState<TransferOption[]>([])
-    const [selectedOptions, setSelectedOptions] = useState<string[]>([])
 
     // Effect to map fetched data into the required TransferOption format
     useEffect(() => {
@@ -34,8 +33,6 @@ const DataModal: React.FC<DataModalProps> = ({setIsShowDataModal}) => {
 
     // Function to handle the transfer of options between available and selected lists
     const handleChange = (newSelected: string[]) => {
-        setSelectedOptions(newSelected);
-    
         setAnalyticsDimensions((prev: any) => {
             return {
                 ...prev,
@@ -46,15 +43,13 @@ const DataModal: React.FC<DataModalProps> = ({setIsShowDataModal}) => {
     
 
     // Function to handle the update logic
-    const handleUpdate = async() => {
-        console.log('Update data with selected options:', selectedOptions)
-        
+    const handleUpdate = async() => { 
      await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions))
      setIsShowDataModal(false)
     }
 
     useEffect(()=>{
-        console.log("data dimensions changed",analyticsDimensions)
+        console.log("analyticsDimensions pp",analyticsDimensions.dx)
     },[analyticsDimensions])
 
    // if (loading) return <Loading/>
@@ -66,7 +61,7 @@ const DataModal: React.FC<DataModalProps> = ({setIsShowDataModal}) => {
             <Transfer
                 filterPlaceholder="Search options..."  
                 options={availableOptions}            
-                selected={selectedOptions}            
+                selected={analyticsDimensions?.dx}            
                 onChange={({ selected }) => handleChange(selected)}  
                 loading={loading}
             />

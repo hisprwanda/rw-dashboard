@@ -25,7 +25,7 @@ interface PeriodPickerProps {
 }
 
 const PeriodPicker: React.FC<PeriodPickerProps> = ({ setIsShowPeriod }) => {
-    const { analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, isFetchAnalyticsDataLoading,setSelectedPeriods,selectedPeriods } = useAuthorities();
+    const { analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, isFetchAnalyticsDataLoading } = useAuthorities();
     const [selectedTab, setSelectedTab] = useState('relative');
     const [selectedPeriodType, setSelectedPeriodType] = useState('Months');
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // Current year by default
@@ -63,8 +63,6 @@ const PeriodPicker: React.FC<PeriodPickerProps> = ({ setIsShowPeriod }) => {
 
     // Handle selected period on change
     const handlePeriodSelect = ({ selected }) => {
-        setSelectedPeriods(selected);
-
         setAnalyticsDimensions((prev: any) => {
             return {
                 ...prev,
@@ -84,16 +82,11 @@ const PeriodPicker: React.FC<PeriodPickerProps> = ({ setIsShowPeriod }) => {
 
     // Handle update
     const handleUpdate = async () => {
-        console.log('Update data with selected periods:', selectedPeriods);
+
         // Run analytics
         await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions));
         setIsShowPeriod(false);
     };
-
-    // test 
-    useEffect(()=>{
-        console.log("selected periods is",selectedPeriods)
-    },[selectedPeriods])
 
     return (
         <div style={{ width: '600px', padding: '20px' }}>
@@ -137,7 +130,7 @@ const PeriodPicker: React.FC<PeriodPickerProps> = ({ setIsShowPeriod }) => {
 
             <Transfer
                 options={availablePeriods}
-                selected={selectedPeriods}
+                selected={analyticsDimensions?.pe}
                 onChange={handlePeriodSelect}
                 leftHeader="Available Periods"
                 rightHeader="Selected Periods"

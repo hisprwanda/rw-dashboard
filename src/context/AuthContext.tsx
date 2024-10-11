@@ -32,9 +32,6 @@ interface AuthContextProps {
    setSelectedLevel:any;
    selectedOrgUnits:any;
    setSelectedOrgUnits:any;
-selectedPeriods:string[];
-setSelectedPeriods:any
-
    }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -68,7 +65,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [selectedOrgUnitGroups, setSelectedOrgUnitGroups] = useState<any>([]);
   const [selectedLevel,setSelectedLevel] = useState<any>()
   const [selectedOrgUnits, setSelectedOrgUnits] = useState<string[]>([]);
-  const [selectedPeriods, setSelectedPeriods] = useState<any>([]);
 
   const [isSetPredifinedUserOrgUnits,setIsSetPredifinedUserOrgUnits] = useState<any>({
     is_USER_ORGUNIT:true,
@@ -104,7 +100,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const orgUnitIds = selectedOrganizationUnits?.map((unit:any) => unit).join(';');
     const orgUnitLevelIds = selectedOrganizationUnitsLevels?.map((unit:any) => `LEVEL-${unit}`).join(';');
     const orgUnitGroupIds = selectedOrgUnitGroups?.map((item:any) => `OU_GROUP-${item}`).join(';');
+
     console.log({orgUnitGroupIds,orgUnitIds,orgUnitLevelIds})
+    
      const result = await engine.query({
       myData: {
           resource: 'analytics',
@@ -136,7 +134,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
  
 };
   return (
-    <AuthContext.Provider value={{selectedOrgUnits, setSelectedOrgUnits, selectedLevel,setSelectedLevel, userDatails, authorities,analyticsDimensions, setAnalyticsDimensions,fetchAnalyticsData ,analyticsData,isFetchAnalyticsDataLoading,fetchAnalyticsDataError,setSelectedOrganizationUnits,selectedOrganizationUnits,isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits,selectedOrganizationUnitsLevels,setSelectedOrganizationUnitsLevels,selectedOrgUnitGroups,setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits,setIsSetPredifinedUserOrgUnits,selectedPeriods,setSelectedPeriods}}>
+    <AuthContext.Provider value={{selectedOrgUnits, setSelectedOrgUnits, selectedLevel,setSelectedLevel, userDatails, authorities,analyticsDimensions, setAnalyticsDimensions,fetchAnalyticsData ,analyticsData,isFetchAnalyticsDataLoading,fetchAnalyticsDataError,setSelectedOrganizationUnits,selectedOrganizationUnits,isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits,selectedOrganizationUnitsLevels,setSelectedOrganizationUnitsLevels,selectedOrgUnitGroups,setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits,setIsSetPredifinedUserOrgUnits}}>
       {children}
     </AuthContext.Provider>
   );
