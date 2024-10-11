@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
-import { Tab, Tabs, TabBar, SingleSelectField, SingleSelectOption, Transfer } from '@dhis2/ui'
-import { useAuthorities } from '../../../../context/AuthContext'
-import { formatAnalyticsDimensions } from '../../../../lib/formatAnalyticsDimensions'
-import Button from '../../../../components/Button'
-import { IoSaveOutline } from 'react-icons/io5'
+import React, { useEffect, useState } from 'react';
+import { Tab, Tabs, TabBar, Transfer } from '@dhis2/ui';
+import { useAuthorities } from '../../../../context/AuthContext';
+import { formatAnalyticsDimensions } from '../../../../lib/formatAnalyticsDimensions';
+import Button from '../../../../components/Button';
+import { IoSaveOutline } from 'react-icons/io5';
 
 const relativePeriods = {
     Months: [
@@ -18,59 +18,52 @@ const relativePeriods = {
         { label: 'Last year', value: 'LAST_YEAR' },
         { label: 'Last 5 years', value: 'LAST_5_YEARS' },
     ]
+};
+
+interface PeriodPickerProps {
+    setIsShowPeriod: any;
 }
 
-const fixedPeriods = {
-    2023: [
-        { label: 'January 2023', value: '202301' },
-        { label: 'February 2023', value: '202302' },
-        { label: 'March 2023', value: '202303' },
-    ],
-    2024: [
-        { label: 'January 2024', value: '202401' },
-        { label: 'February 2024', value: '202402' },
-        { label: 'March 2024', value: '202403' },
-    ],
-}
+const PeriodPicker: React.FC<PeriodPickerProps> = ({ setIsShowPeriod }) => {
+    const { analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, isFetchAnalyticsDataLoading,setSelectedPeriods,selectedPeriods } = useAuthorities();
+    const [selectedTab, setSelectedTab] = useState('relative');
+    const [selectedPeriodType, setSelectedPeriodType] = useState('Months');
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // Current year by default
+    const [availablePeriods, setAvailablePeriods] = useState([]);
 
-
-interface PeriodModalProps {
-    setIsShowPeriod:any
-}
-
-const PeriodModal:React.FC<PeriodModalProps> = ({setIsShowPeriod}) => {
-    const { analyticsDimensions, setAnalyticsDimensions ,fetchAnalyticsData,isFetchAnalyticsDataLoading} = useAuthorities()
-    const [selectedTab, setSelectedTab] = useState('relative')
-    const [selectedPeriodType, setSelectedPeriodType] = useState('Months')
-    const [selectedYear, setSelectedYear] = useState('2023')
-    const [availablePeriods, setAvailablePeriods] = useState([])
-    const [selectedPeriods, setSelectedPeriods] = useState<any>([])
 
     // Handle switching between tabs
-    const handleTabChange = (tab) => {
-        setSelectedTab(tab)
+    const handleTabChange = (tab: string) => {
+        setSelectedTab(tab);
         if (tab === 'relative') {
-            setAvailablePeriods(relativePeriods[selectedPeriodType] || [])
+            setAvailablePeriods(relativePeriods[selectedPeriodType] || []);
         } else {
-            setAvailablePeriods(fixedPeriods[selectedYear] || [])
+            setAvailablePeriods(generateMonthsForYear(selectedYear));
         }
-    }
+    };
 
-    // Handle changing the period type for relative periods
-    const handlePeriodTypeChange = ({ selected }) => {
-        setSelectedPeriodType(selected)
-        setAvailablePeriods(relativePeriods[selected] || [])
-    }
+    // Dynamically generate months for the selected year
+    const generateMonthsForYear = (year: number) => {
+        const months = [
+            'January', 'February', 'March', 'April', 'May', 'June', 
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+        return months.map((month, index) => ({
+            label: `${month} ${year}`,
+            value: `${year}${(index + 1).toString().padStart(2, '0')}`, // Format: YYYYMM
+        }));
+    };
 
     // Handle changing the year for fixed periods
-    const handleYearChange = ({ selected }) => {
-        setSelectedYear(selected)
-        setAvailablePeriods(fixedPeriods[selected] || [])
-    }
+    const handleYearChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const newYear = parseInt(event.target.value);
+        setSelectedYear(newYear);
+        setAvailablePeriods(generateMonthsForYear(newYear));
+    };
 
-    // handle selected period on change
+    // Handle selected period on change
     const handlePeriodSelect = ({ selected }) => {
-        setSelectedPeriods(selected)
+        setSelectedPeriods(selected);
 
         setAnalyticsDimensions((prev: any) => {
             return {
@@ -78,21 +71,30 @@ const PeriodModal:React.FC<PeriodModalProps> = ({setIsShowPeriod}) => {
                 pe: [...selected], // Update the pe array with selected periods
             };
         });
-    }
-  
-    useEffect(()=>{
-        console.log("Period dimension changed",analyticsDimensions)
-    },[analyticsDimensions])
-    // handle update
-    const handleUpdate = async() => {
-        console.log('Update data with selected periods x:', selectedPeriods)
-        // Run analytics
-        await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions))
-        setIsShowPeriod(false)
-        console.log("run analytics api here")
-    }
+    };
 
-    // main return
+    useEffect(() => {
+        // Automatically set available periods based on the default tab (relative) when component loads
+        if (selectedTab === 'relative') {
+            setAvailablePeriods(relativePeriods[selectedPeriodType] || []);
+        } else {
+            setAvailablePeriods(generateMonthsForYear(selectedYear));
+        }
+    }, [selectedTab, selectedPeriodType, selectedYear]);
+
+    // Handle update
+    const handleUpdate = async () => {
+        console.log('Update data with selected periods:', selectedPeriods);
+        // Run analytics
+        await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions));
+        setIsShowPeriod(false);
+    };
+
+    // test 
+    useEffect(()=>{
+        console.log("selected periods is",selectedPeriods)
+    },[selectedPeriods])
+
     return (
         <div style={{ width: '600px', padding: '20px' }}>
             <TabBar>
@@ -106,46 +108,46 @@ const PeriodModal:React.FC<PeriodModalProps> = ({setIsShowPeriod}) => {
 
             {selectedTab === 'relative' && (
                 <div>
-                    <SingleSelectField
-                        label="Period type"
-                        selected={selectedPeriodType}
-                        onChange={handlePeriodTypeChange}
+                    <label>Period type</label>
+                    <select
+                        value={selectedPeriodType}
+                        onChange={(e) => setSelectedPeriodType(e.target.value)}
+                        style={{ display: 'block', width: '100%', padding: '8px', marginTop: '10px', background: '#fff', zIndex: 1 }}
                     >
-                        <SingleSelectOption value="Days" label="Days" />
-                        <SingleSelectOption value="Weeks" label="Weeks" />
-                        <SingleSelectOption value="Months" label="Months" />
-                        <SingleSelectOption value="Quarters" label="Quarters" />
-                        <SingleSelectOption value="Years" label="Years" />
-                    </SingleSelectField>
+                        <option value="Days">Days</option>
+                        <option value="Weeks">Weeks</option>
+                        <option value="Months">Months</option>
+                        <option value="Quarters">Quarters</option>
+                        <option value="Years">Years</option>
+                    </select>
                 </div>
             )}
 
             {selectedTab === 'fixed' && (
                 <div>
-                    <SingleSelectField
-                        label="Year"
-                        selected={selectedYear}
+                    <label>Year</label>
+                    <input
+                        type="number"
+                        value={selectedYear}
                         onChange={handleYearChange}
-                    >
-                        <SingleSelectOption value="2023" label="2023" />
-                        <SingleSelectOption value="2024" label="2024" />
-                    </SingleSelectField>
+                        style={{ display: 'block', width: '100%', padding: '8px', marginTop: '10px', background: '#fff', zIndex: 1 }}
+                    />
                 </div>
             )}
 
             <Transfer
                 options={availablePeriods}
                 selected={selectedPeriods}
-                onChange={handlePeriodSelect} // Use handlePeriodSelect here
+                onChange={handlePeriodSelect}
                 leftHeader="Available Periods"
                 rightHeader="Selected Periods"
             />
 
-            <div  className='flex justify-end mt-2 ' >
-            <Button text={isFetchAnalyticsDataLoading ? "Loading": "Update"} onClick={handleUpdate}  variant='primary'  type='button'   icon={<IoSaveOutline />}  />  
+            <div className='flex justify-end mt-2'>
+                <Button text={isFetchAnalyticsDataLoading ? 'Loading' : 'Update'} onClick={handleUpdate} variant='primary' type='button' icon={<IoSaveOutline />} />
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default PeriodModal
+export default PeriodPicker;

@@ -31,7 +31,9 @@ interface AuthContextProps {
    selectedLevel:any;
    setSelectedLevel:any;
    selectedOrgUnits:any;
-   setSelectedOrgUnits:any
+   setSelectedOrgUnits:any;
+selectedPeriods:string[];
+setSelectedPeriods:any
 
    }
 
@@ -66,6 +68,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [selectedOrgUnitGroups, setSelectedOrgUnitGroups] = useState<any>([]);
   const [selectedLevel,setSelectedLevel] = useState<any>()
   const [selectedOrgUnits, setSelectedOrgUnits] = useState<string[]>([]);
+  const [selectedPeriods, setSelectedPeriods] = useState<any>([]);
 
   const [isSetPredifinedUserOrgUnits,setIsSetPredifinedUserOrgUnits] = useState<any>({
     is_USER_ORGUNIT:true,
@@ -133,7 +136,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
  
 };
   return (
-    <AuthContext.Provider value={{selectedOrgUnits, setSelectedOrgUnits, selectedLevel,setSelectedLevel, userDatails, authorities,analyticsDimensions, setAnalyticsDimensions,fetchAnalyticsData ,analyticsData,isFetchAnalyticsDataLoading,fetchAnalyticsDataError,setSelectedOrganizationUnits,selectedOrganizationUnits,isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits,selectedOrganizationUnitsLevels,setSelectedOrganizationUnitsLevels,selectedOrgUnitGroups,setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits,setIsSetPredifinedUserOrgUnits}}>
+    <AuthContext.Provider value={{selectedOrgUnits, setSelectedOrgUnits, selectedLevel,setSelectedLevel, userDatails, authorities,analyticsDimensions, setAnalyticsDimensions,fetchAnalyticsData ,analyticsData,isFetchAnalyticsDataLoading,fetchAnalyticsDataError,setSelectedOrganizationUnits,selectedOrganizationUnits,isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits,selectedOrganizationUnitsLevels,setSelectedOrganizationUnitsLevels,selectedOrgUnitGroups,setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits,setIsSetPredifinedUserOrgUnits,selectedPeriods,setSelectedPeriods}}>
       {children}
     </AuthContext.Provider>
   );
