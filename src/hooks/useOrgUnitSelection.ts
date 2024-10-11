@@ -1,11 +1,20 @@
+import { useAuthorities } from '../context/AuthContext';
 import { filterOrgUnits } from '../lib/helper';
-import { OrgUnit } from '@/types/organisationUnit';
+import { OrgUnit } from '../types/organisationUnit';
 import { useState, useMemo, useEffect } from 'react';
 
+
 export const useOrgUnitSelection = (orgUnits: OrgUnit[]) => {
-  const [selectedOrgUnits, setSelectedOrgUnits] = useState<string[]>([]);
+
+  const {selectedOrgUnits, setSelectedOrgUnits} = useAuthorities()
+
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedLevel, setSelectedLevel] = useState<number | null>(null);
+
+  // test
+  useEffect(()=>{
+    console.log("get selected org units",selectedOrgUnits)
+  },[selectedOrgUnits])
 
   const filteredOrgUnitPaths = useMemo(
     () => filterOrgUnits(orgUnits, searchTerm, selectedLevel),

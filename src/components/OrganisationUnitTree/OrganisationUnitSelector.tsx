@@ -7,12 +7,14 @@ import { useAuthorities } from '../../context/AuthContext';
 import { formatAnalyticsDimensions } from '../../lib/formatAnalyticsDimensions';
 import { IoSaveOutline } from 'react-icons/io5';
 import OrganizationUnitGroup from '../../pages/visualizers/Components/MetaDataModals/OrganizationUnitGroup';
+import OrganizationUnitLevels from '../../pages/visualizers/Components/MetaDataModals/OrganizationUnitLevels';
 
 interface OrganisationUnitSelectProps {
   setIsShowOrganizationUnit:any
 }
 
 const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsShowOrganizationUnit}) => {
+
   const {
     analyticsDimensions,
     setAnalyticsDimensions,
@@ -26,7 +28,8 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
     selectedOrganizationUnitsLevels,
     setSelectedOrganizationUnitsLevels,
     setSelectedOrgUnitGroups,
-    isSetPredifinedUserOrgUnits,setIsSetPredifinedUserOrgUnits
+    isSetPredifinedUserOrgUnits,setIsSetPredifinedUserOrgUnits,
+    selectedOrgUnits
   } = useAuthorities();
 
   const { loading, error, data } = useOrgUnitData();
@@ -35,7 +38,6 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
   const currentUserOrgUnit = data?.currentUser?.organisationUnits?.[0];
 
   const {
-    selectedOrgUnits,
     searchTerm,
     selectedLevel,
     setSearchTerm,
@@ -47,6 +49,7 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
 
   // Handle change of currentOrgUnit
   const handleCurrentOrgUnitChange = (e: React.ChangeEvent<HTMLInputElement>, key: string) => {
+
     const updatedPredifinedUserOrgUnits = {
       ...isSetPredifinedUserOrgUnits,
       [key]: e.target.checked,
@@ -96,8 +99,6 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
 
    // Handle update analytics API
    const handleUpdateAnalytics = async () => {
-     console.log({selectedOrganizationUnitsLevels})
-     console.log({selectedOrganizationUnits})
     // Continue with analytics fetch
     await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions))
     setIsShowOrganizationUnit(false)
@@ -174,27 +175,10 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
       {/* MultiSelectField for Organization Unit Level */}
       <div className="mb-6">
         <div className='flex gap-2'   >
-        <MultiSelectField
-          disabled={isUseCurrentUserOrgUnits}
-          className="w-full"
-          label="Choose Organisation Unit Levels"
-          onChange={({ selected }) => {
-            setSelectedLevel(selected?.map(Number)); // Accept multiple selections
-            // Set the selected levels directly as IDs
-            const selectedLevelIds = orgUnitLevels
-              .filter(level => selected?.includes(String(level.level)))
-              .map(level => level.id);
-            setSelectedOrganizationUnitsLevels(selectedLevelIds); // Update organization unit levels
-          }}
-          selected={selectedLevel ? selectedLevel.map(String) : []}
-          placeholder="Select levels"
-        >
-          {orgUnitLevels.map((level) => (
-            <MultiSelectOption key={level.id} value={String(level.level)} label={level.displayName} />
-          ))}
-        </MultiSelectField>
         {/* organization unit group */}
         <OrganizationUnitGroup isUseCurrentUserOrgUnits={isUseCurrentUserOrgUnits} />
+        {/* levels test */}
+        <OrganizationUnitLevels isUseCurrentUserOrgUnits={isUseCurrentUserOrgUnits}   />
         </div>
  
         <button
