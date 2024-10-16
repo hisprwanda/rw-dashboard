@@ -11,7 +11,21 @@ export interface TransformedDataPoint {
     [key: string]: number | string;
 }
 
+export function isValidInputData(data: any): data is InputData {
+    return (
+        data &&
+        Array.isArray(data.headers) &&
+        data.metaData &&
+        Array.isArray(data.rows) &&
+        data.rows.length > 0
+    );
+}
+
 export function transformDataForBarChart(inputData: InputData): TransformedDataPoint[] {
+    if (!isValidInputData(inputData)) {
+        throw new Error("Invalid input data structure");
+    }
+
     const rows = inputData.rows;
     const monthNames = [
         "January", "February", "March", "April", "May", "June",
@@ -40,6 +54,10 @@ export function transformDataForBarChart(inputData: InputData): TransformedDataP
 }
 
 export function generateChartConfig(inputData: InputData): ChartConfig {
+    if (!isValidInputData(inputData)) {
+        throw new Error("Invalid input data structure");
+    }
+
     const config: ChartConfig = {};
     const dataItems = inputData.metaData.dimensions.dx;
 

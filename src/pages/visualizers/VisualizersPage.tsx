@@ -124,7 +124,7 @@ export default function Visualizers() {
                         ) : (
                             <div className="flex items-center justify-center w-full h-[600px]">
                                 <div className="w-[100%] max-h-[100%]">
-                                    <LocalBarChart data={someAnalyticsData} />
+                                    <LocalBarChart data={analyticsData} />
                                 </div>
                             </div>
                         )}

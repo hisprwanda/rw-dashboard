@@ -722,10 +722,6 @@ video {
   display: grid;
 }
 
-.hidden {
-  display: none;
-}
-
 .aspect-\[1155\/678\] {
   aspect-ratio: 1155/678;
 }
@@ -765,6 +761,10 @@ video {
 
 .h-5 {
   height: 1.25rem;
+}
+
+.h-64 {
+  height: 16rem;
 }
 
 .h-8 {

@@ -2,17 +2,39 @@ import React, { useMemo } from "react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Legend, Tooltip } from "recharts";
 import {
     ChartContainer,
+    ChartTooltip,
     ChartTooltipContent,
 } from "../../components/ui/chart";
-import { InputData, transformDataForBarChart, generateChartConfig } from "../../lib/localBarchartFormat";
+import { transformDataForBarChart, generateChartConfig, isValidInputData } from "../../lib/localBarchartFormat";
 
 interface LocalBarChartProps {
-    data: InputData;
+    data: any;
 }
 
 export const LocalBarChart: React.FC<LocalBarChartProps> = ({ data }) => {
-    const chartData = useMemo(() => transformDataForBarChart(data), [data]);
-    const chartConfig = useMemo(() => generateChartConfig(data), [data]);
+    // below is error handling checking if the data exists before passing it to the formmater function or to the graph
+
+    const { chartData, chartConfig, error } = useMemo(() => {
+        if (!isValidInputData(data)) {
+            return { chartData: [], chartConfig: {}, error: "Invalid data format" };
+        }
+
+        try {
+            const transformedData = transformDataForBarChart(data);
+            const config = generateChartConfig(data);
+            return { chartData: transformedData, chartConfig: config, error: null };
+        } catch (err) {
+            return { chartData: [], chartConfig: {}, error: (err as Error).message };
+        }
+    }, [data]);
+
+    if (error || chartData.length === 0) {
+        return (
+            <div className="flex items-center justify-center h-64 bg-gray-100 rounded-lg">
+                <p className="text-gray-500 text-lg">{error || "No data available"}</p>
+            </div>
+        );
+    }
 
     return (
         <ChartContainer config={chartConfig}>
@@ -33,7 +55,7 @@ export const LocalBarChart: React.FC<LocalBarChartProps> = ({ data }) => {
                         key={key}
                         dataKey={key}
                         fill={chartConfig[key].color}
-                    // name={chartConfig[key].label}
+                        name={chartConfig[key].label}
                     />
                 ))}
             </BarChart>
