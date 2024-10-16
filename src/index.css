@@ -394,7 +394,7 @@ video {
   display: none;
 }
     :root {
-        --chart-1: 12 76% 61%;
+        --chart-1: 206 54% 37%;
         --chart-2: 173 58% 39%;
         --chart-3: 197 37% 24%;
         --chart-4: 43 74% 66%;
@@ -722,6 +722,10 @@ video {
   display: grid;
 }
 
+.hidden {
+  display: none;
+}
+
 .aspect-\[1155\/678\] {
   aspect-ratio: 1155/678;
 }
@@ -811,6 +815,10 @@ video {
   max-height: 24rem;
 }
 
+.max-h-\[100\%\] {
+  max-height: 100%;
+}
+
 .max-h-\[465px\] {
   max-height: 465px;
 }
@@ -859,10 +867,6 @@ video {
   width: 0.875rem;
 }
 
-.w-3\/4 {
-  width: 75%;
-}
-
 .w-4 {
   width: 1rem;
 }
@@ -877,6 +881,10 @@ video {
 
 .w-9 {
   width: 2.25rem;
+}
+
+.w-\[100\%\] {
+  width: 100%;
 }
 
 .w-\[18px\] {

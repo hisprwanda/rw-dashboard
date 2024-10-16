@@ -122,8 +122,8 @@ export default function Visualizers() {
                         {isFetchAnalyticsDataLoading ? (
                             <Loading />
                         ) : (
-                            <div className="flex items-center justify-center w-3/4 h-[600px]">
-                                <div className="w-3/4 h-[600px]">
+                            <div className="flex items-center justify-center w-full h-[600px]">
+                                <div className="w-[100%] max-h-[100%]">
                                     <LocalBarChart data={someAnalyticsData} />
                                 </div>
                             </div>
