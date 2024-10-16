@@ -1,6 +1,6 @@
 import { useDataQuery } from '@dhis2/app-runtime';
 
-export const useDataItems = (page = 1, PAGE_SIZE = 20) => {
+export const useDataItems = (page = 1, PAGE_SIZE = 10000) => {
     const query = {
         dataItems: {
             resource: 'dataItems.json',
