@@ -9,6 +9,8 @@ import { DataModal, OrganizationModal, PeriodModal } from './Components/MetaData
 import { useAnalyticsData } from '../../services/Analytics';
 import { useAuthorities } from '../../context/AuthContext';
 import { LocalBarChart } from '../../components/charts/LocalBarChart';
+import { LocalLineChart } from '../../components/charts/LocalLineChart';
+
 import { someAnalyticsData } from '../../data/someAnalyticsData';
 
 type DataObject = {
@@ -62,12 +64,8 @@ export default function Visualizers() {
     };
 
 
-    const handleFetchAnalyticsData = async () => {
-        await fetchAnalyticsData(formatAnalyticsData(analyticsDimensions));
-    };
-
     useEffect(() => {
-        console.log("fetch thug", { analyticsData, isFetchAnalyticsDataLoading });
+        console.log("analyticsData fetched ", { analyticsData, isFetchAnalyticsDataLoading });
     }, [analyticsData]);
 
     /// main return
@@ -124,7 +122,9 @@ export default function Visualizers() {
                         ) : (
                             <div className="flex items-center justify-center w-full h-[600px]">
                                 <div className="w-[100%] max-h-[100%]">
-                                    <LocalBarChart data={analyticsData} />
+                                    {/* <LocalBarChart data={analyticsData} /> */}
+                                    <LocalLineChart data={analyticsData} />
+                                    
                                 </div>
                             </div>
                         )}
