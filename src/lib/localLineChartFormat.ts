@@ -80,11 +80,21 @@ export function generateChartConfig(inputData: InputData): ChartConfig {
     const config: ChartConfig = {};
     const dataItems = inputData.metaData.dimensions.dx;
 
+    // Define an array of colors
+    const colors = [
+        "#007C4A",
+        "#AB3A29",
+        "#C72E1A",
+        "#A4D0B3",
+        "#1D9A55"
+    ];
+
     dataItems.forEach((item: string, index: number) => {
         const name = inputData.metaData.items[item].name;
+        // Use modulus to cycle through colors
         config[name] = {
             label: name,
-            color: `hsl(var(--chart-${index + 1}))`,
+            color: colors[index % colors.length],
         };
     });
 

@@ -1,23 +1,16 @@
 import React, { useMemo } from "react";
 import { Line, LineChart, CartesianGrid, XAxis, YAxis, Legend, Tooltip } from "recharts";
-import {
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
-} from "../../components/ui/chart";
-
-import { transformDataForLineChart, generateChartConfig, isValidInputData } from "../../lib/LocalLineChartFormat";
+import { ChartContainer, ChartTooltipContent } from "../../components/ui/chart";
+import { transformDataForLineChart, generateChartConfig, isValidInputData } from "../../lib/localLineChartFormat";
 
 interface LocalLineChartProps {
     data: any;
 }
 
 export const LocalLineChart: React.FC<LocalLineChartProps> = ({ data }) => {
-    // below is error handling checking if the data exists before passing it to the formmater function or to the graph
-
     const { chartData, chartConfig, error } = useMemo(() => {
         if (!isValidInputData(data)) {
-            return { chartData: [], chartConfig: {}, error: "Invalid data format" };
+            return { chartData: [], chartConfig: {}, error: "no data found" };
         }
 
         try {
@@ -28,10 +21,7 @@ export const LocalLineChart: React.FC<LocalLineChartProps> = ({ data }) => {
             return { chartData: [], chartConfig: {}, error: (err as Error).message };
         }
     }, [data]);
-    
-    console.log("transformed data",chartData)
-    console.log(" chart config ",chartConfig)
-      
+
     if (error || chartData.length === 0) {
         return (
             <div className="flex items-center justify-center h-64 bg-gray-100 rounded-lg">
@@ -58,12 +48,9 @@ export const LocalLineChart: React.FC<LocalLineChartProps> = ({ data }) => {
                     <Line
                         key={key}
                         dataKey={key}
-                        fill={chartConfig[key].color}
+                        stroke={chartConfig[key].color}
                         name={chartConfig[key].label}
-                       
-                      
                     />
-              
                 ))}
             </LineChart>
         </ChartContainer>
