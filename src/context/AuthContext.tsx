@@ -32,6 +32,7 @@ interface AuthContextProps {
   setSelectedLevel: any;
   selectedOrgUnits: any;
   setSelectedOrgUnits: any;
+  analyticsQuery:any
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -65,6 +66,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [selectedOrgUnitGroups, setSelectedOrgUnitGroups] = useState<any>([]);
   const [selectedLevel, setSelectedLevel] = useState<any>();
   const [selectedOrgUnits, setSelectedOrgUnits] = useState<string[]>([]);
+  const [analyticsQuery, setAnalyticsQuery] = useState<any>(null)
 
   const [isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits] = useState<any>({
     is_USER_ORGUNIT: true,
@@ -78,10 +80,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
 
   useEffect(() => {
-    console.log("curren stat", isUseCurrentUserOrgUnits);
-  }, [isUseCurrentUserOrgUnits]);
-
-  useEffect(() => {
     if (data) {
       setUserDatails(data);
       setAuthorities(data.me.authorities);
@@ -90,6 +88,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading user authorities</div>;
+
+
 
   // testing
   const engine = useDataEngine();
@@ -103,7 +103,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       console.log({ orgUnitGroupIds, orgUnitIds, orgUnitLevelIds });
 
-      const result = await engine.query({
+      const analyticsQuery = {
         myData: {
           resource: 'analytics',
           params: {
@@ -120,8 +120,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             // includeMetadataDetails: true
           }
         },
-      });
+      }
+
+      const result = await engine.query(analyticsQuery);
       setAnalyticsData(result?.myData);
+      // set analytics query
+      setAnalyticsQuery(analyticsQuery)
     } catch (error) {
       setFetchAnalyticsDataError(true);
       console.log("error fetching analytics data", error);
@@ -132,8 +136,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
 
   };
+
+
+
   return (
-    <AuthContext.Provider value={{ selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits }}>
+    <AuthContext.Provider value={{ selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery}}>
       {children}
     </AuthContext.Provider>
   );

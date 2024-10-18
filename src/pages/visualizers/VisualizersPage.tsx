@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/ta
 import SelectChartType from './Components/SelectChartType';
 import { IoBarChartSharp } from "react-icons/io5";
 import { FaChartLine } from "react-icons/fa6";
+import SaveVisualTypeForm from './Components/SaveVisualTypeForm';
 
 const chartComponents = [
     { 
@@ -34,10 +35,15 @@ function Visualizers() {
     const [isShowOrganizationUnit, setIsShowOrganizationUnit] = useState(false);
     const [isShowPeriod, setIsShowPeriod] = useState(false);
     const [selectedChartType, setSelectedChartType] = useState(chartComponents[0]?.type); // Default to the first chart type
+    const [isShowSaveVisualTypeForm,setIsShowSaveVisualTypeForm ] = useState<boolean>(false)
 
     const dataSourceOptions = data?.dataStore?.entries?.map((entry:any) => (
         <option key={entry?.key} value={entry?.key}>{entry?.value?.instanceName}</option>
     ));
+
+    const handleShowSaveVisualTypeForm = ()=>{
+        setIsShowSaveVisualTypeForm(true)
+      }
 
     const handleShowDataModal = () => setIsShowDataModal(true);
     const handleShowOrganizationUnitModal = () => setIsShowOrganizationUnit(true);
@@ -108,7 +114,7 @@ function Visualizers() {
                 {/* Visualization Area */}
                 <div className="flex-grow bg-white shadow-md p-4 rounded-lg mx-4">
                     <div className="flex justify-end mb-4">
-                        <Button variant="primary" text="Save" type="button" icon={<IoSaveOutline />} />
+                        <Button variant="primary" text="Save" type="button" icon={<IoSaveOutline />}  onClick={handleShowSaveVisualTypeForm}/>
                     </div>
                     <div className="h-[600px] flex items-center justify-center border border-gray-300 rounded-lg bg-gray-100">
                         {isFetchAnalyticsDataLoading ? (
@@ -134,6 +140,11 @@ function Visualizers() {
             <GenericModal isOpen={isShowPeriod} setIsOpen={setIsShowPeriod}>
                 <PeriodModal setIsShowPeriod={setIsShowPeriod} />
             </GenericModal>
+
+            {/* save visual type form */}
+            <GenericModal isOpen={isShowSaveVisualTypeForm} setIsOpen={setIsShowSaveVisualTypeForm}>
+                <SaveVisualTypeForm setIsShowSaveVisualTypeForm={setIsShowSaveVisualTypeForm}  />
+                </GenericModal>
         </div>
     );
 }
