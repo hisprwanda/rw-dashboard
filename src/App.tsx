@@ -12,6 +12,7 @@ import {
   UserPage,
   HomePage,
   VisualizersPage,
+  VisualizationPage,
   AlertsPage,
   SettingsPage,
   DashboardsPage,
@@ -35,6 +36,7 @@ const App: React.FC = () => {
             <Route path="/" element={<MainLayout />}>
               <Route index element={<HomePage />} />
               <Route path="dashboards" element={<DashboardsPage />} />
+              <Route path="visualization" element={<VisualizationPage />} />
               <Route path="visualizers" element={<VisualizersPage />} />
               <Route path="alerts" element={<AlertsPage />} />
               <Route path="settings" element={<SettingsPage />} />

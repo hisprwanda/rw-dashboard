@@ -241,11 +241,11 @@ const onSubmit: SubmitHandler<DataSourceFormFields> = async (formData) => {
                 {/* Instance Description */}
                 <div className="flex flex-col">
                     <label className="text-gray-700">Instance Description</label>
-                    <textarea
-  className="p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-500"
-  {...register('description')}
-    />
-
+                    <input
+                        className="p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-500"
+                        type="text"
+                        {...register('description')}
+                    />
                 </div>
 
                 {/* Submit Button */}

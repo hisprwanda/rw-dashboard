@@ -5,7 +5,7 @@ export const menuItems = [
     },
     {
         name: "Visualizers",
-        link: "visualizers"
+        link: "visualization"
     },
     {
         name: "Alerts",

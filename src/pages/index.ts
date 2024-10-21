@@ -8,3 +8,4 @@ export { default as AlertsPage, } from "./alerts/AlertsPage";
 export { default as SettingsPage, } from "./settings/SettingsPage";
 export { default as DashboardsPage, } from "./dashboards/DashboardsPage";
 export { default as DataSourcePage, } from "./settings/DataSource/DataSourcePage";
+export { default as VisualizationPage, } from "./visualizers/VisualizationPage";
