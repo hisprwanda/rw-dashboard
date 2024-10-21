@@ -6,42 +6,67 @@ import {
 } from "mantine-react-table";
 import { IconStar24, IconStarFilled24 } from "@dhis2/ui";
 
-type Person = {
+type Dashboard = {
   name: string;
   createdAt: string;
   isFavorite: boolean;
 };
 
-const data: Person[] = [
+const data: Dashboard[] = [
   {
-    name: "Zachary Davis",
-    createdAt: "2023-01-10T08:45:30",
+    name: "Malaria Incidence Tracking",
+    createdAt: "2023-02-10T10:30:45",
     isFavorite: true,
   },
   {
-    name: "Robert Smith",
-    createdAt: "2023-04-15T11:15:00",
+    name: "COVID-19 Testing Data",
+    createdAt: "2023-03-12T14:50:00",
     isFavorite: false,
   },
   {
-    name: "Kevin Yan",
-    createdAt: "2023-06-21T09:00:00",
+    name: "HIV/AIDS Program Progress",
+    createdAt: "2023-05-08T09:20:00",
     isFavorite: true,
   },
   {
-    name: "John Upton",
-    createdAt: "2023-07-30T14:25:45",
+    name: "Maternal Health Monitoring",
+    createdAt: "2023-06-14T16:35:00",
     isFavorite: false,
   },
   {
-    name: "Nathan Harris",
-    createdAt: "2023-09-05T19:10:00",
+    name: "Child Immunization Coverage",
+    createdAt: "2023-08-21T11:45:20",
+    isFavorite: true,
+  },
+  {
+    name: "Diabetes Management Statistics",
+    createdAt: "2023-07-09T18:10:30",
+    isFavorite: false,
+  },
+  {
+    name: "Tuberculosis Control Dashboard",
+    createdAt: "2023-09-01T13:05:15",
+    isFavorite: true,
+  },
+  {
+    name: "Cardiovascular Disease Reports",
+    createdAt: "2023-10-10T08:55:40",
+    isFavorite: true,
+  },
+  {
+    name: "Cancer Screening Outcomes",
+    createdAt: "2023-09-25T15:45:10",
+    isFavorite: false,
+  },
+  {
+    name: "Respiratory Illness Surveillance",
+    createdAt: "2023-11-02T10:15:55",
     isFavorite: true,
   },
 ];
 
 const MyDashboardsTable = () => {
-  const columns = useMemo<MRT_ColumnDef<Person>[]>(
+  const columns = useMemo<MRT_ColumnDef<Dashboard>[]>(
     () => [
       {
         accessorKey: "name",
