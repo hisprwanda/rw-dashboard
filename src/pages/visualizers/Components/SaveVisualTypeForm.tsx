@@ -61,27 +61,40 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({ setIsShowSaveVi
     setSuccessMessage(null);
     setErrorMessage(null);
 
+    // Check for duplicate visualName and query
+    const existingVisual = allSavedVisuals?.dataStore?.entries?.some((entry: any) =>
+        entry.value.visualName === formData.visualName || 
+        JSON.stringify(entry.value.query) === JSON.stringify(formData.query) // Comparing query objects
+    );
+
+    // Show error if a duplicate is found
+    if (existingVisual) {
+        setErrorMessage('The visual name or query already exists. Please use different values.');
+        return;
+    }
+
     const uid = generateUid(); // Generate unique ID
 
     try {
-      // Submit the form data to the DHIS2 DataStore (path: rw-visuals)
-      await engine.mutate({
-        resource: `dataStore/rw-visuals/${uid}`,
-        type: 'create',
-        data: formData,
-      });
+        // Submit the form data to the DHIS2 DataStore (path: rw-visuals)
+        await engine.mutate({
+            resource: `dataStore/rw-visuals/${uid}`,
+            type: 'create',
+            data: formData,
+        });
 
-      setSuccessMessage('Visual saved successfully!');
-         // Delay a bit to show success message
-         await new Promise((resolve) => setTimeout(() => resolve(), 2000));
-         /// close modal
-      setIsShowSaveVisualTypeForm(false)
-      reset();  // Clear form after success
+        setSuccessMessage('Visual saved successfully!');
+        // Delay a bit to show success message
+        await new Promise((resolve) => setTimeout(() => resolve(), 2000));
+        // Close modal
+        setIsShowSaveVisualTypeForm(false);
+        reset();  // Clear form after success
     } catch (error) {
-      console.error('Error saving visual:', error);
-      setErrorMessage('Failed to save visual. Please try again.');
+        console.error('Error saving visual:', error);
+        setErrorMessage('Failed to save visual. Please try again.');
     }
-  };
+};
+
 
   return (
     <div className="max-w-md mx-auto p-6 border border-gray-300 rounded-md">
