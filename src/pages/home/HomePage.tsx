@@ -68,9 +68,9 @@ export default function HomePage() {
           </div>
         </div>
       </div>
-      <div className="mt-9">
+      <div className="mt-14">
         <Tabs defaultValue="mydashboards">
-          <TabsList className="gap-9 text-primary font-semibold w-[400px]">
+          <TabsList className=" flex justify-start gap-9 text-primary font-semibold w-[400px] mb-8">
             <TabsTrigger value="mydashboards">My Dashboards</TabsTrigger>
             <TabsTrigger value="otherdasboards">Other Dasboards</TabsTrigger>
           </TabsList>
