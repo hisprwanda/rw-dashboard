@@ -31,12 +31,21 @@ const chartComponents = [
 function Visualizers() {
     const { data } = useDataSourceData();
     const { analyticsData, isFetchAnalyticsDataLoading } = useAuthorities();
-    const [isShowDataModal, setIsShowDataModal] = useState(false);
-    const [isShowOrganizationUnit, setIsShowOrganizationUnit] = useState(false);
-    const [isShowPeriod, setIsShowPeriod] = useState(false);
-    const [selectedChartType, setSelectedChartType] = useState(chartComponents[0]?.type); // Default to the first chart type
+    const [isShowDataModal, setIsShowDataModal] = useState<boolean>(false);
+    const [isShowOrganizationUnit, setIsShowOrganizationUnit] = useState<boolean>(false);
+    const [isShowPeriod, setIsShowPeriod] = useState<boolean>(false);
     const [isShowSaveVisualTypeForm,setIsShowSaveVisualTypeForm ] = useState<boolean>(false)
+    const [selectedChartType, setSelectedChartType] = useState(chartComponents[0]?.type); 
 
+    /// refine later (default dataSource Id should be the current dhis2 instance)
+    const [selectedDataSourceOption, setSelectedDataSourceOption] = useState<string>("");
+
+    // test
+    useEffect(() =>{
+    console.log("selectedDataSourceOption",selectedDataSourceOption)
+    },[selectedDataSourceOption])
+
+    //// data source options
     const dataSourceOptions = data?.dataStore?.entries?.map((entry:any) => (
         <option key={entry?.key} value={entry?.key}>{entry?.value?.instanceName}</option>
     ));
@@ -44,10 +53,11 @@ function Visualizers() {
     const handleShowSaveVisualTypeForm = ()=>{
         setIsShowSaveVisualTypeForm(true)
       }
-
+     //// function to handle show modals
     const handleShowDataModal = () => setIsShowDataModal(true);
     const handleShowOrganizationUnitModal = () => setIsShowOrganizationUnit(true);
     const handleShowPeriodModal = () => setIsShowPeriod(true);
+
 
     // Function to render the selected chart
     const renderChart = () => {
@@ -55,11 +65,18 @@ function Visualizers() {
         return SelectedChart ? <SelectedChart data={analyticsData} /> : null;
     };
 
+    /// handle data source onchange
+    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedDataSourceOption(e.target.value);
+      };
+
+
+    /// main return
     return (
         <div className="min-h-screen bg-gray-50 p-4">
             <div className="flex justify-between items-start">
                 <Tabs defaultValue="DATA" className="w-1/4 bg-white shadow-md rounded-lg p-4">
-                    <TabsList className="flex items-center justify-center space-y-2">
+                    <TabsList className="flex items-center justify-center ">
                         <TabsTrigger
                             value="DATA"
                             className="text-lg font-semibold py-2 w-full text-left"
@@ -78,7 +95,8 @@ function Visualizers() {
                             {/* Select Data Source Dropdown */}
                             <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Select Data source</label>
-                                <select className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <select   value={selectedDataSourceOption} onChange={handleChange}
+         className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                     {dataSourceOptions}
                                 </select>
                             </div>
@@ -143,7 +161,7 @@ function Visualizers() {
 
             {/* save visual type form */}
             <GenericModal isOpen={isShowSaveVisualTypeForm} setIsOpen={setIsShowSaveVisualTypeForm}>
-                <SaveVisualTypeForm setIsShowSaveVisualTypeForm={setIsShowSaveVisualTypeForm}  />
+                <SaveVisualTypeForm setIsShowSaveVisualTypeForm={setIsShowSaveVisualTypeForm } selectedChartType={selectedChartType}  selectedDataSourceId={selectedDataSourceOption} />
                 </GenericModal>
         </div>
     );

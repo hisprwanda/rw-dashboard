@@ -9,25 +9,47 @@ import { AlertBar } from '@dhis2/ui';
 import Button from '../../../components/Button';
 import { IoSaveOutline } from 'react-icons/io5';
 import { useAuthorities } from '../../../context/AuthContext';
+import { useFetchVisualsData } from '../../../services/fetchVisuals';
 
 interface SaveVisualTypeFormProps {
   setIsShowSaveVisualTypeForm: any;
+  selectedChartType: 'bar'| 'pie'| 'line';
+  selectedDataSourceId:string
 }
 
-const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({ setIsShowSaveVisualTypeForm }) => {
-  const { analyticsQuery } = useAuthorities();
+const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({ setIsShowSaveVisualTypeForm,selectedChartType ,selectedDataSourceId}) => {
+  const { analyticsQuery,userDatails } = useAuthorities();
+  const {data:allSavedVisuals,loading,isError}  = useFetchVisualsData()
+
+  console.log("hello saved data x",allSavedVisuals?.dataStore?.entries)
+
+
+
+
   const engine = useDataEngine();
+
+
 
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<VisualDataFormFields>({
     defaultValues: {
       id: generateUid(),
-      visualType: "bar",  // Auto-generate visualType
+      visualType: selectedChartType,  
       visualName: "",
       description: "",
-      query: analyticsQuery,  // Automatically bind query from authorities
-      dataSourceId: "JAEdLuvhqSU",  // Default value
-      datasourceUrl: "https://example.com/data-source",  // Default value
-      dataSourceName: "Rwanda Integrated Disease Surveillance",  // Default value
+      query: analyticsQuery,  
+      dataSourceId: selectedDataSourceId, 
+ 
+      createdBy:{
+        name:userDatails?.me?.displayName,
+        id:userDatails?.me?.id
+      },
+      updatedBy:{
+        name:userDatails?.me?.displayName,
+        id:userDatails?.me?.id
+      },
+      createdAt: Date.now(), 
+      updatedAt: Date.now(), 
+  
     },
     resolver: zodResolver(VisualDataSchema),
   });
@@ -63,7 +85,7 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({ setIsShowSaveVi
 
   return (
     <div className="max-w-md mx-auto p-6 border border-gray-300 rounded-md">
-      <h1 className="text-2xl font-bold mb-4">Save Visual</h1>
+      <h1 className="text-2xl font-bold mb-4">Save visualization as</h1>
 
       {/* Success and Error Messages */}
       {successMessage && (
@@ -78,9 +100,10 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({ setIsShowSaveVi
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    
         {/* Visual Name */}
         <div className="flex flex-col">
-          <label className="text-gray-700">Visual Name</label>
+          <label className="text-gray-700">Name</label>
           <input
             className="p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-500"
             type="text"
@@ -92,11 +115,11 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({ setIsShowSaveVi
         {/* Description */}
         <div className="flex flex-col">
           <label className="text-gray-700">Description</label>
-          <input
-            className="p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-500"
-            type="text"
-            {...register('description')}
-          />
+          <textarea
+  className="p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-500"
+  {...register('description')}
+/>
+
         </div>
 
         {/* Submit Button */}

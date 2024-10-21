@@ -11,12 +11,16 @@ export const VisualDataSchema = z.object({
         { message: 'Query object cannot be empty' }
     ), // Added custom refinement for non-empty check
     dataSourceId: z.string().nonempty({ message: 'Data source ID is required' }),
-    datasourceUrl: z.string().nonempty({ message: 'Data source URL is required' }),
-    dataSourceName: z.string().nonempty({ message: 'Data source name is required' }),
-    // createdBy: z.string().optional(),
-    // createdAt: z.string().optional(),
-    // updatedAt: z.string().optional(),
-    // updatedBy: z.string().optional()
+    createdBy: z.object({
+        name: z.string(),
+        id: z.string(),
+    }),    
+    createdAt: z.number(),
+    updatedAt: z.number(),
+    updatedBy: z.object({
+        name: z.string(),
+        id: z.string(),
+    })
 });
 
 // Infer form fields from the schema
