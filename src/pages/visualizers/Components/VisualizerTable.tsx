@@ -11,11 +11,13 @@ import { Button } from '@mantine/core';
 import { GenericModal } from '../../../components';
 import DeleteVisualTypeCard from './DeleteVisualTypeCard';
 import { useFetchVisualsData } from '../../../services/fetchVisuals';
+import { useNavigate } from 'react-router-dom';
+
 
 
 const VisualizerTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
+    const navigate = useNavigate();
     const {refetch}  = useFetchVisualsData()
-
     const [isShowDeleteVisual,setIsShowDeleteVisual] = useState<boolean>(false)
     const [selectedVisual, setSelectedVisual] = useState<any |undefined>();
 
@@ -34,10 +36,10 @@ const VisualizerTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
         accessorKey: 'value.visualType',
         header: 'Type',
       },
-      {
-        accessorKey: 'value.createdBy.name',
-        header: 'Created By',
-      },
+      // {
+      //   accessorKey: 'value.createdBy.name',
+      //   header: 'Created By',
+      // },
       {
         accessorKey: 'value.createdAt',
         header: 'Created At',
@@ -63,6 +65,7 @@ const VisualizerTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
 
   // Handlers that log the key
   const handleView = (data:any) => {
+  navigate(`/visualizers/${data?.key}`)
   console.log("hello view",data)
 
   };

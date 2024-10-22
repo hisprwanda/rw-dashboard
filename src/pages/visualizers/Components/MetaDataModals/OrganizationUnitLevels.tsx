@@ -13,12 +13,13 @@ const OrganizationUnitLevels: React.FC<OrganizationUnitLevelsProps> = ({
   isUseCurrentUserOrgUnits,
 }) => {
     const { data, error, loading } = useOrgUnitData();
-    const {setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel} = useAuthorities()
+    const {setSelectedOrganizationUnitsLevels,selectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel} = useAuthorities()
 
     // states
     useEffect(()=>{
-   console.log("test select",selectedLevel)
-    },[selectedLevel])
+   console.log("test select level 1",selectedLevel)
+   console.log("test select level 2",selectedLevel)
+    },[selectedLevel,selectedOrganizationUnitsLevels])
     
   if (loading) {
     return <CircularLoader />;
@@ -43,7 +44,7 @@ const OrganizationUnitLevels: React.FC<OrganizationUnitLevelsProps> = ({
   return (
     <MultiSelectField
       disabled={isUseCurrentUserOrgUnits}
-      className="w-full"
+      className="w-full  z-50 bg-white"
       label="Choose Organisation Unit Levels"
       onChange={handleChange}
       selected={selectedLevel ? selectedLevel.map(String) : []}

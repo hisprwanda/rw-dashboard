@@ -22,8 +22,9 @@ const VisualizationPage = () => {
   // main return
   return (
     <div className='container w-full m-auto  p-2'  >
-       {/* data source header */}
-       <div className=" container flex justify-between py-5" >
+      {loading ? <Loading/> : <>
+             {/* data source header */}
+             <div className=" container flex justify-between py-5" >
         <h3 className="text-[#2C6693] text-xl font-bold " >My Charts</h3>
 
 <Button variant="primary" text="Add Visualizer" type="button" onClick={handleGoToCreateVisualizerPage}
@@ -32,6 +33,8 @@ const VisualizationPage = () => {
 
       </div>
       <VisualizerTable  savedVisualData={data?.dataStore?.entries} />
+      </> }
+
       </div>
   )
 }

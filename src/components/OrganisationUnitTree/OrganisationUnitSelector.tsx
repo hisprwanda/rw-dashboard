@@ -10,7 +10,8 @@ import OrganizationUnitGroup from '../../pages/visualizers/Components/MetaDataMo
 import OrganizationUnitLevels from '../../pages/visualizers/Components/MetaDataModals/OrganizationUnitLevels';
 
 interface OrganisationUnitSelectProps {
-  setIsShowOrganizationUnit:any
+  setIsShowOrganizationUnit:any;
+  
 }
 
 const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsShowOrganizationUnit}) => {
@@ -54,7 +55,6 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
       ...isSetPredifinedUserOrgUnits,
       [key]: e.target.checked,
     };
-  
     setIsSetPredifinedUserOrgUnits(updatedPredifinedUserOrgUnits);
   
     // Check if any of the properties are true; if none are true, set isUseCurrentUserOrgUnits to false
@@ -64,6 +64,8 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
     handleDeselect()
   };
 
+
+  
 
   // Update selectedOrgUnit
   useEffect(() => {

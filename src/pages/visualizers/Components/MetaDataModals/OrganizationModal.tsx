@@ -3,7 +3,8 @@ import OrganizationUnitSelector from "../../../../components/OrganisationUnitTre
 
 
 interface OrganizationUnitModalProps {
-  setIsShowOrganizationUnit:any
+  setIsShowOrganizationUnit:any;
+  
 }
 const OrganizationModal:React.FC<OrganizationUnitModalProps> = ({setIsShowOrganizationUnit}) => {
   return (

@@ -32,7 +32,10 @@ interface AuthContextProps {
   setSelectedLevel: any;
   selectedOrgUnits: any;
   setSelectedOrgUnits: any;
-  analyticsQuery:any
+  analyticsQuery:any;
+  selectedChartType:string,
+   setSelectedChartType:any,
+   setAnalyticsQuery:any
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -67,6 +70,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [selectedLevel, setSelectedLevel] = useState<any>();
   const [selectedOrgUnits, setSelectedOrgUnits] = useState<string[]>([]);
   const [analyticsQuery, setAnalyticsQuery] = useState<any>(null)
+  const [selectedChartType, setSelectedChartType] = useState<any>(""); 
 
   const [isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits] = useState<any>({
     is_USER_ORGUNIT: true,
@@ -138,9 +142,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
 
+  /// test
+  // useEffect(()=>{
+  //   console.log("analytics query change",analyticsQuery)
+  // },[analyticsQuery])
+
 
   return (
-    <AuthContext.Provider value={{ selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery}}>
+    <AuthContext.Provider value={{ setAnalyticsQuery,selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery,selectedChartType,setSelectedChartType}}>
       {children}
     </AuthContext.Provider>
   );

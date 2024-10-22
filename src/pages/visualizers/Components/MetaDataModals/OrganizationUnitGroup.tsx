@@ -31,12 +31,14 @@ const OrganizationUnitGroup:React.FC<OrganizationUnitGroupProps> = ({isUseCurren
   };
 
   return (<MultiSelectField
-        className="w-full"
+        className="w-full z-50 bg-white"
         disabled={isUseCurrentUserOrgUnits} 
         label="Choose Organization Unit Groups"
         onChange={handleChange} // Update the selected org unit groups
         selected={selectedOrgUnitGroups}
         placeholder="Select organization unit groups"
+
+        
       >
         {orgUnitGroups.map((group) => (
           <MultiSelectOption key={group.id} value={group.id} label={group.displayName} />

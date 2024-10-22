@@ -14,3 +14,15 @@ export function formatAnalyticsDimensions(data: any): string[] {
 
   return result;
 }
+
+
+export function unFormatAnalyticsDimensions(inputArray:any) {
+  const result:any = {};
+
+  inputArray.forEach((item:any) => {
+      const [key, value] = item.split(':');
+      result[key] = value.split(';');
+  });
+
+  return result;
+}

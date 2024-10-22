@@ -37,11 +37,11 @@ const App: React.FC = () => {
               <Route index element={<HomePage />} />
               <Route path="dashboards" element={<DashboardsPage />} />
               <Route path="visualization" element={<VisualizationPage />} />
-              <Route path="visualizers" element={<VisualizersPage />} />
               <Route path="alerts" element={<AlertsPage />} />
               <Route path="settings" element={<SettingsPage />} />
               <Route path="data-source" element={<DataSourcePage />} />
               <Route path="unauthorized" element={<UnauthorizedPage />} />
+              <Route path="visualizers/:id?" element={<VisualizersPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Route>
 

@@ -12,6 +12,13 @@ import SelectChartType from './Components/SelectChartType';
 import { IoBarChartSharp } from "react-icons/io5";
 import { FaChartLine } from "react-icons/fa6";
 import SaveVisualTypeForm from './Components/SaveVisualTypeForm';
+import { useParams } from 'react-router-dom';
+import { useFetchSingleVisualData } from '../../services/fetchVisuals';
+import { unFormatAnalyticsDimensions } from '../../lib/formatAnalyticsDimensions';
+import { formatCurrentUserSelectedOrgUnit, formatSelectedOrganizationUnit,formatOrgUnitGroup,formatOrgUnitLevels} from '../../lib/formatCurrentUserOrgUnit';
+
+
+
 
 const chartComponents = [
     { 
@@ -29,21 +36,66 @@ const chartComponents = [
 ];
 
 function Visualizers() {
-    const { data } = useDataSourceData();
-    const { analyticsData, isFetchAnalyticsDataLoading } = useAuthorities();
+    const { id:visualId } = useParams();
+
+    const {data:singleSavedVisualData,isError,loading:isFetchSingleVisualLoading} = useFetchSingleVisualData(visualId)
+
+    const { data,loading } = useDataSourceData();
+    const { analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels} = useAuthorities();
     const [isShowDataModal, setIsShowDataModal] = useState<boolean>(false);
     const [isShowOrganizationUnit, setIsShowOrganizationUnit] = useState<boolean>(false);
     const [isShowPeriod, setIsShowPeriod] = useState<boolean>(false);
     const [isShowSaveVisualTypeForm,setIsShowSaveVisualTypeForm ] = useState<boolean>(false)
-    const [selectedChartType, setSelectedChartType] = useState(chartComponents[0]?.type); 
-
-    /// refine later (default dataSource Id should be the current dhis2 instance)
+    
+    /// refine later (default dataSource visualId should be the current dhis2 instance)
     const [selectedDataSourceOption, setSelectedDataSourceOption] = useState<string>("");
 
-    // test
+
+    
+    // initial render
+    useEffect(()=>{
+        setSelectedChartType(chartComponents[0]?.type)
+    },[])
+   
+    useEffect(()=>{
+        if(singleSavedVisualData)
+        {
+            setSelectedChartType(singleSavedVisualData?.dataStore?.visualType)
+            setSelectedDataSourceOption(singleSavedVisualData?.dataStore?.dataSourceId)
+            setAnalyticsQuery(singleSavedVisualData?.dataStore?.query)
+            setAnalyticsDimensions(unFormatAnalyticsDimensions(singleSavedVisualData?.dataStore?.query?.myData?.params?.dimension))
+          setIsSetPredifinedUserOrgUnits(formatCurrentUserSelectedOrgUnit(singleSavedVisualData?.dataStore?.query?.myData?.params?.filter))
+          setSelectedOrganizationUnits(formatSelectedOrganizationUnit(singleSavedVisualData?.dataStore?.query?.myData?.params?.filter))
+         setSelectedOrgUnits(singleSavedVisualData?.dataStore?.organizationTree)
+         setSelectedOrgUnitGroups(formatOrgUnitGroup(singleSavedVisualData?.dataStore?.query?.myData?.params?.filter))
+         setSelectedOrganizationUnitsLevels(formatOrgUnitLevels(singleSavedVisualData?.dataStore?.query?.myData?.params?.filter))
+     
+         // selectedOrgUnitGroups
+          console.log("organizationTree 111",singleSavedVisualData?.dataStore?.query?.myData?.params?.filter)
+            console.log("singleSavedVisualData levels max 777",formatOrgUnitLevels(singleSavedVisualData?.dataStore?.query?.myData?.params?.filter) )
+
+        }
+     
+    },[singleSavedVisualData])
+
+    // update if current user organization is selected
     useEffect(() =>{
-    console.log("selectedDataSourceOption",selectedDataSourceOption)
-    },[selectedDataSourceOption])
+     if(singleSavedVisualData)
+     {
+        const isAnyTrue = Object.values(isSetPredifinedUserOrgUnits).some(value => value === true);
+        setIsUseCurrentUserOrgUnits(isAnyTrue);
+     }
+
+    },[isSetPredifinedUserOrgUnits])
+
+
+    /// test selectedOrgUnits
+    useEffect(()=>{
+        //selectedOrgUnitGroups,setSelectedOrgUnitGroups
+       console.log("selectedOrganizationUnitsLevels simba",selectedOrganizationUnitsLevels )
+    },[selectedOrganizationUnitsLevels])
+
+
 
     //// data source options
     const dataSourceOptions = data?.dataStore?.entries?.map((entry:any) => (
@@ -74,7 +126,9 @@ function Visualizers() {
     /// main return
     return (
         <div className="min-h-screen bg-gray-50 p-4">
-            <div className="flex justify-between items-start">
+            { (isFetchSingleVisualLoading || loading) ? <Loading/> : 
+            <>
+                    <div className="flex justify-between items-start">
                 <Tabs defaultValue="DATA" className="w-1/4 bg-white shadow-md rounded-lg p-4">
                     <TabsList className="flex items-center justify-center ">
                         <TabsTrigger
@@ -132,7 +186,7 @@ function Visualizers() {
                 {/* Visualization Area */}
                 <div className="flex-grow bg-white shadow-md p-4 rounded-lg mx-4">
                     <div className="flex justify-end mb-4">
-                        <Button variant="primary" text="Save" type="button" icon={<IoSaveOutline />}  onClick={handleShowSaveVisualTypeForm}/>
+                        <Button variant="primary" text={visualId  ? "Update" : "Save" } type="button" icon={<IoSaveOutline />}  onClick={handleShowSaveVisualTypeForm}/>
                     </div>
                     <div className="h-[600px] flex items-center justify-center border border-gray-300 rounded-lg bg-gray-100">
                         {isFetchAnalyticsDataLoading ? (
@@ -147,13 +201,12 @@ function Visualizers() {
                     </div>
                 </div>
             </div>
-
             {/* Data, Organization Unit, and Period Modals */}
             <GenericModal isOpen={isShowDataModal} setIsOpen={setIsShowDataModal}>
                 <DataModal setIsShowDataModal={setIsShowDataModal} />
             </GenericModal>
             <GenericModal isOpen={isShowOrganizationUnit} setIsOpen={setIsShowOrganizationUnit}>
-                <OrganizationModal setIsShowOrganizationUnit={setIsShowOrganizationUnit} />
+                <OrganizationModal singleSavedVisualData={singleSavedVisualData}  setIsShowOrganizationUnit={setIsShowOrganizationUnit} />
             </GenericModal>
             <GenericModal isOpen={isShowPeriod} setIsOpen={setIsShowPeriod}>
                 <PeriodModal setIsShowPeriod={setIsShowPeriod} />
@@ -161,8 +214,11 @@ function Visualizers() {
 
             {/* save visual type form */}
             <GenericModal isOpen={isShowSaveVisualTypeForm} setIsOpen={setIsShowSaveVisualTypeForm}>
-                <SaveVisualTypeForm setIsShowSaveVisualTypeForm={setIsShowSaveVisualTypeForm } selectedChartType={selectedChartType}  selectedDataSourceId={selectedDataSourceOption} />
+                <SaveVisualTypeForm  visualId={visualId}  singleSavedVisualData={singleSavedVisualData} setIsShowSaveVisualTypeForm={setIsShowSaveVisualTypeForm } selectedChartType={selectedChartType}  selectedDataSourceId={selectedDataSourceOption} />
                 </GenericModal>
+            </>
+            }
+    
         </div>
     );
 }

@@ -49,7 +49,7 @@ const DataModal: React.FC<DataModalProps> = ({ setIsShowDataModal }) => {
     };
 
     useEffect(() => {
-        console.log("analyticsDimensions pp", analyticsDimensions.dx);
+        console.log("analyticsDimensions pp", analyticsDimensions);
     }, [analyticsDimensions]);
 
     // if (loading) return <Loading/>

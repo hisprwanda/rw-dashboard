@@ -13,16 +13,22 @@ import { useFetchVisualsData } from '../../../services/fetchVisuals';
 
 interface SaveVisualTypeFormProps {
   setIsShowSaveVisualTypeForm: any;
-  selectedChartType: 'bar'| 'pie'| 'line';
-  selectedDataSourceId:string
+  selectedDataSourceId:string,
+  visualId?:string,
+  singleSavedVisualData:any
 }
 
-const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({ setIsShowSaveVisualTypeForm,selectedChartType ,selectedDataSourceId}) => {
-  const { analyticsQuery,userDatails } = useAuthorities();
+const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleSavedVisualData,setIsShowSaveVisualTypeForm ,selectedDataSourceId}) => {
+  const { analyticsQuery,userDatails,selectedChartType,selectedOrgUnits } = useAuthorities();
   const {data:allSavedVisuals,loading,isError}  = useFetchVisualsData()
 
-  console.log("hello saved data x",allSavedVisuals?.dataStore?.entries)
+  console.log("hello 33",singleSavedVisualData)
 
+  console.log("hello saved data x",allSavedVisuals?.dataStore?.entries)
+  //other test
+  useEffect(()=>{
+    console.log("hello 44",selectedChartType)
+    },[selectedChartType])
 
 
 
@@ -30,15 +36,15 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({ setIsShowSaveVi
 
 
 
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<VisualDataFormFields>({
+  const { register, handleSubmit,watch, reset, formState: { errors, isSubmitting } } = useForm<VisualDataFormFields>({
     defaultValues: {
-      id: generateUid(),
+      id:  generateUid(),
       visualType: selectedChartType,  
-      visualName: "",
-      description: "",
-      query: analyticsQuery,  
+      visualName:   "",
+      description:   "",
+      query: analyticsQuery,
+      
       dataSourceId: selectedDataSourceId, 
- 
       createdBy:{
         name:userDatails?.me?.displayName,
         id:userDatails?.me?.id
@@ -49,10 +55,34 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({ setIsShowSaveVi
       },
       createdAt: Date.now(), 
       updatedAt: Date.now(), 
+      organizationTree:selectedOrgUnits
   
     },
     resolver: zodResolver(VisualDataSchema),
   });
+
+     // Watch form values
+  const watchedValues = watch();
+
+  // Log form data when it changes
+  useEffect(() => {
+    console.log('Form data changed:', watchedValues);
+  }, [watchedValues]);
+  // reset saved values
+  useEffect(() => {
+    if (visualId && singleSavedVisualData) {
+        reset((prevValues) => ({
+            ...prevValues, // Spread the existing values to retain them
+            id: singleSavedVisualData?.dataStore?.id,
+            visualName: singleSavedVisualData?.dataStore?.visualName || prevValues.visualName,
+            description: singleSavedVisualData?.dataStore?.description || prevValues.description,
+            createdBy: singleSavedVisualData?.dataStore?.createdBy || prevValues.createdBy,
+            createdAt: singleSavedVisualData?.dataStore?.createdAt || prevValues.createdAt,
+        }));
+    }
+}, [singleSavedVisualData, visualId, reset]);
+
+   
 
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -63,8 +93,9 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({ setIsShowSaveVi
 
     // Check for duplicate visualName and query
     const existingVisual = allSavedVisuals?.dataStore?.entries?.some((entry: any) =>
-        entry.value.visualName === formData.visualName || 
-        JSON.stringify(entry.value.query) === JSON.stringify(formData.query) // Comparing query objects
+        entry.value.visualName === formData.visualName 
+    //|| 
+       // JSON.stringify(entry.value.query) === JSON.stringify(formData.query) // Comparing query objects
     );
 
     // Show error if a duplicate is found
@@ -73,13 +104,13 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({ setIsShowSaveVi
         return;
     }
 
-    const uid = generateUid(); // Generate unique ID
+    const uid = visualId || generateUid(); 
 
     try {
         // Submit the form data to the DHIS2 DataStore (path: rw-visuals)
         await engine.mutate({
             resource: `dataStore/rw-visuals/${uid}`,
-            type: 'create',
+            type:visualId ? "update" : 'create',
             data: formData,
         });
 
