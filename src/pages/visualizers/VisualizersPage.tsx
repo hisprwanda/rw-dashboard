@@ -14,7 +14,7 @@ import { FaChartLine } from "react-icons/fa6";
 import SaveVisualTypeForm from './Components/SaveVisualTypeForm';
 import { useParams } from 'react-router-dom';
 import { useFetchSingleVisualData } from '../../services/fetchVisuals';
-import { unFormatAnalyticsDimensions } from '../../lib/formatAnalyticsDimensions';
+import { unFormatAnalyticsDimensions ,formatAnalyticsDimensions} from '../../lib/formatAnalyticsDimensions';
 import { formatCurrentUserSelectedOrgUnit, formatSelectedOrganizationUnit,formatOrgUnitGroup,formatOrgUnitLevels} from '../../lib/formatCurrentUserOrgUnit';
 
 
@@ -41,7 +41,7 @@ function Visualizers() {
     const {data:singleSavedVisualData,isError,loading:isFetchSingleVisualLoading} = useFetchSingleVisualData(visualId)
 
     const { data,loading } = useDataSourceData();
-    const { analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels} = useAuthorities();
+    const { analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData} = useAuthorities();
     const [isShowDataModal, setIsShowDataModal] = useState<boolean>(false);
     const [isShowOrganizationUnit, setIsShowOrganizationUnit] = useState<boolean>(false);
     const [isShowPeriod, setIsShowPeriod] = useState<boolean>(false);
@@ -52,7 +52,7 @@ function Visualizers() {
 
 
     
-    // initial render
+    // set default chart type
     useEffect(()=>{
         setSelectedChartType(chartComponents[0]?.type)
     },[])
@@ -69,15 +69,23 @@ function Visualizers() {
          setSelectedOrgUnits(singleSavedVisualData?.dataStore?.organizationTree)
          setSelectedOrgUnitGroups(formatOrgUnitGroup(singleSavedVisualData?.dataStore?.query?.myData?.params?.filter))
          setSelectedOrganizationUnitsLevels(formatOrgUnitLevels(singleSavedVisualData?.dataStore?.query?.myData?.params?.filter))
-     
-         // selectedOrgUnitGroups
-          console.log("organizationTree 111",singleSavedVisualData?.dataStore?.query?.myData?.params?.filter)
-            console.log("singleSavedVisualData levels max 777",formatOrgUnitLevels(singleSavedVisualData?.dataStore?.query?.myData?.params?.filter) )
+         setSelectedLevel(singleSavedVisualData?.dataStore?.selectedOrgUnitLevel)
 
+        //  fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions));
         }
      
     },[singleSavedVisualData])
 
+
+
+    useEffect(() => {
+        const allStatesReady = selectedOrganizationUnits && selectedOrganizationUnitsLevels && selectedOrgUnitGroups && analyticsDimensions;
+    
+        if (allStatesReady) {
+            fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions));
+        }
+    }, [selectedOrganizationUnits, selectedOrganizationUnitsLevels, selectedOrgUnitGroups, analyticsDimensions]);
+    
     // update if current user organization is selected
     useEffect(() =>{
      if(singleSavedVisualData)
@@ -89,11 +97,7 @@ function Visualizers() {
     },[isSetPredifinedUserOrgUnits])
 
 
-    /// test selectedOrgUnits
-    useEffect(()=>{
-        //selectedOrgUnitGroups,setSelectedOrgUnitGroups
-       console.log("selectedOrganizationUnitsLevels simba",selectedOrganizationUnitsLevels )
-    },[selectedOrganizationUnitsLevels])
+
 
 
 
@@ -206,7 +210,7 @@ function Visualizers() {
                 <DataModal setIsShowDataModal={setIsShowDataModal} />
             </GenericModal>
             <GenericModal isOpen={isShowOrganizationUnit} setIsOpen={setIsShowOrganizationUnit}>
-                <OrganizationModal singleSavedVisualData={singleSavedVisualData}  setIsShowOrganizationUnit={setIsShowOrganizationUnit} />
+                <OrganizationModal   setIsShowOrganizationUnit={setIsShowOrganizationUnit} />
             </GenericModal>
             <GenericModal isOpen={isShowPeriod} setIsOpen={setIsShowPeriod}>
                 <PeriodModal setIsShowPeriod={setIsShowPeriod} />

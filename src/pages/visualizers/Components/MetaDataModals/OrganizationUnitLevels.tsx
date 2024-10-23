@@ -18,7 +18,7 @@ const OrganizationUnitLevels: React.FC<OrganizationUnitLevelsProps> = ({
     // states
     useEffect(()=>{
    console.log("test select level 1",selectedLevel)
-   console.log("test select level 2",selectedLevel)
+   console.log("test select level 2",selectedOrganizationUnitsLevels)
     },[selectedLevel,selectedOrganizationUnitsLevels])
     
   if (loading) {

@@ -10,8 +10,7 @@ export const VisualDataSchema = z.object({
     .record(z.string(), z.any())
     .refine((data) => Object.keys(data).length > 0, {
       message: "Query object cannot be empty",
-    }), // Added custom refinement for non-empty check
-  organizationTree: z.array(z.string()),
+    }), 
   dataSourceId: z.string().nonempty({ message: "Data source ID is required" }),
   createdBy: z.object({
     name: z.string(),
@@ -23,6 +22,8 @@ export const VisualDataSchema = z.object({
     name: z.string(),
     id: z.string(),
   }),
+  organizationTree: z.array(z.string())?.optional(),
+  selectedOrgUnitLevel: z.array(z.number())?.optional(),
 });
 
 // Infer form fields from the schema

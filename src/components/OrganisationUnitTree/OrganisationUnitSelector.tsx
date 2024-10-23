@@ -69,8 +69,8 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
 
   // Update selectedOrgUnit
   useEffect(() => {
-    const lastSelectedOrgUnit = selectedOrgUnits.length
-      ? selectedOrgUnits[selectedOrgUnits.length - 1].split('/').filter(Boolean).pop()
+    const lastSelectedOrgUnit = selectedOrgUnits?.length
+      ? selectedOrgUnits[selectedOrgUnits?.length - 1].split('/').filter(Boolean).pop()
       : null;
 
     setSelectedOrganizationUnits((prev: any) => {
@@ -86,12 +86,27 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
   }, [selectedOrgUnits]);
 
   // Set selected organization unit levels when selectedLevel changes
+  // useEffect(() => {
+  //   const selectedLevelIds = orgUnitLevels
+  //     .filter(level => selectedLevel?.includes(level.level))
+  //     .map(level => level.id);
+  //   setSelectedOrganizationUnitsLevels(selectedLevelIds);
+  // }, [selectedLevel, orgUnitLevels, setSelectedOrganizationUnitsLevels]);
+
   useEffect(() => {
-    const selectedLevelIds = orgUnitLevels
-      .filter(level => selectedLevel?.includes(level.level))
-      .map(level => level.id);
-    setSelectedOrganizationUnitsLevels(selectedLevelIds);
+    if (selectedLevel && selectedLevel.length > 0) {
+      const newSelectedLevelIds = orgUnitLevels
+        .filter(level => selectedLevel.includes(level.level))
+        .map(level => level.id);
+  
+      // Merge existing levels with new ones and avoid duplicates
+      setSelectedOrganizationUnitsLevels((prevLevels: string[]) => {
+        const mergedLevels = new Set([...prevLevels, ...newSelectedLevelIds]);
+        return Array.from(mergedLevels);
+      });
+    }
   }, [selectedLevel, orgUnitLevels, setSelectedOrganizationUnitsLevels]);
+  
 
   /// handle deselect
   function handleDeselect (){
@@ -169,7 +184,7 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
               renderNodeLabel={({ node }) => (
                 <span className="text-blue-600 font-medium">{node.displayName}</span>
               )}
-              filter={filteredOrgUnitPaths.length ? filteredOrgUnitPaths : undefined}
+              filter={filteredOrgUnitPaths?.length ? filteredOrgUnitPaths : undefined}
             />
           </div>
       </div>

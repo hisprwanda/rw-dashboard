@@ -19,7 +19,7 @@ interface SaveVisualTypeFormProps {
 }
 
 const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleSavedVisualData,setIsShowSaveVisualTypeForm ,selectedDataSourceId}) => {
-  const { analyticsQuery,userDatails,selectedChartType,selectedOrgUnits } = useAuthorities();
+  const { analyticsQuery,userDatails,selectedChartType,selectedOrgUnits,selectedLevel } = useAuthorities();
   const {data:allSavedVisuals,loading,isError}  = useFetchVisualsData()
 
   console.log("hello 33",singleSavedVisualData)
@@ -55,7 +55,8 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
       },
       createdAt: Date.now(), 
       updatedAt: Date.now(), 
-      organizationTree:selectedOrgUnits
+      organizationTree:selectedOrgUnits,
+      selectedOrgUnitLevel:selectedLevel
   
     },
     resolver: zodResolver(VisualDataSchema),
