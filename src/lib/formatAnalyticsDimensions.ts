@@ -16,13 +16,35 @@ export function formatAnalyticsDimensions(data: any): string[] {
 }
 
 
-export function unFormatAnalyticsDimensions(inputArray:any) {
-  const result:any = {};
+export function unFormatAnalyticsDimensions(inputArray: any) {
+  const result: any = {};
 
-  inputArray.forEach((item:any) => {
-      const [key, value] = item.split(':');
-      result[key] = value.split(';');
-  });
+  // Check if inputArray is a valid array
+  if (!Array.isArray(inputArray)) {
+    return {}; // Return an empty object if input is invalid
+  }
+
+  for (const item of inputArray) {
+    if (typeof item !== 'string') {
+      return {}; // Return empty object if any item is not a string
+    }
+
+    const splitItem = item.split(':');
+
+    // Ensure item is correctly formatted as 'key:value'
+    if (splitItem.length !== 2) {
+      return {}; // Return empty object if any item is improperly formatted
+    }
+
+    const [key, value] = splitItem;
+
+    // Ensure value exists
+    if (!value) {
+      return {}; // Return empty object if any value is missing
+    }
+
+    result[key] = value.split(';');
+  }
 
   return result;
 }

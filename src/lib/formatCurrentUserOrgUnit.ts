@@ -6,7 +6,7 @@
 
  export function formatCurrentUserSelectedOrgUnit(orgUnitString:any)  {
   // Remove the 'ou:' prefix if it exists
-  const cleanedString = orgUnitString.startsWith('ou:') ? orgUnitString.slice(3) : orgUnitString;
+  const cleanedString = orgUnitString?.startsWith('ou:') ? orgUnitString?.slice(3) : orgUnitString;
 
   // Split by ';' and ',' to get the individual values
   const orgUnits = cleanedString ? cleanedString.split(/[;,]/) : [];
@@ -49,7 +49,7 @@ export function formatSelectedOrganizationUnit(input:string):string[]{
     
     // Remove 'ou:' prefix from each item if it exists
     const parsedItems = items.map(item => {
-      return item.startsWith('ou:') ? item.slice(3) : item;
+      return item?.startsWith('ou:') ? item?.slice(3) : item;
     });
 
     return parsedItems;
@@ -73,8 +73,8 @@ export function formatOrgUnitGroup(input: string): string[] {
 
       // Filter out parts that start with 'OU_GROUP-' and remove that prefix
       const ouGroups = parts
-          .filter(part => part.startsWith('OU_GROUP-'))
-          .map(part => part.replace('OU_GROUP-', '').trim());
+          .filter(part => part?.startsWith('OU_GROUP-'))
+          .map(part => part?.replace('OU_GROUP-', '').trim());
 
       // Check if any valid OU_GROUP entries were found
       if (ouGroups.length === 0) {
@@ -104,8 +104,8 @@ export function formatOrgUnitLevels(input: string): string[] {
 
       // Filter out parts that start with 'LEVEL-' and remove that prefix
       const levelGroups = parts
-          .filter(part => part.startsWith('LEVEL-'))
-          .map(part => part.replace('LEVEL-', '').trim());
+          ?.filter(part => part?.startsWith('LEVEL-'))
+          .map(part => part?.replace('LEVEL-', '').trim());
 
       // Check if any valid LEVEL entries were found
       if (levelGroups.length === 0) {

@@ -41,7 +41,7 @@ function Visualizers() {
     const {data:singleSavedVisualData,isError,loading:isFetchSingleVisualLoading} = useFetchSingleVisualData(visualId)
 
     const { data,loading } = useDataSourceData();
-    const { analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData} = useAuthorities();
+    const { analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData} = useAuthorities();
     const [isShowDataModal, setIsShowDataModal] = useState<boolean>(false);
     const [isShowOrganizationUnit, setIsShowOrganizationUnit] = useState<boolean>(false);
     const [isShowPeriod, setIsShowPeriod] = useState<boolean>(false);
@@ -50,42 +50,72 @@ function Visualizers() {
     /// refine later (default dataSource visualId should be the current dhis2 instance)
     const [selectedDataSourceOption, setSelectedDataSourceOption] = useState<string>("");
 
-
     
-    // set default chart type
+    //// data source options
+    const dataSourceOptions = data?.dataStore?.entries?.map((entry:any) => (
+        <option key={entry?.key} value={entry?.key}>{entry?.value?.instanceName}</option>
+    ));
+    
+
+
+    //test
     useEffect(()=>{
-        setSelectedChartType(chartComponents[0]?.type)
-    },[])
-   
+        console.log("selectedDataSourceOption tets", selectedDataSourceOption)
+    },[selectedDataSourceOption])
+
+    // if visualId is false then set all chart related states to default
     useEffect(()=>{
-        if(singleSavedVisualData)
+        if(!visualId)
         {
-            setSelectedChartType(singleSavedVisualData?.dataStore?.visualType)
-            setSelectedDataSourceOption(singleSavedVisualData?.dataStore?.dataSourceId)
-            setAnalyticsQuery(singleSavedVisualData?.dataStore?.query)
-            setAnalyticsDimensions(unFormatAnalyticsDimensions(singleSavedVisualData?.dataStore?.query?.myData?.params?.dimension))
-          setIsSetPredifinedUserOrgUnits(formatCurrentUserSelectedOrgUnit(singleSavedVisualData?.dataStore?.query?.myData?.params?.filter))
-          setSelectedOrganizationUnits(formatSelectedOrganizationUnit(singleSavedVisualData?.dataStore?.query?.myData?.params?.filter))
-         setSelectedOrgUnits(singleSavedVisualData?.dataStore?.organizationTree)
-         setSelectedOrgUnitGroups(formatOrgUnitGroup(singleSavedVisualData?.dataStore?.query?.myData?.params?.filter))
-         setSelectedOrganizationUnitsLevels(formatOrgUnitLevels(singleSavedVisualData?.dataStore?.query?.myData?.params?.filter))
-         setSelectedLevel(singleSavedVisualData?.dataStore?.selectedOrgUnitLevel)
-
-        //  fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions));
+             setAnalyticsData(null)
+            setSelectedChartType(chartComponents[0]?.type)
+            setAnalyticsQuery(null)
+            setAnalyticsDimensions({ dx: [], pe: ['LAST_12_MONTHS'] })
+            setIsSetPredifinedUserOrgUnits({
+                is_USER_ORGUNIT: true,
+                is_USER_ORGUNIT_CHILDREN: false,
+                is_USER_ORGUNIT_GRANDCHILDREN: false
+              })
+              setIsUseCurrentUserOrgUnits(true)
+            setSelectedOrganizationUnits([])
+          
+            setSelectedOrgUnits([])
+            setSelectedOrgUnitGroups([])
+            setSelectedOrganizationUnitsLevels([])
+            setSelectedLevel([])
+            if(data)
+                {
+                    setSelectedDataSourceOption(data?.dataStore?.entries?.find(option => option?.value?.isCurrentDHIS2 == true )?.key)
+                }
         }
-     
-    },[singleSavedVisualData])
-
+       
+    },[visualId,data])
+   
+    /// update all necessary chart states when chart is in update mode
+    useEffect(()=>{
+        if(singleSavedVisualData && visualId)
+        {
+            setSelectedDataSourceOption(singleSavedVisualData?.dataStore?.dataSourceId)
+        }  
+    },[singleSavedVisualData,visualId])
 
 
     useEffect(() => {
-        const allStatesReady = selectedOrganizationUnits && selectedOrganizationUnitsLevels && selectedOrgUnitGroups && analyticsDimensions;
-    
-        if (allStatesReady) {
+        if (singleSavedVisualData && visualId) {
             fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions));
         }
-    }, [selectedOrganizationUnits, selectedOrganizationUnitsLevels, selectedOrgUnitGroups, analyticsDimensions]);
+    }, [
+        selectedOrganizationUnits, 
+        selectedOrganizationUnitsLevels, 
+        selectedOrgUnitGroups, 
+        analyticsDimensions, 
+        isUseCurrentUserOrgUnits, 
+        isSetPredifinedUserOrgUnits, 
+        visualId,  // this should be part of the dependency if visualId impacts the call
+        singleSavedVisualData // include this to ensure the effect runs when this changes
+    ]);
     
+
     // update if current user organization is selected
     useEffect(() =>{
      if(singleSavedVisualData)
@@ -101,10 +131,6 @@ function Visualizers() {
 
 
 
-    //// data source options
-    const dataSourceOptions = data?.dataStore?.entries?.map((entry:any) => (
-        <option key={entry?.key} value={entry?.key}>{entry?.value?.instanceName}</option>
-    ));
 
     const handleShowSaveVisualTypeForm = ()=>{
         setIsShowSaveVisualTypeForm(true)

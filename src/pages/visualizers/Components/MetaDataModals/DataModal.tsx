@@ -16,7 +16,7 @@ const DataModal: React.FC<DataModalProps> = ({ setIsShowDataModal }) => {
     // Fetch data using your custom hook
     const { data, error, loading, refetch } = useDataItems();
     const { analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, isFetchAnalyticsDataLoading } = useAuthorities();
-    console.log("helo data", data?.dataItems);
+
     // Initialize state for available options and selected options
     const [availableOptions, setAvailableOptions] = useState<TransferOption[]>([]);
 

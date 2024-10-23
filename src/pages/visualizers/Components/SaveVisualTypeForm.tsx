@@ -95,15 +95,17 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
     // Check for duplicate visualName and query
     const existingVisual = allSavedVisuals?.dataStore?.entries?.some((entry: any) =>
         entry.value.visualName === formData.visualName 
-    //|| 
-       // JSON.stringify(entry.value.query) === JSON.stringify(formData.query) // Comparing query objects
     );
 
     // Show error if a duplicate is found
-    if (existingVisual) {
-        setErrorMessage('The visual name or query already exists. Please use different values.');
+    if(!visualId)
+    {
+      if (existingVisual) {
+        setErrorMessage('The visual name already exists. Please use different value.');
         return;
     }
+    }
+ 
 
     const uid = visualId || generateUid(); 
 
