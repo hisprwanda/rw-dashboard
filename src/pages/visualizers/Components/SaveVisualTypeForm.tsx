@@ -115,11 +115,12 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
         // Close modal
         setIsShowSaveVisualTypeForm(false);
         // go in edit mode after saving first visual
-        // if(!visualId){
-        //   navigate(`/visualizers/${uid}`)
-        // }
+        if(!visualId){
+          // added navigate(`/visualization`) intentionally to fix length undefined bug
+                 navigate(`/visualization`)
+                navigate(`/visualizers/${uid}`)    
+               }
     
-        reset();  // Clear form after success
     } catch (error) {
         console.error('Error saving visual:', error);
         setErrorMessage('Failed to save visual. Please try again.');
