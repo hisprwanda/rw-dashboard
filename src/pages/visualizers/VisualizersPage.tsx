@@ -17,6 +17,7 @@ import { useFetchSingleVisualData } from '../../services/fetchVisuals';
 import { unFormatAnalyticsDimensions ,formatAnalyticsDimensions} from '../../lib/formatAnalyticsDimensions';
 import { formatCurrentUserSelectedOrgUnit, formatSelectedOrganizationUnit,formatOrgUnitGroup,formatOrgUnitLevels} from '../../lib/formatCurrentUserOrgUnit';
 import { useOrgUnitData } from '../../services/fetchOrgunitData';
+import { useDataItems } from '../../services/fetchDataItems';
 
 
 
@@ -41,6 +42,7 @@ function Visualizers() {
 
     const {data:singleSavedVisualData,isError,loading:isFetchSingleVisualLoading} = useFetchSingleVisualData(visualId)
     const { loading:orgUnitLoading, error:fetchOrgUnitError, data:orgUnitsData } = useOrgUnitData();
+    const { data:dataItemsData, error:dataItemsFetchError, loading:isDataItemsLoading } = useDataItems();
 
     const { data,loading } = useDataSourceData();
     const { analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData} = useAuthorities();
@@ -231,7 +233,7 @@ function Visualizers() {
             </div>
             {/* Data, Organization Unit, and Period Modals */}
             <GenericModal isOpen={isShowDataModal} setIsOpen={setIsShowDataModal}>
-                <DataModal setIsShowDataModal={setIsShowDataModal} />
+                <DataModal  data={dataItemsData} loading={isDataItemsLoading} error={dataItemsFetchError}  setIsShowDataModal={setIsShowDataModal} />
             </GenericModal>
             <GenericModal isOpen={isShowOrganizationUnit} setIsOpen={setIsShowOrganizationUnit}>
                 <OrganizationModal  data={orgUnitsData}  loading={orgUnitLoading} error={fetchOrgUnitError} setIsShowOrganizationUnit={setIsShowOrganizationUnit}  />

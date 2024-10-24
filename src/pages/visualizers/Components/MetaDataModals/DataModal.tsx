@@ -10,11 +10,14 @@ import { formatAnalyticsDimensions } from '../../../../lib/formatAnalyticsDimens
 
 interface DataModalProps {
     setIsShowDataModal: any;
+    data:any;
+    loading:boolean;
+    error: any;
 }
 
-const DataModal: React.FC<DataModalProps> = ({ setIsShowDataModal }) => {
+const DataModal: React.FC<DataModalProps> = ({ setIsShowDataModal,data,error,loading }) => {
     // Fetch data using your custom hook
-    const { data, error, loading, refetch } = useDataItems();
+    //const { data, error, loading } = useDataItems();
     const { analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, isFetchAnalyticsDataLoading } = useAuthorities();
 
     // Initialize state for available options and selected options
