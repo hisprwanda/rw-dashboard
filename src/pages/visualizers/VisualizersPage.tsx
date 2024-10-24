@@ -16,6 +16,7 @@ import { useParams } from 'react-router-dom';
 import { useFetchSingleVisualData } from '../../services/fetchVisuals';
 import { unFormatAnalyticsDimensions ,formatAnalyticsDimensions} from '../../lib/formatAnalyticsDimensions';
 import { formatCurrentUserSelectedOrgUnit, formatSelectedOrganizationUnit,formatOrgUnitGroup,formatOrgUnitLevels} from '../../lib/formatCurrentUserOrgUnit';
+import { useOrgUnitData } from '../../services/fetchOrgunitData';
 
 
 
@@ -39,6 +40,7 @@ function Visualizers() {
     const { id:visualId } = useParams();
 
     const {data:singleSavedVisualData,isError,loading:isFetchSingleVisualLoading} = useFetchSingleVisualData(visualId)
+    const { loading:orgUnitLoading, error:fetchOrgUnitError, data:orgUnitsData } = useOrgUnitData();
 
     const { data,loading } = useDataSourceData();
     const { analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData} = useAuthorities();
@@ -232,7 +234,7 @@ function Visualizers() {
                 <DataModal setIsShowDataModal={setIsShowDataModal} />
             </GenericModal>
             <GenericModal isOpen={isShowOrganizationUnit} setIsOpen={setIsShowOrganizationUnit}>
-                <OrganizationModal   setIsShowOrganizationUnit={setIsShowOrganizationUnit} />
+                <OrganizationModal  data={orgUnitsData}  loading={orgUnitLoading} error={fetchOrgUnitError} setIsShowOrganizationUnit={setIsShowOrganizationUnit}  />
             </GenericModal>
             <GenericModal isOpen={isShowPeriod} setIsOpen={setIsShowPeriod}>
                 <PeriodModal setIsShowPeriod={setIsShowPeriod} />

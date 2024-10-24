@@ -11,10 +11,13 @@ import OrganizationUnitLevels from '../../pages/visualizers/Components/MetaDataM
 
 interface OrganisationUnitSelectProps {
   setIsShowOrganizationUnit:any;
+  data:any;
+  loading:boolean;
+  error:any
   
 }
 
-const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsShowOrganizationUnit}) => {
+const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsShowOrganizationUnit,data,loading,error}) => {
 
   const {
     analyticsDimensions,
@@ -33,7 +36,7 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
     selectedOrgUnits
   } = useAuthorities();
 
-  const { loading, error, data } = useOrgUnitData();
+  //const { loading, error, data } = useOrgUnitData();
   const orgUnits = data?.orgUnits?.organisationUnits || [];
   const orgUnitLevels = data?.orgUnitLevels?.organisationUnitLevels || [];
   const currentUserOrgUnit = data?.currentUser?.organisationUnits?.[0];
@@ -121,12 +124,12 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
     setIsShowOrganizationUnit(false)
   };
 
-  /// handle loading
+  // handle loading
   if (loading) {
     return <CircularLoader />;
   }
 
-  /// handle error
+  // handle error
   if (error) {
     return <p className="text-red-500">Error: {error.message}</p>;
   }

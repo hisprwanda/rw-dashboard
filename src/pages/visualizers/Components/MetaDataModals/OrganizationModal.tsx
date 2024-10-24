@@ -4,12 +4,15 @@ import OrganizationUnitSelector from "../../../../components/OrganisationUnitTre
 
 interface OrganizationUnitModalProps {
   setIsShowOrganizationUnit:any;
+  data:any;
+  loading:boolean;
+  error:any
   
 }
-const OrganizationModal:React.FC<OrganizationUnitModalProps> = ({setIsShowOrganizationUnit}) => {
+const OrganizationModal:React.FC<OrganizationUnitModalProps> = ({setIsShowOrganizationUnit,data,loading,error}) => {
   return (
     <div>
-      <OrganizationUnitSelector setIsShowOrganizationUnit={setIsShowOrganizationUnit} />
+      <OrganizationUnitSelector  data={data} loading={loading}  error={error} setIsShowOrganizationUnit={setIsShowOrganizationUnit} />
     </div>
   )
 }
