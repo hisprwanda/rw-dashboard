@@ -50,10 +50,13 @@ export const useFetchSingleVisualData = (visualId: string) => {
 
   // Fetch data using useDataQuery
   const { data, loading, error, refetch } = useDataQuery(query);
-
+   // clear existing data
+  
   // Use useEffect to handle state updates after data is fetched
   useEffect(() => {
     if (data) {
+         // clear existing data
+         setAnalyticsData([])
       // Safely update state when data is fetched
       setSelectedChartType(data?.dataStore?.visualType);
       setAnalyticsQuery(data?.dataStore?.query);

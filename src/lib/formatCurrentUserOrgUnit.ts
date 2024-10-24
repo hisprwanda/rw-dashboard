@@ -77,7 +77,7 @@ export function formatOrgUnitGroup(input: string): string[] {
           .map(part => part?.replace('OU_GROUP-', '').trim());
 
       // Check if any valid OU_GROUP entries were found
-      if (ouGroups.length === 0) {
+      if (ouGroups?.length === 0) {
           throw new Error("No valid 'OU_GROUP-' entries found in the input");
       }
 
@@ -108,7 +108,7 @@ export function formatOrgUnitLevels(input: string): string[] {
           .map(part => part?.replace('LEVEL-', '').trim());
 
       // Check if any valid LEVEL entries were found
-      if (levelGroups.length === 0) {
+      if (levelGroups?.length === 0) {
           throw new Error("No valid 'LEVEL-' entries found in the input");
       }
 

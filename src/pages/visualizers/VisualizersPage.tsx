@@ -49,20 +49,11 @@ function Visualizers() {
     
     /// refine later (default dataSource visualId should be the current dhis2 instance)
     const [selectedDataSourceOption, setSelectedDataSourceOption] = useState<string>("");
-
-    
     //// data source options
     const dataSourceOptions = data?.dataStore?.entries?.map((entry:any) => (
         <option key={entry?.key} value={entry?.key}>{entry?.value?.instanceName}</option>
     ));
     
-
-
-    //test
-    useEffect(()=>{
-        console.log("selectedDataSourceOption tets", selectedDataSourceOption)
-    },[selectedDataSourceOption])
-
     // if visualId is false then set all chart related states to default
     useEffect(()=>{
         if(!visualId)
@@ -83,6 +74,7 @@ function Visualizers() {
             setSelectedOrgUnitGroups([])
             setSelectedOrganizationUnitsLevels([])
             setSelectedLevel([])
+            /// set default data source
             if(data)
                 {
                     setSelectedDataSourceOption(data?.dataStore?.entries?.find(option => option?.value?.isCurrentDHIS2 == true )?.key)
@@ -91,7 +83,7 @@ function Visualizers() {
        
     },[visualId,data])
    
-    /// update all necessary chart states when chart is in update mode
+    /// set saved dataSource
     useEffect(()=>{
         if(singleSavedVisualData && visualId)
         {
@@ -100,8 +92,12 @@ function Visualizers() {
     },[singleSavedVisualData,visualId])
 
 
+    ////
     useEffect(() => {
         if (singleSavedVisualData && visualId) {
+            // clear existing data
+            setAnalyticsData([])
+            // run analytics API
             fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions));
         }
     }, [
@@ -111,8 +107,8 @@ function Visualizers() {
         analyticsDimensions, 
         isUseCurrentUserOrgUnits, 
         isSetPredifinedUserOrgUnits, 
-        visualId,  // this should be part of the dependency if visualId impacts the call
-        singleSavedVisualData // include this to ensure the effect runs when this changes
+        visualId,  
+        singleSavedVisualData 
     ]);
     
 

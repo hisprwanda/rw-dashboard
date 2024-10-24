@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { generateUid } from '../../../lib/uid';
 import { VisualDataFormFields, VisualDataSchema } from '../../../types/visualType';
@@ -10,6 +9,7 @@ import Button from '../../../components/Button';
 import { IoSaveOutline } from 'react-icons/io5';
 import { useAuthorities } from '../../../context/AuthContext';
 import { useFetchVisualsData } from '../../../services/fetchVisuals';
+import { useNavigate } from 'react-router-dom';
 
 interface SaveVisualTypeFormProps {
   setIsShowSaveVisualTypeForm: any;
@@ -21,15 +21,7 @@ interface SaveVisualTypeFormProps {
 const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleSavedVisualData,setIsShowSaveVisualTypeForm ,selectedDataSourceId}) => {
   const { analyticsQuery,userDatails,selectedChartType,selectedOrgUnits,selectedLevel } = useAuthorities();
   const {data:allSavedVisuals,loading,isError}  = useFetchVisualsData()
-
-  console.log("hello 33",singleSavedVisualData)
-
-  console.log("hello saved data x",allSavedVisuals?.dataStore?.entries)
-  //other test
-  useEffect(()=>{
-    console.log("hello 44",selectedChartType)
-    },[selectedChartType])
-
+  const navigate = useNavigate();
 
 
   const engine = useDataEngine();
@@ -122,6 +114,11 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
         await new Promise((resolve) => setTimeout(() => resolve(), 2000));
         // Close modal
         setIsShowSaveVisualTypeForm(false);
+        // go in edit mode after saving first visual
+        // if(!visualId){
+        //   navigate(`/visualizers/${uid}`)
+        // }
+    
         reset();  // Clear form after success
     } catch (error) {
         console.error('Error saving visual:', error);

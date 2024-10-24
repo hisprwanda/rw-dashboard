@@ -2,11 +2,11 @@
 export function formatAnalyticsDimensions(data: any): string[] {
   const result: string[] = [];
 
-  if (data.dx.length > 0) {
+  if (data.dx?.length > 0) {
     result.push(`dx:${data.dx.join(";")}`);
   }
 
-  if (data.pe.length > 0) {
+  if (data.pe?.length > 0) {
     result.push(`pe:${data.pe.join(";")}`);
   }
 
@@ -32,7 +32,7 @@ export function unFormatAnalyticsDimensions(inputArray: any) {
     const splitItem = item.split(':');
 
     // Ensure item is correctly formatted as 'key:value'
-    if (splitItem.length !== 2) {
+    if (splitItem?.length !== 2) {
       return {}; // Return empty object if any item is improperly formatted
     }
 
