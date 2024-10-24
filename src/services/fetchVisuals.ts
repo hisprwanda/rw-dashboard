@@ -88,7 +88,7 @@ export const useFetchSingleVisualData = (visualId: string) => {
 export const useFetchVisualsData = ()=>{
 
     const query = {
-        dataStore: {
+        dataStore: {  
             resource: 'dataStore/rw-visuals',
             params: () => ({
               fields: '.',
