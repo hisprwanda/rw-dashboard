@@ -8,8 +8,15 @@ import {
 import { IconAdd16 } from "@dhis2/ui";
 import OtherDashboardsPageView from "./components/OtherDashboardsPageView";
 import MyDashboardsPageView from "./components/MyDashboardsPageView";
+import { useNavigate } from "react-router-dom";
+
 
 export default function dashboardsPage() {
+  const navigate = useNavigate();
+
+  const handleGoToDashboard = ()=>{
+    navigate(`/dashboard`)
+  }
   return (
     <section className="px-14 py-5">
       <div>
@@ -19,7 +26,7 @@ export default function dashboardsPage() {
               <TabsTrigger value="mydashboards">My Dashboards</TabsTrigger>
               <TabsTrigger value="otherdasboards">Other Dasboards</TabsTrigger>
             </TabsList>
-            <Button text={"Add Dashboard"} icon={<IconAdd16 />} />
+            <Button text={"Add Dashboard"} icon={<IconAdd16 />}  onClick={handleGoToDashboard} />
           </div>
           <TabsContent value="mydashboards">
             <MyDashboardsPageView />
