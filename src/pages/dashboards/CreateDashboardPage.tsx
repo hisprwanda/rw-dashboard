@@ -5,6 +5,7 @@ import GridLayout, { Layout } from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import { FaTrash } from 'react-icons/fa';
+import DashboardVisualItem from './components/DashboardVisualItem';
 
 // Extend Layout interface to include visualName, visualQuery, and visualType
 interface ExtendedLayout extends Layout {
@@ -84,6 +85,8 @@ const CreateDashboardPage: React.FC = () => {
                     <Button text='Save changes' />
                     <Button text='Print preview' />
                 </div>
+                {/* testing */}
+              
             </div>
 
             {/* Select Visuals Dropdown */}
@@ -94,6 +97,11 @@ const CreateDashboardPage: React.FC = () => {
                 <option value="">Select a visual...</option>
                 {visualOptions}
             </select>
+
+            {/* testing */}
+            {/* <div>
+            <DashboardVisualItem visualType='bar' />
+            </div> */}
 
             {/* Dashboard Grid */}
             <MemoizedGridLayout
@@ -146,9 +154,11 @@ const MemoizedGridLayout = React.memo(({
                 }}
             >
                 <div className="drag-handle" style={{ cursor: "move", marginBottom: "5px" }}>
-                    Drag {widget.visualName} (ID: {widget.i}, Type: {widget.visualType})
+                   {widget.visualName} 
                 </div>
-                <div>Widget {widget.i} content here</div>
+                <div>
+                <DashboardVisualItem query={widget.visualQuery} visualType={widget.visualType} />
+                </div>
                 <FaTrash
                     style={{
                         position: "absolute",

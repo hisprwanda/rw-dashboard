@@ -203,7 +203,7 @@ function Visualizers() {
                     </TabsContent>
                     <TabsContent value="CUSTOMIZE" className="pt-4">
                         <div>
-                            {/* Customization Content */}
+                            {/* selecting Content */}
                             <SelectChartType 
                                 chartComponents={chartComponents} 
                                 selectedChartType={selectedChartType} 

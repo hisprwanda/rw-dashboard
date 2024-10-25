@@ -17,6 +17,7 @@ function filterOtherCharts(data:any, creatorId:string) {
 
 const VisualizationPage = () => {
   const {data,loading,isError}  = useFetchVisualsData()
+ 
   const {userDatails} = useAuthorities();
 
 
