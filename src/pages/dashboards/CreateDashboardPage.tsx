@@ -1,51 +1,83 @@
 import React, { useEffect, useState } from 'react';
 import Button from "../../components/Button";
 import { useFetchVisualsData } from '../../services/fetchVisuals';
-import { useAuthorities } from '../../context/AuthContext';
 import GridLayout, { Layout } from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
+import { FaTrash } from 'react-icons/fa';
+
+// Extend Layout interface to include visualName and visualQuery
+interface ExtendedLayout extends Layout {
+    visualName: string;
+    visualQuery: any;
+}
+
+interface VisualEntry {
+    key: string;
+    value: {
+        visualName: string;
+        query: any;
+    };
+}
 
 const CreateDashboardPage: React.FC = () => {
     const { data: allSavedVisuals, loading, isError } = useFetchVisualsData();
+    const [selectedVisualsForDashboard, setSelectedVisualsForDashboard] = useState<ExtendedLayout[]>([]);
+    const [selectedVisual, setSelectedVisual] = useState<VisualEntry | null>(null);
 
-    const [selectedVisualsForDashboard, setSelectedVisualsForDashboard] = useState<Layout[]>([]);
-    const [selectedVisual, setSelectedVisual] = useState('');
-
-    const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
+    const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: VisualEntry) => (
         <option key={entry.key} value={entry.key}>
-            {entry?.value?.visualName}
+            {entry.value.visualName}
         </option>
     ));
 
+
+
+
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedVisual(e.target.value);
+        const selectedKey = e.target.value;
+        const visual = allSavedVisuals?.dataStore?.entries?.find(
+            (entry: VisualEntry) => entry.key === selectedKey
+        );
+        setSelectedVisual(visual || null);
     };
 
-    const addVisualToDashboard = () => {
-        if (selectedVisual && !selectedVisualsForDashboard.some(visual => visual.i === selectedVisual)) {
-            const newItem: Layout = {
-                i: selectedVisual,
+    useEffect(() => {
+        if (selectedVisual && !selectedVisualsForDashboard.some(visual => visual.i === selectedVisual.key)) {
+            const newItem: ExtendedLayout = {
+                i: selectedVisual.key,
                 x: (selectedVisualsForDashboard.length * 3) % 12,
                 y: Math.floor(selectedVisualsForDashboard.length / 4) * 3,
                 w: 3,
                 h: 3,
+                visualName: selectedVisual.value.visualName,
+                visualQuery: selectedVisual.value.query,
             };
-            setSelectedVisualsForDashboard([...selectedVisualsForDashboard, newItem]);
+            setSelectedVisualsForDashboard(prev => [...prev, newItem]);
         }
-    };
+    }, [selectedVisual]);
 
     const handleLayoutChange = (newLayout: Layout[]) => {
-        // Only update layout if there’s an actual change
-        if (JSON.stringify(newLayout) !== JSON.stringify(selectedVisualsForDashboard)) {
-            setSelectedVisualsForDashboard(newLayout);
-        }
+        const updatedLayout = newLayout.map(layoutItem => {
+            const existingVisual = selectedVisualsForDashboard.find(visual => visual.i === layoutItem.i);
+            return existingVisual
+                ? { ...layoutItem, visualName: existingVisual.visualName, visualQuery: existingVisual.visualQuery }
+                : layoutItem;
+        });
+        setSelectedVisualsForDashboard(updatedLayout as ExtendedLayout[]);
     };
 
-    useEffect(() => {
-        console.log("Selected Visuals for Dashboard:", selectedVisualsForDashboard);
-    }, [selectedVisualsForDashboard]);
+    // Handle widget deletion
+    const handleDeleteWidget = (id: string) => {
+        setSelectedVisualsForDashboard(prev => prev.filter(widget => widget.i !== id));
+    };
 
+
+
+    // test
+    useEffect(()=>{
+        console.log("selected visuals for dashboard",selectedVisualsForDashboard)
+    },[selectedVisualsForDashboard])
     return (
         <div className="p-6">
             {/* Header */}
@@ -58,19 +90,12 @@ const CreateDashboardPage: React.FC = () => {
 
             {/* Select Visuals Dropdown */}
             <select
-                value={selectedVisual}
                 onChange={handleChange}
                 className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm mt-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             >
+                <option value="">Select a visual...</option>
                 {visualOptions}
             </select>
-
-            <button
-                onClick={addVisualToDashboard}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-md mt-3"
-            >
-                Add Visual to Dashboard
-            </button>
 
             {/* Dashboard Grid */}
             <MemoizedGridLayout
@@ -79,6 +104,7 @@ const CreateDashboardPage: React.FC = () => {
                 cols={12}
                 rowHeight={100}
                 width={1200}
+                onDeleteWidget={handleDeleteWidget}
             />
         </div>
     );
@@ -90,13 +116,15 @@ const MemoizedGridLayout = React.memo(({
     onLayoutChange,
     cols,
     rowHeight,
-    width
+    width,
+    onDeleteWidget
 }: {
-    layout: Layout[];
+    layout: ExtendedLayout[];
     onLayoutChange: (layout: Layout[]) => void;
     cols: number;
     rowHeight: number;
     width: number;
+    onDeleteWidget: (id: string) => void;
 }) => (
     <GridLayout
         className="layout"
@@ -116,12 +144,23 @@ const MemoizedGridLayout = React.memo(({
                     borderRadius: "8px",
                     background: "#fff",
                     padding: "10px",
+                    position: "relative",
                 }}
             >
                 <div className="drag-handle" style={{ cursor: "move", marginBottom: "5px" }}>
-                    Drag Widget {widget.i}
+                    Drag {widget.visualName} (ID: {widget.i})
                 </div>
                 <div>Widget {widget.i} content here</div>
+                <FaTrash
+                    style={{
+                        position: "absolute",
+                        top: "10px",
+                        right: "10px",
+                        cursor: "pointer",
+                        color: "red",
+                    }}
+                    onClick={() => onDeleteWidget(widget.i)}
+                />
             </div>
         ))}
     </GridLayout>
