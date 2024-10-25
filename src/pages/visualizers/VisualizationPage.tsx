@@ -55,14 +55,12 @@ const VisualizationPage = () => {
                             Other Charts
                         </TabsTrigger>
                     </TabsList>
-        <Button variant="primary" text="Add Visualizer" type="button" onClick={handleGoToCreateVisualizerPage}
+        <Button variant="primary" text="New Visualizer" type="button" onClick={handleGoToCreateVisualizerPage}
        icon={<IoIosAddCircle />} />
         </div>
                 
                     <TabsContent value="my-charts" className="pt-4">
-        
                     <VisualizerTable  savedVisualData={filterSavedChartsByCreatorId(data?.dataStore?.entries,userDatails?.me?.id)} />
-                   
                     </TabsContent>
                     <TabsContent value="Other-Charts" className="pt-4">
                     <VisualizerTable  savedVisualData={filterOtherCharts(data?.dataStore?.entries,userDatails?.me?.id)} />

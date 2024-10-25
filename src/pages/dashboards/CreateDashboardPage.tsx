@@ -6,10 +6,11 @@ import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import { FaTrash } from 'react-icons/fa';
 
-// Extend Layout interface to include visualName and visualQuery
+// Extend Layout interface to include visualName, visualQuery, and visualType
 interface ExtendedLayout extends Layout {
     visualName: string;
     visualQuery: any;
+    visualType: string; // Added visualType property
 }
 
 interface VisualEntry {
@@ -17,6 +18,7 @@ interface VisualEntry {
     value: {
         visualName: string;
         query: any;
+        visualType: string; // Added visualType property to VisualEntry
     };
 }
 
@@ -30,9 +32,6 @@ const CreateDashboardPage: React.FC = () => {
             {entry.value.visualName}
         </option>
     ));
-
-
-
 
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedKey = e.target.value;
@@ -52,6 +51,7 @@ const CreateDashboardPage: React.FC = () => {
                 h: 3,
                 visualName: selectedVisual.value.visualName,
                 visualQuery: selectedVisual.value.query,
+                visualType: selectedVisual.value.visualType, // Set visualType property
             };
             setSelectedVisualsForDashboard(prev => [...prev, newItem]);
         }
@@ -61,7 +61,7 @@ const CreateDashboardPage: React.FC = () => {
         const updatedLayout = newLayout.map(layoutItem => {
             const existingVisual = selectedVisualsForDashboard.find(visual => visual.i === layoutItem.i);
             return existingVisual
-                ? { ...layoutItem, visualName: existingVisual.visualName, visualQuery: existingVisual.visualQuery }
+                ? { ...layoutItem, visualName: existingVisual.visualName, visualQuery: existingVisual.visualQuery, visualType: existingVisual.visualType }
                 : layoutItem;
         });
         setSelectedVisualsForDashboard(updatedLayout as ExtendedLayout[]);
@@ -71,8 +71,6 @@ const CreateDashboardPage: React.FC = () => {
     const handleDeleteWidget = (id: string) => {
         setSelectedVisualsForDashboard(prev => prev.filter(widget => widget.i !== id));
     };
-
-
 
     // test
     useEffect(()=>{
@@ -148,7 +146,7 @@ const MemoizedGridLayout = React.memo(({
                 }}
             >
                 <div className="drag-handle" style={{ cursor: "move", marginBottom: "5px" }}>
-                    Drag {widget.visualName} (ID: {widget.i})
+                    Drag {widget.visualName} (ID: {widget.i}, Type: {widget.visualType})
                 </div>
                 <div>Widget {widget.i} content here</div>
                 <FaTrash
