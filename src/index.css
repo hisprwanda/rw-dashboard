@@ -622,6 +622,11 @@ video {
   margin-right: -0.25rem;
 }
 
+.mx-3 {
+  margin-left: 0.75rem;
+  margin-right: 0.75rem;
+}
+
 .mx-4 {
   margin-left: 1rem;
   margin-right: 1rem;
@@ -838,6 +843,10 @@ video {
 
 .h-screen {
   height: 100vh;
+}
+
+.max-h-3 {
+  max-height: 0.75rem;
 }
 
 .max-h-96 {
@@ -1279,6 +1288,11 @@ video {
 .bg-\[\#666F7B\] {
   --tw-bg-opacity: 1;
   background-color: rgb(102 111 123 / var(--tw-bg-opacity));
+}
+
+.bg-\[\#f4f6f8\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(244 246 248 / var(--tw-bg-opacity));
 }
 
 .bg-\[--color-bg\] {

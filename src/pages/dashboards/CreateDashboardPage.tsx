@@ -28,9 +28,18 @@ const CreateDashboardPage: React.FC = () => {
     const [selectedVisualsForDashboard, setSelectedVisualsForDashboard] = useState<ExtendedLayout[]>([]);
     const [selectedVisual, setSelectedVisual] = useState<VisualEntry | null>(null);
 
+    // State for single dashboard data
+    const [singleDashboardData, setSingleDashboardData] = useState({
+        dashboardName: '',
+        dashboardDescription: '',
+        createdAt: new Date().toISOString(), // Set current date as createdAt
+        createdBy: '', // You might want to replace this with actual user data
+        selectedVisuals: [] as ExtendedLayout[],
+    });
+
     const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: VisualEntry) => (
         <option key={entry.key} value={entry.key}>
-            {entry.value.visualName}
+            {entry.value.visualName} ({entry.value.visualType})
         </option>
     ));
 
@@ -73,20 +82,40 @@ const CreateDashboardPage: React.FC = () => {
         setSelectedVisualsForDashboard(prev => prev.filter(widget => widget.i !== id));
     };
 
-    // test
-    useEffect(()=>{
-        console.log("selected visuals for dashboard",selectedVisualsForDashboard)
-    },[selectedVisualsForDashboard])
+    // Handle save changes
+    const handleSaveChanges = () => {
+        setSingleDashboardData(prev => ({
+            ...prev,
+            selectedVisuals: selectedVisualsForDashboard,
+        }));
+        console.log(singleDashboardData);
+    };
+
     return (
         <div className="p-6">
             {/* Header */}
             <div className="flex justify-end">
                 <div className='flex items-center gap-2'>
-                    <Button text='Save changes' />
+                    <Button text='Save changes' onClick={handleSaveChanges} />
                     <Button text='Print preview' />
                 </div>
-                {/* testing */}
-              
+            </div>
+
+            {/* Dashboard Name and Description Inputs */}
+            <div className="mt-4 flex flex-row gap-2 ">
+                <input
+                    type="text"
+                    placeholder="Dashboard Name"
+                    value={singleDashboardData.dashboardName}
+                    onChange={(e) => setSingleDashboardData({ ...singleDashboardData, dashboardName: e.target.value })}
+                    className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm mt-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+                <textarea
+                    placeholder="Dashboard Description"
+                    value={singleDashboardData.dashboardDescription}
+                    onChange={(e) => setSingleDashboardData({ ...singleDashboardData, dashboardDescription: e.target.value })}
+                    className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm mt-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
             </div>
 
             {/* Select Visuals Dropdown */}
@@ -97,11 +126,6 @@ const CreateDashboardPage: React.FC = () => {
                 <option value="">Select a visual...</option>
                 {visualOptions}
             </select>
-
-            {/* testing */}
-            {/* <div>
-            <DashboardVisualItem visualType='bar' />
-            </div> */}
 
             {/* Dashboard Grid */}
             <MemoizedGridLayout
@@ -133,7 +157,7 @@ const MemoizedGridLayout = React.memo(({
     onDeleteWidget: (id: string) => void;
 }) => (
     <GridLayout
-        className="layout"
+        className="layout bg-[#f4f6f8] "
         layout={layout}
         onLayoutChange={onLayoutChange}
         cols={cols}
@@ -154,10 +178,13 @@ const MemoizedGridLayout = React.memo(({
                 }}
             >
                 <div className="drag-handle" style={{ cursor: "move", marginBottom: "5px" }}>
-                   {widget.visualName} 
+                    {widget.visualName}
                 </div>
-                <div>
-                <DashboardVisualItem query={widget.visualQuery} visualType={widget.visualType} />
+                {/* Widget content */}
+                <div className='mx-3 max-h-3'>
+                    <div className='w-full h-full'>
+                        <DashboardVisualItem query={widget.visualQuery} visualType={widget.visualType} />
+                    </div>
                 </div>
                 <FaTrash
                     style={{

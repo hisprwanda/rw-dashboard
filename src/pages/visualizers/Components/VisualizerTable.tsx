@@ -12,10 +12,12 @@ import { GenericModal } from '../../../components';
 import DeleteVisualTypeCard from './DeleteVisualTypeCard';
 import { useFetchVisualsData } from '../../../services/fetchVisuals';
 import { useNavigate } from 'react-router-dom';
+import { useAuthorities } from '../../../context/AuthContext';
 
 
 
 const VisualizerTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
+  const {setAnalyticsData} = useAuthorities();
     const navigate = useNavigate();
     const {refetch}  = useFetchVisualsData()
     const [isShowDeleteVisual,setIsShowDeleteVisual] = useState<boolean>(false)
@@ -65,6 +67,8 @@ const VisualizerTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
 
   // Handlers that log the key
   const handleView = (data:any) => {
+    // clear existing analytics data
+    setAnalyticsData([])
   navigate(`/visualizers/${data?.key}`)
   console.log("hello view",data)
 

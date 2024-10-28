@@ -31,8 +31,8 @@ export const LocalLineChart: React.FC<LocalLineChartProps> = ({ data }) => {
     }
 
     return (
-        <ChartContainer config={chartConfig}>
-            <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+        <ChartContainer config={chartConfig} style={{height:"100%",width:"100%"}} >
+            <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }} width={100} height={100}  >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
                     dataKey="month"
