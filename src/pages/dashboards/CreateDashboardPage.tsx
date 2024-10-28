@@ -9,13 +9,16 @@ import DashboardVisualItem from './components/DashboardVisualItem';
 import { useDataEngine } from '@dhis2/app-runtime';
 import { generateUid } from '../../lib/uid';
 import { useAuthorities } from '../../context/AuthContext';
-
+import { z } from "zod";
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useParams } from 'react-router-dom';
 
 // Extend Layout interface to include visualName, visualQuery, and visualType
 interface ExtendedLayout extends Layout {
     visualName: string;
     visualQuery: any;
-    visualType: string; // Added visualType property
+    visualType: string;
 }
 
 interface VisualEntry {
@@ -23,32 +26,63 @@ interface VisualEntry {
     value: {
         visualName: string;
         query: any;
-        visualType: string; // Added visualType property to VisualEntry
+        visualType: string;
     };
 }
 
+
+
+// Schema definition using zod
+ const DashboardSchema = z.object({
+  id: z.string(),
+  dashboardName: z.string().nonempty({ message: "Dashboard name is required" }),
+  dashboardDescription: z.string().optional(),
+  createdBy: z.object({
+    name: z.string(),
+    id: z.string(),
+  }),
+  createdAt: z.number(), 
+  updatedAt: z.number(), 
+  updatedBy: z.object({
+    name: z.string(),
+    id: z.string(),
+  }),
+  selectedVisuals: z.array(z.unknown()),
+  sharing: z.array(z.unknown()).optional(), 
+});
+
+// Infer form fields from the schema
+ type DashboardFormFields = z.infer<typeof DashboardSchema>;
+
 const CreateDashboardPage: React.FC = () => {
+    const { id:dashboardId } = useParams();
     const { data: allSavedVisuals, loading, isError } = useFetchVisualsData();
-  const {userDatails} = useAuthorities()
-    const [selectedVisualsForDashboard, setSelectedVisualsForDashboard] = useState<ExtendedLayout[]>([]);
-    const [selectedVisual, setSelectedVisual] = useState<VisualEntry | null>(null);
+    
+    const { userDatails } = useAuthorities();
 
     // State for single dashboard data
     const [singleDashboardData, setSingleDashboardData] = useState({
-        dashboardName: '', // is required
+        dashboardName: '',
         dashboardDescription: '',
-        selectedVisuals: [] as ExtendedLayout[], // is required
-        createdBy:{
-            name:userDatails?.me?.displayName,
-            id:userDatails?.me?.id
-          },
-          updatedBy:{
-            name:userDatails?.me?.displayName,
-            id:userDatails?.me?.id
-          },
-          createdAt: Date.now(), 
-          updatedAt: Date.now(), 
+        selectedVisuals: [] as ExtendedLayout[], 
+        createdBy: {
+            name: userDatails?.me?.displayName,
+            id: userDatails?.me?.id
+        },
+        updatedBy: {
+            name: userDatails?.me?.displayName,
+            id: userDatails?.me?.id
+        },
+        sharing:[], // optional
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
     });
+
+       // test data
+       useEffect(()=>{
+        console.log("testing", singleDashboardData)
+    },[singleDashboardData])
+    const [selectedVisual, setSelectedVisual] = useState<VisualEntry | null>(null);
 
     const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: VisualEntry) => (
         <option key={entry.key} value={entry.key}>
@@ -65,65 +99,62 @@ const CreateDashboardPage: React.FC = () => {
     };
 
     useEffect(() => {
-        if (selectedVisual && !selectedVisualsForDashboard.some(visual => visual.i === selectedVisual.key)) {
+        if (selectedVisual && !singleDashboardData.selectedVisuals.some(visual => visual.i === selectedVisual.key)) {
             const newItem: ExtendedLayout = {
                 i: selectedVisual.key,
-                x: (selectedVisualsForDashboard.length * 3) % 12,
-                y: Math.floor(selectedVisualsForDashboard.length / 4) * 3,
+                x: (singleDashboardData.selectedVisuals.length * 3) % 12,
+                y: Math.floor(singleDashboardData.selectedVisuals.length / 4) * 3,
                 w: 3,
                 h: 3,
                 visualName: selectedVisual.value.visualName,
                 visualQuery: selectedVisual.value.query,
-                visualType: selectedVisual.value.visualType, // Set visualType property
+                visualType: selectedVisual.value.visualType,
             };
-            setSelectedVisualsForDashboard(prev => [...prev, newItem]);
+            setSingleDashboardData(prev => ({
+                ...prev,
+                selectedVisuals: [...prev.selectedVisuals, newItem],
+            }));
         }
     }, [selectedVisual]);
 
-
-    /// update selected visuals
-    useEffect(() => {
-        setSingleDashboardData(prev => ({
-            ...prev,
-            selectedVisuals: selectedVisualsForDashboard,
-        }));
-    }
-,[selectedVisualsForDashboard])
-
     const handleLayoutChange = (newLayout: Layout[]) => {
         const updatedLayout = newLayout.map(layoutItem => {
-            const existingVisual = selectedVisualsForDashboard.find(visual => visual.i === layoutItem.i);
+            const existingVisual = singleDashboardData.selectedVisuals.find(visual => visual.i === layoutItem.i);
             return existingVisual
                 ? { ...layoutItem, visualName: existingVisual.visualName, visualQuery: existingVisual.visualQuery, visualType: existingVisual.visualType }
                 : layoutItem;
         });
-        setSelectedVisualsForDashboard(updatedLayout as ExtendedLayout[]);
+        setSingleDashboardData(prev => ({
+            ...prev,
+            selectedVisuals: updatedLayout as ExtendedLayout[],
+        }));
     };
 
-    // Handle widget deletion
     const handleDeleteWidget = (id: string) => {
-        setSelectedVisualsForDashboard(prev => prev.filter(widget => widget.i !== id));
+        setSingleDashboardData(prev => ({
+            ...prev,
+            selectedVisuals: prev.selectedVisuals.filter(widget => widget.i !== id),
+        }));
     };
 
-    //
     const engine = useDataEngine();
 
-    // Handle save changes
-    const handleSaveChanges = async() => {
-        const uid =  generateUid(); 
+    const handleSaveChanges = async () => {
+        const uid = generateUid();
         try {
-
             await engine.mutate({
                 resource: `dataStore/rw-dashboard/${uid}`,
                 type: 'create',
                 data: singleDashboardData,
             });
-            console.log("save dashboard success")
+            console.log("save dashboard success");
         } catch (error) {
             console.error('Error saving dashboard:', error);
-          
         }
     };
+
+
+ 
 
     return (
         <div className="p-6">
@@ -138,7 +169,7 @@ const CreateDashboardPage: React.FC = () => {
             {/* Dashboard Name and Description Inputs */}
             <div className="mt-4 flex flex-row gap-2 ">
                 <input
-                required
+                    required
                     type="text"
                     placeholder="Dashboard Name"
                     value={singleDashboardData.dashboardName}
@@ -164,7 +195,7 @@ const CreateDashboardPage: React.FC = () => {
 
             {/* Dashboard Grid */}
             <MemoizedGridLayout
-                layout={selectedVisualsForDashboard}
+                layout={singleDashboardData.selectedVisuals}
                 onLayoutChange={handleLayoutChange}
                 cols={12}
                 rowHeight={100}
@@ -215,7 +246,6 @@ const MemoizedGridLayout = React.memo(({
                 <div className="drag-handle" style={{ cursor: "move", marginBottom: "5px" }}>
                     {widget.visualName}
                 </div>
-                {/* Widget content */}
                 <div className='mx-3 max-h-3'>
                     <div className='w-full h-full'>
                         <DashboardVisualItem query={widget.visualQuery} visualType={widget.visualType} />
