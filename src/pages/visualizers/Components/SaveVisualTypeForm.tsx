@@ -171,6 +171,7 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
         <div className="flex justify-end mt-4">
           <Button
             variant="primary"
+            disabled={isSubmitting}
             text={isSubmitting ? 'Saving...' : 'Save'}
             type="submit"
             icon={<IoSaveOutline />}

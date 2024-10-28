@@ -13,49 +13,20 @@ import { z } from "zod";
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useParams } from 'react-router-dom';
+import { DashboardSchema, DashboardFormFields } from '../../types/dashboard';
 
-// Schema definition using zod
-const DashboardSchema = z.object({
-    dashboardName: z.string().nonempty("Dashboard name is required"),
-    dashboardDescription: z.string().optional(),
-    createdBy: z.object({
-        name: z.string(),
-        id: z.string(),
-    }),
-    createdAt: z.number(),
-    updatedAt: z.number(),
-    updatedBy: z.object({
-        name: z.string(),
-        id: z.string(),
-    }),
-    selectedVisuals: z.array(
-        z.object({
-            i: z.string(),
-            x: z.number(),
-            y: z.number(),
-            w: z.number(),
-            h: z.number(),
-            visualName: z.string(),
-            visualQuery: z.any(),
-            visualType: z.string(),
-        })
-    ),
-    sharing: z.array(z.unknown()).optional(),
-});
 
-// Infer form fields from the schema
-type DashboardFormFields = z.infer<typeof DashboardSchema>;
 
 const CreateDashboardPage: React.FC = () => {
     const { id: dashboardId } = useParams();
     const { data: allSavedVisuals } = useFetchVisualsData();
     const { userDatails } = useAuthorities();
+    const [isSuccess, setIsSuccess] = useState(false);
     const engine = useDataEngine();
 
-    const { register, handleSubmit, setValue, watch, reset, formState: { errors } } = useForm<DashboardFormFields>({
+    const { register, handleSubmit, setValue, watch, reset, formState: { errors,isSubmitting } } = useForm<DashboardFormFields>({
         resolver: zodResolver(DashboardSchema),
         defaultValues: {
-         
             dashboardName: '',
             dashboardDescription: '',
             createdBy: {
@@ -125,12 +96,15 @@ const CreateDashboardPage: React.FC = () => {
 
     const onSubmit: SubmitHandler<DashboardFormFields> = async (data) => {
         const uuid = dashboardId || generateUid()
+        setIsSuccess(false);
         try {
             await engine.mutate({
                 resource: `dataStore/rw-dashboard/${uuid}`,
                 type: 'create',
                 data,
             });
+            //temporally success message
+            setIsSuccess(true);
             console.log("Dashboard saved successfully");
         } catch (error) {
             console.error("Error saving dashboard:", error);
@@ -140,9 +114,16 @@ const CreateDashboardPage: React.FC = () => {
     return (
         <form className="p-6" onSubmit={handleSubmit(onSubmit)}>
             <div className="flex justify-end gap-2">
-                <Button type="submit" text="Save changes" />
-                <Button text="Print preview" />
+                <Button type="submit" text= {isSubmitting ? "Loading" : "Save changes" } disabled={isSubmitting} />
+         
             </div>
+            {/* temporally is success message */}
+            {isSuccess && (
+  <p className="mt-2 p-4 text-green-700 bg-green-100 border border-green-300 rounded-md">
+    Dashboard saved successfully
+  </p>
+)}
+
 
             <div className="mt-4 grid grid-cols-2 gap-2">
                 <div>

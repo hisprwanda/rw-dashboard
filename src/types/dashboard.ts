@@ -2,21 +2,31 @@ import { z } from "zod";
 
 // Schema definition using zod
 export const DashboardSchema = z.object({
-  id: z.string(),
-  dashboardName: z.string().nonempty({ message: "Dashboard name is required" }),
+  dashboardName: z.string().nonempty("Dashboard name is required"),
   dashboardDescription: z.string().optional(),
   createdBy: z.object({
-    name: z.string(),
-    id: z.string(),
+      name: z.string(),
+      id: z.string(),
   }),
-  createdAt: z.number(), // Consider using z.date() if using Date objects
-  updatedAt: z.number(), // Consider using z.date() if using Date objects
+  createdAt: z.number(),
+  updatedAt: z.number(),
   updatedBy: z.object({
-    name: z.string(),
-    id: z.string(),
+      name: z.string(),
+      id: z.string(),
   }),
-  selectedVisualsForDashboard: z.array(z.unknown()),
-  sharing: z.array(z.unknown()).optional(), // Allows any type in the array
+  selectedVisuals: z.array(
+      z.object({
+          i: z.string(),
+          x: z.number(),
+          y: z.number(),
+          w: z.number(),
+          h: z.number(),
+          visualName: z.string(),
+          visualQuery: z.any(),
+          visualType: z.string(),
+      })
+  ),
+  sharing: z.array(z.unknown()).optional(),
 });
 
 // Infer form fields from the schema
