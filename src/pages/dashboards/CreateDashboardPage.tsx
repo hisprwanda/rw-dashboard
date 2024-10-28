@@ -6,6 +6,10 @@ import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import { FaTrash } from 'react-icons/fa';
 import DashboardVisualItem from './components/DashboardVisualItem';
+import { useDataEngine } from '@dhis2/app-runtime';
+import { generateUid } from '../../lib/uid';
+import { useAuthorities } from '../../context/AuthContext';
+
 
 // Extend Layout interface to include visualName, visualQuery, and visualType
 interface ExtendedLayout extends Layout {
@@ -25,16 +29,25 @@ interface VisualEntry {
 
 const CreateDashboardPage: React.FC = () => {
     const { data: allSavedVisuals, loading, isError } = useFetchVisualsData();
+  const {userDatails} = useAuthorities()
     const [selectedVisualsForDashboard, setSelectedVisualsForDashboard] = useState<ExtendedLayout[]>([]);
     const [selectedVisual, setSelectedVisual] = useState<VisualEntry | null>(null);
 
     // State for single dashboard data
     const [singleDashboardData, setSingleDashboardData] = useState({
-        dashboardName: '',
+        dashboardName: '', // is required
         dashboardDescription: '',
-        createdAt: new Date().toISOString(), // Set current date as createdAt
-        createdBy: '', // You might want to replace this with actual user data
-        selectedVisuals: [] as ExtendedLayout[],
+        selectedVisuals: [] as ExtendedLayout[], // is required
+        createdBy:{
+            name:userDatails?.me?.displayName,
+            id:userDatails?.me?.id
+          },
+          updatedBy:{
+            name:userDatails?.me?.displayName,
+            id:userDatails?.me?.id
+          },
+          createdAt: Date.now(), 
+          updatedAt: Date.now(), 
     });
 
     const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: VisualEntry) => (
@@ -67,6 +80,16 @@ const CreateDashboardPage: React.FC = () => {
         }
     }, [selectedVisual]);
 
+
+    /// update selected visuals
+    useEffect(() => {
+        setSingleDashboardData(prev => ({
+            ...prev,
+            selectedVisuals: selectedVisualsForDashboard,
+        }));
+    }
+,[selectedVisualsForDashboard])
+
     const handleLayoutChange = (newLayout: Layout[]) => {
         const updatedLayout = newLayout.map(layoutItem => {
             const existingVisual = selectedVisualsForDashboard.find(visual => visual.i === layoutItem.i);
@@ -82,13 +105,24 @@ const CreateDashboardPage: React.FC = () => {
         setSelectedVisualsForDashboard(prev => prev.filter(widget => widget.i !== id));
     };
 
+    //
+    const engine = useDataEngine();
+
     // Handle save changes
-    const handleSaveChanges = () => {
-        setSingleDashboardData(prev => ({
-            ...prev,
-            selectedVisuals: selectedVisualsForDashboard,
-        }));
-        console.log(singleDashboardData);
+    const handleSaveChanges = async() => {
+        const uid =  generateUid(); 
+        try {
+
+            await engine.mutate({
+                resource: `dataStore/rw-dashboard/${uid}`,
+                type: 'create',
+                data: singleDashboardData,
+            });
+            console.log("save dashboard success")
+        } catch (error) {
+            console.error('Error saving dashboard:', error);
+          
+        }
     };
 
     return (
@@ -104,6 +138,7 @@ const CreateDashboardPage: React.FC = () => {
             {/* Dashboard Name and Description Inputs */}
             <div className="mt-4 flex flex-row gap-2 ">
                 <input
+                required
                     type="text"
                     placeholder="Dashboard Name"
                     value={singleDashboardData.dashboardName}
