@@ -5,39 +5,79 @@ import {
   type MRT_ColumnDef,
 } from "mantine-react-table";
 import { IconStar24, IconStarFilled24 } from "@dhis2/ui";
-
-type Dashboard = {
+interface User {
+  id: string;
   name: string;
-  createdAt: string;
-  isFavorite: boolean;
-};
+}
 
-type TableViewProps = {
-  data: Dashboard[];
-};
+interface VisualQuery {
+  myData: {
+    params: {
+      filter: string;
+      dimension: string[];
+      includeNumDen: boolean;
+      displayProperty: string;
+    };
+    resource: string;
+  };
+}
 
-const TableView: React.FC<TableViewProps> = ({ data }) => {
-  const columns = useMemo<MRT_ColumnDef<Dashboard>[]>(
+interface SelectedVisual {
+  h: number;
+  i: string;
+  w: number;
+  x: number;
+  y: number;
+  visualName: string;
+  visualType: string;
+  visualQuery: VisualQuery;
+}
+
+interface DashboardValue {
+  sharing: any[];
+  createdAt: number;
+  createdBy: User;
+  updatedAt: number;
+  updatedBy: User;
+  dashboardName: string;
+  dashboardDescription: string;
+  selectedVisuals: SelectedVisual[];
+}
+
+interface DashboardData {
+  key: string;
+  value: DashboardValue;
+}
+interface TableViewProps {
+  dashboards: DashboardData[];
+}
+
+const TableView: React.FC<TableViewProps> = ({ dashboards }) => {
+  const columns = useMemo<MRT_ColumnDef<DashboardData>[]>(
     () => [
       {
-        accessorKey: "name",
+        accessorFn: (row) => row.value.dashboardName,
         header: "Name",
       },
       {
-        accessorKey: "createdAt",
+        accessorFn: (row) => new Date(row.value.createdAt).toLocaleDateString(),
         header: "Created At",
-        Cell: ({ cell }) =>
-          new Date(cell.getValue<string>()).toLocaleDateString(),
       },
       {
-        accessorKey: "isFavorite",
-        header: "Favorite",
-        Cell: ({ cell }) =>
-          cell.getValue<boolean>() ? (
-            <IconStarFilled24 color="gold" />
-          ) : (
-            <IconStar24 color="gray" />
-          ),
+        accessorFn: (row) => row.value.createdBy.name,
+        header: "Created By",
+      },
+      {
+        accessorFn: (row) => new Date(row.value.updatedAt).toLocaleDateString(),
+        header: "Last Modified",
+      },
+      {
+        accessorFn: (row) => row.value.updatedBy.name,
+        header: "Modified By",
+      },
+      {
+        accessorFn: (row) => row.value.selectedVisuals.length,
+        header: "Visualizations",
       },
     ],
     []
@@ -45,7 +85,7 @@ const TableView: React.FC<TableViewProps> = ({ data }) => {
 
   const table = useMantineReactTable({
     columns,
-    data,
+    data: dashboards,
   });
 
   return <MantineReactTable table={table} />;
