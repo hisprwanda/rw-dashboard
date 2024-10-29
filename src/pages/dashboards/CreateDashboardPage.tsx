@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState ,useRef} from 'react';
 import Button from "../../components/Button";
 import { useFetchVisualsData } from '../../services/fetchVisuals';
 import GridLayout, { Layout } from "react-grid-layout";
@@ -16,7 +16,7 @@ import { useParams ,useNavigate} from 'react-router-dom';
 import { DashboardSchema, DashboardFormFields } from '../../types/dashboard';
 import { useFetchSingleDashboardData } from '../../services/fetchDashboard';
 import { Loading } from '../../components';
-
+import html2canvas from 'html2canvas';
 
 
 
@@ -25,7 +25,9 @@ const CreateDashboardPage: React.FC = () => {
     const navigate = useNavigate();
     const { data: allSavedVisuals ,error,isError,loading} = useFetchVisualsData();
     const {data:singleSavedDashboardData,error:singleSavedDashboardDataError,isError:isErrorFetchSingleSavedDashboardData,loading:isLoadingFetchSingleSavedDashboardData} = useFetchSingleDashboardData(dashboardId)
-    const [shouldNavigate, setShouldNavigate] = useState(false);
+    // variable to store snapshot of grid box
+    const captureRef = useRef<HTMLDivElement>(null);
+
 
     console.log("test single data",singleSavedDashboardData)
     const { userDatails } = useAuthorities();
@@ -51,6 +53,8 @@ const CreateDashboardPage: React.FC = () => {
             updatedAt: Date.now(),
             selectedVisuals: [],
             sharing: [],
+            previewImg:""
+    
         },
     });
 
@@ -124,6 +128,12 @@ const CreateDashboardPage: React.FC = () => {
     const onSubmit: SubmitHandler<DashboardFormFields> = async (data) => {
         const uuid = dashboardId || generateUid()
         setIsSuccess(false);
+             // Capture the current GridLayout as an image
+             if (captureRef.current) {
+                const canvas = await html2canvas(captureRef.current);
+                const imgData = canvas.toDataURL("image/png");
+                data.previewImg = imgData; // Set the previewImg in the data
+            }
         try {
             await engine.mutate({
                 resource: `dataStore/rw-dashboard/${uuid}`,
@@ -188,7 +198,7 @@ const CreateDashboardPage: React.FC = () => {
                 <option value="">{loading ? "Loading" : "Select a visual..."}</option>
                 {visualOptions}
             </select>
-
+            <div ref={captureRef} >
             <MemoizedGridLayout
                 layout={selectedVisuals}
                 onLayoutChange={handleLayoutChange}
@@ -197,6 +207,8 @@ const CreateDashboardPage: React.FC = () => {
                 width={1200}
                 onDeleteWidget={handleDeleteWidget}
             />
+            </div>
+          
         </form>
     );
 };
@@ -217,6 +229,7 @@ const MemoizedGridLayout = React.memo(({
     width: number;
     onDeleteWidget: (id: string) => void;
 }) => (
+  
     <GridLayout
         className="layout bg-[#f4f6f8]"
         layout={layout}
@@ -239,6 +252,8 @@ const MemoizedGridLayout = React.memo(({
             </div>
         ))}
     </GridLayout>
+ 
+
 ));
 
 export default CreateDashboardPage;

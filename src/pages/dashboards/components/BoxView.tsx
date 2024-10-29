@@ -42,6 +42,7 @@ interface DashboardValue {
   updatedAt: number;
   updatedBy: User;
   dashboardName: string;
+  previewImg: string;
   dashboardDescription: string;
   selectedVisuals: SelectedVisual[];
 }
@@ -65,13 +66,15 @@ const BoxView: React.FC<BoxViewProps> = ({ dashboards }) => {
   // main return 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
-      {dashboards.map((dashboard) => (
+      {dashboards.map((dashboard) => ( 
         <div
           key={dashboard.key}
           className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 relative"
         >
           <div className="bg-gray-100 h-48 w-full flex justify-center items-center rounded-t-lg">
-            <IconVisualizationColumnStacked24 />
+            {/* <IconVisualizationColumnStacked24 />
+            <div>soon</div> */}
+            <img src={dashboard.value.previewImg} alt="Preview snapshot" />
           </div>
 
           <div className="flex justify-between items-center mt-4">
