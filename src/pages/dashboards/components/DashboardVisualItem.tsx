@@ -4,6 +4,7 @@ import { LocalBarChart } from '../../../components/charts/LocalBarChart';
 import { LocalLineChart } from '../../../components/charts/LocalLineChart';
 import { IoBarChartSharp } from 'react-icons/io5'
 import { FaChartLine } from 'react-icons/fa'
+import {  CircularLoader } from '@dhis2/ui';
 
 
 interface DashboardVisualItem {
@@ -50,7 +51,7 @@ const DashboardVisualItem:React.FC<DashboardVisualItem> = ({query,visualType}) =
 
     if(loading)
     {
-        return <p>Loading...</p>
+        return <CircularLoader/>
     }
     if(error)
     {

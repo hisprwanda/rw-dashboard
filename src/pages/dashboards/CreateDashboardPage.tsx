@@ -12,17 +12,27 @@ import { useAuthorities } from '../../context/AuthContext';
 import { z } from "zod";
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useParams } from 'react-router-dom';
+import { useParams ,useNavigate} from 'react-router-dom';
 import { DashboardSchema, DashboardFormFields } from '../../types/dashboard';
+import { useFetchSingleDashboardData } from '../../services/fetchDashboard';
+import { Loading } from '../../components';
+
 
 
 
 const CreateDashboardPage: React.FC = () => {
     const { id: dashboardId } = useParams();
-    const { data: allSavedVisuals } = useFetchVisualsData();
+    const navigate = useNavigate();
+    const { data: allSavedVisuals ,error,isError,loading} = useFetchVisualsData();
+    const {data:singleSavedDashboardData,error:singleSavedDashboardDataError,isError:isErrorFetchSingleSavedDashboardData,loading:isLoadingFetchSingleSavedDashboardData} = useFetchSingleDashboardData(dashboardId)
+    const [shouldNavigate, setShouldNavigate] = useState(false);
+
+    console.log("test single data",singleSavedDashboardData)
     const { userDatails } = useAuthorities();
     const [isSuccess, setIsSuccess] = useState(false);
     const engine = useDataEngine();
+
+    
 
     const { register, handleSubmit, setValue, watch, reset, formState: { errors,isSubmitting } } = useForm<DashboardFormFields>({
         resolver: zodResolver(DashboardSchema),
@@ -44,8 +54,25 @@ const CreateDashboardPage: React.FC = () => {
         },
     });
 
-    const selectedVisuals = watch("selectedVisuals");
 
+    /// if edit mode, then reassigning dashboard
+    useEffect(() => {
+        if (dashboardId && singleSavedDashboardData) {
+            reset((prevValues) => ({
+                ...prevValues, 
+                dashboardName: singleSavedDashboardData?.dataStore?.dashboardName || prevValues.dashboardName,
+                dashboardDescription: singleSavedDashboardData?.dataStore?.dashboardDescription || prevValues.dashboardDescription,
+                selectedVisuals: singleSavedDashboardData?.dataStore?.selectedVisuals   ,
+                sharing: singleSavedDashboardData?.dataStore?.sharing || prevValues.sharing,
+                updatedAt:singleSavedDashboardData?.dataStore?.updatedAt || prevValues.updatedAt,
+                updatedBy:singleSavedDashboardData?.dataStore?.updatedBy || prevValues.updatedBy,
+                createdBy: singleSavedDashboardData?.dataStore?.createdBy || prevValues.createdBy,
+                createdAt: singleSavedDashboardData?.dataStore?.createdAt || prevValues.createdAt,
+            
+            }));
+        }
+    }, [singleSavedDashboardData, dashboardId, reset]);
+    const selectedVisuals = watch("selectedVisuals");
 
          // Watch form values
   const watchedValues = watch();
@@ -100,21 +127,31 @@ const CreateDashboardPage: React.FC = () => {
         try {
             await engine.mutate({
                 resource: `dataStore/rw-dashboard/${uuid}`,
-                type: 'create',
+                type: dashboardId ? "update" : 'create',
                 data,
             });
             //temporally success message
             setIsSuccess(true);
+            if(!dashboardId){
+                // temporary fix to navigate to edit mode after saving new dashboard
+                navigate(`/dashboards`)  
+                     navigate(`/dashboard/${uuid}`)    
+                     }
             console.log("Dashboard saved successfully");
         } catch (error) {
             console.error("Error saving dashboard:", error);
         }
     };
 
+        // loading
+        if(isLoadingFetchSingleSavedDashboardData || loading)
+            {
+                return <Loading/>
+            }
     return (
         <form className="p-6" onSubmit={handleSubmit(onSubmit)}>
             <div className="flex justify-end gap-2">
-                <Button type="submit" text= {isSubmitting ? "Loading" : "Save changes" } disabled={isSubmitting} />
+                <Button type="submit" text= {isSubmitting ? "Loading" : dashboardId ? "UPDATE" :  "Save changes" } disabled={isSubmitting} />
          
             </div>
             {/* temporally is success message */}
@@ -148,7 +185,7 @@ const CreateDashboardPage: React.FC = () => {
                 onChange={handleSelectChange}
                 className="block w-full px-3 py-2 border rounded-md shadow-sm mt-3"
             >
-                <option value="">Select a visual...</option>
+                <option value="">{loading ? "Loading" : "Select a visual..."}</option>
                 {visualOptions}
             </select>
 
@@ -190,13 +227,13 @@ const MemoizedGridLayout = React.memo(({
         draggableHandle=".drag-handle"
     >
         {layout.map((widget) => (
-            <div key={widget.i} className="widget" style={{ position: "relative", padding: "10px" }}>
+            <div key={widget.i} className="widget bg-white " style={{ position: "relative", padding: "10px" }}>
                 <div className="drag-handle" style={{ cursor: "move" }}>
                     {widget.visualName}
                 </div>
                 <DashboardVisualItem query={widget.visualQuery} visualType={widget.visualType} />
                 <FaTrash
-                    style={{ position: "absolute", top: "10px", right: "10px", cursor: "pointer" }}
+                    style={{ position: "absolute", top: "10px", right: "10px", cursor: "pointer" ,color:"#7d0000"}}
                     onClick={() => onDeleteWidget(widget.i)}
                 />
             </div>

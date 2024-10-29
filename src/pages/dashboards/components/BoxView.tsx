@@ -4,6 +4,8 @@ import {
   IconStarFilled24,
   IconVisualizationColumnStacked24,
 } from "@dhis2/ui";
+import { useNavigate } from "react-router-dom";
+
 
 interface User {
   id: string;
@@ -53,6 +55,14 @@ interface BoxViewProps {
 }
 
 const BoxView: React.FC<BoxViewProps> = ({ dashboards }) => {
+  console.log("x test",dashboards)
+  const navigate = useNavigate()
+   const handleViewMore = (dashboardId:string)=>{
+     navigate(`/dashboard/${dashboardId}`)
+   
+   }
+
+  // main return 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
       {dashboards.map((dashboard) => (
@@ -66,11 +76,17 @@ const BoxView: React.FC<BoxViewProps> = ({ dashboards }) => {
 
           <div className="flex justify-between items-center mt-4">
             <p className="font-semibold text-gray-700">
-              {dashboard.value.dashboardName}
+              {dashboard.value.dashboardName} 
             </p>
             <div className="flex items-center space-x-2">
+            <div className=" cursor-pointer "   >
               <IconStarFilled24 />
-              <IconMore24 />
+              </div>
+               {/*view more  */}
+               <div className=" cursor-pointer "  onClick={()=>handleViewMore(dashboard.key)}  >
+               <IconMore24  />
+               </div>
+           
             </div>
           </div>
 
