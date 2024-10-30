@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { useDataEngine } from "@dhis2/app-runtime";
 import { useAuthorities } from "../../../context/AuthContext";
 import { useDashboardsData } from "../../../services/fetchDashboard";
+import { useUpdateDashboardFavorite } from "../../../hooks/useUpdateDashFavorite";
+import { Loading } from "../../../components";
 
 interface User {
   id: string;
@@ -62,34 +64,21 @@ const BoxView: React.FC<BoxViewProps> = ({ dashboards }) => {
   const engine = useDataEngine();
   const navigate = useNavigate();
   const { refetch,loading} = useDashboardsData();
+
   const { userDatails } = useAuthorities();
   const userId = userDatails?.me?.id; 
-  const [isUpdatingDashboard,setIsUpdatingDashboard] =useState(false)
+
+  const {isUpdatingDashboard,toggleFavorite} = useUpdateDashboardFavorite({
+    userId,
+    refetch,
+  })
 
   // Toggle favorite status for the current user
-  const toggleFavorite = async (dashboardId: string, dashboard: DashboardValue) => {
-    const isFavorited = dashboard.favorites?.includes(userId);
-    const updatedFavorites = isFavorited
-      ? dashboard.favorites.filter((id) => id !== userId)
-      : [...(dashboard.favorites || []), userId]; // Default to empty array if undefined
-
-    try {
-      // Update the backend with the new favorites array
-      setIsUpdatingDashboard(true)
-      await engine.mutate({
-        resource: `dataStore/rw-dashboard/${dashboardId}`,
-        type: "update",
-        data: { ...dashboard, favorites: updatedFavorites },
-      });
-      // refech data
-      refetch()
-      console.log("Dashboard favorite status updated successfully");
-    } catch (error) {
-      console.error("Error updating dashboard favorite status:", error);
-    }finally{
-      setIsUpdatingDashboard(false)
-    }
-  };
+  
+    const handleToggleFavorite = (dashboardId: string, dashboard: DashboardValue) => {
+      toggleFavorite(dashboardId, dashboard);
+    };
+  
 
   const handleViewMore = (dashboardId: string) => {
     navigate(`/dashboard/${dashboardId}`);
@@ -97,7 +86,7 @@ const BoxView: React.FC<BoxViewProps> = ({ dashboards }) => {
 
    if(isUpdatingDashboard || loading)
    {
-    return <div>Loading...</div>
+    return <Loading/>
    }
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
@@ -119,16 +108,16 @@ const BoxView: React.FC<BoxViewProps> = ({ dashboards }) => {
               </p>
               <div className="flex items-center space-x-2">
                 {/* Favorite Icon */}
-                <div
+                <button  disabled={isUpdatingDashboard}
                   className="cursor-pointer"
-                  onClick={() => toggleFavorite(dashboard.key, dashboard.value)}
+                  onClick={() => handleToggleFavorite(dashboard.key, dashboard.value)}
                 >
                   {isFavorited ? (
                     <IconStarFilled24 color="gold" /> //  favorite
                   ) : (
                     <IconStarFilled24 color="gray" /> //unfavorited
                   )}
-                </div>
+                </button>
 
                 {/* View More Icon */}
                 <div className="cursor-pointer" onClick={() => handleViewMore(dashboard.key)}>

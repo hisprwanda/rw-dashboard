@@ -130,6 +130,7 @@ const DashboardsPage: React.FC = () => {
 
             {/* My Dashboards Tab Content */}
             <TabsContent value="mydashboards">
+            
               <MyDashboardsPageView dashboards={myDashboards} />
             </TabsContent>
 

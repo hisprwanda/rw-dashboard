@@ -5,6 +5,11 @@ import {
   type MRT_ColumnDef,
 } from "mantine-react-table";
 import { IconStar24, IconStarFilled24 } from "@dhis2/ui";
+import { useNavigate } from "react-router-dom";
+import { useAuthorities } from "../../../context/AuthContext";
+import { useUpdateDashboardFavorite } from "../../../hooks/useUpdateDashFavorite";
+import { useDashboardsData } from "../../../services/fetchDashboard";
+
 interface User {
   id: string;
   name: string;
@@ -42,40 +47,64 @@ interface DashboardValue {
   dashboardName: string;
   dashboardDescription: string;
   selectedVisuals: SelectedVisual[];
+  favorites: string[];
 }
 
 interface DashboardData {
   key: string;
   value: DashboardValue;
 }
+
 interface MyDashboardsTableProps {
   dashboards: DashboardData[];
 }
 
 const MyDashboardsTable: React.FC<MyDashboardsTableProps> = ({ dashboards }) => {
-  const columns = useMemo<MRT_ColumnDef<DashboardData>[]>(
-    () => [
-      {
-        accessorFn: (row) => row.value.dashboardName,
-        header: "Name",
+  const navigate = useNavigate();
+  const handleViewMore = (dashboardId: string) => {
+    navigate(`/dashboard/${dashboardId}`);
+  };
+  
+  const { userDatails } = useAuthorities();
+  const userId = userDatails?.me?.id; 
+  const { refetch, loading } = useDashboardsData();
+  const { isUpdatingDashboard, toggleFavorite } = useUpdateDashboardFavorite({
+    userId,
+    refetch,
+  });
+
+  const columns = useMemo<MRT_ColumnDef<DashboardData>[]>(() => [
+    {
+      accessorFn: (row) => row.value.dashboardName,
+      header: "Name",
+    },
+    {
+      accessorFn: (row) => new Date(row.value.createdAt).toLocaleDateString(),
+      header: "Created At",
+    },
+    {
+      accessorKey: "isFavorite",
+      header: "Favorite",
+      Cell: ({ row }) => {
+        // Default to an empty array if favorites is undefined
+        const isFavorited = (row.original.value.favorites || []).includes(userId);
+  
+        return (
+          <span
+            onClick={() => toggleFavorite(row.original.key, row.original.value)}
+            style={{ cursor: isUpdatingDashboard ? "not-allowed" : "pointer" }}
+          >
+            {isFavorited ? (
+              <IconStarFilled24 color="gold" />
+            ) : (
+              <IconStar24 color="gray" />
+            )}
+          </span>
+        );
       },
-      {
-        accessorFn: (row) => new Date(row.value.createdAt).toLocaleDateString(),
-        header: "Created At",
-      },
-      {
-        accessorKey: "isFavorite",
-        header: "Favorite",
-        Cell: ({ cell }) =>
-          cell.getValue<boolean>() ? (
-            <IconStarFilled24 color="gold" />
-          ) : (
-            <IconStar24 color="gray" />
-          ),
-      },
-    ],
-    []
-  );
+    },
+  ], [userId, isUpdatingDashboard, toggleFavorite]);
+  
 
   const table = useMantineReactTable({
     columns,

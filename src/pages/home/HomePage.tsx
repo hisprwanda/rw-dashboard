@@ -12,14 +12,7 @@ import { useAuthorities } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 
-const dashboardNames = [
-  "Monkeypox Surveillance and Outbreak Response",
-  "HIV Treatment and Care Services",
-  "Tuberculosis Monitoring Dashboard",
-  "COVID-19 Vaccination Statistics",
-  "Malaria Prevention and Control",
-  "Maternal and Child Health Programs",
-];
+
 
 interface User {
   id: string;
@@ -59,7 +52,8 @@ interface DashboardValue {
   dashboardDescription: string;
   selectedVisuals: SelectedVisual[];
   isOfficialDashboard:boolean;
-  previewImg:string
+  previewImg:string,
+  favorites: any[];
 }
 
 interface DashboardData {
