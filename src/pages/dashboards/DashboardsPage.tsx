@@ -88,7 +88,7 @@ const filterOtherCharts = (
 };
 
 const DashboardsPage: React.FC = () => {
-  const { data, loading, isError } = useDashboardsData();
+  const { data, loading, } = useDashboardsData();
   const { userDatails } = useAuthorities();
   const navigate = useNavigate();
 
@@ -102,15 +102,13 @@ const DashboardsPage: React.FC = () => {
     data?.dataStore?.entries,
     userDatails?.me?.id
   );
-   console.log("myDashboards", myDashboards)
-   
+
 
   const otherDashboards = filterOtherCharts(
     data?.dataStore?.entries,
     userDatails?.me?.id
   );
-  console.log("otherDashboards", otherDashboards)
-  console.log("userDatails?.me?.id",userDatails?.me?.id)
+
   return (
     <section className="px-14 py-5">
       <div>

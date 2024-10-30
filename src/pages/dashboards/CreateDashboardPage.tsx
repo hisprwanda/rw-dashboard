@@ -54,7 +54,8 @@ const CreateDashboardPage: React.FC = () => {
             selectedVisuals: [],
             sharing: [],
             previewImg:"",
-            isOfficialDashboard: false
+            isOfficialDashboard: false,
+            favorites:[]
     
         },
     });
@@ -73,7 +74,8 @@ const CreateDashboardPage: React.FC = () => {
                 updatedBy:singleSavedDashboardData?.dataStore?.updatedBy || prevValues.updatedBy,
                 createdBy: singleSavedDashboardData?.dataStore?.createdBy || prevValues.createdBy,
                 createdAt: singleSavedDashboardData?.dataStore?.createdAt || prevValues.createdAt,
-                isOfficialDashboard: singleSavedDashboardData?.dataStore?.isOfficialDashboard || prevValues.isOfficialDashboard
+                isOfficialDashboard: singleSavedDashboardData?.dataStore?.isOfficialDashboard || prevValues.isOfficialDashboard,
+                favorites: singleSavedDashboardData?.dataStore?.favorites || prevValues.favorites,
             }));
         }
     }, [singleSavedDashboardData, dashboardId, reset]);
