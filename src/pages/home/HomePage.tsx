@@ -9,6 +9,8 @@ import MyDashboardsTable from "./components/MyDashboardsTable";
 import OtherDashboardsTable from "./components/OtherDashboardsTable";
 import { useDashboardsData } from "../../services/fetchDashboard";
 import { useAuthorities } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+
 
 const dashboardNames = [
   "Monkeypox Surveillance and Outbreak Response",
@@ -56,6 +58,8 @@ interface DashboardValue {
   dashboardName: string;
   dashboardDescription: string;
   selectedVisuals: SelectedVisual[];
+  isOfficialDashboard:boolean;
+  previewImg:string
 }
 
 interface DashboardData {
@@ -93,7 +97,17 @@ const filterOtherCharts = (
 };
 
 
+const filterPinnedDashboard = (
+  data: DashboardData[] | undefined
+): DashboardData[] => {
+  if (!data ) return [];
+  return data.filter((item) => item.value.isOfficialDashboard === true);
+};
+ 
+
+
 export default function HomePage() {
+  const navigate = useNavigate();
   const { data, loading, isError } = useDashboardsData();
   const { userDatails } = useAuthorities();
 
@@ -106,19 +120,28 @@ export default function HomePage() {
     data?.dataStore?.entries,
     userDatails?.me?.id
   );
+  
+  const pinnedDashboards = filterPinnedDashboard(data?.dataStore?.entries)
+
+  const handleViewMore = (dashboardId:string)=>{
+    navigate(`/dashboard/${dashboardId}`)
+  
+  }
+
   return (
     <section className="px-14 py-9">
       <h1 className="text-primary font-semibold">Pinned Dashboards</h1>
       <div className="mt-7 flex gap-8">
-        {dashboardNames.map((name, index) => (
+        {pinnedDashboards.map((dashboard, index) => (
           <div
             key={index}
-            className="bg-dhisGrey500 rounded-[5px] border border-primary"
+            className="bg-dhisGrey500 rounded-[5px] border border-primary w-[300px] cursor-pointer"
+            onClick={()=>handleViewMore(dashboard.key)}
           >
-            <div className="p-2 font-semibold">{name}</div>
-            <div className="flex h-[25vh] items-center justify-center bg-white rounded-b-[5px]">
-              <IconVisualizationColumnStacked24 />
-              {/* <img src="" alt="dashboard preview image" /> */}
+            <div className="p-2 font-semibold">{dashboard.value.dashboardName}</div>
+            <div className="flex h-48 items-center justify-center bg-white rounded-b-[5px]">
+            <img  className="w-full h-full" src={dashboard.value.previewImg} alt={dashboard.value.dashboardName} />
+  
             </div>
           </div>
         ))}

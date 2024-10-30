@@ -56,7 +56,7 @@ interface BoxViewProps {
 }
 
 const BoxView: React.FC<BoxViewProps> = ({ dashboards }) => {
-  console.log("x test",dashboards)
+  
   const navigate = useNavigate()
    const handleViewMore = (dashboardId:string)=>{
      navigate(`/dashboard/${dashboardId}`)
@@ -74,7 +74,7 @@ const BoxView: React.FC<BoxViewProps> = ({ dashboards }) => {
           <div className="bg-gray-100 h-48 w-full flex justify-center items-center rounded-t-lg">
             {/* <IconVisualizationColumnStacked24 />
             <div>soon</div> */}
-            <img src={dashboard.value.previewImg} alt="Preview snapshot" />
+            <img src={dashboard.value.previewImg} alt={dashboard.value.dashboardName} />
           </div>
 
           <div className="flex justify-between items-center mt-4">

@@ -28,6 +28,8 @@ export const DashboardSchema = z.object({
   ),
   sharing: z.array(z.unknown()).optional(),
   previewImg: z.string().optional(),
+  isOfficialDashboard: z.boolean(),
+  favorites: z.array(z.string()).optional()
 });
 
 // Infer form fields from the schema

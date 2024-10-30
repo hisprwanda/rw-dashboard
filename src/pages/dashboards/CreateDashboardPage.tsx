@@ -53,7 +53,8 @@ const CreateDashboardPage: React.FC = () => {
             updatedAt: Date.now(),
             selectedVisuals: [],
             sharing: [],
-            previewImg:""
+            previewImg:"",
+            isOfficialDashboard: false
     
         },
     });
@@ -72,7 +73,7 @@ const CreateDashboardPage: React.FC = () => {
                 updatedBy:singleSavedDashboardData?.dataStore?.updatedBy || prevValues.updatedBy,
                 createdBy: singleSavedDashboardData?.dataStore?.createdBy || prevValues.createdBy,
                 createdAt: singleSavedDashboardData?.dataStore?.createdAt || prevValues.createdAt,
-            
+                isOfficialDashboard: singleSavedDashboardData?.dataStore?.isOfficialDashboard || prevValues.isOfficialDashboard
             }));
         }
     }, [singleSavedDashboardData, dashboardId, reset]);
@@ -189,6 +190,18 @@ const CreateDashboardPage: React.FC = () => {
                     placeholder="Dashboard Description"
                     className="block w-full px-3 py-2 border rounded-md shadow-sm mt-3"
                 />
+             <div className="flex items-center gap-2 mt-4">
+    <input
+        type="checkbox"
+        {...register("isOfficialDashboard")}
+        id="officialDashboard"
+        className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+    />
+    <label htmlFor="officialDashboard" className="text-gray-700 font-medium">
+        Official Dashboard
+    </label>
+</div>
+           
             </div>
 
             <select
