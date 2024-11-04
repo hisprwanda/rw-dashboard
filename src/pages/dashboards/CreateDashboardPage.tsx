@@ -17,6 +17,7 @@ import { DashboardSchema, DashboardFormFields } from '../../types/dashboard';
 import { useFetchSingleDashboardData } from '../../services/fetchDashboard';
 import { Loading } from '../../components';
 import html2canvas from 'html2canvas';
+import  PresentDashboard from './components/PresentDashboard';
 
 
 
@@ -25,7 +26,8 @@ const CreateDashboardPage: React.FC = () => {
     const navigate = useNavigate();
     const { data: allSavedVisuals ,error,isError,loading} = useFetchVisualsData();
     const {data:singleSavedDashboardData,error:singleSavedDashboardDataError,isError:isErrorFetchSingleSavedDashboardData,loading:isLoadingFetchSingleSavedDashboardData} = useFetchSingleDashboardData(dashboardId)
-    // variable to store snapshot of grid box
+    const [isPresentMode,setIsPresentMode] = useState(false)
+    // variable to stre snapshot of grid box
     const captureRef = useRef<HTMLDivElement>(null);
 
 
@@ -161,10 +163,14 @@ const CreateDashboardPage: React.FC = () => {
             {
                 return <Loading/>
             }
-    return (
+    return ( isPresentMode ? <div className='flex justify-center' >
+
+        <PresentDashboard dashboardData={watchedValues} setIsPresentMode={setIsPresentMode}   />
+    </div>  :
         <form className="p-6" onSubmit={handleSubmit(onSubmit)}>
             <div className="flex justify-end gap-2">
                 <Button type="submit" text= {isSubmitting ? "Loading" : dashboardId ? "UPDATE" :  "Save changes" } disabled={isSubmitting} />
+                <Button onClick={()=>setIsPresentMode(true)} text= "Present"  disabled={isSubmitting} />
          
             </div>
             {/* temporally is success message */}
@@ -186,7 +192,7 @@ const CreateDashboardPage: React.FC = () => {
                 {errors.dashboardName && <p className="text-red-500">{errors.dashboardName.message}</p>}
                 </div>
              
-                
+            
                 <textarea
                     {...register("dashboardDescription")}
                     placeholder="Dashboard Description"

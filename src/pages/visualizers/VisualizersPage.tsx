@@ -18,24 +18,11 @@ import { unFormatAnalyticsDimensions ,formatAnalyticsDimensions} from '../../lib
 import { formatCurrentUserSelectedOrgUnit, formatSelectedOrganizationUnit,formatOrgUnitGroup,formatOrgUnitLevels} from '../../lib/formatCurrentUserOrgUnit';
 import { useOrgUnitData } from '../../services/fetchOrgunitData';
 import { useDataItems } from '../../services/fetchDataItems';
+import {chartComponents} from "../../constants/systemCharts"
 
 
 
 
-const chartComponents = [
-    { 
-        type: 'bar', 
-        component: LocalBarChart, 
-        description: 'A bar chart displaying data', 
-        icon: <IoBarChartSharp /> 
-    },
-    { 
-        type: 'line', 
-        component: LocalLineChart, 
-        description: 'A line chart showing trends over time', 
-        icon: <FaChartLine /> 
-    },
-];
 
 function Visualizers() {
     const { id:visualId } = useParams();

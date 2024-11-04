@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useFetchSingleChartApi } from '../../../services/fetchSingleChart'
-import { LocalBarChart } from '../../../components/charts/LocalBarChart';
-import { LocalLineChart } from '../../../components/charts/LocalLineChart';
-import { IoBarChartSharp } from 'react-icons/io5'
-import { FaChartLine } from 'react-icons/fa'
 import {  CircularLoader } from '@dhis2/ui';
+import {chartComponents} from "../../../constants/systemCharts"
 
 
 interface DashboardVisualItem {
@@ -15,38 +12,9 @@ interface DashboardVisualItem {
 const DashboardVisualItem:React.FC<DashboardVisualItem> = ({query,visualType}) => {
 
 
-    console.log("hello visual type",visualType)
-
-    const   queryTest = {
-        "myData": {
-            "params": {
-                "filter": "ou:USER_ORGUNIT",
-                "dimension": [
-                    "dx:GKqY2oyD2JB;zzeruEiEtWK",
-                    "pe:LAST_12_MONTHS"
-                ],
-                "includeNumDen": true,
-                "displayProperty": "NAME"
-            },
-            "resource": "analytics"
-        }
-    }
     const {data,error,loading} = useFetchSingleChartApi(query)
 
-    const chartComponents = [
-        { 
-            type: 'bar', 
-            component: LocalBarChart, 
-            description: 'A bar chart displaying data', 
-            icon: <IoBarChartSharp /> 
-        },
-        { 
-            type: 'line', 
-            component: LocalLineChart, 
-            description: 'A line chart showing trends over time', 
-            icon: <FaChartLine /> 
-        },
-    ];
+ 
 
 
     if(loading)
