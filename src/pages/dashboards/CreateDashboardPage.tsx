@@ -163,9 +163,10 @@ const CreateDashboardPage: React.FC = () => {
             {
                 return <Loading/>
             }
+            const dashboardName = watch("dashboardName");
     return ( isPresentMode ? <div className='flex flex-col  ' >
-      {/* <ConfigurableCarousel dashboardData={selectedVisuals} setIsPresentMode={setIsPresentMode} /> */}
-      <PresentDashboard dashboardData={selectedVisuals} setIsPresentMode={setIsPresentMode}   />
+       {/* how can I pass dashboard name in PresentDashboard */}
+      <PresentDashboard dashboardData={selectedVisuals} setIsPresentMode={setIsPresentMode}  dashboardName={dashboardName}   />
     </div>  :
         <form className="p-6" onSubmit={handleSubmit(onSubmit)}>
             <div className="flex justify-end gap-2">

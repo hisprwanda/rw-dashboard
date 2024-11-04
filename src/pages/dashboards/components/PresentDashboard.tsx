@@ -14,10 +14,11 @@ import DashboardVisualItem from "./DashboardVisualItem";
 interface PresentDashboardProps {
     dashboardData: any;
     setIsPresentMode: any;
+    dashboardName: string;
 }
 
 
-const PresentDashboard:React.FC<PresentDashboardProps> = ({ dashboardData, setIsPresentMode }) => {
+const PresentDashboard:React.FC<PresentDashboardProps> = ({ dashboardData, setIsPresentMode,dashboardName }) => {
   const [slidesToShow, setSlidesToShow] = useState(1);
   const [delay, setDelay] = useState(2000);
   const [isPaused, setIsPaused] = useState(false);
@@ -65,6 +66,10 @@ const PresentDashboard:React.FC<PresentDashboardProps> = ({ dashboardData, setIs
 
   return (
     <div className="w-full mx-auto space-y-6 px-10 relative">
+  <h3 className="text-2xl font-semibold text-primary mb-4 ">
+  {dashboardName}
+</h3>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <Label htmlFor="slidesToShow">Slides to Show</Label>
