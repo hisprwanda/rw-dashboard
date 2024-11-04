@@ -4,8 +4,11 @@ import useEmblaCarousel from "embla-carousel-react";
 import { Card, CardContent } from "../../../components/ui/card";
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
-import { Button } from "../../../components/ui/button";
-import { Pause, Play, ChevronLeft, ChevronRight } from "lucide-react";
+//import { Button } from "../../../components/ui/button";
+import Button from "../../../components/Button";
+import { Play, ChevronLeft, ChevronRight } from "lucide-react";
+import {FaPause, FaPlay} from "react-icons/fa"
+import { IoMdExit } from "react-icons/io";
 import DashboardVisualItem from "./DashboardVisualItem";
 
 interface PresentDashboardProps {
@@ -15,7 +18,7 @@ interface PresentDashboardProps {
 
 
 const PresentDashboard:React.FC<PresentDashboardProps> = ({ dashboardData, setIsPresentMode }) => {
-  const [slidesToShow, setSlidesToShow] = useState(2);
+  const [slidesToShow, setSlidesToShow] = useState(1);
   const [delay, setDelay] = useState(2000);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -85,22 +88,30 @@ const PresentDashboard:React.FC<PresentDashboardProps> = ({ dashboardData, setIs
             onChange={(e) => setDelay(Number(e.target.value))}
           />
         </div>
-        <div className="flex items-end">
-          <Button onClick={togglePause} className="w-full">
-            {isPaused ? <Play className="mr-2 h-4 w-4" /> : <Pause className="mr-2 h-4 w-4" />}
-            {isPaused ? "Play" : "Pause"}
-          </Button>
+        <div className="flex items-end justify-end   gap-2 ">
+          <div className="flex  gap-2" >
+          <Button onClick={togglePause}
+          text=   {isPaused ? "Play" : "Pause"}
+          icon = { isPaused ?  <FaPlay/> : <FaPause /> }
+          />
+        
+          <Button onClick={()=>setIsPresentMode(false)} 
+            text=" Exit present"
+            icon={<IoMdExit />} 
+            />
+          </div>
+       
+            
         </div>
       </div>
+{/* left arrow */}
+      <div
 
-      <Button
-        variant="outline"
-        size="icon"
-        className="absolute left-0 top-[calc(50%+60px)] -translate-y-1/2 z-10"
+        className="absolute left-0 top-[calc(50%+60px)] -translate-y-1/2 z-10 "
         onClick={scrollPrev}
       >
-        <ChevronLeft className="h-4 w-4" />
-      </Button>
+        <ChevronLeft className="h-8 w-8 text-primary" />
+      </div>
 
       <div className="relative">
         <div ref={emblaRef} className="overflow-hidden">
@@ -115,15 +126,13 @@ const PresentDashboard:React.FC<PresentDashboardProps> = ({ dashboardData, setIs
           </div>
         </div>
       </div>
-
-      <Button
-        variant="outline"
-        size="icon"
-        className="absolute right-0 top-[calc(50%+60px)] -translate-y-1/2 z-10"
+{/* right arrow */}
+      <div
+        className="absolute right-0 top-[calc(50%+60px)] -translate-y-1/2 z-10   "
         onClick={scrollNext}
       >
-        <ChevronRight className="h-4 w-4" />
-      </Button>
+        <ChevronRight className="h-8 w-8 text-primary"  />
+      </div>
     </div>
   );
 };

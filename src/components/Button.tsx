@@ -9,7 +9,7 @@ const Button: React.FC<ButtonProps> = ({
   type = 'button',
   disabled = false,
 }) => {
-  const baseStyles = 'flex items-center p-2 rounded border-2 font-semibold focus:outline-none';
+  const baseStyles = 'flex items-center p-1 rounded border-2 focus:outline-none';
 
   const variantStyles = {
     primary: 'bg-primary border-slate-300 text-white hover:bg-dhisDarkBlue hover:text-white focus:ring-2 focus:ring-blue-300',

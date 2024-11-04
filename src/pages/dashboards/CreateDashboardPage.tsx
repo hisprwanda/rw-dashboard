@@ -18,7 +18,8 @@ import { useFetchSingleDashboardData } from '../../services/fetchDashboard';
 import { Loading } from '../../components';
 import html2canvas from 'html2canvas';
 import  PresentDashboard from './components/PresentDashboard';
-import ConfigurableCarousel from './components/TestConfig';
+import { FaPlay} from "react-icons/fa"
+import { IoSaveOutline } from "react-icons/io5";
 
 
 
@@ -168,9 +169,9 @@ const CreateDashboardPage: React.FC = () => {
     </div>  :
         <form className="p-6" onSubmit={handleSubmit(onSubmit)}>
             <div className="flex justify-end gap-2">
-                <Button type="submit" text= {isSubmitting ? "Loading" : dashboardId ? "UPDATE" :  "Save changes" } disabled={isSubmitting} />
-                <Button onClick={()=>setIsPresentMode(true)} text= "Present"  disabled={isSubmitting} />
-         
+            <Button onClick={()=>setIsPresentMode(true)} icon={<FaPlay/>}  text= "Present"  disabled={isSubmitting} />
+                <Button type="submit" text= {isSubmitting ? "Loading" : dashboardId ? "UPDATE" :  "Save changes" } disabled={isSubmitting} icon={<IoSaveOutline/>}  />
+          
             </div>
             {/* temporally is success message */}
             {isSuccess && (
