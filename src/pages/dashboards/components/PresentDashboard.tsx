@@ -1,6 +1,5 @@
-
 import * as React from "react";
-import Autoplay from "embla-carousel-autoplay";;
+import Autoplay from "embla-carousel-autoplay";
 import Button from "../../../components/Button";
 import { Card, CardContent } from "../../../components/ui/card";
 import {
@@ -14,19 +13,17 @@ import {
 import DashboardVisualItem from "./DashboardVisualItem";
 
 interface PresentDashboardProps {
-    dashboardData:any;
-    setIsPresentMode:any
+    dashboardData: any;
+    setIsPresentMode: any;
 }
 
-const PresentDashboard: React.FC<PresentDashboardProps> = ({ dashboardData,setIsPresentMode}) => {
-    console.log("the current data form",dashboardData)
+const PresentDashboard: React.FC<PresentDashboardProps> = ({ dashboardData, setIsPresentMode }) => {
+  console.log("Present Dashboard data",dashboardData)
   const plugin = React.useRef(
     Autoplay({ delay: 2000, stopOnInteraction: true })
   );
 
-
-
-  const testQuery =  {
+  const testQuery = {
     "myData": {
       "params": {
         "dimension": [
@@ -39,35 +36,38 @@ const PresentDashboard: React.FC<PresentDashboardProps> = ({ dashboardData,setIs
       },
       "resource": "analytics"
     }
-  }
+  };
 
-  return (<Carousel
+  return (
+    <div  >
+{/* options */}
+<div className=" flex justify-center mt-2 " >
+<Button text="Exit Present" onClick={()=>setIsPresentMode(false)} />
 
-      className="w-full max-w-xs"
-    >
-        <div>
-        <Button onClick={()=>setIsPresentMode(false)} text= "Exit Present"   />
-        </div>
-      <CarouselContent>
-    
+</div>
+   
 
-{Array.from({ length: 5 }).map((_, index) => (
-          <CarouselItem key={index}>
-            <div className="p-1">
-              <Card>
-                <CardContent className="flex aspect-square items-center justify-center p-6">
-                  <span className="text-4xl font-semibold">{index + 1}</span>
-               
-                </CardContent>
-              </Card>
-            </div>
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-      <CarouselPrevious />
-      <CarouselNext />
-    </Carousel>
-  )
+<div className="w-screen h-screen flex justify-center items-center">
+      <Carousel
+        plugins={[plugin.current]}
+        className="w-4/5 h-4/5"
+        onMouseEnter={plugin.current.stop}
+        onMouseLeave={plugin.current.reset}
+      >
+        <CarouselContent className="w-full h-full">
+          {dashboardData.map((item, index) => (
+            <CarouselItem key={index} className="w-full h-full">
+              <DashboardVisualItem  query={item.visualQuery} visualType={item.visualType}  />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
+    </div>
+    </div>
+  
+  );
 };
 
 export default PresentDashboard;

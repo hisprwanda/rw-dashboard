@@ -72,8 +72,6 @@ const CreateDashboardPage: React.FC = () => {
                 dashboardDescription: singleSavedDashboardData?.dataStore?.dashboardDescription || prevValues.dashboardDescription,
                 selectedVisuals: singleSavedDashboardData?.dataStore?.selectedVisuals   ,
                 sharing: singleSavedDashboardData?.dataStore?.sharing || prevValues.sharing,
-                updatedAt:singleSavedDashboardData?.dataStore?.updatedAt || prevValues.updatedAt,
-                updatedBy:singleSavedDashboardData?.dataStore?.updatedBy || prevValues.updatedBy,
                 createdBy: singleSavedDashboardData?.dataStore?.createdBy || prevValues.createdBy,
                 createdAt: singleSavedDashboardData?.dataStore?.createdAt || prevValues.createdAt,
                 isOfficialDashboard: singleSavedDashboardData?.dataStore?.isOfficialDashboard || prevValues.isOfficialDashboard,
@@ -165,7 +163,7 @@ const CreateDashboardPage: React.FC = () => {
             }
     return ( isPresentMode ? <div className='flex justify-center' >
 
-        <PresentDashboard dashboardData={watchedValues} setIsPresentMode={setIsPresentMode}   />
+        <PresentDashboard dashboardData={selectedVisuals} setIsPresentMode={setIsPresentMode}   />
     </div>  :
         <form className="p-6" onSubmit={handleSubmit(onSubmit)}>
             <div className="flex justify-end gap-2">

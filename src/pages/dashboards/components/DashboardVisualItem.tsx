@@ -10,7 +10,22 @@ interface DashboardVisualItem {
 }
 
 const DashboardVisualItem:React.FC<DashboardVisualItem> = ({query,visualType}) => {
+  console.log("hello query",query)
 
+//   const testQuery =  {
+//     "myData": {
+//         "params": {
+//             "filter": "ou:USER_ORGUNIT",
+//             "dimension": [
+//                 "dx:zzeruEiEtWK",
+//                 "pe:LAST_12_MONTHS"
+//             ],
+//             "includeNumDen": true,
+//             "displayProperty": "NAME"
+//         },
+//         "resource": "analytics"
+//     }
+// }
 
     const {data,error,loading} = useFetchSingleChartApi(query)
 
@@ -36,6 +51,7 @@ const DashboardVisualItem:React.FC<DashboardVisualItem> = ({query,visualType}) =
   return (
     <div>
       {renderChart()}
+   
     </div>
   )
 }
