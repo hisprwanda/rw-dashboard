@@ -18,6 +18,7 @@ import { useFetchSingleDashboardData } from '../../services/fetchDashboard';
 import { Loading } from '../../components';
 import html2canvas from 'html2canvas';
 import  PresentDashboard from './components/PresentDashboard';
+import ConfigurableCarousel from './components/TestConfig';
 
 
 
@@ -161,9 +162,9 @@ const CreateDashboardPage: React.FC = () => {
             {
                 return <Loading/>
             }
-    return ( isPresentMode ? <div className='flex justify-center' >
-
-        <PresentDashboard dashboardData={selectedVisuals} setIsPresentMode={setIsPresentMode}   />
+    return ( isPresentMode ? <div className='flex flex-col  ' >
+      {/* <ConfigurableCarousel dashboardData={selectedVisuals} setIsPresentMode={setIsPresentMode} /> */}
+      <PresentDashboard dashboardData={selectedVisuals} setIsPresentMode={setIsPresentMode}   />
     </div>  :
         <form className="p-6" onSubmit={handleSubmit(onSubmit)}>
             <div className="flex justify-end gap-2">

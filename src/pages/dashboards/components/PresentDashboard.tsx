@@ -1,15 +1,11 @@
-import * as React from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import Autoplay from "embla-carousel-autoplay";
-import Button from "../../../components/Button";
+import useEmblaCarousel from "embla-carousel-react";
 import { Card, CardContent } from "../../../components/ui/card";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "../../../components/ui/carousel";
-
+import { Input } from "../../../components/ui/input";
+import { Label } from "../../../components/ui/label";
+import { Button } from "../../../components/ui/button";
+import { Pause, Play, ChevronLeft, ChevronRight } from "lucide-react";
 import DashboardVisualItem from "./DashboardVisualItem";
 
 interface PresentDashboardProps {
@@ -17,56 +13,118 @@ interface PresentDashboardProps {
     setIsPresentMode: any;
 }
 
-const PresentDashboard: React.FC<PresentDashboardProps> = ({ dashboardData, setIsPresentMode }) => {
-  console.log("Present Dashboard data",dashboardData)
-  const plugin = React.useRef(
-    Autoplay({ delay: 2000, stopOnInteraction: true })
+
+const PresentDashboard:React.FC<PresentDashboardProps> = ({ dashboardData, setIsPresentMode }) => {
+  const [slidesToShow, setSlidesToShow] = useState(2);
+  const [delay, setDelay] = useState(2000);
+  const [isPaused, setIsPaused] = useState(false);
+
+  const autoplayPlugin = useRef(
+    Autoplay({ delay: delay, stopOnInteraction: true })
   );
 
-  const testQuery = {
-    "myData": {
-      "params": {
-        "dimension": [
-          "dx:FCxwPx6VJL8;dOhkS4exZcQ;ZDtsTCIdWa9",
-          "pe:LAST_12_MONTHS"
-        ],
-        "displayProperty": "NAME",
-        "filter": "ou:USER_ORGUNIT",
-        "includeNumDen": true
-      },
-      "resource": "analytics"
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    {
+      loop: true,
+      align: "start",
+      slidesToScroll: 1,
+      dragFree: true,
+    },
+    [autoplayPlugin.current]
+  );
+
+  const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
+
+  useEffect(() => {
+    if (emblaApi) {
+      emblaApi.reInit();
     }
-  };
+  }, [emblaApi, slidesToShow]);
+
+  useEffect(() => {
+    if (autoplayPlugin.current) {
+      autoplayPlugin.current.options.delay = delay;
+      if (emblaApi) {
+        emblaApi.reInit();
+      }
+    }
+  }, [emblaApi, delay]);
+
+  const togglePause = useCallback(() => {
+    if (isPaused) {
+      autoplayPlugin.current.play();
+    } else {
+      autoplayPlugin.current.stop();
+    }
+    setIsPaused(!isPaused);
+  }, [isPaused]);
 
   return (
-    <div  >
-{/* options */}
-<div className=" flex justify-center mt-2 " >
-<Button text="Exit Present" onClick={()=>setIsPresentMode(false)} />
+    <div className="w-full mx-auto space-y-6 px-10 relative">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <Label htmlFor="slidesToShow">Slides to Show</Label>
+          <Input
+            id="slidesToShow"
+            type="number"
+            min="1"
+            max="5"
+            value={slidesToShow}
+            onChange={(e) => setSlidesToShow(Number(e.target.value))}
+          />
+        </div>
+        <div>
+          <Label htmlFor="delay">Delay (ms)</Label>
+          <Input
+            id="delay"
+            type="number"
+            min="500"
+            step="500"
+            value={delay}
+            onChange={(e) => setDelay(Number(e.target.value))}
+          />
+        </div>
+        <div className="flex items-end">
+          <Button onClick={togglePause} className="w-full">
+            {isPaused ? <Play className="mr-2 h-4 w-4" /> : <Pause className="mr-2 h-4 w-4" />}
+            {isPaused ? "Play" : "Pause"}
+          </Button>
+        </div>
+      </div>
 
-</div>
-   
-
-<div className="w-screen h-screen flex justify-center items-center">
-      <Carousel
-        plugins={[plugin.current]}
-        className="w-4/5 h-4/5"
-        onMouseEnter={plugin.current.stop}
-        onMouseLeave={plugin.current.reset}
+      <Button
+        variant="outline"
+        size="icon"
+        className="absolute left-0 top-[calc(50%+60px)] -translate-y-1/2 z-10"
+        onClick={scrollPrev}
       >
-        <CarouselContent className="w-full h-full">
-          {dashboardData.map((item, index) => (
-            <CarouselItem key={index} className="w-full h-full">
-              <DashboardVisualItem  query={item.visualQuery} visualType={item.visualType}  />
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
-      </Carousel>
+        <ChevronLeft className="h-4 w-4" />
+      </Button>
+
+      <div className="relative">
+        <div ref={emblaRef} className="overflow-hidden">
+          <div className="flex">
+            {dashboardData.map((item, index) => (
+              <div key={index} className="flex-[0_0_auto] min-w-0 pl-4" style={{ width: `${100 / slidesToShow}%` }}>
+                  <span className="text-2xl font-semibold">{index + 1}.{item.visualName}</span>
+                 <DashboardVisualItem  query={item.visualQuery} visualType={item.visualType}  />
+               
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <Button
+        variant="outline"
+        size="icon"
+        className="absolute right-0 top-[calc(50%+60px)] -translate-y-1/2 z-10"
+        onClick={scrollNext}
+      >
+        <ChevronRight className="h-4 w-4" />
+      </Button>
     </div>
-    </div>
-  
   );
 };
 
