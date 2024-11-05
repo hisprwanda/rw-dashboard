@@ -7,10 +7,10 @@ export const menuItems = [
         name: "Visualizers",
         link: "visualization"
     },
-    {
-        name: "Alerts",
-        link: "alerts"
-    },
+    // {
+    //     name: "Alerts",
+    //     link: "alerts"
+    // },
     {
         name: "Settings",
         link: "settings"

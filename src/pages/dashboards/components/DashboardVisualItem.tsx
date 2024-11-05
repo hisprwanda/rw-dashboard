@@ -51,7 +51,6 @@ const DashboardVisualItem:React.FC<DashboardVisualItem> = ({query,visualType}) =
   return (
     <div>
       {renderChart()}
-   
     </div>
   )
 }
