@@ -79,20 +79,8 @@ const DeleteDataSourceCard: React.FC<DeleteProps> = ({ id, refetch,setIsShowDele
                  {isLoading ? "Loading..." : "Confirm" }   
                 </Button> */}
 
-                <Button 
-                 type='button'
-       onClick={deleteDataSource}
-      text={isLoading ? "Loading..." : "Confirm" }
-      disabled={isLoading}
-      backgroundColor="destructive"
-      textColor="white"
-      borderColor="slate-300"
-
-    //   hoverBackgroundColor="white"
-    //   hoverTextColor="primary"
-    
-
-      icon={<MdDelete />}  />
+      <Button variant="danger" text={isLoading ? "Loading..." : "Confirm" }     type="button"
+      onClick={deleteDataSource}  icon={<MdDelete />} />
 
             </div>
 </>}

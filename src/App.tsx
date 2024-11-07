@@ -12,11 +12,13 @@ import {
   UserPage,
   HomePage,
   VisualizersPage,
+  VisualizationPage,
   AlertsPage,
   SettingsPage,
   DashboardsPage,
   DataSourcePage
 } from './pages';
+import { CreateDashboardPage } from "./pages/dashboards";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,23 +37,26 @@ const App: React.FC = () => {
             <Route path="/" element={<MainLayout />}>
               <Route index element={<HomePage />} />
               <Route path="dashboards" element={<DashboardsPage />} />
-              <Route path="visualizers" element={<VisualizersPage />} />
+              <Route path="visualization" element={<VisualizationPage />} />
               <Route path="alerts" element={<AlertsPage />} />
               <Route path="settings" element={<SettingsPage />} />
-              <Route path="data-sources" element={<DataSourcePage />} />
+              <Route path="data-source" element={<DataSourcePage />} />
               <Route path="unauthorized" element={<UnauthorizedPage />} />
+              <Route path="visualizers/:id?" element={<VisualizersPage />} />
+              <Route path="dashboard/:id?" element={<CreateDashboardPage />} />
               <Route path="*" element={<NotFoundPage />} />
-              <Route path="admin" element={
-                <ProtectedRoute requiredAuthorities={["F_SYSTEM_SETTING"]}>
-                  <AdminPage />
-                </ProtectedRoute>
-              } />
-              <Route path="user" element={
-                <ProtectedRoute requiredAuthorities={["M_dhis-web-dashboard"]}>
-                  <UserPage />
-                </ProtectedRoute>
-              } />
             </Route>
+
+            <Route path="admin" element={
+              <ProtectedRoute requiredAuthorities={["F_SYSTEM_SETTING"]}>
+                <AdminPage />
+              </ProtectedRoute>
+            } />
+            <Route path="user" element={
+              <ProtectedRoute requiredAuthorities={["M_dhis-web-dashboard"]}>
+                <UserPage />
+              </ProtectedRoute>
+            } />
           </Routes>
         </Router>
       </AuthProvider>

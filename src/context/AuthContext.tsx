@@ -7,10 +7,38 @@ import React, {
   ReactNode,
 } from "react";
 import { useDataQuery } from "@dhis2/app-runtime";
+import { useDataEngine } from '@dhis2/app-runtime';
 
 interface AuthContextProps {
   userDatails: {};
   authorities: string[];
+  analyticsDimensions: any;
+  setAnalyticsDimensions: any;
+  fetchAnalyticsData: any;
+  analyticsData: any;
+  setAnalyticsData:any;
+  isFetchAnalyticsDataLoading: any;
+  fetchAnalyticsDataError: any;
+  setSelectedOrganizationUnits: any;
+  selectedOrganizationUnits: any;
+  isUseCurrentUserOrgUnits: boolean;
+  setIsUseCurrentUserOrgUnits: any;
+  selectedOrganizationUnitsLevels: any;
+  setSelectedOrganizationUnitsLevels: any;
+  selectedOrgUnitGroups: any;
+  setSelectedOrgUnitGroups: any;
+  isSetPredifinedUserOrgUnits: any;
+  setIsSetPredifinedUserOrgUnits: any;
+  selectedLevel: any;
+  setSelectedLevel: any;
+  selectedOrgUnits: any;
+  setSelectedOrgUnits: any;
+  analyticsQuery:any;
+  selectedChartType:string,
+   setSelectedChartType:any,
+   setAnalyticsQuery:any;
+   selectedVisualsForDashboard:string[];
+   setSelectedVisualsForDashboard:any
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -30,8 +58,30 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const { data, loading, error } = useDataQuery(query);
+
+
   const [authorities, setAuthorities] = useState<string[]>([]);
   const [userDatails, setUserDatails] = useState<{}>({});
+  const [isFetchAnalyticsDataLoading, setIsFetchAnalyticsDataLoading] = useState(false);
+  const [analyticsData, setAnalyticsData] = useState<any>(null);
+  const [fetchAnalyticsDataError, setFetchAnalyticsDataError] = useState<any>(false);
+  const [analyticsDimensions, setAnalyticsDimensions] = useState<any>({ dx: [], pe: ['LAST_12_MONTHS'] });
+  const [selectedOrganizationUnits, setSelectedOrganizationUnits] = useState<any>([]);
+  const [selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels] = useState<any>([]);
+  const [isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits] = useState<boolean>(true);
+  const [selectedOrgUnitGroups, setSelectedOrgUnitGroups] = useState<any>([]);
+  const [selectedLevel, setSelectedLevel] = useState<any>();
+  const [selectedOrgUnits, setSelectedOrgUnits] = useState<string[]>([]);
+  const [analyticsQuery, setAnalyticsQuery] = useState<any>(null)
+  const [selectedChartType, setSelectedChartType] = useState<any>(""); 
+  const [selectedVisualsForDashboard, setSelectedVisualsForDashboard] = useState<string[]>([]);
+
+  const [isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits] = useState<any>({
+    is_USER_ORGUNIT: true,
+    is_USER_ORGUNIT_CHILDREN: false,
+    is_USER_ORGUNIT_GRANDCHILDREN: false
+  });
+
 
   useEffect(() => {
     if (data) {
@@ -43,8 +93,63 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading user authorities</div>;
 
+
+
+  // testing
+  const engine = useDataEngine();
+  const fetchAnalyticsData = async (dimension: any) => {
+    try {
+      setIsFetchAnalyticsDataLoading(true);
+      setFetchAnalyticsDataError(false);
+      const orgUnitIds = selectedOrganizationUnits?.map((unit: any) => unit).join(';');
+      const orgUnitLevelIds = selectedOrganizationUnitsLevels?.map((unit: any) => `LEVEL-${unit}`).join(';');
+      const orgUnitGroupIds = selectedOrgUnitGroups?.map((item: any) => `OU_GROUP-${item}`).join(';');
+
+      console.log({ orgUnitGroupIds, orgUnitIds, orgUnitLevelIds });
+
+      const analyticsQuery = {
+        myData: {
+          resource: 'analytics',
+          params: {
+            dimension,
+            // if current org unit is checked use keyword, if not use other org units
+            filter: `ou:${isUseCurrentUserOrgUnits
+              ? `${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT ? 'USER_ORGUNIT;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_CHILDREN ? 'USER_ORGUNIT_CHILDREN;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_GRANDCHILDREN ? 'USER_ORGUNIT_GRANDCHILDREN;' : ''}`.slice(0, -1)
+              : `${orgUnitIds};${orgUnitLevelIds};${orgUnitGroupIds}`
+              }`,
+            displayProperty: 'NAME',
+            includeNumDen: true,
+            // skipMeta: false,
+            // skipData: true,
+            // includeMetadataDetails: true
+          }
+        },
+      }
+
+      const result = await engine.query(analyticsQuery);
+      setAnalyticsData(result?.myData);
+      // set analytics query
+      setAnalyticsQuery(analyticsQuery)
+    } catch (error) {
+      setFetchAnalyticsDataError(true);
+      console.log("error fetching analytics data", error);
+    } finally {
+      setIsFetchAnalyticsDataLoading(false);
+    }
+
+
+
+  };
+
+
+  /// test
+  // useEffect(()=>{
+  //   console.log("analytics query change",analyticsQuery)
+  // },[analyticsQuery])
+
+
   return (
-    <AuthContext.Provider value={{ userDatails, authorities }}>
+    <AuthContext.Provider value={{  selectedVisualsForDashboard, setSelectedVisualsForDashboard,setAnalyticsData,setAnalyticsQuery,selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery,selectedChartType,setSelectedChartType}}>
       {children}
     </AuthContext.Provider>
   );

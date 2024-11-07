@@ -5,20 +5,14 @@ export const menuItems = [
     },
     {
         name: "Visualizers",
-        link: "visualizers"
+        link: "visualization"
     },
-    {
-        name: "Alerts",
-        link: "alerts"
-    },
+    // {
+    //     name: "Alerts",
+    //     link: "alerts"
+    // },
     {
         name: "Settings",
         link: "settings"
-    },
-    {
-        name: "data-sources",
-        link: "data-sources"
     }
-
-    
 ];

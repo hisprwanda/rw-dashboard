@@ -36,6 +36,7 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({ title, action, refetch,
     
     const savedDataSource = data?.value;
 
+
     const { register, handleSubmit, reset, setValue, formState: { errors, isSubmitting } } = useForm<DataSourceFormFields>({
         defaultValues: {
             isCurrentDHIS2: false,
@@ -150,7 +151,6 @@ const onSubmit: SubmitHandler<DataSourceFormFields> = async (formData) => {
     }
 };
 
-
     return (
         <div className="max-w-md mx-auto p-6 border border-gray-300 rounded-md">
             <h1 className="text-2xl font-bold mb-4">{title}</h1>
@@ -250,18 +250,8 @@ const onSubmit: SubmitHandler<DataSourceFormFields> = async (formData) => {
                 {/* Submit Button */}
                 <div className="flex justify-end mt-4">
                   
-                    <Button 
-                    
-                    type='submit'
-      text= {isSubmitting ? 'Loading...' : action === 'update' ? 'Update' : 'Save'}
-      backgroundColor="primary"
-      textColor="white"
-      borderColor="slate-300"
-      hoverBackgroundColor="white"
-      hoverTextColor="primary"
-      icon={<IoSaveOutline />} 
-      disabled={isSubmitting}
-                               />
+
+        <Button variant="primary"    text= {isSubmitting ? 'Loading...' : action === 'update' ? 'Update' : 'Save'}     type="submit"  icon={<IoSaveOutline />} />
                 </div>
             </form>
         </div>
