@@ -33,7 +33,7 @@ const CreateDashboardPage: React.FC = () => {
     const captureRef = useRef<HTMLDivElement>(null);
 
 
-    console.log("test single data",singleSavedDashboardData)
+   // console.log("test single data",singleSavedDashboardData)
     const { userDatails } = useAuthorities();
     const [isSuccess, setIsSuccess] = useState(false);
     const engine = useDataEngine();

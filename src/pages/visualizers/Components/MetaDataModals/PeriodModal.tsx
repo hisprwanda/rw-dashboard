@@ -11,6 +11,7 @@ const relativePeriods = {
         { label: 'Last month', value: 'LAST_MONTH' },
         { label: 'Last 3 months', value: 'LAST_3_MONTHS' },
         { label: 'Last 6 months', value: 'LAST_6_MONTHS' },
+        { label: 'Last 12 months', value: 'LAST_12_MONTHS' },
         { label: 'Months this year', value: 'MONTHS_THIS_YEAR' },
     ],
     Years: [
