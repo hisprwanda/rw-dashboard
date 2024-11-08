@@ -16,7 +16,7 @@ export const LocalBarChart: React.FC<LocalBarChartProps> = ({ data }) => {
 
     const { chartData, chartConfig, error } = useMemo(() => {
         if (!isValidInputData(data)) {
-            return { chartData: [], chartConfig: {}, error: "Invalid data format" };
+            return { chartData: [], chartConfig: {}, error: "no data found" };
         }
 
         try {

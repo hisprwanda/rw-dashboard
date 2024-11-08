@@ -32,7 +32,7 @@ function Visualizers() {
     const { data:dataItemsData, error:dataItemsFetchError, loading:isDataItemsLoading } = useDataItems();
 
     const { data,loading } = useDataSourceData();
-    const { analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData} = useAuthorities();
+    const { analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError} = useAuthorities();
     const [isShowDataModal, setIsShowDataModal] = useState<boolean>(false);
     const [isShowOrganizationUnit, setIsShowOrganizationUnit] = useState<boolean>(false);
     const [isShowPeriod, setIsShowPeriod] = useState<boolean>(false);
@@ -45,6 +45,9 @@ function Visualizers() {
         <option key={entry?.key} value={entry?.key}>{entry?.value?.instanceName}</option>
     ));
     
+
+    console.log("There was an error:", fetchAnalyticsDataError, "Type:", typeof fetchAnalyticsDataError);
+
     // if visualId is false then set all chart related states to default
     useEffect(()=>{
         if(!visualId)
@@ -211,7 +214,9 @@ function Visualizers() {
                         ) : (
                             <div className="flex items-center justify-center w-full h-[600px]">
                                 <div className="w-[100%] max-h-[100%]">
-                                    {renderChart()}
+                                     { fetchAnalyticsDataError ?
+                                      <p className='text-center text-red-600 bg-red-100 p-4 rounded-lg shadow-sm border border-red-300'  >{fetchAnalyticsDataError?.message}</p> :
+                                       renderChart()}
                                 </div>
                             </div>
                         )}
