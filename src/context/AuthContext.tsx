@@ -132,12 +132,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setAnalyticsQuery(analyticsQuery)
     } catch (error) {
       setFetchAnalyticsDataError(error);
-      console.log("Error fetching analytics data:", {
-        message: error?.message , // Show error message if available
-        name: error?.name,                // Show the error's name (e.g., "TypeError")
-        stack: error?.stack,              // Show the stack trace for debugging
-        type: typeof error                // Show the type of the error
-    });
+      console.log("Error fetching analytics data:", error);
     
     } finally {
       setIsFetchAnalyticsDataLoading(false);

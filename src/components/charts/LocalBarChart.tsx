@@ -45,7 +45,7 @@ export const LocalBarChart: React.FC<LocalBarChartProps> = ({ data }) => {
                     tickLine={false}
                     tickMargin={10}
                     axisLine={false}
-                    tickFormatter={(value) => value.slice(0, 3)}
+                    tickFormatter={(value) => value}
                 />
                 <YAxis />
                 <Tooltip content={<ChartTooltipContent />} />

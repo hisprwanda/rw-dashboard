@@ -64,11 +64,14 @@ export function transformDataForLineChart(inputData: InputData) {
         dataPoint[dataName] = parseInt(row[2]);
 
         return dataPoint;
-    });
+    }); 
+    console.log("transformedData line",transformedData)
 
     const finalTransformedData = combineDataByMonth(transformedData)
+    console.log("finalTransformedData line",finalTransformedData)
 
     return finalTransformedData;
+  
 
 }
 
