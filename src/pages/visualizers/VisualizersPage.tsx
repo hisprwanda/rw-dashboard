@@ -5,20 +5,16 @@ import { useDataSourceData } from '../../services/DataSourceHooks';
 import { GenericModal, Loading } from "../../components";
 import { DataModal, OrganizationModal, PeriodModal } from './Components/MetaDataModals';
 import { useAuthorities } from '../../context/AuthContext';
-import { LocalBarChart } from '../../components/charts/LocalBarChart';
-import { LocalLineChart } from '../../components/charts/LocalLineChart';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
 import SelectChartType from './Components/SelectChartType';
-import { IoBarChartSharp } from "react-icons/io5";
-import { FaChartLine } from "react-icons/fa6";
 import SaveVisualTypeForm from './Components/SaveVisualTypeForm';
 import { useParams } from 'react-router-dom';
 import { useFetchSingleVisualData } from '../../services/fetchVisuals';
-import { unFormatAnalyticsDimensions ,formatAnalyticsDimensions} from '../../lib/formatAnalyticsDimensions';
-import { formatCurrentUserSelectedOrgUnit, formatSelectedOrganizationUnit,formatOrgUnitGroup,formatOrgUnitLevels} from '../../lib/formatCurrentUserOrgUnit';
+import { formatAnalyticsDimensions} from '../../lib/formatAnalyticsDimensions';
 import { useOrgUnitData } from '../../services/fetchOrgunitData';
 import { useDataItems } from '../../services/fetchDataItems';
 import {chartComponents} from "../../constants/systemCharts"
+import { IoMdOptions } from "react-icons/io";
 
 
 
@@ -205,7 +201,9 @@ function Visualizers() {
 
                 {/* Visualization Area */}
                 <div className="flex-grow bg-white shadow-md p-4 rounded-lg mx-4">
-                    <div className="flex justify-end mb-4">
+                    <div className="flex justify-end mb-4 gap-2">
+                       
+                        <Button variant="secondary" text={"Options"} type="button" icon={<IoMdOptions />}  onClick={handleShowSaveVisualTypeForm}/>
                         <Button variant="primary" text={visualId  ? "Update" : "Save" } type="button" icon={<IoSaveOutline />}  onClick={handleShowSaveVisualTypeForm}/>
                     </div>
                     <div className="h-[600px] flex items-center justify-center border border-gray-300 rounded-lg bg-gray-100">
@@ -237,6 +235,10 @@ function Visualizers() {
             {/* save visual type form */}
             <GenericModal isOpen={isShowSaveVisualTypeForm} setIsOpen={setIsShowSaveVisualTypeForm}>
                 <SaveVisualTypeForm  visualId={visualId}  singleSavedVisualData={singleSavedVisualData} setIsShowSaveVisualTypeForm={setIsShowSaveVisualTypeForm } selectedChartType={selectedChartType}  selectedDataSourceId={selectedDataSourceOption} />
+                </GenericModal>
+            {/* Charts Options */}
+            <GenericModal isOpen={isShowSaveVisualTypeForm} setIsOpen={setIsShowSaveVisualTypeForm}>
+                <h2>OPtions</h2>
                 </GenericModal>
             </>
             }

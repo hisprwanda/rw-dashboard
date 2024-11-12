@@ -32,6 +32,8 @@ export const LocalLineChart: React.FC<LocalLineChartProps> = ({ data }) => {
 
     return (
         <ChartContainer config={chartConfig} style={{height:"100%",width:"100%"}} >
+            <h3 className="text-center text-lg font-bold text-gray-800 ">Main Title</h3>
+            <h4 className="text-center text-md font-medium text-gray-600 mt-1">Sub Title</h4>
             <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }} width={100} height={100}  >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
@@ -51,7 +53,6 @@ export const LocalLineChart: React.FC<LocalLineChartProps> = ({ data }) => {
                         stroke={chartConfig[key].color}
                         name={chartConfig[key].label}
                         dot={{ r: 4 }}
-                       // label={<text fontSize={12} fontWeight={"bold"} textAnchor="middle" dy={-10} ><p>hello</p></text>}
                      label={<CustomLabel />}
                    >
                       

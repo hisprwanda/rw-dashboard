@@ -38,6 +38,8 @@ export const LocalBarChart: React.FC<LocalBarChartProps> = ({ data }) => {
 
     return (
         <ChartContainer config={chartConfig}>
+              <h3 className="text-center text-lg font-bold text-gray-800 ">Main Title</h3>
+              <h4 className="text-center text-md font-medium text-gray-600 mt-1">Sub Title</h4>
             <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
