@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Legend, Tooltip } from "recharts";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Legend, Tooltip,LabelList } from "recharts";
 import {
     ChartContainer,
     ChartTooltip,
@@ -56,7 +56,14 @@ export const LocalBarChart: React.FC<LocalBarChartProps> = ({ data }) => {
                         dataKey={key}
                         fill={chartConfig[key].color}
                         name={chartConfig[key].label}
-                    />
+                    >
+                          <LabelList
+                 dataKey={key}
+                position="center"
+                fill="white"
+                style={{ fontSize: '12px', fontWeight: 'bold' }}
+              />
+                    </Bar>
                 ))}
             </BarChart>
         </ChartContainer>

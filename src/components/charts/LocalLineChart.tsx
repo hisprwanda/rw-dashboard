@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Line, LineChart, CartesianGrid, XAxis, YAxis, Legend, Tooltip } from "recharts";
+import { Line, LineChart, CartesianGrid, XAxis, YAxis, Legend, Tooltip,LabelList } from "recharts";
 import { ChartContainer, ChartTooltipContent } from "../../components/ui/chart";
 import { transformDataForLineChart, generateChartConfig, isValidInputData } from "../../lib/localLineChartFormat";
 
@@ -50,9 +50,22 @@ export const LocalLineChart: React.FC<LocalLineChartProps> = ({ data }) => {
                         dataKey={key}
                         stroke={chartConfig[key].color}
                         name={chartConfig[key].label}
-                    />
+                        dot={{ r: 4 }}
+                       // label={<text fontSize={12} fontWeight={"bold"} textAnchor="middle" dy={-10} ><p>hello</p></text>}
+                     label={<CustomLabel />}
+                   >
+                      
+                    </Line>
                 ))}
             </LineChart>
         </ChartContainer>
     );
 };
+
+function CustomLabel(props: any) {
+    const { x, y, value } = props;
+    return (
+      <text x={x} y={y} dy={-10} fill="var(--color-value)" fontSize={12} fontWeight={"bold"} textAnchor="middle">
+        {value}
+      </text>
+    )}
