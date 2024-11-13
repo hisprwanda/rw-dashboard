@@ -48,6 +48,9 @@ function Visualizers() {
     const dataSourceOptions = data?.dataStore?.entries?.map((entry:any) => (
         <option key={entry?.key} value={entry?.key}>{entry?.value?.instanceName}</option>
     ));
+    
+
+    console.log("There was an error:", fetchAnalyticsDataError, "Type:", typeof fetchAnalyticsDataError);
 
     // if visualId is false then set all chart related states to default
     useEffect(()=>{
@@ -193,43 +196,23 @@ function Visualizers() {
                         </div>
                     </TabsContent>
                     <TabsContent value="CUSTOMIZE" className="pt-4">
-                    <ul className="space-y-2 p-0 list-none">
-        <li className="px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-md cursor-pointer transition-all duration-200">
-            Data
-        </li>
-        <li className="px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-md cursor-pointer transition-all duration-200">
-            Axes
-        </li>
-        <li className="px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-md cursor-pointer transition-all duration-200">
-            Series
-        </li>
-        <li className="px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-md cursor-pointer transition-all duration-200">
-            Styles
-        </li>
-        <li className="px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-md cursor-pointer transition-all duration-200">
-            Limit Values
-        </li>
-    </ul>
-
+                        <div>
+                            {/* selecting Content */}
+                            <SelectChartType 
+                                chartComponents={chartComponents} 
+                                selectedChartType={selectedChartType} 
+                                setSelectedChartType={setSelectedChartType} 
+                            />
+                         
+                        </div>
                     </TabsContent>
                 </Tabs>
 
                 {/* Visualization Area */}
                 <div className="flex-grow bg-white shadow-md p-4 rounded-lg mx-4">
                     <div className="flex justify-between mb-4 gap-1 ">
-                    <div className='' >
-                        {/* this co */}
-                    <SelectChartType 
-                                chartComponents={chartComponents} 
-                                selectedChartType={selectedChartType} 
-                                setSelectedChartType={setSelectedChartType} 
-                            />
-                    </div>
-              
-                            <div>
-                            <Button variant="primary" text={visualId  ? "Update" : "Save" } type="button" icon={<IoSaveOutline />}  onClick={handleShowSaveVisualTypeForm}/>
-                            </div>
-                       
+                    <NavigationMenuDemo/>
+                        <Button variant="primary" text={visualId  ? "Update" : "Save" } type="button" icon={<IoSaveOutline />}  onClick={handleShowSaveVisualTypeForm}/>
                     </div>
                     <div className="h-[600px] flex items-center justify-center border border-gray-300 rounded-lg bg-gray-100">
                         {isFetchAnalyticsDataLoading ? (

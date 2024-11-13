@@ -26,5 +26,6 @@ export const chartComponents: ChartComponent = [
         component: LocalLineChart, 
         description: 'A line chart showing trends over time', 
         icon: <FaChartLine /> 
-    },
+    }
+  
 ];
