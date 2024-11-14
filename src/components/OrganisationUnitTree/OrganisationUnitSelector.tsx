@@ -88,14 +88,6 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
 
   }, [selectedOrgUnits]);
 
-  // Set selected organization unit levels when selectedLevel changes
-  // useEffect(() => {
-  //   const selectedLevelIds = orgUnitLevels
-  //     .filter(level => selectedLevel?.includes(level.level))
-  //     .map(level => level.id);
-  //   setSelectedOrganizationUnitsLevels(selectedLevelIds);
-  // }, [selectedLevel, orgUnitLevels, setSelectedOrganizationUnitsLevels]);
-
   useEffect(() => {
     if (selectedLevel && selectedLevel.length > 0) {
       const newSelectedLevelIds = orgUnitLevels

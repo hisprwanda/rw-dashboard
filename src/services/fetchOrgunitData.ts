@@ -1,5 +1,6 @@
 import { useDataQuery } from '@dhis2/app-runtime';
 
+
 // This service is responsible for fetching the current user and organization units
 export const useOrgUnitData = () => {
   const query = {
@@ -47,4 +48,30 @@ export const useSingleOrgUnitData = () => {
   };
   const { loading, error, data } = useDataQuery(query);
   return { loading, error, data };
+};
+
+
+
+export const useFetchOrgUnitById = (orgUnitId:string | null) => {
+
+
+
+  if (!orgUnitId) {
+    return { data: null, loading: false, error: null, isError: false };
+  }
+
+
+  const query = {
+    organisationUnit: {
+      resource: `organisationUnits/${orgUnitId}`,
+      params: {
+        fields: 'displayName',
+      },
+    
+    },
+  };
+
+  const { data, loading, error, isError } = useDataQuery(query);
+
+  return { data, loading, error, isError };
 };

@@ -8,6 +8,16 @@ import React, {
 } from "react";
 import { useDataQuery } from "@dhis2/app-runtime";
 import { useDataEngine } from '@dhis2/app-runtime';
+import { useFetchOrgUnitById } from "../services/fetchOrgunitData";
+
+
+interface VisualTitleAndSubtitleType {
+  visualTitle: string;
+  customSubTitle:string;
+  DefaultSubTitle: string[];
+
+}
+
 
 interface AuthContextProps {
   userDatails: {};
@@ -38,7 +48,9 @@ interface AuthContextProps {
    setSelectedChartType:any,
    setAnalyticsQuery:any;
    selectedVisualsForDashboard:string[];
-   setSelectedVisualsForDashboard:any
+   setSelectedVisualsForDashboard:any;
+   visualTitleAndSubTitle: VisualTitleAndSubtitleType;
+    setSelectedVisualTitleAndSubTitle:any
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -52,16 +64,25 @@ const query = {
   },
 };
 
-interface AuthProviderProps {
+interface AuthProviderProps { 
   children: ReactNode;
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const { data, loading, error } = useDataQuery(query);
-
-
   const [authorities, setAuthorities] = useState<string[]>([]);
   const [userDatails, setUserDatails] = useState<{}>({});
+
+  const currentUserOrgUnitId = userDatails?.me?.organisationUnits?.[0]?.id || null;
+
+  console.log("naimi", currentUserOrgUnitId);
+//const { data:singleOrgResult, loading:l, error:err } = useFetchOrgUnitById(currentUserOrgUnitId);
+
+
+ // console.log("murray", singleOrgResult?.organisationUnit?.displayName  )
+  
+ console.log("current user dimbo max",userDatails?.me?.organisationUnits?.[0]?.id)
+
   const [isFetchAnalyticsDataLoading, setIsFetchAnalyticsDataLoading] = useState(false);
   const [analyticsData, setAnalyticsData] = useState<any>(null);
   const [fetchAnalyticsDataError, setFetchAnalyticsDataError] = useState<any>(false);
@@ -75,6 +96,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [analyticsQuery, setAnalyticsQuery] = useState<any>(null)
   const [selectedChartType, setSelectedChartType] = useState<any>(""); 
   const [selectedVisualsForDashboard, setSelectedVisualsForDashboard] = useState<string[]>([]);
+  const [visualTitleAndSubTitle, setSelectedVisualTitleAndSubTitle] = useState<VisualTitleAndSubtitleType>({
+    //visualTitle: singleOrgResult?.organisationUnit?.displayName || "",
+   // DefaultSubTitle:[singleOrgResult?.organisationUnit?.displayName] || [],
+    visualTitle:  "",
+    DefaultSubTitle: [],
+    customSubTitle:""
+  })
+
 
   const [isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits] = useState<any>({
     is_USER_ORGUNIT: true,
@@ -89,6 +118,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setAuthorities(data.me.authorities);
     }
   }, [data]);
+
+  // test
+  useEffect(()=>{
+    console.log("selectedOrganizationUnits",selectedOrganizationUnits)
+    console.log("selectedOrgUnits",selectedOrgUnits)
+  },[selectedOrganizationUnits,selectedOrgUnits])
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading user authorities</div>;
@@ -131,7 +166,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // set analytics query
       setAnalyticsQuery(analyticsQuery)
     } catch (error) {
-      setFetchAnalyticsDataError(error);
+      // temporally commented
+     // setFetchAnalyticsDataError(error);
       console.log("Error fetching analytics data:", error);
     
     } finally {
@@ -142,15 +178,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   };
 
-
-  /// test
-  // useEffect(()=>{
-  //   console.log("analytics query change",analyticsQuery)
-  // },[analyticsQuery])
-
-
   return (
-    <AuthContext.Provider value={{  selectedVisualsForDashboard, setSelectedVisualsForDashboard,setAnalyticsData,setAnalyticsQuery,selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery,selectedChartType,setSelectedChartType}}>
+    <AuthContext.Provider value={{visualTitleAndSubTitle,setSelectedVisualTitleAndSubTitle,  selectedVisualsForDashboard, setSelectedVisualsForDashboard,setAnalyticsData,setAnalyticsQuery,selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery,selectedChartType,setSelectedChartType}}>
       {children}
     </AuthContext.Provider>
   );

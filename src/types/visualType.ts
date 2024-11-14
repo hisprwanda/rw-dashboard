@@ -5,6 +5,11 @@ export const VisualDataSchema = z.object({
   id: z.string(),
   visualType: z.enum(["bar", "pie", "line"]),
   visualName: z.string().nonempty({ message: "Visual name is required" }),
+  visualTitleAndSubTitle: z.object({
+    visualTitle: z.string(),
+    customSubTitle: z.string(),
+    DefaultSubTitle: z.array(z.string()),
+  }),
   description: z.string(),
   query: z
     .record(z.string(), z.any())

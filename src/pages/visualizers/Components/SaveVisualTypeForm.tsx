@@ -19,7 +19,7 @@ interface SaveVisualTypeFormProps {
 }
 
 const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleSavedVisualData,setIsShowSaveVisualTypeForm ,selectedDataSourceId}) => {
-  const { analyticsQuery,userDatails,selectedChartType,selectedOrgUnits,selectedLevel } = useAuthorities();
+  const { analyticsQuery,userDatails,selectedChartType,selectedOrgUnits,selectedLevel, visualTitleAndSubTitle } = useAuthorities();
   const {data:allSavedVisuals,loading,isError}  = useFetchVisualsData()
   const navigate = useNavigate();
 
@@ -31,9 +31,11 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
   const { register, handleSubmit,watch, reset, formState: { errors, isSubmitting } } = useForm<VisualDataFormFields>({
     defaultValues: {
       id:  generateUid(),
-      visualType: selectedChartType,  
+      visualType: selectedChartType,
+      visualTitleAndSubTitle:visualTitleAndSubTitle,  
       visualName:   "",
       description:   "",
+    
       query: analyticsQuery,
       
       dataSourceId: selectedDataSourceId, 
@@ -68,6 +70,7 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
             ...prevValues, // Spread the existing values to retain them
             id: singleSavedVisualData?.dataStore?.id,
             visualName: singleSavedVisualData?.dataStore?.visualName || prevValues.visualName,
+            visualTitleAndSubTitle: singleSavedVisualData?.dataStore?.visualTitleAndSubTitle || prevValues.visualTitleAndSubTitle,
             description: singleSavedVisualData?.dataStore?.description || prevValues.description,
             createdBy: singleSavedVisualData?.dataStore?.createdBy || prevValues.createdBy,
             createdAt: singleSavedVisualData?.dataStore?.createdAt || prevValues.createdAt,

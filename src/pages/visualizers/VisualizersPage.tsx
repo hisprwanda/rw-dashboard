@@ -35,15 +35,18 @@ function Visualizers() {
     const { data:dataItemsData, error:dataItemsFetchError, loading:isDataItemsLoading } = useDataItems();
 
     const { data,loading } = useDataSourceData();
-    const { analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError} = useAuthorities();
+    const { analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle} = useAuthorities();
     const [isShowDataModal, setIsShowDataModal] = useState<boolean>(false);
     const [isShowOrganizationUnit, setIsShowOrganizationUnit] = useState<boolean>(false);
     const [isShowPeriod, setIsShowPeriod] = useState<boolean>(false);
     const [isShowSaveVisualTypeForm,setIsShowSaveVisualTypeForm ] = useState<boolean>(false)
-    const [isShowOptions,setIsShowOptions ] = useState<boolean>(false)
+    const [isShowStyles,setIsShowStyles ] = useState<boolean>(false)
     
     /// refine later (default dataSource visualId should be the current dhis2 instance)
     const [selectedDataSourceOption, setSelectedDataSourceOption] = useState<string>("");
+
+    const [titleOption, setTitleOption] = useState<'auto' | 'none' | 'custom'>('auto');
+    const [subtitleOption, setSubtitleOption] = useState<'auto' | 'none' | 'custom'>('auto');
     //// data source options
     const dataSourceOptions = data?.dataStore?.entries?.map((entry:any) => (
         <option key={entry?.key} value={entry?.key}>{entry?.value?.instanceName}</option>
@@ -64,11 +67,13 @@ function Visualizers() {
               })
               setIsUseCurrentUserOrgUnits(true)
             setSelectedOrganizationUnits([])
-          
             setSelectedOrgUnits([])
             setSelectedOrgUnitGroups([])
             setSelectedOrganizationUnitsLevels([])
             setSelectedLevel([])
+            setSelectedVisualTitleAndSubTitle({ visualTitle:  "",
+                DefaultSubTitle: [],
+                customSubTitle:""})
             /// set default data source
             if(data)
                 {
@@ -126,6 +131,9 @@ function Visualizers() {
     const handleShowSaveVisualTypeForm = ()=>{
         setIsShowSaveVisualTypeForm(true)
       }
+    const handleShowStyles = ()=>{
+        setIsShowStyles(true)
+      }
      //// function to handle show modals
     const handleShowDataModal = () => setIsShowDataModal(true);
     const handleShowOrganizationUnitModal = () => setIsShowOrganizationUnit(true);
@@ -162,7 +170,7 @@ function Visualizers() {
                             value="CUSTOMIZE"
                             className="text-lg font-semibold py-2 w-full text-left hover:border-gray-300"
                         >
-                            CUSTOMIZE
+                            SETTINGS
                         </TabsTrigger>
                     </TabsList>
                     <TabsContent value="DATA" className="pt-4">
@@ -194,19 +202,19 @@ function Visualizers() {
                     </TabsContent>
                     <TabsContent value="CUSTOMIZE" className="pt-4">
                     <ul className="space-y-2 p-0 list-none">
-        <li className="px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-md cursor-pointer transition-all duration-200">
+        <li className="px-4 py-2 text-gray-700 hover:text-primary hover:bg-gray-100 rounded-md cursor-pointer transition-all duration-200">
             Data
         </li>
-        <li className="px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-md cursor-pointer transition-all duration-200">
+        <li className="px-4 py-2 text-gray-700 hover:text-primary hover:bg-gray-100 rounded-md cursor-pointer transition-all duration-200">
             Axes
         </li>
-        <li className="px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-md cursor-pointer transition-all duration-200">
+        <li className="px-4 py-2 text-gray-700 hover:text-primary hover:bg-gray-100 rounded-md cursor-pointer transition-all duration-200">
             Series
         </li>
-        <li className="px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-md cursor-pointer transition-all duration-200">
+        <li onClick={handleShowStyles} className="px-4 py-2 text-gray-700 hover:text-primary hover:bg-gray-100 rounded-md cursor-pointer transition-all duration-200">
             Styles
         </li>
-        <li className="px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-md cursor-pointer transition-all duration-200">
+        <li className="px-4 py-2 text-gray-700 hover:text-primary hover:bg-gray-100 rounded-md cursor-pointer transition-all duration-200">
             Limit Values
         </li>
     </ul>
@@ -262,8 +270,8 @@ function Visualizers() {
                 <SaveVisualTypeForm  visualId={visualId}  singleSavedVisualData={singleSavedVisualData} setIsShowSaveVisualTypeForm={setIsShowSaveVisualTypeForm } selectedChartType={selectedChartType}  selectedDataSourceId={selectedDataSourceOption} />
                 </GenericModal>
                 {/* general charts option */}
-            <GenericModal isOpen={isShowSaveVisualTypeForm} setIsOpen={setIsShowSaveVisualTypeForm}>
-               <GeneralChartsStyles/>
+            <GenericModal isOpen={isShowStyles} setIsOpen={setIsShowStyles}>
+               <GeneralChartsStyles  setIsShowStyles={setIsShowStyles} titleOption={titleOption} setTitleOption={setTitleOption} subtitleOption={subtitleOption} setSubtitleOption={setSubtitleOption} />
                 </GenericModal>
             </>
             }
