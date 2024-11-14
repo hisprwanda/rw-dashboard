@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import { useDataQuery } from "@dhis2/app-runtime";
 import { useDataEngine } from '@dhis2/app-runtime';
-import { useFetchOrgUnitById } from "../services/fetchOrgunitData";
+import { useFetchOrgUnitById ,useOrgUnitData} from "../services/fetchOrgunitData";
 
 
 interface VisualTitleAndSubtitleType {
@@ -73,15 +73,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [authorities, setAuthorities] = useState<string[]>([]);
   const [userDatails, setUserDatails] = useState<{}>({});
 
-  const currentUserOrgUnitId = userDatails?.me?.organisationUnits?.[0]?.id || null;
+ // const currentUserOrgUnitId = userDatails?.me?.organisationUnits?.[0]?.id || "Hjw70Lodtf2";
 
-  console.log("naimi", currentUserOrgUnitId);
-//const { data:singleOrgResult, loading:l, error:err } = useFetchOrgUnitById(currentUserOrgUnitId);
-
-
- // console.log("murray", singleOrgResult?.organisationUnit?.displayName  )
-  
- console.log("current user dimbo max",userDatails?.me?.organisationUnits?.[0]?.id)
+  const {data:currentUserOrgData} = useOrgUnitData()
+  const defaultUserOrgUnit = currentUserOrgData?.currentUser?.organisationUnits?.[0]?.displayName
 
   const [isFetchAnalyticsDataLoading, setIsFetchAnalyticsDataLoading] = useState(false);
   const [analyticsData, setAnalyticsData] = useState<any>(null);
@@ -97,10 +92,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [selectedChartType, setSelectedChartType] = useState<any>(""); 
   const [selectedVisualsForDashboard, setSelectedVisualsForDashboard] = useState<string[]>([]);
   const [visualTitleAndSubTitle, setSelectedVisualTitleAndSubTitle] = useState<VisualTitleAndSubtitleType>({
-    //visualTitle: singleOrgResult?.organisationUnit?.displayName || "",
-   // DefaultSubTitle:[singleOrgResult?.organisationUnit?.displayName] || [],
-    visualTitle:  "",
-    DefaultSubTitle: [],
+    visualTitle:defaultUserOrgUnit || "",
+    DefaultSubTitle: [defaultUserOrgUnit],
     customSubTitle:""
   })
 
@@ -121,9 +114,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // test
   useEffect(()=>{
-    console.log("selectedOrganizationUnits",selectedOrganizationUnits)
-    console.log("selectedOrgUnits",selectedOrgUnits)
-  },[selectedOrganizationUnits,selectedOrgUnits])
+       if(currentUserOrgData?.currentUser?.organisationUnits?.[0]?.displayName)
+       {
+      setSelectedVisualTitleAndSubTitle({
+          visualTitle:currentUserOrgData?.currentUser?.organisationUnits?.[0]?.displayName,
+          DefaultSubTitle: [currentUserOrgData?.currentUser?.organisationUnits?.[0]?.displayName],
+          customSubTitle:""
+        })
+
+       }
+  },[currentUserOrgData || []])
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading user authorities</div>;

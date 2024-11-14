@@ -72,21 +72,14 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
 
   // Update selectedOrgUnit
   useEffect(() => {
-    const lastSelectedOrgUnit = selectedOrgUnits?.length
-      ? selectedOrgUnits[selectedOrgUnits?.length - 1].split('/').filter(Boolean).pop()
-      : null;
-
-    setSelectedOrganizationUnits((prev: any) => {
-      if (lastSelectedOrgUnit) {
-        // Check if the last selected org unit already exists in the previous selection
-        if (!prev.includes(lastSelectedOrgUnit)) {
-          return [...prev, lastSelectedOrgUnit];
-        }
-      }
-      return prev;
+    const updatedOrganizationUnits = selectedOrgUnits.map((path) => {
+      // Extract the last segment of the path
+      const parts = path.split('/');
+      return parts[parts.length - 1]; // Get the last segment (org unit ID)
     });
 
-  }, [selectedOrgUnits]);
+    setSelectedOrganizationUnits(updatedOrganizationUnits);
+  }, [selectedOrgUnits, setSelectedOrganizationUnits]);
 
   useEffect(() => {
     if (selectedLevel && selectedLevel.length > 0) {
@@ -102,6 +95,11 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
     }
   }, [selectedLevel, orgUnitLevels, setSelectedOrganizationUnitsLevels]);
   
+  // test
+  useEffect(()=>{
+   console.log("xxx",selectedOrganizationUnits)
+   console.log("yyy",selectedOrgUnits)
+  },[selectedOrganizationUnits,selectedOrgUnits])
 
   /// handle deselect
   function handleDeselect (){
