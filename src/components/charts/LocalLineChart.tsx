@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import { useAuthorities } from '../../context/AuthContext';
 import { Line, LineChart, CartesianGrid, XAxis, YAxis, Legend, Tooltip,LabelList } from "recharts";
 import { ChartContainer, ChartTooltipContent } from "../../components/ui/chart";
 import { transformDataForLineChart, generateChartConfig, isValidInputData } from "../../lib/localLineChartFormat";
@@ -8,6 +9,7 @@ interface LocalLineChartProps {
 }
 
 export const LocalLineChart: React.FC<LocalLineChartProps> = ({ data }) => {
+    const {visualTitleAndSubTitle} = useAuthorities();
     const { chartData, chartConfig, error } = useMemo(() => {
         if (!isValidInputData(data)) {
             return { chartData: [], chartConfig: {}, error: "no data found" };
@@ -32,8 +34,18 @@ export const LocalLineChart: React.FC<LocalLineChartProps> = ({ data }) => {
 
     return (
         <ChartContainer config={chartConfig} style={{height:"100%",width:"100%"}} >
-            <h3 className="text-center text-lg font-bold text-gray-800 ">Main Title</h3>
-            <h4 className="text-center text-md font-medium text-gray-600 mt-1">Sub Title</h4>
+                    {visualTitleAndSubTitle.visualTitle && <h3 className="text-center text-lg font-bold text-gray-800 ">{visualTitleAndSubTitle.visualTitle}</h3> }  
+               
+               {visualTitleAndSubTitle?.customSubTitle ?  <h4 className="text-center text-md font-medium text-gray-600 mt-1">{visualTitleAndSubTitle?.customSubTitle}</h4>  :   visualTitleAndSubTitle?.DefaultSubTitle?.length !== 0 && (
+    <div className="flex justify-center gap-1">
+      {visualTitleAndSubTitle?.DefaultSubTitle?.map((subTitle, index) => (
+        <h4 key={index} className="text-center text-md font-medium text-gray-600 mt-1">
+          {subTitle}
+          {index < visualTitleAndSubTitle?.DefaultSubTitle?.length - 1 && ","}
+        </h4>
+      ))}
+    </div>
+  )}
             <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }} width={100} height={100}  >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
