@@ -33,7 +33,10 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
     setSelectedOrganizationUnitsLevels,
     setSelectedOrgUnitGroups,
     isSetPredifinedUserOrgUnits,setIsSetPredifinedUserOrgUnits,
-    selectedOrgUnits
+    selectedOrgUnits,
+    fetchSingleOrgUnitName,
+    visualTitleAndSubTitle,
+    setSelectedVisualTitleAndSubTitle,  
   } = useAuthorities();
 
   //const { loading, error, data } = useOrgUnitData();
@@ -95,11 +98,41 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
     }
   }, [selectedLevel, orgUnitLevels, setSelectedOrganizationUnitsLevels]);
   
+
+    // Function to fetch and update organization names for selectedOrganizationUnits
+    const updateDefaultSubTitle = async () => {
+      if (selectedOrganizationUnits.length > 0) {
+        // Fetch organization names in parallel
+        const orgNames = await Promise.all(
+          selectedOrganizationUnits.map((orgUnitId) => fetchSingleOrgUnitName(orgUnitId))
+        );
+  
+        // Update DefaultSubTitle with fetched organization names
+        setSelectedVisualTitleAndSubTitle((prevState) => ({
+          ...prevState,
+          DefaultSubTitle: orgNames, // This will be an array of organization names
+        }));
+      } else {
+        // Clear DefaultSubTitle if no selected organization units
+        setSelectedVisualTitleAndSubTitle((prevState) => ({
+          ...prevState,
+          DefaultSubTitle: [],
+        }));
+      }
+    };
   // test
   useEffect(()=>{
+    updateDefaultSubTitle();
    console.log("xxx",selectedOrganizationUnits)
+    // fetchSingleOrgUnitName
    console.log("yyy",selectedOrgUnits)
   },[selectedOrganizationUnits,selectedOrgUnits])
+
+  useEffect(()=>{
+    console.log("visualTitleAndSubTitle wow",visualTitleAndSubTitle)
+  },[visualTitleAndSubTitle])
+
+ 
 
   /// handle deselect
   function handleDeselect (){

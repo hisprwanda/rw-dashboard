@@ -11,7 +11,7 @@ interface GeneralChartsStylesProps {
 }
 
 const GeneralChartsStyles: React.FC<GeneralChartsStylesProps> = ({ setIsShowStyles,setSubtitleOption,setTitleOption,subtitleOption,titleOption }) => {
-  const { visualTitleAndSubTitle, setSelectedVisualTitleAndSubTitle ,} = useAuthorities();
+  const { visualTitleAndSubTitle, setSelectedVisualTitleAndSubTitle ,fetchSingleOrgUnitName} = useAuthorities();
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedValue = e.target.value as 'auto' | 'none' | 'custom';
@@ -58,17 +58,7 @@ const GeneralChartsStyles: React.FC<GeneralChartsStylesProps> = ({ setIsShowStyl
           <div className="mb-4">
             <label className="block text-sm font-medium mb-2">Chart title</label>
             <div className="space-y-2">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  name="chartTitle"
-                  value="auto"
-                  checked={titleOption === 'auto'}
-                  onChange={handleTitleChange}
-                  className="text-primary"
-                />
-                <span>Auto generated</span>
-              </label>
+            
               <label className="flex items-center space-x-2">
                 <input
                   type="radio"

@@ -50,7 +50,8 @@ interface AuthContextProps {
    selectedVisualsForDashboard:string[];
    setSelectedVisualsForDashboard:any;
    visualTitleAndSubTitle: VisualTitleAndSubtitleType;
-    setSelectedVisualTitleAndSubTitle:any
+    setSelectedVisualTitleAndSubTitle:any;
+    fetchSingleOrgUnitName:any
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -92,10 +93,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [selectedChartType, setSelectedChartType] = useState<any>(""); 
   const [selectedVisualsForDashboard, setSelectedVisualsForDashboard] = useState<string[]>([]);
   const [visualTitleAndSubTitle, setSelectedVisualTitleAndSubTitle] = useState<VisualTitleAndSubtitleType>({
-    visualTitle:defaultUserOrgUnit || "",
+    visualTitle: "",
     DefaultSubTitle: [defaultUserOrgUnit],
     customSubTitle:""
   })
+  //  const [titleOption, setTitleOption] = useState<'auto' | 'none' | 'custom'>('auto');
+  //   const [subtitleOption, setSubtitleOption] = useState<'auto' | 'none' | 'custom'>('auto');
 
 
   const [isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits] = useState<any>({
@@ -117,7 +120,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
        if(currentUserOrgData?.currentUser?.organisationUnits?.[0]?.displayName)
        {
       setSelectedVisualTitleAndSubTitle({
-          visualTitle:currentUserOrgData?.currentUser?.organisationUnits?.[0]?.displayName,
+          visualTitle:"",
           DefaultSubTitle: [currentUserOrgData?.currentUser?.organisationUnits?.[0]?.displayName],
           customSubTitle:""
         })
@@ -178,8 +181,35 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   };
 
+
+
+  const fetchSingleOrgUnitName = async(orgUnitId:string)=>{
+    try {
+      const query = {
+        organisationUnit: {
+          resource: `organisationUnits/${orgUnitId}`,
+          params: {
+            fields: 'displayName',
+          },
+        
+        },
+      };
+
+      const result = await engine.query(query);
+     // console.log("single org unit name", result)
+      return result.organisationUnit.displayName
+      // update state here with result
+
+
+    
+    } catch (error) {
+      console.log("fetch single org err",error)
+    }
+  }
+
+ 
   return (
-    <AuthContext.Provider value={{visualTitleAndSubTitle,setSelectedVisualTitleAndSubTitle,  selectedVisualsForDashboard, setSelectedVisualsForDashboard,setAnalyticsData,setAnalyticsQuery,selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery,selectedChartType,setSelectedChartType}}>
+    <AuthContext.Provider value={{fetchSingleOrgUnitName,visualTitleAndSubTitle,setSelectedVisualTitleAndSubTitle,  selectedVisualsForDashboard, setSelectedVisualsForDashboard,setAnalyticsData,setAnalyticsQuery,selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery,selectedChartType,setSelectedChartType}}>
       {children}
     </AuthContext.Provider>
   );
