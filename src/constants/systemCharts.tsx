@@ -1,8 +1,10 @@
 import { LocalBarChart } from '../components/charts/LocalBarChart';
 import { LocalLineChart } from '../components/charts/LocalLineChart';
 import { LocalAreaChart } from '../components/charts/LocalAreaChart';
+import { LocalRadarChart } from '../components/charts/LocalRadarChart';
 import { IoBarChartSharp } from 'react-icons/io5';
 import { FaChartLine ,FaChartArea} from 'react-icons/fa';
+import { FaChartSimple } from 'react-icons/fa6';
 
 type ChartProps = {
     data: any;
@@ -33,6 +35,13 @@ export const chartComponents: ChartComponent = [
         component: LocalLineChart, 
         description: 'A line chart showing trends over time', 
         icon: <FaChartLine /> 
+    },
+    // change icon later
+    { 
+        type: 'Radar', 
+        component: LocalRadarChart, 
+        description: 'A line chart showing trends over time', 
+        icon: <FaChartSimple /> 
     },
   
   

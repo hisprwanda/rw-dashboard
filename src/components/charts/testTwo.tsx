@@ -1,7 +1,7 @@
 "use client"
 
 import { TrendingUp } from "lucide-react"
-import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
+import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from "recharts"
 
 import {
   Card,
@@ -40,56 +40,39 @@ const chartConfig = {
 export function Component() {
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Line Chart - Multiple</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+      <CardHeader className="items-center pb-4">
+        <CardTitle>Radar Chart - Multiple</CardTitle>
+        <CardDescription>
+          Showing total visitors for the last 6 months
+        </CardDescription>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig}>
-          <LineChart
-            accessibilityLayer
-            data={chartData}
-            margin={{
-              left: 12,
-              right: 12,
-            }}
-          >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              tickFormatter={(value) => value.slice(0, 3)}
+      <CardContent className="pb-0">
+        <ChartContainer
+          config={chartConfig}
+          className="mx-auto aspect-square max-h-[250px]"
+        >
+          <RadarChart data={chartData}>
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent indicator="line" />}
             />
-            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-            <Line
+            <PolarAngleAxis dataKey="month" />
+            <PolarGrid />
+            <Radar
               dataKey="desktop"
-              type="monotone"
-              stroke="var(--color-desktop)"
-              strokeWidth={2}
-              dot={false}
+              fill="var(--color-desktop)"
+              fillOpacity={0.6}
             />
-            <Line
-              dataKey="mobile"
-              type="monotone"
-              stroke="var(--color-mobile)"
-              strokeWidth={2}
-              dot={false}
-            />
-          </LineChart>
+            <Radar dataKey="mobile" fill="var(--color-mobile)" />
+          </RadarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter>
-        <div className="flex w-full items-start gap-2 text-sm">
-          <div className="grid gap-2">
-            <div className="flex items-center gap-2 font-medium leading-none">
-              Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-            </div>
-            <div className="flex items-center gap-2 leading-none text-muted-foreground">
-              Showing total visitors for the last 6 months
-            </div>
-          </div>
+      <CardFooter className="flex-col gap-2 text-sm">
+        <div className="flex items-center gap-2 font-medium leading-none">
+          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+        </div>
+        <div className="flex items-center gap-2 leading-none text-muted-foreground">
+          January - June 2024
         </div>
       </CardFooter>
     </Card>
