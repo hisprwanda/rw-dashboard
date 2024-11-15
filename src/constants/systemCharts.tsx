@@ -1,7 +1,8 @@
 import { LocalBarChart } from '../components/charts/LocalBarChart';
 import { LocalLineChart } from '../components/charts/LocalLineChart';
+import { LocalAreaChart } from '../components/charts/LocalAreaChart';
 import { IoBarChartSharp } from 'react-icons/io5';
-import { FaChartLine } from 'react-icons/fa';
+import { FaChartLine ,FaChartArea} from 'react-icons/fa';
 
 type ChartProps = {
     data: any;
@@ -26,6 +27,12 @@ export const chartComponents: ChartComponent = [
         component: LocalLineChart, 
         description: 'A line chart showing trends over time', 
         icon: <FaChartLine /> 
-    }
+    },
+    { 
+        type: 'area', 
+        component: LocalAreaChart, 
+        description: 'A line chart showing trends over time', 
+        icon: <FaChartArea /> 
+    },
   
 ];

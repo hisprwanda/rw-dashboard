@@ -45,7 +45,7 @@ function Visualizers() {
     /// refine later (default dataSource visualId should be the current dhis2 instance)
     const [selectedDataSourceOption, setSelectedDataSourceOption] = useState<string>("");
 
-    const [titleOption, setTitleOption] = useState<'auto' | 'none' | 'custom'>('auto');
+    const [titleOption, setTitleOption] = useState< 'none' | 'custom'>('none');
     const [subtitleOption, setSubtitleOption] = useState<'auto' | 'none' | 'custom'>('auto');
     //// data source options
     const dataSourceOptions = data?.dataStore?.entries?.map((entry:any) => (

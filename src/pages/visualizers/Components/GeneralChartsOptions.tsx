@@ -4,7 +4,7 @@ import Button from "../../../components/Button";
 
 interface GeneralChartsStylesProps {
   setIsShowStyles: (value: any) => void;
-  titleOption:'auto' | 'none' | 'custom';
+  titleOption: 'none' | 'custom';
   setTitleOption: (value: any) => void;
   subtitleOption:'auto' | 'none' | 'custom';
   setSubtitleOption: (value: any) => void;

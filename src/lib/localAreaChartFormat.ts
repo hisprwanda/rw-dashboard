@@ -20,24 +20,8 @@ export function isValidInputData(data: any): data is InputData {
         data.rows.length > 0
     );
 }
-function combineDataByMonth(data:any) {
-    return Object.values(
-      data.reduce((acc:any, current:any) => {
-        const { month, ...rest } = current;
-        
-        // If the month already exists, combine the data
-        if (!acc[month]) {
-          acc[month] = { month, ...rest };
-        } else {
-          acc[month] = { ...acc[month], ...rest };
-        }
-        
-        return acc;
-      }, {})
-    );
-  }
 
-export function transformDataForBarChart(inputData: InputData): TransformedDataPoint[] | any {
+export function transformDataForAreaChart(inputData: InputData): TransformedDataPoint[] {
     if (!isValidInputData(inputData)) {
         throw new Error("Invalid input data structure");
     }
@@ -67,8 +51,8 @@ export function transformDataForBarChart(inputData: InputData): TransformedDataP
         dataPoint[dataName] = parseInt(row[2]);
         return dataPoint;
     });
-     const finalTransformedData = combineDataByMonth(transformedData)
-    return finalTransformedData;
+     console.log("transformed data Area",transformedData)
+    return transformedData;
 }
 
 export function generateChartConfig(inputData: InputData): ChartConfig {
@@ -83,7 +67,7 @@ export function generateChartConfig(inputData: InputData): ChartConfig {
         const name = inputData.metaData.items[item].name;
         config[name] = {
             label: name,
-            color: `hsl(var(--chart-${index + 1}))`,
+            color: `hsl(var(--chart-${index }))`,
         };
     });
 

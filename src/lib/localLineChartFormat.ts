@@ -68,7 +68,6 @@ export function transformDataForLineChart(inputData: InputData) {
         return dataPoint;
     });
     const finalTransformedData = combineDataByMonth(transformedData)
-    console.log("finalTransformedData line",finalTransformedData)
 
     return finalTransformedData;
 }
@@ -96,6 +95,7 @@ export function generateChartConfig(inputData: InputData): ChartConfig {
         config[name] = {
             label: name,
             color: colors[index % colors.length],
+        
         };
     });
 
