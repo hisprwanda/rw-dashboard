@@ -1,8 +1,12 @@
 import React, { useMemo } from "react";
 import { useAuthorities } from '../../context/AuthContext';
 import { Line, LineChart, CartesianGrid, XAxis, YAxis, Legend, Tooltip,LabelList } from "recharts";
-import { ChartContainer, ChartTooltipContent } from "../../components/ui/chart";
-import { transformDataForLineChart, generateChartConfig, isValidInputData } from "../../lib/localLineChartFormat";
+import {
+    ChartContainer,
+    ChartTooltip,
+    ChartTooltipContent,
+} from "../../components/ui/chart";
+import { transformDataForBarChart, generateChartConfig, isValidInputData } from "../../lib/localBarchartFormat";
 
 interface LocalLineChartProps {
     data: any;
@@ -10,13 +14,15 @@ interface LocalLineChartProps {
 
 export const LocalLineChart: React.FC<LocalLineChartProps> = ({ data }) => {
     const {visualTitleAndSubTitle} = useAuthorities();
+    // below is error handling checking if the data exists before passing it to the formmater function or to the graph
+
     const { chartData, chartConfig, error } = useMemo(() => {
         if (!isValidInputData(data)) {
             return { chartData: [], chartConfig: {}, error: "no data found" };
         }
 
         try {
-            const transformedData = transformDataForLineChart(data);
+            const transformedData = transformDataForBarChart(data);
             const config = generateChartConfig(data);
             return { chartData: transformedData, chartConfig: config, error: null };
         } catch (err) {
@@ -33,20 +39,21 @@ export const LocalLineChart: React.FC<LocalLineChartProps> = ({ data }) => {
     }
 
     return (
-        <ChartContainer config={chartConfig} style={{height:"100%",width:"100%"}} >
-                    {visualTitleAndSubTitle.visualTitle && <h3 className="text-center text-lg font-bold text-gray-800 ">{visualTitleAndSubTitle.visualTitle}</h3> }  
+        <ChartContainer config={chartConfig}>
+             {visualTitleAndSubTitle.visualTitle && <h3 className="text-center text-lg font-bold text-gray-800 ">{visualTitleAndSubTitle.visualTitle}</h3> }  
                
-               {visualTitleAndSubTitle?.customSubTitle ?  <h4 className="text-center text-md font-medium text-gray-600 mt-1">{visualTitleAndSubTitle?.customSubTitle}</h4>  :   visualTitleAndSubTitle?.DefaultSubTitle?.length !== 0 && (
-    <div className="flex justify-center gap-1">
-      {visualTitleAndSubTitle?.DefaultSubTitle?.map((subTitle, index) => (
-        <h4 key={index} className="text-center text-md font-medium text-gray-600 mt-1">
-          {subTitle}
-          {index < visualTitleAndSubTitle?.DefaultSubTitle?.length - 1 && ","}
-        </h4>
-      ))}
-    </div>
-  )}
-            <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }} width={100} height={100}  >
+             {visualTitleAndSubTitle?.customSubTitle ?  <h4 className="text-center text-md font-medium text-gray-600 mt-1">{visualTitleAndSubTitle?.customSubTitle}</h4>  :   visualTitleAndSubTitle?.DefaultSubTitle?.length !== 0 && (
+  <div className="flex justify-center gap-1">
+    {visualTitleAndSubTitle?.DefaultSubTitle?.map((subTitle, index) => (
+      <h4 key={index} className="text-center text-md font-medium text-gray-600 mt-1">
+        {subTitle}
+        {index < visualTitleAndSubTitle?.DefaultSubTitle?.length - 1 && ","}
+      </h4>
+    ))}
+  </div>
+)}
+    
+            <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
                     dataKey="month"
@@ -62,18 +69,20 @@ export const LocalLineChart: React.FC<LocalLineChartProps> = ({ data }) => {
                     <Line
                         key={key}
                         dataKey={key}
-                        stroke={chartConfig[key].color}
-                        name={chartConfig[key].label}
-                        dot={{ r: 4 }}
-                     label={<CustomLabel />}
-                   >
-                      
+                         stroke={chartConfig[key].color}
+                         strokeWidth={2}
+                         dot={{ r: 4 }}
+                         label={<CustomLabel />}
+                     
+                    >
+                         
                     </Line>
                 ))}
             </LineChart>
         </ChartContainer>
     );
 };
+
 
 function CustomLabel(props: any) {
     const { x, y, value } = props;

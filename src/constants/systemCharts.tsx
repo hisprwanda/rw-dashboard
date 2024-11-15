@@ -23,16 +23,17 @@ export const chartComponents: ChartComponent = [
         icon: <IoBarChartSharp /> 
     },
     { 
-        type: 'line', 
-        component: LocalLineChart, 
-        description: 'A line chart showing trends over time', 
-        icon: <FaChartLine /> 
-    },
-    { 
         type: 'area', 
         component: LocalAreaChart, 
         description: 'A line chart showing trends over time', 
         icon: <FaChartArea /> 
     },
+    { 
+        type: 'line', 
+        component: LocalLineChart, 
+        description: 'A line chart showing trends over time', 
+        icon: <FaChartLine /> 
+    },
+  
   
 ];

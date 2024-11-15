@@ -6,7 +6,7 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "../../components/ui/chart";
-import { transformDataForLineChart, generateChartConfig, isValidInputData } from "../../lib/localLineChartFormat";
+import { transformDataForBarChart, generateChartConfig, isValidInputData } from "../../lib/localBarchartFormat";
 
 interface LocalAreaChartProps {
     data: any;
@@ -22,7 +22,7 @@ export const LocalAreaChart: React.FC<LocalAreaChartProps> = ({ data }) => {
         }
 
         try {
-            const transformedData = transformDataForLineChart(data);
+            const transformedData = transformDataForBarChart(data);
             const config = generateChartConfig(data);
             return { chartData: transformedData, chartConfig: config, error: null };
         } catch (err) {

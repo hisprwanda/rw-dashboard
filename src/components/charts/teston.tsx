@@ -1,104 +1,93 @@
-"use client"
-
-import { TrendingUp } from "lucide-react"
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
-
+import React, { useMemo } from "react";
+import { useAuthorities } from '../../context/AuthContext';
+import { Line, LineChart, CartesianGrid, XAxis, YAxis, Legend, Tooltip,LabelList } from "recharts";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart"
-const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-]
+    ChartContainer,
+    ChartTooltip,
+    ChartTooltipContent,
+} from "../../components/ui/chart";
+import { transformDataForBarChart, generateChartConfig, isValidInputData } from "../../lib/localBarchartFormat";
 
-const chartConfig = {
-  desktop: {
-    label: "Desktop",
-    color: "hsl(var(--chart-1))",
-  },
-  mobile: {
-    label: "Mobile",
-    color: "hsl(var(--chart-2))",
-  },
-} satisfies ChartConfig
-
-export function Component() {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Area Chart - Stacked</CardTitle>
-        <CardDescription>
-          Showing total visitors for the last 6 months
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig}>
-          <AreaChart
-            accessibilityLayer
-            data={chartData}
-            margin={{
-              left: 12,
-              right: 12,
-            }}
-          >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              tickFormatter={(value) => value.slice(0, 3)}
-            />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent indicator="dot" />}
-            />
-            <Area
-              dataKey="mobile"
-              type="natural"
-              fill="var(--color-mobile)"
-              fillOpacity={0.4}
-              stroke="var(--color-mobile)"
-              stackId="a"
-            />
-            <Area
-              dataKey="desktop"
-              type="natural"
-              fill="var(--color-desktop)"
-              fillOpacity={0.4}
-              stroke="var(--color-desktop)"
-              stackId="a"
-            />
-          </AreaChart>
-        </ChartContainer>
-      </CardContent>
-      <CardFooter>
-        <div className="flex w-full items-start gap-2 text-sm">
-          <div className="grid gap-2">
-            <div className="flex items-center gap-2 font-medium leading-none">
-              Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-            </div>
-            <div className="flex items-center gap-2 leading-none text-muted-foreground">
-              January - June 2024
-            </div>
-          </div>
-        </div>
-      </CardFooter>
-    </Card>
-  )
+interface LocalLineChartProps {
+    data: any;
 }
+
+export const LocalLineChart: React.FC<LocalLineChartProps> = ({ data }) => {
+    const {visualTitleAndSubTitle} = useAuthorities();
+    // below is error handling checking if the data exists before passing it to the formmater function or to the graph
+
+    const { chartData, chartConfig, error } = useMemo(() => {
+        if (!isValidInputData(data)) {
+            return { chartData: [], chartConfig: {}, error: "no data found" };
+        }
+
+        try {
+            const transformedData = transformDataForBarChart(data);
+            const config = generateChartConfig(data);
+            return { chartData: transformedData, chartConfig: config, error: null };
+        } catch (err) {
+            return { chartData: [], chartConfig: {}, error: (err as Error).message };
+        }
+    }, [data]);
+
+    if (error || chartData.length === 0) {
+        return (
+            <div className="flex items-center justify-center h-64 bg-gray-100 rounded-lg">
+                <p className="text-gray-500 text-lg">{error || "No data available"}</p>
+            </div>
+        );
+    }
+
+    return (
+        <ChartContainer config={chartConfig}>
+             {visualTitleAndSubTitle.visualTitle && <h3 className="text-center text-lg font-bold text-gray-800 ">{visualTitleAndSubTitle.visualTitle}</h3> }  
+               
+             {visualTitleAndSubTitle?.customSubTitle ?  <h4 className="text-center text-md font-medium text-gray-600 mt-1">{visualTitleAndSubTitle?.customSubTitle}</h4>  :   visualTitleAndSubTitle?.DefaultSubTitle?.length !== 0 && (
+  <div className="flex justify-center gap-1">
+    {visualTitleAndSubTitle?.DefaultSubTitle?.map((subTitle, index) => (
+      <h4 key={index} className="text-center text-md font-medium text-gray-600 mt-1">
+        {subTitle}
+        {index < visualTitleAndSubTitle?.DefaultSubTitle?.length - 1 && ","}
+      </h4>
+    ))}
+  </div>
+)}
+    
+            <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
+                    dataKey="month"
+                    tickLine={false}
+                    tickMargin={10}
+                    axisLine={false}
+                    tickFormatter={(value) => value}
+                />
+                <YAxis />
+                <Tooltip content={<ChartTooltipContent />} />
+                <Legend />
+                {Object.keys(chartConfig).map((key) => (
+                    <Line
+                        key={key}
+                        dataKey={key}
+                         stroke={chartConfig[key].color}
+                         strokeWidth={2}
+                         dot={{ r: 4 }}
+                         label={<CustomLabel />}
+                     
+                    >
+                         
+                    </Line>
+                ))}
+            </LineChart>
+        </ChartContainer>
+    );
+};
+
+
+function CustomLabel(props: any) {
+    const { x, y, value } = props;
+    return (
+      <text x={x} y={y} dy={-10} fill="var(--color-value)" fontSize={12} fontWeight={"bold"} textAnchor="middle">
+        {value}
+      </text>
+    )}
