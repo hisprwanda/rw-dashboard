@@ -1,19 +1,20 @@
 import React, { useMemo } from "react";
 import { useAuthorities } from '../../context/AuthContext';
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis, Legend, Tooltip, LabelList } from "recharts";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis, Legend, Tooltip,LabelList } from "recharts";
 import {
     ChartContainer,
     ChartTooltip,
     ChartTooltipContent,
 } from "../../components/ui/chart";
-import { transformDataForAreaChart, generateChartConfig, isValidInputData } from "../../lib/localAreaChartFormat";
+import { transformDataForLineChart, generateChartConfig, isValidInputData } from "../../lib/localLineChartFormat";
 
 interface LocalAreaChartProps {
     data: any;
 }
 
 export const LocalAreaChart: React.FC<LocalAreaChartProps> = ({ data }) => {
-    const { visualTitleAndSubTitle } = useAuthorities();
+    const {visualTitleAndSubTitle} = useAuthorities();
+    // below is error handling checking if the data exists before passing it to the formmater function or to the graph
 
     const { chartData, chartConfig, error } = useMemo(() => {
         if (!isValidInputData(data)) {
@@ -21,7 +22,7 @@ export const LocalAreaChart: React.FC<LocalAreaChartProps> = ({ data }) => {
         }
 
         try {
-            const transformedData = transformDataForAreaChart(data);
+            const transformedData = transformDataForLineChart(data);
             const config = generateChartConfig(data);
             return { chartData: transformedData, chartConfig: config, error: null };
         } catch (err) {
@@ -39,35 +40,20 @@ export const LocalAreaChart: React.FC<LocalAreaChartProps> = ({ data }) => {
 
     return (
         <ChartContainer config={chartConfig}>
-            {visualTitleAndSubTitle.visualTitle && (
-                <h3 className="text-center text-lg font-bold text-gray-800">
-                    {visualTitleAndSubTitle.visualTitle}
-                </h3>
-            )}
-            {visualTitleAndSubTitle?.customSubTitle ? (
-                <h4 className="text-center text-md font-medium text-gray-600 mt-1">
-                    {visualTitleAndSubTitle.customSubTitle}
-                </h4>
-            ) : (
-                visualTitleAndSubTitle?.DefaultSubTitle?.length !== 0 && (
-                    <div className="flex justify-center gap-1">
-                        {visualTitleAndSubTitle.DefaultSubTitle.map((subTitle, index) => (
-                            <h4
-                                key={index}
-                                className="text-center text-md font-medium text-gray-600 mt-1"
-                            >
-                                {subTitle}
-                                {index < visualTitleAndSubTitle.DefaultSubTitle.length - 1 && ","}
-                            </h4>
-                        ))}
-                    </div>
-                )
-            )}
-
-            <AreaChart
-                data={chartData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            >
+             {visualTitleAndSubTitle.visualTitle && <h3 className="text-center text-lg font-bold text-gray-800 ">{visualTitleAndSubTitle.visualTitle}</h3> }  
+               
+             {visualTitleAndSubTitle?.customSubTitle ?  <h4 className="text-center text-md font-medium text-gray-600 mt-1">{visualTitleAndSubTitle?.customSubTitle}</h4>  :   visualTitleAndSubTitle?.DefaultSubTitle?.length !== 0 && (
+  <div className="flex justify-center gap-1">
+    {visualTitleAndSubTitle?.DefaultSubTitle?.map((subTitle, index) => (
+      <h4 key={index} className="text-center text-md font-medium text-gray-600 mt-1">
+        {subTitle}
+        {index < visualTitleAndSubTitle?.DefaultSubTitle?.length - 1 && ","}
+      </h4>
+    ))}
+  </div>
+)}
+    
+            <AreaChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
                     dataKey="month"
@@ -86,13 +72,15 @@ export const LocalAreaChart: React.FC<LocalAreaChartProps> = ({ data }) => {
                         fill={chartConfig[key].color}
                         stroke={chartConfig[key].color}
                         name={chartConfig[key].label}
+                         type="natural"
+                        stackId="a"
                     >
-                        <LabelList
-                            dataKey={key}
-                            position="center"
-                            fill="black"
-                            style={{ fontSize: '12px', fontWeight: 'bold' }}
-                        />
+                          <LabelList
+                 dataKey={key}
+                position="center"
+                fill="black"
+                style={{ fontSize: '12px', fontWeight: 'bold' }}
+              />
                     </Area>
                 ))}
             </AreaChart>
