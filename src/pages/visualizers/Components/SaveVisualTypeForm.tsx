@@ -69,10 +69,7 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
             ...prevValues,
             id: singleSavedVisualData?.dataStore?.id,
             visualName: singleSavedVisualData?.dataStore?.visualName || prevValues.visualName,
-            // visualTitleAndSubTitle: singleSavedVisualData?.dataStore?.visualTitleAndSubTitle || prevValues.visualTitleAndSubTitle,
-            // visualSettings: singleSavedVisualData?.dataStore?.visualSettings || prevValues.visualSettings,
             description: singleSavedVisualData?.dataStore?.description || prevValues.description,
-            // createdBy: singleSavedVisualData?.dataStore?.createdBy || prevValues.createdBy,
             createdAt: singleSavedVisualData?.dataStore?.createdAt || prevValues.createdAt,
         }));
     }

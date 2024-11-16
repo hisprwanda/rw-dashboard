@@ -7,13 +7,11 @@ import {
     ChartTooltipContent,
 } from "../../components/ui/chart";
 import { transformDataForBarChart, generateChartConfig, isValidInputData } from "../../lib/localBarchartFormat";
+import {genericChartsProps} from "../../types/visualSettingsTypes"
 
-interface LocalAreaChartProps {
-    data: any;
-}
 
-export const LocalAreaChart: React.FC<LocalAreaChartProps> = ({ data }) => {
-    const {visualTitleAndSubTitle} = useAuthorities();
+export const LocalAreaChart: React.FC<genericChartsProps> = ({ data,visualSettings,visualTitleAndSubTitle }) => {
+  
     // below is error handling checking if the data exists before passing it to the formmater function or to the graph
 
     const { chartData, chartConfig, error } = useMemo(() => {
@@ -39,9 +37,8 @@ export const LocalAreaChart: React.FC<LocalAreaChartProps> = ({ data }) => {
     }
 
     return (
-        <ChartContainer config={chartConfig}  >
+        <ChartContainer config={chartConfig} style={{ backgroundColor: visualSettings.backgroundColor }}  >
              {visualTitleAndSubTitle.visualTitle && <h3 className="text-center text-lg font-bold text-gray-800 ">{visualTitleAndSubTitle.visualTitle}</h3> }  
-               
              {visualTitleAndSubTitle?.customSubTitle ?  <h4 className="text-center text-md font-medium text-gray-600 mt-1">{visualTitleAndSubTitle?.customSubTitle}</h4>  :   visualTitleAndSubTitle?.DefaultSubTitle?.length !== 0 && (
   <div className="flex justify-center gap-1">
     {visualTitleAndSubTitle?.DefaultSubTitle?.map((subTitle, index) => (

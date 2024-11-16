@@ -8,3 +8,9 @@ export interface VisualTitleAndSubtitleType {
     backgroundColor: string;
   
   }
+
+  export interface genericChartsProps {
+    data: any;
+    visualTitleAndSubTitle:VisualTitleAndSubtitleType;
+    visualSettings:VisualSettingsTypes
+}

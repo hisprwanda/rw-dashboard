@@ -28,25 +28,25 @@ export const chartComponents: ChartComponent = [
         description: 'A bar chart displaying data', 
         icon: <IoBarChartSharp /> 
     },
-    // { 
-    //     type: 'area', 
-    //     component: LocalAreaChart, 
-    //     description: 'A line chart showing trends over time', 
-    //     icon: <FaChartArea /> 
-    // },
-    // { 
-    //     type: 'line', 
-    //     component: LocalLineChart, 
-    //     description: 'A line chart showing trends over time', 
-    //     icon: <FaChartLine /> 
-    // },
-    // // change icon later
-    // { 
-    //     type: 'radar', 
-    //     component: LocalRadarChart, 
-    //     description: 'A line chart showing trends over time', 
-    //     icon: <FaChartSimple /> 
-    // },
+    { 
+        type: 'area', 
+        component: LocalAreaChart, 
+        description: 'A line chart showing trends over time', 
+        icon: <FaChartArea /> 
+    },
+    { 
+        type: 'line', 
+        component: LocalLineChart, 
+        description: 'A line chart showing trends over time', 
+        icon: <FaChartLine /> 
+    },
+    // change icon later
+    { 
+        type: 'radar', 
+        component: LocalRadarChart, 
+        description: 'A line chart showing trends over time', 
+        icon: <FaChartSimple /> 
+    },
   
   
 ];
