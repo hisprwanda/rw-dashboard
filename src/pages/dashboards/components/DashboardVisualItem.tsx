@@ -17,35 +17,7 @@ const DashboardVisualItem:React.FC<DashboardVisualItem> = ({query,visualType,vis
   console.log("hello query",query)
 
 
-//   const testQuery =  {
-//     "myData": {
-//         "params": {
-//             "filter": "ou:USER_ORGUNIT",
-//             "dimension": [
-//                 "dx:zzeruEiEtWK",
-//                 "pe:LAST_12_MONTHS"
-//             ],
-//             "includeNumDen": true,
-//             "displayProperty": "NAME"
-//         },
-//         "resource": "analytics"
-//     }
-// }
-
     const {data,error,loading} = useFetchSingleChartApi(query)
-
- 
-    const tempTitle = {
-      visualTitle: "temp title",
-      customSubTitle:"temp custom sub",
-      DefaultSubTitle:["temp default sub title"]
-    
-    }
-
-    const tempSettings =  {
-      backgroundColor: "#e60e0e"
-    
-    }
 
 
     if(loading)
