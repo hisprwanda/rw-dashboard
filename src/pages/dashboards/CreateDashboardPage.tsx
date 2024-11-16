@@ -29,7 +29,7 @@ const CreateDashboardPage: React.FC = () => {
     const { data: allSavedVisuals ,error,isError,loading} = useFetchVisualsData();
     const {data:singleSavedDashboardData,error:singleSavedDashboardDataError,isError:isErrorFetchSingleSavedDashboardData,loading:isLoadingFetchSingleSavedDashboardData} = useFetchSingleDashboardData(dashboardId)
     const [isPresentMode,setIsPresentMode] = useState(false)
-    // variable to stre snapshot of grid box
+    // variable to store snapshot of grid box
     const captureRef = useRef<HTMLDivElement>(null);
 
 
@@ -111,6 +111,8 @@ const CreateDashboardPage: React.FC = () => {
                 visualName: visual.value.visualName,
                 visualQuery: visual.value.query,
                 visualType: visual.value.visualType,
+                visualSettings: visual.value.visualSettings,
+                visualTitleAndSubTitle: visual.value.visualTitleAndSubTitle
             };
             setValue("selectedVisuals", [...selectedVisuals, newVisual]);
         }
@@ -120,7 +122,8 @@ const CreateDashboardPage: React.FC = () => {
         const updatedLayout = layout.map(layoutItem => {
             const existingVisual = selectedVisuals.find(v => v.i === layoutItem.i);
             return existingVisual
-                ? { ...layoutItem, visualName: existingVisual.visualName, visualQuery: existingVisual.visualQuery, visualType: existingVisual.visualType }
+                ? { ...layoutItem, visualName: existingVisual.visualName, visualQuery: existingVisual.visualQuery, visualType: existingVisual.visualType , visualSettings: existingVisual.visualSettings,
+                    visualTitleAndSubTitle:existingVisual.visualTitleAndSubTitle }
                 : layoutItem;
         });
         setValue("selectedVisuals", updatedLayout);
@@ -266,7 +269,7 @@ const MemoizedGridLayout = React.memo(({
                 <div className="drag-handle" style={{ cursor: "move" }}>
                     {widget.visualName}
                 </div>
-                <DashboardVisualItem query={widget.visualQuery} visualType={widget.visualType} />
+                <DashboardVisualItem  query={widget.visualQuery} visualType={widget.visualType} visualSettings={widget.visualSettings} visualTitleAndSubTitle={widget.visualTitleAndSubTitle} />
                 <FaTrash
                     style={{ position: "absolute", top: "10px", right: "10px", cursor: "pointer" ,color:"#7d0000"}}
                     onClick={() => onDeleteWidget(widget.i)}

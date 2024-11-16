@@ -34,7 +34,8 @@ export const useFetchSingleVisualData = (visualId: string) => {
     setSelectedLevel,
     fetchAnalyticsData,
     setAnalyticsData,
-    setSelectedVisualTitleAndSubTitle
+    setSelectedVisualTitleAndSubTitle,
+     setSelectedVisualSettings
   } = useAuthorities();
 
   // Return default values if no visualId
@@ -74,6 +75,7 @@ export const useFetchSingleVisualData = (visualId: string) => {
       setSelectedOrganizationUnitsLevels(formatOrgUnitLevels(data?.dataStore?.query?.myData?.params?.filter));
       setSelectedLevel(data?.dataStore?.selectedOrgUnitLevel);
       setSelectedVisualTitleAndSubTitle(data?.dataStore?.visualTitleAndSubTitle)
+      setSelectedVisualSettings(data?.dataStore?.visualSettings)
     }
   }, [data]); // Dependency array to only run when `data` changes
 

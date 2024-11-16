@@ -9,14 +9,8 @@ import React, {
 import { useDataQuery } from "@dhis2/app-runtime";
 import { useDataEngine } from '@dhis2/app-runtime';
 import { useFetchOrgUnitById ,useOrgUnitData} from "../services/fetchOrgunitData";
+import {VisualSettingsTypes,VisualTitleAndSubtitleType} from "../types/visualSettingsTypes"
 
-
-interface VisualTitleAndSubtitleType {
-  visualTitle: string;
-  customSubTitle:string;
-  DefaultSubTitle: string[];
-
-}
 
 
 interface AuthContextProps {
@@ -51,7 +45,9 @@ interface AuthContextProps {
    setSelectedVisualsForDashboard:any;
    visualTitleAndSubTitle: VisualTitleAndSubtitleType;
     setSelectedVisualTitleAndSubTitle:any;
-    fetchSingleOrgUnitName:any
+    fetchSingleOrgUnitName:any;
+    visualSettings:VisualSettingsTypes, 
+    setSelectedVisualSettings:any
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -97,8 +93,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     DefaultSubTitle: [defaultUserOrgUnit],
     customSubTitle:""
   })
-  //  const [titleOption, setTitleOption] = useState<'auto' | 'none' | 'custom'>('auto');
-  //   const [subtitleOption, setSubtitleOption] = useState<'auto' | 'none' | 'custom'>('auto');
+  const [visualSettings, setSelectedVisualSettings] = useState<VisualSettingsTypes>({backgroundColor:"#ffffff"})
 
 
   const [isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits] = useState<any>({
@@ -209,7 +204,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
  
   return (
-    <AuthContext.Provider value={{fetchSingleOrgUnitName,visualTitleAndSubTitle,setSelectedVisualTitleAndSubTitle,  selectedVisualsForDashboard, setSelectedVisualsForDashboard,setAnalyticsData,setAnalyticsQuery,selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery,selectedChartType,setSelectedChartType}}>
+    <AuthContext.Provider value={{visualSettings,setSelectedVisualSettings,fetchSingleOrgUnitName,visualTitleAndSubTitle,setSelectedVisualTitleAndSubTitle,  selectedVisualsForDashboard, setSelectedVisualsForDashboard,setAnalyticsData,setAnalyticsQuery,selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery,selectedChartType,setSelectedChartType}}>
       {children}
     </AuthContext.Provider>
   );

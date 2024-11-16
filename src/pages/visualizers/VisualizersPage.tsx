@@ -35,7 +35,7 @@ function Visualizers() {
     const { data:dataItemsData, error:dataItemsFetchError, loading:isDataItemsLoading } = useDataItems();
 
     const { data,loading } = useDataSourceData();
-    const { analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle} = useAuthorities();
+    const { analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle,visualTitleAndSubTitle,visualSettings,setSelectedVisualSettings,} = useAuthorities();
     const [isShowDataModal, setIsShowDataModal] = useState<boolean>(false);
     const [isShowOrganizationUnit, setIsShowOrganizationUnit] = useState<boolean>(false);
     const [isShowPeriod, setIsShowPeriod] = useState<boolean>(false);
@@ -51,6 +51,15 @@ function Visualizers() {
     const dataSourceOptions = data?.dataStore?.entries?.map((entry:any) => (
         <option key={entry?.key} value={entry?.key}>{entry?.value?.instanceName}</option>
     ));
+
+    const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const newColor = event.target.value;
+        setSelectedVisualSettings((prevSettings) => ({
+            ...prevSettings,
+            backgroundColor: newColor, 
+        }));
+    };
+
 
     // if visualId is false then set all chart related states to default
     useEffect(()=>{
@@ -143,7 +152,7 @@ function Visualizers() {
     // Function to render the selected chart
     const renderChart = () => {
         const SelectedChart = chartComponents.find(chart => chart.type === selectedChartType)?.component;
-        return SelectedChart ? <SelectedChart data={analyticsData} /> : null;
+        return SelectedChart ? <SelectedChart data={analyticsData} visualTitleAndSubTitle={visualTitleAndSubTitle} visualSettings={visualSettings}   /> : null;
     };
 
     /// handle data source onchange
@@ -202,21 +211,23 @@ function Visualizers() {
                     </TabsContent>
                     <TabsContent value="CUSTOMIZE" className="pt-4">
                     <ul className="space-y-2 p-0 list-none">
-        <li className="px-4 py-2 text-gray-700 hover:text-primary hover:bg-gray-100 rounded-md cursor-pointer transition-all duration-200">
-            Data
-        </li>
-        <li className="px-4 py-2 text-gray-700 hover:text-primary hover:bg-gray-100 rounded-md cursor-pointer transition-all duration-200">
-            Axes
-        </li>
-        <li className="px-4 py-2 text-gray-700 hover:text-primary hover:bg-gray-100 rounded-md cursor-pointer transition-all duration-200">
-            Series
-        </li>
+  
+      
         <li onClick={handleShowStyles} className="px-4 py-2 text-gray-700 hover:text-primary hover:bg-gray-100 rounded-md cursor-pointer transition-all duration-200">
-            Styles
+            Heading
         </li>
-        <li className="px-4 py-2 text-gray-700 hover:text-primary hover:bg-gray-100 rounded-md cursor-pointer transition-all duration-200">
-            Limit Values
-        </li>
+
+        <li className="flex items-center justify-between px-4 py-2 text-gray-700 hover:text-primary hover:bg-gray-100 rounded-md cursor-pointer transition-colors duration-200">
+    <span className="font-medium">Background</span>
+    <input
+                    type="color"
+                    value={visualSettings.backgroundColor}
+                    onChange={handleColorChange}
+                    className="w-8 h-8 p-1 border rounded-md cursor-pointer border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1"
+                />
+</li>
+
+    
     </ul>
 
                     </TabsContent>

@@ -19,7 +19,7 @@ interface SaveVisualTypeFormProps {
 }
 
 const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleSavedVisualData,setIsShowSaveVisualTypeForm ,selectedDataSourceId}) => {
-  const { analyticsQuery,userDatails,selectedChartType,selectedOrgUnits,selectedLevel, visualTitleAndSubTitle } = useAuthorities();
+  const {visualSettings, analyticsQuery,userDatails,selectedChartType,selectedOrgUnits,selectedLevel, visualTitleAndSubTitle } = useAuthorities();
   const {data:allSavedVisuals,loading,isError}  = useFetchVisualsData()
   const navigate = useNavigate();
 
@@ -31,13 +31,12 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
   const { register, handleSubmit,watch, reset, formState: { errors, isSubmitting } } = useForm<VisualDataFormFields>({
     defaultValues: {
       id:  generateUid(),
+      visualName:  "",
+      description:   "",
       visualType: selectedChartType,
       visualTitleAndSubTitle:visualTitleAndSubTitle,  
-      visualName:   "",
-      description:   "",
-    
+      visualSettings:visualSettings,
       query: analyticsQuery,
-      
       dataSourceId: selectedDataSourceId, 
       createdBy:{
         name:userDatails?.me?.displayName,
@@ -67,10 +66,11 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
   useEffect(() => {
     if (visualId && singleSavedVisualData) {
         reset((prevValues) => ({
-            ...prevValues, // Spread the existing values to retain them
+            ...prevValues,
             id: singleSavedVisualData?.dataStore?.id,
             visualName: singleSavedVisualData?.dataStore?.visualName || prevValues.visualName,
             visualTitleAndSubTitle: singleSavedVisualData?.dataStore?.visualTitleAndSubTitle || prevValues.visualTitleAndSubTitle,
+            visualSettings: singleSavedVisualData?.dataStore?.visualSettings || prevValues.visualSettings,
             description: singleSavedVisualData?.dataStore?.description || prevValues.description,
             createdBy: singleSavedVisualData?.dataStore?.createdBy || prevValues.createdBy,
             createdAt: singleSavedVisualData?.dataStore?.createdAt || prevValues.createdAt,

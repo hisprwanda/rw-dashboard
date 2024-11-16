@@ -3,12 +3,15 @@ import { z } from "zod";
 // Schema definition using zod
 export const VisualDataSchema = z.object({
   id: z.string(),
-  visualType: z.enum(["bar", "pie", "line"]),
+  visualType: z.enum(["bar", "pie", "line" ,"radar","area"]),
   visualName: z.string().nonempty({ message: "Visual name is required" }),
   visualTitleAndSubTitle: z.object({
-    visualTitle: z.string(),
-    customSubTitle: z.string(),
-    DefaultSubTitle: z.array(z.string()),
+    visualTitle: z.string()?.optional(),
+    customSubTitle: z.string()?.optional(),
+    DefaultSubTitle: z.array(z.string())?.optional(),
+  }),
+  visualSettings: z.object({
+    backgroundColor: z.string()?.optional(),
   }),
   description: z.string(),
   query: z

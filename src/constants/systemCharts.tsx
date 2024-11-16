@@ -5,9 +5,13 @@ import { LocalRadarChart } from '../components/charts/LocalRadarChart';
 import { IoBarChartSharp } from 'react-icons/io5';
 import { FaChartLine ,FaChartArea} from 'react-icons/fa';
 import { FaChartSimple } from 'react-icons/fa6';
+import {VisualSettingsTypes,VisualTitleAndSubtitleType} from "../types/visualSettingsTypes"
 
 type ChartProps = {
     data: any;
+    visualTitleAndSubTitle:VisualTitleAndSubtitleType;
+    visualSettings:VisualSettingsTypes
+
 };
 
 type ChartComponent = {
@@ -24,25 +28,25 @@ export const chartComponents: ChartComponent = [
         description: 'A bar chart displaying data', 
         icon: <IoBarChartSharp /> 
     },
-    { 
-        type: 'area', 
-        component: LocalAreaChart, 
-        description: 'A line chart showing trends over time', 
-        icon: <FaChartArea /> 
-    },
-    { 
-        type: 'line', 
-        component: LocalLineChart, 
-        description: 'A line chart showing trends over time', 
-        icon: <FaChartLine /> 
-    },
-    // change icon later
-    { 
-        type: 'Radar', 
-        component: LocalRadarChart, 
-        description: 'A line chart showing trends over time', 
-        icon: <FaChartSimple /> 
-    },
+    // { 
+    //     type: 'area', 
+    //     component: LocalAreaChart, 
+    //     description: 'A line chart showing trends over time', 
+    //     icon: <FaChartArea /> 
+    // },
+    // { 
+    //     type: 'line', 
+    //     component: LocalLineChart, 
+    //     description: 'A line chart showing trends over time', 
+    //     icon: <FaChartLine /> 
+    // },
+    // // change icon later
+    // { 
+    //     type: 'radar', 
+    //     component: LocalRadarChart, 
+    //     description: 'A line chart showing trends over time', 
+    //     icon: <FaChartSimple /> 
+    // },
   
   
 ];

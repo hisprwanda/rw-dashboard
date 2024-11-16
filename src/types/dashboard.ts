@@ -24,6 +24,14 @@ export const DashboardSchema = z.object({
           visualName: z.string(),
           visualQuery: z.any(),
           visualType: z.string(),
+          visualTitleAndSubTitle: z.object({
+            visualTitle: z.string()?.optional(),
+            customSubTitle: z.string()?.optional(),
+            DefaultSubTitle: z.array(z.string())?.optional(),
+          }),
+          visualSettings: z.object({
+            backgroundColor: z.string()?.optional(),
+          }),
       })
   ),
   sharing: z.array(z.unknown()).optional(),
