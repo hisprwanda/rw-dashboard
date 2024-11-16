@@ -6,10 +6,11 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "../../components/ui/chart";
-import { transformDataForGenericChart, generateChartConfig, isValidInputData } from "../../lib/localGenericchartFormat";
+import { transformDataForBarChart, generateChartConfig, isValidInputData } from "../../lib/localBarchartFormat";
 import {genericChartsProps} from "../../types/visualSettingsTypes"
 
 
+export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleAndSubTitle,visualSettings }) => {
 export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleAndSubTitle,visualSettings }) => {
  
     // below is error handling checking if the data exists before passing it to the formmater function or to the graph

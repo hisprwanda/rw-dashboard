@@ -51,59 +51,24 @@ export const chartComponents: ChartComponent = [
         icon: <IoBarChartSharp /> 
     },
     { 
-        type: 'Stacked Col', 
-        component: LocalStackedBar, 
-        description: 'A bar chart displaying data', 
-        icon: <IoBarChartSharp /> 
-    },
-    { 
-        type: 'Bar', 
-        component: LocalRowBarChart, 
-        description: 'A bar chart displaying data', 
-        icon: <IoBarChartSharp /> 
-    },
-    { 
-        type: 'Stacked Bar', 
-        component: LocalRowStackedChart, 
-        description: 'A bar chart displaying data', 
-        icon: <IoBarChartSharp /> 
-    },
-    { 
-        type: 'Line', 
-        component: LocalLineChart, 
-        description: 'A line chart showing trends over time', 
-        icon: <FaChartLine /> 
-    },
-    { 
-        type: 'Area', 
+        type: 'area', 
         component: LocalAreaChart, 
         description: 'A line chart showing trends over time', 
         icon: <FaChartArea /> 
     },
     { 
-        type: 'Pie', 
-        component: LocalPieChart, 
-        description: 'A bar chart displaying data', 
-        icon: <IoPieChart /> 
-    },  
-    { 
-        type: 'Radial', 
-        component: LocalRadialChat, 
-        description: 'A bar chart displaying data', 
-        icon: <IoBarChartSharp /> 
+        type: 'line', 
+        component: LocalLineChart, 
+        description: 'A line chart showing trends over time', 
+        icon: <FaChartLine /> 
     },
     // change icon later
     { 
-        type: 'Radar', 
+        type: 'radar', 
         component: LocalRadarChart, 
         description: 'A line chart showing trends over time', 
         icon: <FaChartSimple /> 
-    },  
-    { 
-        type: 'Scatter', 
-        component: LocalScatterCharts, 
-        description: 'A line chart showing trends over time', 
-        icon: <FaChartSimple /> 
-    }, 
+    },
+  
   
 ];

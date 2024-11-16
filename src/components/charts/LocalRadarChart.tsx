@@ -6,10 +6,11 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "../../components/ui/chart";
-import { transformDataForGenericChart, generateChartConfig, isValidInputData } from "../../lib/localGenericchartFormat";
+import { transformDataForBarChart, generateChartConfig, isValidInputData } from "../../lib/localBarchartFormat";
 import {genericChartsProps} from "../../types/visualSettingsTypes"
 
 
+export const LocalRadarChart: React.FC<genericChartsProps> = ({ data,visualSettings,visualTitleAndSubTitle }) => {
 export const LocalRadarChart: React.FC<genericChartsProps> = ({ data,visualSettings,visualTitleAndSubTitle }) => {
 
     // below is error handling checking if the data exists before passing it to the formmater function or to the graph
@@ -37,6 +38,7 @@ export const LocalRadarChart: React.FC<genericChartsProps> = ({ data,visualSetti
     }
 
     return (
+        <ChartContainer config={chartConfig} style={{ backgroundColor: visualSettings.backgroundColor }} >
         <ChartContainer config={chartConfig} style={{ backgroundColor: visualSettings.backgroundColor }} >
              {visualTitleAndSubTitle.visualTitle && <h3 className="text-center text-lg font-bold text-gray-800 ">{visualTitleAndSubTitle.visualTitle}</h3> }  
                
