@@ -29,11 +29,14 @@ import { NavigationMenuDemo } from './Components/ChartsMenu';
 
 function Visualizers() {
     const { id:visualId } = useParams();
+  
+
+  
 
     const {data:singleSavedVisualData,isError,loading:isFetchSingleVisualLoading} = useFetchSingleVisualData(visualId)
     const { loading:orgUnitLoading, error:fetchOrgUnitError, data:orgUnitsData } = useOrgUnitData();
     const { data:dataItemsData, error:dataItemsFetchError, loading:isDataItemsLoading } = useDataItems();
-
+    const defaultUserOrgUnit = orgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName
     const { data,loading } = useDataSourceData();
     const { analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle,visualTitleAndSubTitle,visualSettings,setSelectedVisualSettings,} = useAuthorities();
     const [isShowDataModal, setIsShowDataModal] = useState<boolean>(false);
@@ -80,9 +83,15 @@ function Visualizers() {
             setSelectedOrgUnitGroups([])
             setSelectedOrganizationUnitsLevels([])
             setSelectedLevel([])
-            setSelectedVisualTitleAndSubTitle({ visualTitle:  "",
-                DefaultSubTitle: [],
-                customSubTitle:""})
+            setSelectedVisualTitleAndSubTitle((prev)=>{
+                return {
+                    ...prev,
+                     visualTitle:  "",
+                        DefaultSubTitle: [defaultUserOrgUnit],
+                        customSubTitle:""
+                }
+            })
+                setSelectedVisualSettings({ backgroundColor: '#ffffff' })
             /// set default data source
             if(data)
                 {

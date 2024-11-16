@@ -124,7 +124,7 @@ const PresentDashboard:React.FC<PresentDashboardProps> = ({ dashboardData, setIs
             {dashboardData.map((item, index) => (
               <div key={index} className="flex-[0_0_auto] min-w-0 pl-4" style={{ width: `${100 / slidesToShow}%` }}>
                   <span className="text-2xl font-semibold">{index + 1}.{item.visualName}</span>
-                 <DashboardVisualItem  query={item.visualQuery} visualType={item.visualType}  />
+                 <DashboardVisualItem  query={item.visualQuery} visualType={item.visualType} visualSettings={item.visualSettings} visualTitleAndSubTitle={item.visualTitleAndSubTitle}   />
                
               </div>
             ))}
