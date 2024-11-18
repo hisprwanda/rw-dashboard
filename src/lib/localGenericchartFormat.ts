@@ -37,7 +37,7 @@ function combineDataByMonth(data:any) {
     );
   }
 
-export function transformDataForBarChart(inputData: InputData): TransformedDataPoint[] | any {
+export function transformDataForGenericChart(inputData: InputData): TransformedDataPoint[] | any {
     if (!isValidInputData(inputData)) {
         throw new Error("Invalid input data structure");
     }

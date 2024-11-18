@@ -6,7 +6,7 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "../../components/ui/chart";
-import { transformDataForBarChart, generateChartConfig, isValidInputData } from "../../lib/localBarchartFormat";
+import { transformDataForGenericChart, generateChartConfig, isValidInputData } from "../../lib/localGenericchartFormat";
 import {genericChartsProps} from "../../types/visualSettingsTypes"
 
 export const LocalLineChart: React.FC<genericChartsProps> = ({ data,visualSettings,visualTitleAndSubTitle }) => {
@@ -19,7 +19,7 @@ export const LocalLineChart: React.FC<genericChartsProps> = ({ data,visualSettin
         }
 
         try {
-            const transformedData = transformDataForBarChart(data);
+            const transformedData = transformDataForGenericChart(data);
             const config = generateChartConfig(data);
             return { chartData: transformedData, chartConfig: config, error: null };
         } catch (err) {

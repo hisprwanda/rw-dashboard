@@ -2,6 +2,7 @@ import { LocalBarChart } from '../components/charts/LocalBarChart';
 import { LocalLineChart } from '../components/charts/LocalLineChart';
 import { LocalAreaChart } from '../components/charts/LocalAreaChart';
 import { LocalRadarChart } from '../components/charts/LocalRadarChart';
+import { LocalStackedBar } from '../components/charts/LocalStackedBar';
 import { IoBarChartSharp } from 'react-icons/io5';
 import { FaChartLine ,FaChartArea} from 'react-icons/fa';
 import { FaChartSimple } from 'react-icons/fa6';
@@ -25,6 +26,12 @@ export const chartComponents: ChartComponent = [
     { 
         type: 'bar', 
         component: LocalBarChart, 
+        description: 'A bar chart displaying data', 
+        icon: <IoBarChartSharp /> 
+    },
+    { 
+        type: 'stacked bar', 
+        component: LocalStackedBar, 
         description: 'A bar chart displaying data', 
         icon: <IoBarChartSharp /> 
     },

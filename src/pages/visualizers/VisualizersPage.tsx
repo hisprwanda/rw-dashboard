@@ -183,7 +183,7 @@ function Visualizers() {
                             value="DATA"
                             className="text-lg font-semibold py-2 w-full text-left"
                         >
-                            SELECT DATA
+                            DIMENSIONS
                         </TabsTrigger>
                         <TabsTrigger
                             value="CUSTOMIZE"

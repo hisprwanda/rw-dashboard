@@ -5,12 +5,12 @@ import {
     ChartContainer,
     ChartTooltip,
     ChartTooltipContent,
-} from "../../components/ui/chart";
+} from "../ui/chart";
 import { transformDataForGenericChart, generateChartConfig, isValidInputData } from "../../lib/localGenericchartFormat";
 import {genericChartsProps} from "../../types/visualSettingsTypes"
 
 
-export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleAndSubTitle,visualSettings }) => {
+export const LocalStackedBar: React.FC<genericChartsProps> = ({ data ,visualTitleAndSubTitle,visualSettings }) => {
  
     // below is error handling checking if the data exists before passing it to the formmater function or to the graph
 
@@ -68,6 +68,7 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleA
                         dataKey={key}
                         fill={chartConfig[key].color}
                         name={chartConfig[key].label}
+                        stackId="a" 
                     >
                           <LabelList
                  dataKey={key}

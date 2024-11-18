@@ -6,7 +6,7 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "../../components/ui/chart";
-import { transformDataForBarChart, generateChartConfig, isValidInputData } from "../../lib/localBarchartFormat";
+import { transformDataForBarChart, generateChartConfig, isValidInputData } from "../../lib/localGenericchartFormat";
 
 interface LocalLineChartProps {
     data: any;
