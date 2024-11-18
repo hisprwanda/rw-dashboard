@@ -29,7 +29,7 @@ const SelectChartType = ({ chartComponents, selectedChartType, setSelectedChartT
                             className={`flex items-center p-2 border rounded-md cursor-pointer ${selectedChartType === chart.type ? 'bg-blue-100' : 'bg-white'}`} 
                             onClick={() => setSelectedChartType(chart.type)}
                         >
-                            <div className=" h-4 flex gap-1 items-center justify-center">
+                            <div className=" h-4 flex gap-1 items-center justify-center whitespace-nowrap ">
                                 {chart.icon} {chart.type}
                             </div>
                         
