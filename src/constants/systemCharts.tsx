@@ -3,6 +3,8 @@ import { LocalLineChart } from '../components/charts/LocalLineChart';
 import { LocalAreaChart } from '../components/charts/LocalAreaChart';
 import { LocalRadarChart } from '../components/charts/LocalRadarChart';
 import { LocalStackedBar } from '../components/charts/LocalStackedBar';
+import { LocalRowBarChart } from '../components/charts/LocalRowBarChart';
+import { LocalRowStackedChart } from '../components/charts/LocalRowStackedChart';
 import { IoBarChartSharp } from 'react-icons/io5';
 import { FaChartLine ,FaChartArea} from 'react-icons/fa';
 import { FaChartSimple } from 'react-icons/fa6';
@@ -50,6 +52,18 @@ export const chartComponents: ChartComponent = [
         icon: <IoBarChartSharp /> 
     },
     { 
+        type: 'Row bar', 
+        component: LocalRowBarChart, 
+        description: 'A bar chart displaying data', 
+        icon: <IoBarChartSharp /> 
+    },
+    { 
+        type: 'row stack', 
+        component: LocalRowStackedChart, 
+        description: 'A bar chart displaying data', 
+        icon: <IoBarChartSharp /> 
+    },
+    { 
         type: 'area', 
         component: LocalAreaChart, 
         description: 'A line chart showing trends over time', 
@@ -67,7 +81,5 @@ export const chartComponents: ChartComponent = [
         component: LocalRadarChart, 
         description: 'A line chart showing trends over time', 
         icon: <FaChartSimple /> 
-    },
-  
-  
+    },  
 ];
