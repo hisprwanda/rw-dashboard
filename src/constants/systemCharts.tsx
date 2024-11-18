@@ -3,14 +3,7 @@ import { LocalLineChart } from '../components/charts/LocalLineChart';
 import { LocalAreaChart } from '../components/charts/LocalAreaChart';
 import { LocalRadarChart } from '../components/charts/LocalRadarChart';
 import { LocalStackedBar } from '../components/charts/LocalStackedBar';
-import { LocalRowBarChart } from '../components/charts/LocalRowBarChart';
-import { LocalRowStackedChart } from '../components/charts/LocalRowStackedChart';
-import { LocalScatterCharts } from '../components/charts/LocalScatterCharts';
-import { LocalPieChart } from '../components/charts/LocalPieChart';
-import { LocalRadialChat } from '../components/charts/LocalRadialChat';
-import { LocalTableVisual } from '../components/charts/LocalTableVisual';
-import { LocalSingleValue } from '../components/charts/LocalSingleValue';
-import { IoBarChartSharp, IoPieChart } from 'react-icons/io5';
+import { IoBarChartSharp } from 'react-icons/io5';
 import { FaChartLine ,FaChartArea} from 'react-icons/fa';
 import { FaChartSimple } from 'react-icons/fa6';
 import {VisualSettingsTypes,VisualTitleAndSubtitleType} from "../types/visualSettingsTypes"
@@ -47,6 +40,12 @@ export const chartComponents: ChartComponent = [
     { 
         type: 'Column', 
         component: LocalBarChart, 
+        description: 'A bar chart displaying data', 
+        icon: <IoBarChartSharp /> 
+    },
+    { 
+        type: 'stacked bar', 
+        component: LocalStackedBar, 
         description: 'A bar chart displaying data', 
         icon: <IoBarChartSharp /> 
     },

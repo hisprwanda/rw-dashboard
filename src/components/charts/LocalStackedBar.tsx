@@ -5,9 +5,14 @@ import {
     ChartContainer,
     ChartTooltip,
     ChartTooltipContent,
+<<<<<<<< HEAD:src/components/charts/LocalStackedBar.tsx
 } from "../ui/chart";
 import { transformDataForGenericChart, generateChartConfig, isValidInputData } from "../../lib/localGenericchartFormat";
 import {genericChartsProps} from "../../types/visualSettingsTypes"
+========
+} from "../../components/ui/chart";
+import { transformDataForBarChart, generateChartConfig, isValidInputData } from "../../lib/localGenericchartFormat";
+>>>>>>>> 9b52547 (added stacked bar):src/components/charts/teston.tsx
 
 
 export const LocalStackedBar: React.FC<genericChartsProps> = ({ data ,visualTitleAndSubTitle,visualSettings }) => {

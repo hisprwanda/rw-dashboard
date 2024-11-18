@@ -6,7 +6,7 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "../../components/ui/chart";
-import { transformDataForBarChart, generateChartConfig, isValidInputData } from "../../lib/localBarchartFormat";
+import { transformDataForGenericChart, generateChartConfig, isValidInputData } from "../../lib/localGenericchartFormat";
 import {genericChartsProps} from "../../types/visualSettingsTypes"
 
 export const LocalLineChart: React.FC<genericChartsProps> = ({ data,visualSettings,visualTitleAndSubTitle }) => {
