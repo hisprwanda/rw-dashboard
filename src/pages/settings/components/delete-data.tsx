@@ -1,7 +1,7 @@
 
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import { useState } from "react";
-import { RiCloseLargeFill, RiDeleteBack2Fill } from "react-icons/ri";
+import { RiCloseLargeFill, RiDeleteBack2Fill, RiDeleteBin2Fill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { DataSourceRowProps } from "./show-data";
 
@@ -13,7 +13,7 @@ export default function DeleteData({ row, refetch }: DataSourceRowProps) {
     <AlertDialog.Root open={open} onOpenChange={setOpen}>
       <AlertDialog.Trigger asChild>
         <button className="w-[40px] bg-transparent p-1 focus:outline-none focus:shadow-outline text-secondary hover:text-slight hover:bg-transparent">
-        <RiDeleteBack2Fill className="text-xl" />
+        <RiDeleteBin2Fill className="text-xl" />
         </button>
       </AlertDialog.Trigger>
       <AlertDialog.Portal>

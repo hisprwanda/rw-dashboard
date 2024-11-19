@@ -22,6 +22,7 @@ import {
 } from './pages';
 import { CreateDashboardPage } from "./pages/dashboards";
 import { Theme } from "@radix-ui/themes";
+import { Toaster } from "./components/ui/toaster";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -63,6 +64,7 @@ const App: React.FC = () => {
             } />
           </Routes>
         </Router>
+        <Toaster />
       </AuthProvider>
     </QueryClientProvider>
     </Theme>

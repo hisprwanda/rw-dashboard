@@ -60,6 +60,24 @@ export default function DataSourceTable() {
     []
   );
 
+  const defaultData: DataSourceResponse[] = [
+    {
+      key: "default-key",
+      value: {
+        id: "",
+        type: "",
+        description: "",
+        instanceName: "",
+        authentication: {
+          url: "",
+          password: "",
+          username: ""
+        },
+        isCurrentDHIS2: false
+      },
+    },
+  ];
+
   const table = useMantineReactTable({
     columns,
     data: transformedData,
@@ -94,7 +112,7 @@ export default function DataSourceTable() {
           </ActionIcon>
         </Tooltip>
 
-        <NewData refetch={refetch} />
+        {transformedData && <NewData refetch={refetch} dataSource={transformedData.length>0?transformedData:defaultData} />}
       </div>
     ),
     state: {
