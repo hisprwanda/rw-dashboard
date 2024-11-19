@@ -16,3 +16,24 @@ export const DataSourceSchema = z.object({
 
 // Infer form fields from the schema
 export type DataSourceFormFields = z.infer<typeof DataSourceSchema>;
+
+
+export interface DataSourceResponse {
+    key:   string;
+    value: Value;
+}
+
+export interface Value {
+    id:             string;
+    type:           string;
+    description:    string;
+    instanceName:   string;
+    authentication: Authentication;
+    isCurrentDHIS2: boolean;
+}
+
+export interface Authentication {
+    url:      string;
+    password: string;
+    username: string;
+}

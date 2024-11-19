@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { generateUid } from '../../../../lib/uid';
 import { useDataEngine } from '@dhis2/app-runtime';
 import { AlertBar } from '@dhis2/ui';
-import { useDataSourceData } from '../../../../services/DataSourceHooks';
+import { useDataSourceData } from '../../../../hooks/dataSource';
 //import {  Button } from '@dhis2/ui'; 
 import Button from "../../../../components/Button"
 import { DataSourceFormFields, DataSourceSchema} from '../../../../types/DataSource';

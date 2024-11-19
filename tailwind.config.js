@@ -14,6 +14,15 @@ export default {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
+			primary: '#3f50b5',
+			pdark: '#002884',
+			plight: '#757ce8',
+			ptext: '#fff',
+			secondary: '#f44336',
+			sdark: '#ba000d',
+			slight: '#ff7961',
+			stext: '#000',
+			blackA6: '#0000008A',
 			dhisMainBlue: '#2C6693',
 			dhisGrey900: '#212934',
 			dhisDarkBlue: '#1A557F',
