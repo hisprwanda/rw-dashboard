@@ -21,8 +21,6 @@ import  PresentDashboard from './components/PresentDashboard';
 import { FaPlay} from "react-icons/fa"
 import { IoSaveOutline } from "react-icons/io5";
 
-
-
 const CreateDashboardPage: React.FC = () => {
     const { id: dashboardId } = useParams();
     const navigate = useNavigate();

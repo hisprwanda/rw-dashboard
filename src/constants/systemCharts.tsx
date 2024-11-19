@@ -7,6 +7,7 @@ import { LocalRowBarChart } from '../components/charts/LocalRowBarChart';
 import { LocalRowStackedChart } from '../components/charts/LocalRowStackedChart';
 import { LocalScatterCharts } from '../components/charts/LocalScatterCharts';
 import { LocalPieChart } from '../components/charts/LocalPieChart';
+import { LocalTableVisual } from '../components/charts/LocalTableVisual';
 import { IoBarChartSharp, IoPieChart } from 'react-icons/io5';
 import { FaChartLine ,FaChartArea} from 'react-icons/fa';
 import { FaChartSimple } from 'react-icons/fa6';
@@ -29,58 +30,65 @@ type ChartComponent = {
 export const chartComponents: ChartComponent = [
 
     { 
-        type: 'bar', 
+        type: 'Table', 
+        component: LocalTableVisual, 
+        description: 'A bar chart displaying data', 
+        icon: <IoBarChartSharp /> 
+    },
+    { 
+        type: 'Column', 
         component: LocalBarChart, 
         description: 'A bar chart displaying data', 
         icon: <IoBarChartSharp /> 
     },
     { 
-        type: 'stacked bar', 
+        type: 'Stacked Col', 
         component: LocalStackedBar, 
         description: 'A bar chart displaying data', 
         icon: <IoBarChartSharp /> 
     },
     { 
-        type: 'Row bar', 
+        type: 'Bar', 
         component: LocalRowBarChart, 
         description: 'A bar chart displaying data', 
         icon: <IoBarChartSharp /> 
     },
     { 
-        type: 'row stack', 
+        type: 'Stacked Bar', 
         component: LocalRowStackedChart, 
         description: 'A bar chart displaying data', 
         icon: <IoBarChartSharp /> 
     },
     { 
-        type: 'area', 
-        component: LocalAreaChart, 
-        description: 'A line chart showing trends over time', 
-        icon: <FaChartArea /> 
-    },
-    { 
-        type: 'line', 
+        type: 'Line', 
         component: LocalLineChart, 
         description: 'A line chart showing trends over time', 
         icon: <FaChartLine /> 
     },
-    // change icon later
     { 
-        type: 'radar', 
-        component: LocalRadarChart, 
+        type: 'Area', 
+        component: LocalAreaChart, 
         description: 'A line chart showing trends over time', 
-        icon: <FaChartSimple /> 
-    },  
-    { 
-        type: 'scatter', 
-        component: LocalScatterCharts, 
-        description: 'A line chart showing trends over time', 
-        icon: <FaChartSimple /> 
-    }, 
+        icon: <FaChartArea /> 
+    },
     { 
         type: 'Pie', 
         component: LocalPieChart, 
         description: 'A bar chart displaying data', 
         icon: <IoPieChart /> 
     },
+    // change icon later
+    { 
+        type: 'Radar', 
+        component: LocalRadarChart, 
+        description: 'A line chart showing trends over time', 
+        icon: <FaChartSimple /> 
+    },  
+    { 
+        type: 'Scatter', 
+        component: LocalScatterCharts, 
+        description: 'A line chart showing trends over time', 
+        icon: <FaChartSimple /> 
+    }, 
+  
 ];

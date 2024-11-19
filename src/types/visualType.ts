@@ -3,7 +3,18 @@ import { z } from "zod";
 // Schema definition using zod
 export const VisualDataSchema = z.object({
   id: z.string(),
-  visualType: z.enum(["bar", "pie", "line" ,"radar","area"]),
+  visualType: z.enum([
+    "Table",
+    "Column",
+    "Stacked Col",
+    "Bar",
+    "Stacked Bar",
+    "Line",
+    "Area",
+    "Pie",
+    "Radar",
+    "Scatter",
+]),
   visualName: z.string().nonempty({ message: "Visual name is required" }),
   visualTitleAndSubTitle: z.object({
     visualTitle: z.string()?.optional(),
