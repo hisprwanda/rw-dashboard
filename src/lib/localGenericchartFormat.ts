@@ -24,6 +24,10 @@ export function isValidInputData(data: any): data is InputData {
 
 
 function combineDataByMonth(data:TransformedDataPoint[]):TransformedDataPoint[] {
+
+
+
+function combineDataByMonth(data:TransformedDataPoint[]):TransformedDataPoint[] {
     return Object.values(
       data.reduce((acc:any, current:any) => {
         const { month, ...rest } = current;
@@ -40,7 +44,10 @@ function combineDataByMonth(data:TransformedDataPoint[]):TransformedDataPoint[] 
     );
   }
 
-export function transformDataForGenericChart(inputData: InputData): TransformedDataPoint[] | any {
+  // temporarily colors
+  const colors = ["#ff5733", "#33ff57"];
+  
+export function transformDataForGenericChart(inputData: InputData,chartType?:"pie"): TransformedDataPoint[] | any {
     if (!isValidInputData(inputData)) {
         throw new Error("Invalid input data structure");
     }
@@ -72,7 +79,7 @@ export function transformDataForGenericChart(inputData: InputData): TransformedD
     });
      const finalTransformedData = combineDataByMonth(transformedData) as TransformedDataPoint[]
 
-     if(chartType === "pie" || chartType === "radial"){
+     if(chartType === "pie"){
         const pieChartData = transformDataToPieChartFormat(finalTransformedData,colors)
         return pieChartData
      }
@@ -96,6 +103,33 @@ export function generateChartConfig(inputData: InputData): ChartConfig {
     });
 
     return config;
+}
+
+
+
+////// other formats
+function transformDataToPieChartFormat(data:TransformedDataPoint[], colors:string[]) {
+    const totals = {};
+    const colorCount = colors.length; // Number of available colors
+  
+    // Calculate totals for each disease dynamically
+    data.forEach((entry) => {
+      for (const key in entry) {
+        if (key !== "month") {
+          totals[key] = (totals[key] || 0) + entry[key];
+        }
+      }
+    });
+  
+    // Transform the totals into the desired array format with dynamic colors
+    const transformedData = Object.entries(totals).map(([name, total], index) => ({
+      name,
+      total,
+      fill: colors[index % colorCount], // Assign colors cyclically
+    }));
+  
+    return transformedData;
+  }
 }
 
 

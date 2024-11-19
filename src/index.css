@@ -1681,15 +1681,6 @@ video {
   fill: hsl(var(--background));
 }
 
-.fill-white {
-  fill: #fff;
-}
-
-.object-cover {
-  -o-object-fit: cover;
-     object-fit: cover;
-}
-
 .p-0 {
   padding: 0px;
 }
@@ -3065,6 +3056,11 @@ video {
 .\[\&_\.recharts-surface\]\:outline-none .recharts-surface {
   outline: 2px solid transparent;
   outline-offset: 2px;
+}
+
+
+.\[\&_\.recharts-text\]\:fill-background .recharts-text {
+  fill: hsl(var(--background));
 }
 
 

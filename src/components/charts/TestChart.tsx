@@ -26,7 +26,6 @@ const chartData = [
 ]
 
 
-
 const chartConfig = {
   visitors: {
     label: "Visitors",
