@@ -5,7 +5,9 @@ import { LocalRadarChart } from '../components/charts/LocalRadarChart';
 import { LocalStackedBar } from '../components/charts/LocalStackedBar';
 import { LocalRowBarChart } from '../components/charts/LocalRowBarChart';
 import { LocalRowStackedChart } from '../components/charts/LocalRowStackedChart';
-import { IoBarChartSharp } from 'react-icons/io5';
+import { LocalScatterCharts } from '../components/charts/LocalScatterCharts';
+import { LocalPieChart } from '../components/charts/LocalPieChart';
+import { IoBarChartSharp, IoPieChart } from 'react-icons/io5';
 import { FaChartLine ,FaChartArea} from 'react-icons/fa';
 import { FaChartSimple } from 'react-icons/fa6';
 import {VisualSettingsTypes,VisualTitleAndSubtitleType} from "../types/visualSettingsTypes"
@@ -25,6 +27,7 @@ type ChartComponent = {
 }[];
 
 export const chartComponents: ChartComponent = [
+
     { 
         type: 'bar', 
         component: LocalBarChart, 
@@ -68,4 +71,16 @@ export const chartComponents: ChartComponent = [
         description: 'A line chart showing trends over time', 
         icon: <FaChartSimple /> 
     },  
+    { 
+        type: 'scatter', 
+        component: LocalScatterCharts, 
+        description: 'A line chart showing trends over time', 
+        icon: <FaChartSimple /> 
+    }, 
+    { 
+        type: 'Pie', 
+        component: LocalPieChart, 
+        description: 'A bar chart displaying data', 
+        icon: <IoPieChart /> 
+    },
 ];

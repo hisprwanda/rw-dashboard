@@ -1,16 +1,16 @@
 import React, { useMemo } from "react";
 import { useAuthorities } from '../../context/AuthContext';
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Legend, Tooltip,LabelList } from "recharts";
+import { Scatter, ScatterChart, CartesianGrid, XAxis, YAxis, Legend, Tooltip,LabelList } from "recharts";
 import {
     ChartContainer,
     ChartTooltip,
     ChartTooltipContent,
 } from "../../components/ui/chart";
 import { transformDataForGenericChart, generateChartConfig, isValidInputData } from "../../lib/localGenericchartFormat";
-import {genericCharatsProps} from "../../types/visualSettingsTypes"
+import {genericChartsProps} from "../../types/visualSettingsTypes"
 
 
-export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleAndSubTitle,visualSettings }) => {
+export const LocalScatterCharts: React.FC<genericChartsProps> = ({ data ,visualTitleAndSubTitle,visualSettings }) => {
  
     // below is error handling checking if the data exists before passing it to the formmater function or to the graph
 
@@ -50,7 +50,7 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleA
   </div>
 )}
     
-            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+            <ScatterChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
                     dataKey="month"
@@ -63,21 +63,26 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleA
                 <Tooltip content={<ChartTooltipContent />} />
                 <Legend />
                 {Object.keys(chartConfig).map((key) => (
-                    <Bar
+                    <Scatter
                         key={key}
                         dataKey={key}
                         fill={chartConfig[key].color}
                         name={chartConfig[key].label}
+                        shape="diamond"
+                        size={50}
+                    
                     >
-                          <LabelList
+                          {/* <LabelList
                  dataKey={key}
+                   position="top" 
                 position="center"
                 fill="white"
                 style={{ fontSize: '12px', fontWeight: 'bold' }}
-              />
-                    </Bar>
+            
+              /> */}
+                    </Scatter>
                 ))}
-            </BarChart>
+            </ScatterChart>
         </ChartContainer>
     );
 };

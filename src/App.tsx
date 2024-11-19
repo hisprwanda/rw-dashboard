@@ -19,6 +19,7 @@ import {
   DataSourcePage
 } from './pages';
 import { CreateDashboardPage } from "./pages/dashboards";
+import { TestChart } from "./components/charts/TestChart";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -39,6 +40,7 @@ const App: React.FC = () => {
               <Route path="dashboards" element={<DashboardsPage />} />
               <Route path="visualization" element={<VisualizationPage />} />
               <Route path="alerts" element={<AlertsPage />} />
+              <Route path="test" element={<TestChart />} />
               <Route path="settings" element={<SettingsPage />} />
               <Route path="data-source" element={<DataSourcePage />} />
               <Route path="unauthorized" element={<UnauthorizedPage />} />

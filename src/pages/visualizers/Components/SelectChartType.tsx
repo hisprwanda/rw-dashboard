@@ -19,6 +19,7 @@ const SelectChartType = ({ chartComponents, selectedChartType, setSelectedChartT
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
             />
+            <span>{chartComponents.length}</span>
             
             {/* make it fill it's containers */}
             <div className="  overflow-x-auto">

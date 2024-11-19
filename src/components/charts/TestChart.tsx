@@ -88,14 +88,14 @@ function transformDataToMonthsAndRange(data:any) {
 }
 
 const colors = [
-  "red",
+  "var(--color-chrome)",
   "var(--color-safari)",
   "var(--color-firefox)",
-  "var(--color-edge)",
+
   "var(--color-other)",
 ];
 
-const chartData2 = [
+const inputData  = [
   {
       "month": "Nov 2023",
       "Measles": 155,
@@ -148,10 +148,24 @@ const chartData2 = [
   }
 ]
 
+const chartConfig2 = {
+  month: {
+    label: "Month",
+  },
+  Measles: {
+    label: "Measles",
+    color: "hsl(var(--chart-1))", // First color in the theme
+  },
+  "Acute Flaccid Paralysis": {
+    label: "Acute Flaccid Paralysis",
+    color: "hsl(var(--chart-2))", // Second color in the theme
+  },
+} satisfies ChartConfig;
 
-const result = transformDataToPieChartFormat(inputData, colors);
+
+const chartData2 = transformDataToPieChartFormat(inputData, colors);
 const result2 = transformDataToMonthsAndRange(inputData);
-console.log("hello pie data",result);
+console.log("hello pie data",chartData2);
 console.log("hello pie data 2",result2);
 export function TestChart() {
   return (
@@ -162,21 +176,21 @@ export function TestChart() {
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
-          config={chartConfig}
+          config={chartConfig2}
           className="mx-auto aspect-square max-h-[250px] [&_.recharts-text]:fill-background"
         >
           <PieChart>
             <ChartTooltip
-              content={<ChartTooltipContent nameKey="visitors" hideLabel />}
+              content={<ChartTooltipContent nameKey="name" hideLabel />}
             />
-            <Pie data={chartData} dataKey="visitors">
+            <Pie data={chartData2} dataKey="total" nameKey="name">
               <LabelList
-                dataKey="browser"
+                dataKey="name"
                 className="fill-background"
                 stroke="none"
                 fontSize={12}
-                formatter={(value: keyof typeof chartConfig) =>
-                  chartConfig[value]?.label
+                formatter={(value: keyof typeof chartConfig2) =>
+                  chartConfig2[value]?.label || value
                 }
               />
             </Pie>
@@ -192,5 +206,6 @@ export function TestChart() {
         </div>
       </CardFooter>
     </Card>
-  )
+  );
 }
+
