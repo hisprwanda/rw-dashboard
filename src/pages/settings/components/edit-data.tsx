@@ -28,6 +28,7 @@ import { RiCloseLargeFill, RiEdit2Fill } from "react-icons/ri";
 import { DataSourceRowProps } from "./show-data";
 import { useDataEngine } from "@dhis2/app-runtime";
 import { DataSourceType } from "./add-form";
+import { FaRegEdit } from "react-icons/fa";
 
 export default function EditData({ row, refetch,dataSource }: DataSourceRowProps) {
   const [open, setOpen] = useState(false);
@@ -65,6 +66,7 @@ export default function EditData({ row, refetch,dataSource }: DataSourceRowProps
   });
   const { reset } = form;
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const REACT_APP_DataStore = process.env.REACT_APP_DataStore;
   // Form values type
   type DataSourceFormValues = z.infer<typeof dataSourceSchema>;
   const onSubmit = async (data: DataSourceFormValues) => {
@@ -99,7 +101,7 @@ export default function EditData({ row, refetch,dataSource }: DataSourceRowProps
     }; 
 
     await engine.mutate({
-        resource: `dataStore/r-data-source/${uid}`,
+        resource: `dataStore/${REACT_APP_DataStore}/${uid}`,
         type: 'update',
         data: dataToUplaod
     });
@@ -134,7 +136,7 @@ export default function EditData({ row, refetch,dataSource }: DataSourceRowProps
     <AlertDialog.Root open={open} onOpenChange={setOpen}>
       <AlertDialog.Trigger asChild>
         <button className="w-[40px] bg-transparent p-1 focus:outline-none focus:shadow-outline text-primary hover:text-plight hover:bg-transparent">
-          <RiEdit2Fill className="text-xl" />
+          <FaRegEdit className="text-xl" />
         </button>
       </AlertDialog.Trigger>
       <AlertDialog.Portal>

@@ -68,7 +68,7 @@ export default function AddDataSourceForm({
       //dataSourceType: DataSourceType.DHIS2,
     },
   });
-
+  const REACT_APP_DataStore = process.env.REACT_APP_DataStore;
   const [isSubmitting, setIsSubmitting] = useState(false);
   // Form values type
   type DataSourceFormValues = z.infer<typeof dataSourceSchema>;
@@ -104,7 +104,7 @@ export default function AddDataSourceForm({
     }; 
 
     await engine.mutate({
-        resource: `dataStore/r-data-source/${uid}`,
+        resource: `dataStore/${REACT_APP_DataStore}/${uid}`,
         type: 'create',
         data: dataToUplaod
     });
@@ -242,7 +242,7 @@ export default function AddDataSourceForm({
                 <FormControl>
                   <Textarea
                     placeholder="Tell us a little bit about your instance"
-                    className="resize-none"
+                    className=" resize-y"
                     {...field}
                   />
                 </FormControl>

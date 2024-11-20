@@ -4,6 +4,7 @@ import {
   RiCloseLargeFill,
   RiDeleteBack2Fill,
   RiDeleteBin2Fill,
+  RiDeleteBin5Line,
 } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { DataSourceRowProps } from "./show-data";
@@ -18,8 +19,9 @@ export default function DeleteData({ row, refetch }: DataSourceRowProps) {
   const deleteDataSource = async () => {
     try {
       setIsSubmitting(true);
+      const REACT_APP_DataStore = process.env.REACT_APP_DataStore;
       const resp = await engine.mutate({
-        resource: `dataStore/r-data-source/${row.key}`,
+        resource: `dataStore/${REACT_APP_DataStore}/${row.key}`,
         type: "delete",
       });
       setIsSubmitting(false);
@@ -45,7 +47,7 @@ export default function DeleteData({ row, refetch }: DataSourceRowProps) {
     <AlertDialog.Root open={open} onOpenChange={setOpen}>
       <AlertDialog.Trigger asChild>
         <button className="w-[40px] bg-transparent p-1 focus:outline-none focus:shadow-outline text-secondary hover:text-slight hover:bg-transparent">
-          <RiDeleteBin2Fill className="text-xl" />
+          <RiDeleteBin5Line className="text-xl" />
         </button>
       </AlertDialog.Trigger>
       <AlertDialog.Portal>
@@ -54,7 +56,7 @@ export default function DeleteData({ row, refetch }: DataSourceRowProps) {
           <AlertDialog.Title className="text-mauve12 -mt-4 font-medium">
             <div className="flex items-start justify-between  py-2">
               <div className="bg-transparent p-1  flex gap-1 focus:outline-none focus:shadow-outline text-secondary  hover:bg-transparent">
-                <RiDeleteBin2Fill className="text-xl" /> Are you certain you
+                <RiDeleteBin5Line className="text-xl" /> Are you certain you
                 want to proceed with deleting this?
               </div>
               <AlertDialog.Cancel asChild>
