@@ -46,3 +46,10 @@ The app requires a `.env` file to configure environment variables.
 4. **Start the Development Server**  
    ```bash
    yarn start
+
+
+4. **For support **  
+   ```bash
+   Email
+   cristiannsengi@gmail.com
+   rogerndutiye@gmail.com
