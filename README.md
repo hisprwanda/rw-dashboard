@@ -1,37 +1,53 @@
-This project was bootstrapped with [DHIS2 Application Platform](https://github.com/dhis2/app-platform).
+# rw-dashboard DHIS2 Application
 
-## Available Scripts
+rw-dashboard is A React-based application designed to interact with DHIS2 instances. 
 
-In the project directory, you can run:
+---
 
-### `yarn start`
+## Getting Started
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Prerequisites
+Ensure the following tools are installed on your system:
+- **Node.js** (v16 or later)
+- **npm** (v8 or later) or **yarn** (v1.22 or later)
+- Access to a DHIS2 instance with API credentials (if required)
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+---
 
-### `yarn test`
+## Environment Setup
 
-Launches the test runner and runs all available tests found in `/src`.<br />
+The app requires a `.env` file to configure environment variables.
 
-See the section about [running tests](https://platform.dhis2.nu/#/scripts/test) for more information.
+### Required Environment Variable
 
-### `yarn build`
+| Variable Name       | Description                                | Example Value    |
+|---------------------|--------------------------------------------|------------------|
+| `REACT_APP_DataStore` | Specifies the datastore for DHIS2 API interactions. | `r-data-source`  |
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.<br />
-A deployable `.zip` file can be found in `build/bundle`!
+## Installation
 
-See the section about [building](https://platform.dhis2.nu/#/scripts/build) for more information.
+1. **Clone the Repository**  
+   ```bash
+   git clone https://github.com/hisprwanda/rw-dashboard.git
+   cd your-repo
 
-### `yarn deploy`
+1. **Install Dependencies**  
+   ```bash
+   yarn install
 
-Deploys the built app in the `build` folder to a running DHIS2 instance.<br />
-This command will prompt you to enter a server URL as well as the username and password of a DHIS2 user with the App Management authority.<br/>
-You must run `yarn build` before running `yarn deploy`.<br />
+2. **Create a .env File**  
+   ```bash
+   Define the required environment variable in the project root
+   REACT_APP_DataStore=r-data-source
+   cd your-repo
 
-See the section about [deploying](https://platform.dhis2.nu/#/scripts/deploy) for more information.
+3. **Start the Development Server**  
+   ```bash
+   yarn install
+
+
+4.**Install Dependencies** 
+  ```bash
+  yarn start
