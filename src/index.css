@@ -1681,6 +1681,10 @@ video {
   fill: hsl(var(--background));
 }
 
+.fill-white {
+  fill: #fff;
+}
+
 .object-cover {
   -o-object-fit: cover;
      object-fit: cover;
@@ -2094,6 +2098,10 @@ video {
 
 .opacity-90 {
   opacity: 0.9;
+}
+
+.mix-blend-luminosity {
+  mix-blend-mode: luminosity;
 }
 
 .shadow {

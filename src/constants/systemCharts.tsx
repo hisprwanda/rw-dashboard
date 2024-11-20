@@ -7,6 +7,7 @@ import { LocalRowBarChart } from '../components/charts/LocalRowBarChart';
 import { LocalRowStackedChart } from '../components/charts/LocalRowStackedChart';
 import { LocalScatterCharts } from '../components/charts/LocalScatterCharts';
 import { LocalPieChart } from '../components/charts/LocalPieChart';
+import { LocalRadialChat } from '../components/charts/LocalRadialChat';
 import { LocalTableVisual } from '../components/charts/LocalTableVisual';
 import { IoBarChartSharp, IoPieChart } from 'react-icons/io5';
 import { FaChartLine ,FaChartArea} from 'react-icons/fa';
@@ -29,6 +30,7 @@ type ChartComponent = {
 
 export const chartComponents: ChartComponent = [
 
+  
     { 
         type: 'Table', 
         component: LocalTableVisual, 
@@ -76,6 +78,12 @@ export const chartComponents: ChartComponent = [
         component: LocalPieChart, 
         description: 'A bar chart displaying data', 
         icon: <IoPieChart /> 
+    },  
+    { 
+        type: 'Radial', 
+        component: LocalRadialChat, 
+        description: 'A bar chart displaying data', 
+        icon: <IoBarChartSharp /> 
     },
     // change icon later
     { 
