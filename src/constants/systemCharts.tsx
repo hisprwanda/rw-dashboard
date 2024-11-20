@@ -9,6 +9,7 @@ import { LocalScatterCharts } from '../components/charts/LocalScatterCharts';
 import { LocalPieChart } from '../components/charts/LocalPieChart';
 import { LocalRadialChat } from '../components/charts/LocalRadialChat';
 import { LocalTableVisual } from '../components/charts/LocalTableVisual';
+import { LocalSingleValue } from '../components/charts/LocalSingleValue';
 import { IoBarChartSharp, IoPieChart } from 'react-icons/io5';
 import { FaChartLine ,FaChartArea} from 'react-icons/fa';
 import { FaChartSimple } from 'react-icons/fa6';
@@ -31,6 +32,12 @@ type ChartComponent = {
 export const chartComponents: ChartComponent = [
 
   
+    { 
+        type: 'Single Value', 
+        component: LocalSingleValue, 
+        description: 'A bar chart displaying data', 
+        icon: <IoBarChartSharp /> 
+    },
     { 
         type: 'Table', 
         component: LocalTableVisual, 

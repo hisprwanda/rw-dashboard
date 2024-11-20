@@ -36,6 +36,8 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleA
         );
     }
 
+  console.log("chartData bar",chartData)
+
     return (
         <ChartContainer config={chartConfig}  style={{ backgroundColor: visualSettings.backgroundColor }} >
              {visualTitleAndSubTitle.visualTitle && <h3 className="text-center text-lg font-bold text-gray-800 ">{visualTitleAndSubTitle.visualTitle}</h3> }  

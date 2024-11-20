@@ -43,7 +43,7 @@ function combineDataByMonth(data:TransformedDataPoint[]):TransformedDataPoint[] 
   // temporarily colors
   const colors = [`hsl(var(--chart-1))`, `hsl(var(--chart-2))`,`hsl(var(--chart-3))`,`hsl(var(--chart-4))`,`hsl(var(--chart-5))`];
   
-export function transformDataForGenericChart(inputData: InputData,chartType?:"pie" | "radial"): TransformedDataPoint[] | any {
+export function transformDataForGenericChart(inputData: InputData,chartType?:"pie" | "radial" | "single"): TransformedDataPoint[] | any {
     if (!isValidInputData(inputData)) {
         throw new Error("Invalid input data structure");
     }
