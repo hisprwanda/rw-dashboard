@@ -5,6 +5,8 @@ import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./index.css";
 import MainLayout from "./components/layout/MainLayout";
+import "@radix-ui/themes/styles.css";
+
 import {
   NotFoundPage,
   AdminPage,
@@ -20,6 +22,8 @@ import {
 } from './pages';
 import { CreateDashboardPage } from "./pages/dashboards";
 import { TestChart } from "./components/charts/TestChart";
+import { Theme } from "@radix-ui/themes";
+import { Toaster } from "./components/ui/toaster";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,6 +35,7 @@ const queryClient = new QueryClient({
 
 const App: React.FC = () => {
   return (
+    <Theme>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Router>
@@ -61,8 +66,10 @@ const App: React.FC = () => {
             } />
           </Routes>
         </Router>
+        <Toaster />
       </AuthProvider>
     </QueryClientProvider>
+    </Theme>
   );
 };
 

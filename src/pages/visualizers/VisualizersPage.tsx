@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Button from "../../components/Button";
 import { IoSaveOutline } from 'react-icons/io5';
-import { useDataSourceData } from '../../services/DataSourceHooks';
+import { useDataSourceData } from '../../hooks/dataSource';
 import { GenericModal, Loading } from "../../components";
 import { DataModal, OrganizationModal, PeriodModal } from './Components/MetaDataModals';
 import { useAuthorities } from '../../context/AuthContext';

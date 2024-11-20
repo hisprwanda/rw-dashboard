@@ -1,5 +1,5 @@
 
-import { useDataSourceData } from "../../../services/DataSourceHooks"
+import { useDataSourceData } from "../../../hooks/dataSource"
 import DataSourceTable from "./Components/DataSourceTable"
 import { GenericError, Loading } from "./../../../components"
 import {GenericModal} from "../../../components"

@@ -12,7 +12,7 @@ import {
 import { Button } from '@mantine/core';
 import { GenericModal } from '../../../../components';
 import { DataSourceForm, DeleteDataSourceCard, SavedDataSourceCard } from '.';
-import { useDataSourceData } from '../../../../services/DataSourceHooks';
+import { useDataSourceData } from '../../../../hooks/dataSource';
 
 const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }) => {
 
