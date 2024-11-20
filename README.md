@@ -33,21 +33,16 @@ The app requires a `.env` file to configure environment variables.
    git clone https://github.com/hisprwanda/rw-dashboard.git
    cd your-repo
 
-1. **Install Dependencies**  
+2. **Install Dependencies**  
    ```bash
    yarn install
 
-2. **Create a .env File**  
+3. **Create a .env File**  
    ```bash
    Define the required environment variable in the project root
    REACT_APP_DataStore=r-data-source
    cd your-repo
 
-3. **Start the Development Server**  
+4. **Start the Development Server**  
    ```bash
-   yarn install
-
-
-4.**Install Dependencies** 
-  ```bash
-  yarn start
+   yarn start
