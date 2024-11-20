@@ -45,9 +45,9 @@ function combineDataByMonth(data:TransformedDataPoint[]):TransformedDataPoint[] 
   }
 
   // temporarily colors
-  const colors = ["#ff5733", "#33ff57"];
+  const colors = [`hsl(var(--chart-1))`, `hsl(var(--chart-2))`,`hsl(var(--chart-3))`,`hsl(var(--chart-4))`,`hsl(var(--chart-5))`];
   
-export function transformDataForGenericChart(inputData: InputData,chartType?:"pie"): TransformedDataPoint[] | any {
+export function transformDataForGenericChart(inputData: InputData,chartType?:"pie" | "radial"): TransformedDataPoint[] | any {
     if (!isValidInputData(inputData)) {
         throw new Error("Invalid input data structure");
     }
@@ -79,7 +79,7 @@ export function transformDataForGenericChart(inputData: InputData,chartType?:"pi
     });
      const finalTransformedData = combineDataByMonth(transformedData) as TransformedDataPoint[]
 
-     if(chartType === "pie"){
+     if(chartType === "pie" || chartType === "radial"){
         const pieChartData = transformDataToPieChartFormat(finalTransformedData,colors)
         return pieChartData
      }

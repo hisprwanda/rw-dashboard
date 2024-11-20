@@ -1681,6 +1681,10 @@ video {
   fill: hsl(var(--background));
 }
 
+.fill-white {
+  fill: #fff;
+}
+
 .object-cover {
   -o-object-fit: cover;
      object-fit: cover;
