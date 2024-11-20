@@ -1,3 +1,4 @@
+import { DataSourceType } from '@/pages/settings/components/add-form';
 import { z } from 'zod';
 
 // Schema definition using zod
@@ -25,7 +26,7 @@ export interface DataSourceResponse {
 
 export interface Value {
     id:             string;
-    type:           string;
+    type:           DataSourceType;
     description:    string;
     instanceName:   string;
     authentication: Authentication;

@@ -6,6 +6,7 @@ import { RiCloseLargeFill } from "react-icons/ri";
 
 export interface DataSourceRowProps {
   row: DataSourceResponse;
+  dataSource:DataSourceResponse[];
   refetch: () => void;
 }
 

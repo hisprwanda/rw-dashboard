@@ -9,25 +9,10 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-  FormDescription,
 } from "../../../components/ui/form";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "../../../components/ui/popover";
-import { cn, encryptCredentials } from "../../../lib/utils";
-import { Check, ChevronsUpDown } from "lucide-react";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "../../../components/ui/command";
+import { encryptCredentials } from "../../../lib/utils";
 import {
   Select,
   SelectContent,
@@ -69,7 +54,7 @@ export default function AddDataSourceForm({
       .min(10, {
         message: "Bio must be at least 10 characters.",
       })
-      .max(160, {
+      .max(512, {
         message: "Bio must not be longer than 30 characters.",
       }),
     dataSourceType: z.nativeEnum(DataSourceType, {
@@ -80,7 +65,7 @@ export default function AddDataSourceForm({
   const form = useForm<z.infer<typeof dataSourceSchema>>({
     resolver: zodResolver(dataSourceSchema),
     defaultValues: {
-      dataSourceType: DataSourceType.DHIS2,
+      //dataSourceType: DataSourceType.DHIS2,
     },
   });
 

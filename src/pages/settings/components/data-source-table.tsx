@@ -10,6 +10,7 @@ import {
 import { IconRefresh } from "@tabler/icons-react";
 import TableActions from "./table-actions";
 import NewData from "./new-data";
+import { DataSourceType } from "./add-form";
 
 export default function DataSourceTable() {
   const { data, loading, error, refetch } = useDataSourceData();
@@ -33,6 +34,17 @@ export default function DataSourceTable() {
 
   const columns = useMemo<MRT_ColumnDef<DataSourceResponse>[]>(
     () => [
+      // {
+      //   accessorFn: (row) => {
+      //     return row?.key;
+      //   },
+      //   header: 'ID',
+      //   renderColumnActionsMenuItems: () => (
+      //     <>
+      //      hh
+      //     </>
+      //   ),
+      // },
       {
         accessorFn: (row) => {
           return row?.value?.instanceName;
@@ -65,7 +77,7 @@ export default function DataSourceTable() {
       key: "default-key",
       value: {
         id: "",
-        type: "",
+        type: DataSourceType.Other,
         description: "",
         instanceName: "",
         authentication: {
@@ -102,7 +114,7 @@ export default function DataSourceTable() {
     //positionActionsColumn: "first",
     enableRowActions: true,
     renderRowActions: ({ row }) => (
-      <TableActions refetch={refetch} row={row.original} />
+      <TableActions refetch={refetch} row={row.original} dataSource={transformedData} />
     ),
     renderTopToolbarCustomActions: ({ table }) => (
       <div className="content-start flex flex-row gap-10">
