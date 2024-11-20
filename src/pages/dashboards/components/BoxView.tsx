@@ -95,41 +95,57 @@ const BoxView: React.FC<BoxViewProps> = ({ dashboards }) => {
 
         return (
           <div
-            key={dashboard.key}
-            className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 relative"
-          >
-            <div className="bg-gray-100 h-48 w-full flex justify-center items-center rounded-t-lg">
-              <img src={dashboard.value.previewImg} alt={dashboard.value.dashboardName} />
-            </div>
-
-            <div className="flex justify-between items-center mt-4">
-              <p className="font-semibold text-gray-700">
-                {dashboard.value.dashboardName}
-              </p>
-              <div className="flex items-center space-x-2">
-                {/* Favorite Icon */}
-                <button  disabled={isUpdatingDashboard}
-                  className="cursor-pointer"
-                  onClick={() => handleToggleFavorite(dashboard.key, dashboard.value)}
-                >
-                  {isFavorited ? (
-                    <IconStarFilled24 color="gold" /> //  favorite
-                  ) : (
-                    <IconStarFilled24 color="gray" /> //unfavorited
-                  )}
-                </button>
-
-                {/* View More Icon */}
-                <div className="cursor-pointer" onClick={() => handleViewMore(dashboard.key)}>
-                  <IconMore24 />
-                </div>
+          key={dashboard.key}
+          className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 relative cursor-pointer"
+          onClick={() => handleViewMore(dashboard.key)}
+        >
+          <div className="bg-gray-100 h-48 w-full flex justify-center items-center rounded-t-lg overflow-hidden">
+            <img
+              src={dashboard.value.previewImg}
+              alt={dashboard.value.dashboardName}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        
+          <div className="flex justify-between items-center mt-4">
+            <p className="font-semibold text-gray-700">
+              {dashboard.value.dashboardName}
+            </p>
+            <div className="flex items-center space-x-2">
+              {/* Favorite Icon */}
+              <button
+                disabled={isUpdatingDashboard}
+                className="cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent box click propagation
+                  handleToggleFavorite(dashboard.key, dashboard.value);
+                }}
+              >
+                {isFavorited ? (
+                  <IconStarFilled24 color="gold" />
+                ) : (
+                  <IconStarFilled24 color="gray" />
+                )}
+              </button>
+        
+              {/* View More Icon */}
+              <div
+                className="cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent box click propagation
+                  handleViewMore(dashboard.key);
+                }}
+              >
+                <IconMore24 />
               </div>
             </div>
-
-            <p className="text-sm text-gray-400 mt-2">
-              Modified: {new Date(dashboard.value.updatedAt).toLocaleDateString()}
-            </p>
           </div>
+        
+          <p className="text-sm text-gray-400 mt-2">
+            Modified: {new Date(dashboard.value.updatedAt).toLocaleDateString()}
+          </p>
+        </div>
+        
         );
       })}
     </div>

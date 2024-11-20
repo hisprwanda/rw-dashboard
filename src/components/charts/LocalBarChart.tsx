@@ -59,7 +59,7 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleA
                     axisLine={false}
                     tickFormatter={(value) => value}
                 />
-                <YAxis />
+                <YAxis  />
                 <Tooltip content={<ChartTooltipContent />} />
                 <Legend />
                 {Object.keys(chartConfig).map((key) => (
