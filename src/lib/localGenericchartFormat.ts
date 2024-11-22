@@ -148,13 +148,11 @@ type TreemapDataType = {
 };
 
 const convertDataForTreeMap = (data: InputDataType[]): TreemapDataType[] => {
-  // Handle empty input array
   if (!Array.isArray(data) || data.length === 0) {
     console.error('Input data is empty or not an array');
     return [];
   }
 
-  // Ensure 'month' property exists and filter valid entries
   const validData = data.filter(item => 
     typeof item === 'object' && item !== null && 'month' in item && typeof item.month === 'string'
   );
@@ -164,18 +162,16 @@ const convertDataForTreeMap = (data: InputDataType[]): TreemapDataType[] => {
     return [];
   }
 
-  // Determine categories (excluding 'month')
   const categories = Object.keys(validData[0]).filter(key => key !== 'month');
 
   return categories.map(category => ({
     name: category,
     children: validData.map(item => {
       const size = Number(item[category]);
-      // Handle NaN values
       return {
         name: item.month,
         size: isNaN(size) ? 0 : size
       };
-    }).filter(child => child.size > 0) // Remove entries with size 0
-  })).filter(category => category.children.length > 0); // Remove categories with no valid children
+    }).filter(child => child.size > 0)
+  })).filter(category => category.children.length > 0);
 };

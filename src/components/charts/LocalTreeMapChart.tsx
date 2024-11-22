@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Treemap, ResponsiveContainer } from "recharts";
+import { Treemap, ResponsiveContainer,Tooltip } from "recharts";
 import { useAuthorities } from "../../context/AuthContext";
 import {
   ChartContainer,
@@ -76,6 +76,7 @@ export const LocalTreeMapChart: React.FC<genericChartsProps> = ({
           stroke="#fff"
           content={<CustomizedContent colors={COLORS} />}
         />
+       
       </ResponsiveContainer>
     </ChartContainer>
   );

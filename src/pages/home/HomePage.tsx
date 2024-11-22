@@ -125,11 +125,11 @@ export default function HomePage() {
   return (
     <section className="px-14 py-9">
       <h1 className="text-primary font-semibold">Pinned Dashboards</h1>
-      <div className="mt-7 flex gap-8">
+      <div className="mt-7 flex gap-8 overflow-auto  ">
         {pinnedDashboards.map((dashboard, index) => (
           <div
             key={index}
-            className="bg-dhisGrey500 rounded-[5px] border border-primary w-[300px] cursor-pointer"
+            className="bg-dhisGrey500 rounded-[5px] border border-primary min-w-[300px] w-[300px] cursor-pointer"
             onClick={()=>handleViewMore(dashboard.key)}
           >
             <div className="p-2 font-semibold">{dashboard.value.dashboardName}</div>
