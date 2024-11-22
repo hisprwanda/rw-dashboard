@@ -1,11 +1,6 @@
 import React, { useMemo } from "react";
-import { Treemap, ResponsiveContainer,Tooltip } from "recharts";
-import { useAuthorities } from "../../context/AuthContext";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "../../components/ui/chart";
+import { Treemap, ResponsiveContainer, Tooltip } from "recharts";
+import { ChartContainer } from "../../components/ui/chart";
 import { transformDataForGenericChart, generateChartConfig, isValidInputData } from "../../lib/localGenericchartFormat";
 import { genericChartsProps } from "../../types/visualSettingsTypes";
 
@@ -17,6 +12,19 @@ const COLORS = [
   "hsl(var(--chart-5))",
 ];
 
+const CustomTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length > 0 && payload[0].payload) {
+    const data = payload[0].payload;
+    return (
+      <div className="bg-white p-2 rounded-md shadow-md border border-gray-300">
+        <p className="font-semibold">{`${data.root?.name || "Category"} - ${data.name || "Item"}`}</p>
+        <p>{`total: ${data.size || 0}`}</p>
+      </div>
+    );
+  }
+  return null;
+};
+
 export const LocalTreeMapChart: React.FC<genericChartsProps> = ({
   data,
   visualTitleAndSubTitle,
@@ -24,7 +32,7 @@ export const LocalTreeMapChart: React.FC<genericChartsProps> = ({
 }) => {
   const { chartData, chartConfig, error } = useMemo(() => {
     if (!isValidInputData(data)) {
-      return { chartData: [], chartConfig: {}, error: "no data found" };
+      return { chartData: [], chartConfig: {}, error: "No data found" };
     }
 
     try {
@@ -47,13 +55,13 @@ export const LocalTreeMapChart: React.FC<genericChartsProps> = ({
   return (
     <ChartContainer config={chartConfig} style={{ backgroundColor: visualSettings.backgroundColor }}>
       {visualTitleAndSubTitle.visualTitle && (
-        <h3 className="text-center text-lg font-bold text-gray-800 ">
+        <h3 className="text-center text-lg font-bold text-gray-800">
           {visualTitleAndSubTitle.visualTitle}
         </h3>
       )}
       {visualTitleAndSubTitle?.customSubTitle ? (
         <h4 className="text-center text-md font-medium text-gray-600 mt-1">
-          {visualTitleAndSubTitle?.customSubTitle}
+          {visualTitleAndSubTitle.customSubTitle}
         </h4>
       ) : (
         visualTitleAndSubTitle?.DefaultSubTitle?.length !== 0 && (
@@ -75,18 +83,17 @@ export const LocalTreeMapChart: React.FC<genericChartsProps> = ({
           ratio={4 / 3}
           stroke="#fff"
           content={<CustomizedContent colors={COLORS} />}
-        />
-       
+        >
+          <Tooltip content={<CustomTooltip />} />
+        </Treemap>
       </ResponsiveContainer>
     </ChartContainer>
   );
 };
 
-// Customized content component for Treemap
 const CustomizedContent = (props: any) => {
   const { x, y, width, height, index, depth, name, payload, colors } = props;
 
-  // Determine color based on depth and index
   const fillColor =
     depth < 2 ? colors[Math.floor((index / props.root.children.length) * colors.length)] : "#ffffff00";
 
