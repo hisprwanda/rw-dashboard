@@ -1009,12 +1009,12 @@ video {
   max-height: 100vh;
 }
 
-.min-h-\[200px\] {
-  min-height: 200px;
+.min-h-\[150px\] {
+  min-height: 150px;
 }
 
-.min-h-\[400px\] {
-  min-height: 400px;
+.min-h-\[200px\] {
+  min-height: 200px;
 }
 
 .min-h-\[60px\] {

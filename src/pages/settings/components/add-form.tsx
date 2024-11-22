@@ -242,7 +242,7 @@ export default function AddDataSourceForm({
                 <FormControl>
                   <Textarea
                     placeholder="Tell us a little bit about your instance"
-                    className=" resize-y"
+                    className=" resize-y min-h-[150px]"
                     {...field}
                   />
                 </FormControl>
