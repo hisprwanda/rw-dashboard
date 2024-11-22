@@ -11,28 +11,21 @@ import {
 
 export const useFetchSingleVisualData = (visualId: string) => {
   const {
-    analyticsData,
-    isFetchAnalyticsDataLoading,
-    selectedChartType,
+
     setSelectedChartType,
     setAnalyticsQuery,
-    analyticsQuery,
-    analyticsDimensions,
+
     setAnalyticsDimensions,
     setIsSetPredifinedUserOrgUnits,
-    isSetPredifinedUserOrgUnits,
-    selectedOrganizationUnits,
+
     setSelectedOrganizationUnits,
-    setIsUseCurrentUserOrgUnits,
-    selectedOrgUnits,
+
     setSelectedOrgUnits,
-    selectedOrgUnitGroups,
+   
     setSelectedOrgUnitGroups,
-    selectedOrganizationUnitsLevels,
+ 
     setSelectedOrganizationUnitsLevels,
-    selectedLevel,
     setSelectedLevel,
-    fetchAnalyticsData,
     setAnalyticsData,
     setSelectedVisualTitleAndSubTitle,
      setSelectedVisualSettings
@@ -66,10 +59,8 @@ export const useFetchSingleVisualData = (visualId: string) => {
       // Safely unformat analytics dimensions
       const dimensions = unFormatAnalyticsDimensions(data?.dataStore?.query?.myData?.params?.dimension);
       setAnalyticsDimensions(dimensions);
-
       // Handle other state updates
       setIsSetPredifinedUserOrgUnits(formatCurrentUserSelectedOrgUnit(data?.dataStore?.query?.myData?.params?.filter));
-     
       setSelectedOrgUnits(data?.dataStore?.organizationTree);
       setSelectedOrgUnitGroups(formatOrgUnitGroup(data?.dataStore?.query?.myData?.params?.filter));
       setSelectedOrganizationUnitsLevels(formatOrgUnitLevels(data?.dataStore?.query?.myData?.params?.filter));
@@ -77,7 +68,7 @@ export const useFetchSingleVisualData = (visualId: string) => {
       setSelectedVisualTitleAndSubTitle(data?.dataStore?.visualTitleAndSubTitle)
       setSelectedVisualSettings(data?.dataStore?.visualSettings)
     }
-  }, [data]); // Dependency array to only run when `data` changes
+  }, [data,setSelectedVisualSettings,setSelectedVisualTitleAndSubTitle,setSelectedLevel,setSelectedOrganizationUnitsLevels,setSelectedOrgUnitGroups,setSelectedOrgUnits,setIsSetPredifinedUserOrgUnits,setAnalyticsData,setSelectedChartType,setAnalyticsQuery,setSelectedOrganizationUnits,setAnalyticsDimensions]); 
 
 
   // Return the query result and other metadata
