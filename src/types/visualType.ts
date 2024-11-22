@@ -14,7 +14,8 @@ export const VisualDataSchema = z.object({
     "Pie",
     "Radar",
     "Scatter",
-    "Radial"
+    "Radial",
+    "Single Value"
 ]),
   visualName: z.string().nonempty({ message: "Visual name is required" }),
   visualTitleAndSubTitle: z.object({

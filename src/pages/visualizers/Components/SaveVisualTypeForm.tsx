@@ -146,8 +146,23 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
         </AlertBar>
       )}
 
+         {/* Zod Validation Errors */}
+  {Object.keys(errors).length > 0 && (
+    <div className="p-4 bg-red-100 border border-red-300 rounded-md mb-4">
+      <h2 className="text-red-600 font-bold mb-2">Validation Errors:</h2>
+      <ul className="list-disc list-inside">
+        {Object.entries(errors).map(([key, error]) => (
+          <li key={key} className="text-red-500">
+            {error?.message}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-    
+       {/* show zod errors here, because some fields are not on the screen so it's hard to detect the error, so show them here  */}
+         
         {/* Visual Name */}
         <div className="flex flex-col">
           <label className="text-gray-700">Name</label>
