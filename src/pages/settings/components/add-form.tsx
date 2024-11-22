@@ -254,7 +254,7 @@ export default function AddDataSourceForm({
           <div className="flex flex-col items-center mt-4">
             <Button
               type="submit"
-              className="w-[200px] bg-pdark text-ptext hover:bg-primary"
+              className="w-[200px] bg-primary text-textl hover:bg-primarydark"
               disabled={isSubmitting}
             >
               <IoSaveSharp /> {isSubmitting ? "Saving..." : "Save"} 
