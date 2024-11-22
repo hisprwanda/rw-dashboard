@@ -43,7 +43,7 @@ function combineDataByMonth(data:TransformedDataPoint[]):TransformedDataPoint[] 
   // temporarily colors
   const colors = [`hsl(var(--chart-1))`, `hsl(var(--chart-2))`,`hsl(var(--chart-3))`,`hsl(var(--chart-4))`,`hsl(var(--chart-5))`];
   
-export function transformDataForGenericChart(inputData: InputData,chartType?:"pie" | "radial" | "single"): TransformedDataPoint[] | any {
+export function transformDataForGenericChart(inputData: InputData,chartType?:"pie" | "radial" | "single" | "tree"): TransformedDataPoint[] | any {
     if (!isValidInputData(inputData)) {
         throw new Error("Invalid input data structure");
     }
@@ -73,13 +73,20 @@ export function transformDataForGenericChart(inputData: InputData,chartType?:"pi
         dataPoint[dataName] = parseInt(row[2]);
         return dataPoint;
     });
+
      const finalTransformedData = combineDataByMonth(transformedData) as TransformedDataPoint[]
 
      if(chartType === "pie" || chartType === "radial"){
-        const pieChartData = transformDataToPieChartFormat(finalTransformedData,colors)
-        return pieChartData
+        const result = transformDataToPieChartFormat(finalTransformedData,colors)
+        return result
+     } else if(chartType === "tree"){
+          const result = convertDataForTreeMap(finalTransformedData)
+          return result
+     }else{
+      return finalTransformedData;
      }
-    return finalTransformedData;
+
+    
 }
 
 export function generateChartConfig(inputData: InputData): ChartConfig {
@@ -126,3 +133,49 @@ function transformDataToPieChartFormat(data:TransformedDataPoint[], colors:strin
   
     return transformedData;
   }
+
+
+
+  ///////// tree map
+type InputDataType = {
+  month: string;
+  [key: string]: string | number | undefined | null;
+};
+
+type TreemapDataType = {
+  name: string;
+  children: { name: string; size: number }[];
+};
+
+const convertDataForTreeMap = (data: InputDataType[]): TreemapDataType[] => {
+  // Handle empty input array
+  if (!Array.isArray(data) || data.length === 0) {
+    console.error('Input data is empty or not an array');
+    return [];
+  }
+
+  // Ensure 'month' property exists and filter valid entries
+  const validData = data.filter(item => 
+    typeof item === 'object' && item !== null && 'month' in item && typeof item.month === 'string'
+  );
+
+  if (validData.length === 0) {
+    console.error('No valid data entries found');
+    return [];
+  }
+
+  // Determine categories (excluding 'month')
+  const categories = Object.keys(validData[0]).filter(key => key !== 'month');
+
+  return categories.map(category => ({
+    name: category,
+    children: validData.map(item => {
+      const size = Number(item[category]);
+      // Handle NaN values
+      return {
+        name: item.month,
+        size: isNaN(size) ? 0 : size
+      };
+    }).filter(child => child.size > 0) // Remove entries with size 0
+  })).filter(category => category.children.length > 0); // Remove categories with no valid children
+};

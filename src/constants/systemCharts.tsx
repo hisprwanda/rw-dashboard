@@ -10,6 +10,7 @@ import { LocalPieChart } from '../components/charts/LocalPieChart';
 import { LocalRadialChat } from '../components/charts/LocalRadialChat';
 import { LocalTableVisual } from '../components/charts/LocalTableVisual';
 import { LocalSingleValue } from '../components/charts/LocalSingleValue';
+import { LocalTreeMapChart } from '../components/charts/LocalTreeMapChart';
 import { IoBarChartSharp, IoPieChart } from 'react-icons/io5';
 import { FaChartLine ,FaChartArea} from 'react-icons/fa';
 import { FaChartSimple } from 'react-icons/fa6';
@@ -32,6 +33,12 @@ type ChartComponent = {
 export const chartComponents: ChartComponent = [
 
   
+    { 
+        type: 'Tree Map', 
+        component: LocalTreeMapChart, 
+        description: 'A bar chart displaying data', 
+        icon: <IoBarChartSharp /> 
+    },
     { 
         type: 'Single Value', 
         component: LocalSingleValue, 
