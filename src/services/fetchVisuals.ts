@@ -28,7 +28,8 @@ export const useFetchSingleVisualData = (visualId: string) => {
     setSelectedLevel,
     setAnalyticsData,
     setSelectedVisualTitleAndSubTitle,
-     setSelectedVisualSettings
+     setSelectedVisualSettings,
+     setSelectedColorPalette
   } = useAuthorities();
 
   // Return default values if no visualId
@@ -66,6 +67,7 @@ export const useFetchSingleVisualData = (visualId: string) => {
       setSelectedOrganizationUnitsLevels(formatOrgUnitLevels(data?.dataStore?.query?.myData?.params?.filter));
       setSelectedLevel(data?.dataStore?.selectedOrgUnitLevel);
       setSelectedVisualTitleAndSubTitle(data?.dataStore?.visualTitleAndSubTitle)
+      setSelectedColorPalette(data?.dataStore?.visualSettings.visualColorPalette)
       setSelectedVisualSettings(data?.dataStore?.visualSettings)
     }
   }, [data,setSelectedVisualSettings,setSelectedVisualTitleAndSubTitle,setSelectedLevel,setSelectedOrganizationUnitsLevels,setSelectedOrgUnitGroups,setSelectedOrgUnits,setIsSetPredifinedUserOrgUnits,setAnalyticsData,setSelectedChartType,setAnalyticsQuery,setSelectedOrganizationUnits,setAnalyticsDimensions]); 

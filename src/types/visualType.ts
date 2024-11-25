@@ -24,8 +24,12 @@ export const VisualDataSchema = z.object({
     customSubTitle: z.string()?.optional(),
     DefaultSubTitle: z.array(z.string())?.optional(),
   }),
-  visualSettings: z.object({
-    backgroundColor: z.string()?.optional(),
+  visualSettings:  z.object({
+    visualColorPalette: z.object({
+      name: z.string(), 
+      itemsBackgroundColors: z.array(z.string()), 
+      chartContainerBackground: z.string()
+    }),
   }),
   description: z.string(),
   query: z

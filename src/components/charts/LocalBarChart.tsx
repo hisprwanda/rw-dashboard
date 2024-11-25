@@ -39,7 +39,7 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleA
   console.log("chartData bar",chartData)
 
     return (
-        <ChartContainer config={chartConfig}  style={{ backgroundColor: visualSettings.backgroundColor }} >
+        <ChartContainer config={chartConfig}  style={{ backgroundColor: visualSettings.visualColorPalette.chartContainerBackground }} >
              {visualTitleAndSubTitle.visualTitle && <h3 className="text-center text-lg font-bold text-gray-800 ">{visualTitleAndSubTitle.visualTitle}</h3> }  
              {visualTitleAndSubTitle?.customSubTitle ?  <h4 className="text-center text-md font-medium text-gray-600 mt-1">{visualTitleAndSubTitle?.customSubTitle}</h4>  :   visualTitleAndSubTitle?.DefaultSubTitle?.length !== 0 && (
   <div className="flex justify-center gap-1">

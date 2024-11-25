@@ -9,19 +9,9 @@ import React, {
 import { useDataQuery } from "@dhis2/app-runtime";
 import { useDataEngine } from '@dhis2/app-runtime';
 import { useFetchOrgUnitById ,useOrgUnitData} from "../services/fetchOrgunitData";
-import {VisualSettingsTypes,VisualTitleAndSubtitleType} from "../types/visualSettingsTypes"
+import {VisualSettingsTypes,VisualTitleAndSubtitleType,ColorPaletteTypes,visualColorPaletteTypes} from "../types/visualSettingsTypes"
+import { systemDefaultColorPalettes } from "../constants/colorPalettes";
 
-type ColorPaletteTypes = Array<{
-  name: string; 
-  itemsBackgroundColors: string[];
-  chartContainerBackground: string;
-}>;
-
-type visualColorPaletteTypes ={
-  name: string; 
-  itemsBackgroundColors: string[];
-  chartContainerBackground: string;
-}
 
 
 interface AuthContextProps {
@@ -108,7 +98,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     DefaultSubTitle: [defaultUserOrgUnit],
     customSubTitle:""
   })
-  const [visualSettings, setSelectedVisualSettings] = useState<VisualSettingsTypes>({backgroundColor:"#ffffff"})
+
+
+ const [selectedColorPalette, setSelectedColorPalette] = useState<visualColorPaletteTypes>(systemDefaultColorPalettes[1] || []);
+ 
+ const [visualsColorPalettes,setVisualsColorPalettes] =useState<ColorPaletteTypes >(systemDefaultColorPalettes)
+  const [visualSettings, setSelectedVisualSettings] = useState<VisualSettingsTypes>({visualColorPalette:selectedColorPalette})
 
 
   const [isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits] = useState<any>({
@@ -117,27 +112,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     is_USER_ORGUNIT_GRANDCHILDREN: false
   });
 
-  const defaultColorPalettes:ColorPaletteTypes | any  = [
-     {
-      name:"palette One",
-      itemsBackgroundColors: [`hsl(var(--chart-1))`, `hsl(var(--chart-2))`,`hsl(var(--chart-3))`,`hsl(var(--chart-4))`,`hsl(var(--chart-5))`],
-      chartContainerBackground:"#9dff00"
-    },
-    {
-      name:"palette Two",
-      itemsBackgroundColors: ["#FF5733", "#33FF57", "#3357FF"],
-      chartContainerBackground:"#ff00fb"
-    },
-    {
-      name:"palette Three",
-      itemsBackgroundColors: [`hsl(var(--chart-11))`, `hsl(var(--chart-12))`,`hsl(var(--chart-13))`,`hsl(var(--chart-14))`,`hsl(var(--chart-15))`],
-      chartContainerBackground:"#ffbb00"
-    }     
-  ]
 
-  const [selectedColorPalette, setSelectedColorPalette] = useState<visualColorPaletteTypes>(defaultColorPalettes[0] || []);
-  
-  const [visualsColorPalettes,setVisualsColorPalettes] =useState<ColorPaletteTypes >(defaultColorPalettes)
    
 
   useEffect(() => {
