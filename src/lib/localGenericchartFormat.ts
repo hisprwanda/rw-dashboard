@@ -1,4 +1,6 @@
+import { useAuthorities } from '../context/AuthContext';
 import { ChartConfig } from "../components/ui/chart";
+
 
 export interface InputData {
     headers: any[];
@@ -77,7 +79,7 @@ export function transformDataForGenericChart(inputData: InputData,chartType?:"pi
      const finalTransformedData = combineDataByMonth(transformedData) as TransformedDataPoint[]
 
      if(chartType === "pie" || chartType === "radial"){
-        const result = transformDataToPieChartFormat(finalTransformedData,colors)
+        const result = transformDataNoneAxisData(finalTransformedData,colors)
         return result
      } else if(chartType === "tree"){
           const result = convertDataForTreeMap(finalTransformedData)
@@ -90,28 +92,40 @@ export function transformDataForGenericChart(inputData: InputData,chartType?:"pi
 }
 
 export function generateChartConfig(inputData: InputData): ChartConfig {
-    if (!isValidInputData(inputData)) {
-        throw new Error("Invalid input data structure");
-    }
+  const { selectedColorPalette } = useAuthorities();
 
-    const config: ChartConfig = {};
-    const dataItems = inputData.metaData.dimensions.dx;
+  console.log("Selected color palette:", selectedColorPalette);
 
-    dataItems.forEach((item: string, index: number) => {
-        const name = inputData.metaData.items[item].name;
-        config[name] = {
-            label: name,
-            color: `hsl(var(--chart-${index + 1}))`,
-        };
-    });
+  if (!isValidInputData(inputData)) {
+    throw new Error("Invalid input data structure");
+  }
 
-    return config;
+  const config: ChartConfig = {};
+  const dataItems = inputData.metaData.dimensions.dx;
+
+  dataItems.forEach((item: string, index: number) => {
+    const name = inputData.metaData.items[item].name;
+
+    // Determine color based on the format of selectedColorPalette
+    const color =
+      selectedColorPalette.itemsBackgroundColors.every(color => color.startsWith("hsl")) // Check if all are HSL
+        ? selectedColorPalette.itemsBackgroundColors[index] || `hsl(var(--chart-${index + 1}))`
+        : selectedColorPalette.itemsBackgroundColors[index] || selectedColorPalette.itemsBackgroundColors[0]; // Use first color as fallback for HEX or RGB
+
+    config[name] = {
+      label: name,
+      color,
+    };
+  });
+
+  return config;
 }
 
 
 
+
 ////// other formats
-function transformDataToPieChartFormat(data:TransformedDataPoint[], colors:string[]) {
+function transformDataNoneAxisData(data:TransformedDataPoint[], colors:string[]) {
     const totals = {};
     const colorCount = colors.length; // Number of available colors
   

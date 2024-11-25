@@ -22,6 +22,7 @@ import {chartComponents} from "../../constants/systemCharts"
 import { IoIosOptions } from "react-icons/io";
 import GeneralChartsStyles from './Components/GeneralChartsOptions';
 import { NavigationMenuDemo } from './Components/ChartsMenu';
+import VisualSettings from './Components/VisualSettings';
 
 
 
@@ -55,13 +56,7 @@ function Visualizers() {
         <option key={entry?.key} value={entry?.key}>{entry?.value?.instanceName}</option>
     ));
 
-    const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newColor = event.target.value;
-        setSelectedVisualSettings((prevSettings) => ({
-            ...prevSettings,
-            backgroundColor: newColor, 
-        }));
-    };
+
 
 
     // if visualId is false then set all chart related states to default
@@ -149,9 +144,7 @@ function Visualizers() {
     const handleShowSaveVisualTypeForm = ()=>{
         setIsShowSaveVisualTypeForm(true)
       }
-    const handleShowStyles = ()=>{
-        setIsShowStyles(true)
-      }
+
      //// function to handle show modals
     const handleShowDataModal = () => setIsShowDataModal(true);
     const handleShowOrganizationUnitModal = () => setIsShowOrganizationUnit(true);
@@ -186,7 +179,7 @@ function Visualizers() {
                             DIMENSIONS
                         </TabsTrigger>
                         <TabsTrigger
-                            value="CUSTOMIZE"
+                            value="SETTINGS"
                             className="text-lg font-semibold py-2 w-full text-left hover:border-gray-300"
                         >
                             SETTINGS
@@ -219,27 +212,8 @@ function Visualizers() {
                             </div>
                         </div>
                     </TabsContent>
-                    <TabsContent value="CUSTOMIZE" className="pt-4">
-                    <ul className="space-y-2 p-0 list-none">
-  
-      
-        <li onClick={handleShowStyles} className="px-4 py-2 text-gray-700 hover:text-primary hover:bg-gray-100 rounded-md cursor-pointer transition-all duration-200">
-            Heading
-        </li>
-
-        <li className="flex items-center justify-between px-4 py-2 text-gray-700 hover:text-primary hover:bg-gray-100 rounded-md cursor-pointer transition-colors duration-200">
-    <span className="font-medium">Background</span>
-    <input
-                    type="color"
-                    value={visualSettings.backgroundColor}
-                    onChange={handleColorChange}
-                    className="w-8 h-8 p-1 border rounded-md cursor-pointer border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1"
-                />
-</li>
-
-    
-    </ul>
-
+                    <TabsContent value="SETTINGS" className="pt-4">
+                   <VisualSettings setIsShowStyles={setIsShowStyles} />
                     </TabsContent>
                 </Tabs>
 

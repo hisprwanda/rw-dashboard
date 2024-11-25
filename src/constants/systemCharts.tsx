@@ -33,18 +33,7 @@ type ChartComponent = {
 export const chartComponents: ChartComponent = [
 
   
-    { 
-        type: 'Tree Map', 
-        component: LocalTreeMapChart, 
-        description: 'A bar chart displaying data', 
-        icon: <IoBarChartSharp /> 
-    },
-    { 
-        type: 'Single Value', 
-        component: LocalSingleValue, 
-        description: 'A bar chart displaying data', 
-        icon: <IoBarChartSharp /> 
-    },
+ 
     { 
         type: 'Table', 
         component: LocalTableVisual, 
@@ -96,6 +85,18 @@ export const chartComponents: ChartComponent = [
     { 
         type: 'Radial', 
         component: LocalRadialChat, 
+        description: 'A bar chart displaying data', 
+        icon: <IoBarChartSharp /> 
+    },
+    { 
+        type: 'Tree Map', 
+        component: LocalTreeMapChart, 
+        description: 'A bar chart displaying data', 
+        icon: <IoBarChartSharp /> 
+    },
+    { 
+        type: 'Single Value', 
+        component: LocalSingleValue, 
         description: 'A bar chart displaying data', 
         icon: <IoBarChartSharp /> 
     },
