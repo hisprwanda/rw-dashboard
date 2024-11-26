@@ -1,5 +1,7 @@
 import { useAuthorities } from '../context/AuthContext';
 import { ChartConfig } from "../components/ui/chart";
+import {visualColorPaletteTypes} from "../types/visualSettingsTypes"
+
 
 
 export interface InputData {
@@ -91,8 +93,10 @@ export function transformDataForGenericChart(inputData: InputData,chartType?:"pi
     
 }
 
-export function generateChartConfig(inputData: InputData): ChartConfig {
-  const { selectedColorPalette } = useAuthorities();
+
+ 
+export function generateChartConfig(inputData: InputData,selectedColorPalette?:visualColorPaletteTypes): ChartConfig {
+
 
   console.log("Selected color palette:", selectedColorPalette);
 

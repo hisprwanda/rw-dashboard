@@ -11,6 +11,7 @@ import {genericChartsProps} from "../../types/visualSettingsTypes"
 
 
 export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleAndSubTitle,visualSettings }) => {
+   const {selectedColorPalette} =  useAuthorities()
  
     // below is error handling checking if the data exists before passing it to the formmater function or to the graph
 
@@ -21,12 +22,12 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleA
 
         try {
             const transformedData = transformDataForGenericChart(data);
-            const config = generateChartConfig(data);
+            const config = generateChartConfig(data,visualSettings.visualColorPalette);
             return { chartData: transformedData, chartConfig: config, error: null };
         } catch (err) {
             return { chartData: [], chartConfig: {}, error: (err as Error).message };
         }
-    }, [data]);
+    }, [data,visualSettings]);
 
     if (error || chartData.length === 0) {
         return (

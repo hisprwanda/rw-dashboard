@@ -11,7 +11,7 @@ const VisualSettings: React.FC<VisualSettingsTypes> = ({ setIsShowStyles }) => {
     visualSettings,
     setSelectedVisualSettings,
     setSelectedColorPalette,
-    selectedColorPalette
+    selectedColorPalette,
   } = useAuthorities();
 
   const handlePaletteSelection = (paletteName: string) => {
@@ -27,18 +27,13 @@ const VisualSettings: React.FC<VisualSettingsTypes> = ({ setIsShowStyles }) => {
     setIsShowStyles(true);
   };
 
-
-  // testing
-  useEffect(()=>{
+  useEffect(() => {
     setSelectedVisualSettings((prevSettings) => ({
       ...prevSettings,
-      visualColorPalette:selectedColorPalette 
-  }));
-    console.log("selectedColorPalette changed",selectedColorPalette)
-  },[selectedColorPalette])
-
-
-  /// main return 
+      visualColorPalette: selectedColorPalette,
+    }));
+    console.log("selectedColorPalette changed", selectedColorPalette);
+  }, [selectedColorPalette]);
 
   return (
     <ul className="space-y-2 p-0 list-none">
@@ -57,15 +52,23 @@ const VisualSettings: React.FC<VisualSettingsTypes> = ({ setIsShowStyles }) => {
               key={palette.name}
               onClick={() => handlePaletteSelection(palette.name)}
               className="p-4 border rounded-md shadow-sm cursor-pointer hover:shadow-md transition-all duration-200"
-              style={{
-                backgroundColor: palette.chartContainerBackground,
-              }}
-            > 
-              <div className="font-semibold mb-2 text-center">
-                {palette.name}
-              </div>
+            >
+              {/* Display the name */}
+              <div className="font-semibold mb-2 text-center">{palette.name}</div>
+
+              {/* Custom color preview */}
+              <div
+                className="h-12 rounded-md mb-2"
+                style={{
+                  background: `linear-gradient(to right, ${palette.itemsBackgroundColors
+                    .slice(0, 5)
+                    .join(",")})`,
+                }}
+              ></div>
+
+              {/* Swatch preview for individual colors */}
               <div className="flex space-x-1 justify-center">
-                {palette.itemsBackgroundColors.map((color, index) => (
+                {palette.itemsBackgroundColors.slice(0, 5).map((color, index) => (
                   <div
                     key={index}
                     className="w-6 h-6 rounded-full border"
