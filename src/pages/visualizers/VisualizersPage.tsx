@@ -23,6 +23,7 @@ import { IoIosOptions } from "react-icons/io";
 import GeneralChartsStyles from './Components/GeneralChartsOptions';
 import { NavigationMenuDemo } from './Components/ChartsMenu';
 import VisualSettings from './Components/VisualSettings';
+import {systemDefaultColorPalettes} from "../../constants/colorPalettes";
 
 
 
@@ -39,7 +40,7 @@ function Visualizers() {
     const { data:dataItemsData, error:dataItemsFetchError, loading:isDataItemsLoading } = useDataItems();
     const defaultUserOrgUnit = orgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName
     const { data,loading } = useDataSourceData();
-    const { analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle,visualTitleAndSubTitle,visualSettings,setSelectedVisualSettings,selectedColorPalette} = useAuthorities();
+    const { analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle,visualTitleAndSubTitle,visualSettings,setSelectedVisualSettings,setVisualsColorPalettes,selectedColorPalette} = useAuthorities();
     const [isShowDataModal, setIsShowDataModal] = useState<boolean>(false);
     const [isShowOrganizationUnit, setIsShowOrganizationUnit] = useState<boolean>(false);
     const [isShowPeriod, setIsShowPeriod] = useState<boolean>(false);
@@ -86,7 +87,7 @@ function Visualizers() {
                         customSubTitle:""
                 }
             })
-            // setVisualsColorPalettes ??? set it to default
+             setVisualsColorPalettes(systemDefaultColorPalettes[0] || [])
                 setSelectedVisualSettings({ backgroundColor: '#ffffff',visualColorPalette:selectedColorPalette })
             /// set default data source
             if(data)

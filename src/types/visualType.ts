@@ -30,6 +30,7 @@ export const VisualDataSchema = z.object({
       itemsBackgroundColors: z.array(z.string()), 
       chartContainerBackground: z.string()
     }),
+    backgroundColor:z.string()?.optional()
   }),
   description: z.string(),
   query: z

@@ -103,7 +103,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
  const [selectedColorPalette, setSelectedColorPalette] = useState<visualColorPaletteTypes>(systemDefaultColorPalettes[0] || []);
  
  const [visualsColorPalettes,setVisualsColorPalettes] =useState<ColorPaletteTypes >(systemDefaultColorPalettes)
-  const [visualSettings, setSelectedVisualSettings] = useState<VisualSettingsTypes>({visualColorPalette:selectedColorPalette})
+  const [visualSettings, setSelectedVisualSettings] = useState<VisualSettingsTypes>({visualColorPalette:selectedColorPalette,backgroundColor:"#fff"})
 
 
   const [isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits] = useState<any>({

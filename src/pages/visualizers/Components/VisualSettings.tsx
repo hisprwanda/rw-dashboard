@@ -22,6 +22,15 @@ const VisualSettings: React.FC<VisualSettingsTypes> = ({ setIsShowStyles }) => {
     palette.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+
+  const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newColor = event.target.value;
+    setSelectedVisualSettings((prevSettings) => ({
+        ...prevSettings,
+        backgroundColor: newColor, 
+    }));
+};
+
   const handlePaletteSelection = (paletteName: string) => {
     const selectedPalette = systemDefaultColorPalettes.find(
       (palette) => palette.name === paletteName
@@ -51,6 +60,15 @@ const VisualSettings: React.FC<VisualSettingsTypes> = ({ setIsShowStyles }) => {
       >
         Heading
       </li>
+      <li className="flex items-center justify-between px-4 py-2 text-gray-700 hover:text-primary hover:bg-gray-100 rounded-md cursor-pointer transition-colors duration-200">
+<span className="font-medium">Background</span>
+<input
+                type="color"
+                value={visualSettings.backgroundColor}
+                onChange={handleColorChange}
+                className="w-8 h-8 p-1 border rounded-md cursor-pointer border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1"
+            />
+</li>
 
       {/* Search input */}
       <li>

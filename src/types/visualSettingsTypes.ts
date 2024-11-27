@@ -8,17 +8,16 @@ export interface VisualTitleAndSubtitleType {
   export type ColorPaletteTypes = Array<{
     name: string; 
     itemsBackgroundColors: string[];
-    chartContainerBackground: string;
+
   }>;
   
   export type visualColorPaletteTypes ={
     name: string; 
     itemsBackgroundColors: string[];
-    chartContainerBackground: string;
   }
   export interface VisualSettingsTypes {
-    visualColorPalette:visualColorPaletteTypes
-  
+    visualColorPalette:visualColorPaletteTypes;
+    backgroundColor:string
   }
 
   export interface genericChartsProps {
