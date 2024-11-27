@@ -22,7 +22,7 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleA
 
         try {
             const transformedData = transformDataForGenericChart(data);
-            const config = generateChartConfig(data,visualSettings.visualColorPalette);
+            const config = generateChartConfig(data);
             return { chartData: transformedData, chartConfig: config, error: null };
         } catch (err) {
             return { chartData: [], chartConfig: {}, error: (err as Error).message };

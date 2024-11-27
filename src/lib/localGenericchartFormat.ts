@@ -95,8 +95,8 @@ export function transformDataForGenericChart(inputData: InputData,chartType?:"pi
 
 
  
-export function generateChartConfig(inputData: InputData,selectedColorPalette?:visualColorPaletteTypes): ChartConfig {
-
+export function generateChartConfig(inputData: InputData): ChartConfig {
+ const {selectedColorPalette} = useAuthorities()
 
   console.log("Selected color palette:", selectedColorPalette);
 
