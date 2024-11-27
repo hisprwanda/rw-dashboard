@@ -26,7 +26,7 @@ export const LocalAreaChart: React.FC<genericChartsProps> = ({ data,visualSettin
         } catch (err) {
             return { chartData: [], chartConfig: {}, error: (err as Error).message };
         }
-    }, [data]);
+    }, [data,visualSettings]);
 
     if (error || chartData.length === 0) {
         return (

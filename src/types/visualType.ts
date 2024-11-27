@@ -20,15 +20,14 @@ export const VisualDataSchema = z.object({
 ]),
   visualName: z.string().nonempty({ message: "Visual name is required" }),
   visualTitleAndSubTitle: z.object({
-    visualTitle: z.string()?.optional(),
+    visualTitle: z.string().optional(),
     customSubTitle: z.string()?.optional(),
     DefaultSubTitle: z.array(z.string())?.optional(),
   }),
   visualSettings:  z.object({
     visualColorPalette: z.object({
       name: z.string(), 
-      itemsBackgroundColors: z.array(z.string()), 
-      chartContainerBackground: z.string()
+      itemsBackgroundColors: z.array(z.string())
     }),
     backgroundColor:z.string()?.optional()
   }),

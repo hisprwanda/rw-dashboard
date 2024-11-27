@@ -26,7 +26,7 @@ export const LocalStackedBar: React.FC<genericChartsProps> = ({ data ,visualTitl
         } catch (err) {
             return { chartData: [], chartConfig: {}, error: (err as Error).message };
         }
-    }, [data]);
+    }, [data,visualSettings]);
 
     if (error || chartData.length === 0) {
         return (
