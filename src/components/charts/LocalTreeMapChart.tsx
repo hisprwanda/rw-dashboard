@@ -3,6 +3,8 @@ import { Treemap, ResponsiveContainer, Tooltip } from "recharts";
 import { ChartContainer } from "../../components/ui/chart";
 import { transformDataForGenericChart, generateChartConfig, isValidInputData } from "../../lib/localGenericchartFormat";
 import { genericChartsProps } from "../../types/visualSettingsTypes";
+import { useAuthorities } from "../../context/AuthContext";
+
 
 const COLORS = [
   "hsl(var(--chart-1))",
@@ -30,6 +32,7 @@ export const LocalTreeMapChart: React.FC<genericChartsProps> = ({
   visualTitleAndSubTitle,
   visualSettings,
 }) => {
+  const {selectedColorPalette} = useAuthorities()
   const { chartData, chartConfig, error } = useMemo(() => {
     if (!isValidInputData(data)) {
       return { chartData: [], chartConfig: {}, error: "No data found" };
@@ -82,7 +85,7 @@ export const LocalTreeMapChart: React.FC<genericChartsProps> = ({
           dataKey="size"
           ratio={4 / 3}
           stroke="#fff"
-          content={<CustomizedContent colors={COLORS} />}
+          content={<CustomizedContent colors={selectedColorPalette.itemsBackgroundColors} />}
         >
           <Tooltip content={<CustomTooltip />} />
         </Treemap>

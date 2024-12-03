@@ -45,7 +45,7 @@ function combineDataByMonth(data:TransformedDataPoint[]):TransformedDataPoint[] 
   }
 
   // temporarily colors
-  const colors = [`hsl(var(--chart-1))`, `hsl(var(--chart-2))`,`hsl(var(--chart-3))`,`hsl(var(--chart-4))`,`hsl(var(--chart-5))`];
+//  const colors = [`hsl(var(--chart-1))`, `hsl(var(--chart-2))`,`hsl(var(--chart-3))`,`hsl(var(--chart-4))`,`hsl(var(--chart-5))`];
   
 export function transformDataForGenericChart(inputData: InputData,chartType?:"pie" | "radial" | "single" | "tree"): TransformedDataPoint[] | any {
     if (!isValidInputData(inputData)) {
@@ -81,7 +81,7 @@ export function transformDataForGenericChart(inputData: InputData,chartType?:"pi
      const finalTransformedData = combineDataByMonth(transformedData) as TransformedDataPoint[]
 
      if(chartType === "pie" || chartType === "radial"){
-        const result = transformDataNoneAxisData(finalTransformedData,colors)
+        const result = transformDataNoneAxisData(finalTransformedData)
         return result
      } else if(chartType === "tree"){
           const result = convertDataForTreeMap(finalTransformedData)
@@ -129,9 +129,11 @@ export function generateChartConfig(inputData: InputData): ChartConfig {
 
 
 ////// other formats
-function transformDataNoneAxisData(data:TransformedDataPoint[], colors:string[]) {
+function transformDataNoneAxisData(data:TransformedDataPoint[]) {
+  const {selectedColorPalette} = useAuthorities()
     const totals = {};
-    const colorCount = colors.length; // Number of available colors
+    const colorCount = selectedColorPalette.itemsBackgroundColors.length; // Number of available colors
+
   
     // Calculate totals for each disease dynamically
     data.forEach((entry) => {
@@ -146,7 +148,7 @@ function transformDataNoneAxisData(data:TransformedDataPoint[], colors:string[])
     const transformedData = Object.entries(totals).map(([name, total], index) => ({
       name,
       total,
-      fill: colors[index % colorCount], // Assign colors cyclically
+      fill: selectedColorPalette.itemsBackgroundColors[index % colorCount], // Assign colors cyclically
     }));
   
     return transformedData;

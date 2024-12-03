@@ -41,7 +41,7 @@ const App: React.FC = () => {
               <Route path="visualization" element={<VisualizationPage />} />
               <Route path="alerts" element={<AlertsPage />} />
               <Route path="test" element={<TestChart />} />
-              <Route path="settings" element={<SettingsPage />} />
+              <Route path="settings" element={<DataSourcePage />} />
               <Route path="data-source" element={<DataSourcePage />} />
               <Route path="unauthorized" element={<UnauthorizedPage />} />
               <Route path="visualizers/:id?" element={<VisualizersPage />} />
