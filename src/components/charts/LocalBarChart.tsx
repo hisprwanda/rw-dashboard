@@ -39,7 +39,7 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleA
 
   console.log("chartData bar",chartData)
 
-
+ console.log("morgan waren x",visualSettings)
 
     return (
         <ChartContainer config={chartConfig}  style={{ backgroundColor: visualSettings.backgroundColor }} >
@@ -63,7 +63,7 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleA
                     tickMargin={10}
                     axisLine={false}
                     tickFormatter={(value) => value}
-                    tick={{ fill: '#ff5722', fontSize: 12, fontWeight: 'bold' }} 
+                    tick={{ fill:visualSettings.XAxisSettings.color, fontSize: visualSettings.XAxisSettings.fontSize, fontWeight: 'bold' }} 
                 />
                 <YAxis 
                   tick={{ fill: '#3f51b5', fontSize: 12, fontWeight: 'bold' }}
@@ -80,7 +80,7 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleA
                           <LabelList
                  dataKey={key}
                 position="center"
-                fill="#691414"
+                fill={visualSettings.fillColor}
                 style={{ fontSize: '12px', fontWeight: 'bold' }}
               />
                     </Bar>

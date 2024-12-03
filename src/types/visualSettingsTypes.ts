@@ -15,9 +15,17 @@ export interface VisualTitleAndSubtitleType {
     name: string; 
     itemsBackgroundColors: string[];
   }
+
+   export type AxisSettingsTypes = {
+    color: string;
+    fontSize:number
+  }
   export interface VisualSettingsTypes {
     visualColorPalette:visualColorPaletteTypes;
-    backgroundColor:string
+    backgroundColor:string,
+    fillColor:string,
+    XAxisSettings:AxisSettingsTypes,
+    YAxisSettings:AxisSettingsTypes
   }
 
   export interface genericChartsProps {
