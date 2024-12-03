@@ -67,12 +67,12 @@ export const LocalRadialChat: React.FC<genericChartsProps> = ({
 
       <RadialBarChart
         data={chartData}
-        startAngle={-90}
+        startAngle={-130}
         endAngle={380}
         innerRadius={30}
         outerRadius={110}
       >
-        <Tooltip content={<ChartTooltipContent hideLabel nameKey="name" />} />
+        <Tooltip content={<ChartTooltipContent hideLabel nameKey="name" className="bg-white" />} />
         <Legend />
         <RadialBar dataKey="total" background>
           <LabelList
@@ -80,6 +80,7 @@ export const LocalRadialChat: React.FC<genericChartsProps> = ({
             dataKey="name"
           className="fill-white capitalize mix-blend-luminosity"
             fontSize={11}
+
             
           />
         </RadialBar>

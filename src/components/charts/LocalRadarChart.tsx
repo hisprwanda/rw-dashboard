@@ -54,7 +54,7 @@ export const LocalRadarChart: React.FC<genericChartsProps> = ({ data,visualSetti
             <RadarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent indicator="line" />}
+              content={<ChartTooltipContent indicator="line" className="bg-white"  />}
             />
             <PolarAngleAxis dataKey="month" />
             <PolarGrid />

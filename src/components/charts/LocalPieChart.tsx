@@ -71,7 +71,7 @@ export const LocalPieChart: React.FC<genericChartsProps> = ({
       )}
 
       <PieChart width={400} height={400}>
-        <Tooltip content={<ChartTooltipContent />} />
+        <Tooltip content={<ChartTooltipContent className="bg-white" />} />
         <Legend />
         <Pie
           data={chartData}

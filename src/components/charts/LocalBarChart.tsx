@@ -39,6 +39,8 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleA
 
   console.log("chartData bar",chartData)
 
+
+
     return (
         <ChartContainer config={chartConfig}  style={{ backgroundColor: visualSettings.backgroundColor }} >
              {visualTitleAndSubTitle.visualTitle && <h3 className="text-center text-lg font-bold text-gray-800 ">{visualTitleAndSubTitle.visualTitle}</h3> }  
@@ -63,7 +65,7 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleA
                     tickFormatter={(value) => value}
                 />
                 <YAxis  />
-                <Tooltip content={<ChartTooltipContent />} />
+                <Tooltip    content={<ChartTooltipContent className="bg-white"  />} />
                 <Legend />
                 {Object.keys(chartConfig).map((key) => (
                     <Bar
@@ -82,5 +84,25 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleA
                 ))}
             </BarChart>
         </ChartContainer>
+    );
+};
+
+
+const CustomChartTooltipContent = ({ active, payload, label }: any) => {
+    if (!active || !payload || payload.length === 0) {
+        return null;
+    }
+
+    return (
+        <div className="bg-white border rounded shadow-md p-2 text-sm">
+            <p className="font-bold">{label}</p>
+            <ul>
+                {payload.map((entry: any, index: number) => (
+                    <li key={index} style={{ color: entry.color }}>
+                        {entry.name}: {entry.value}
+                    </li>
+                ))}
+            </ul>
+        </div>
     );
 };

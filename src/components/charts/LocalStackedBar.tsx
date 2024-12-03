@@ -60,7 +60,7 @@ export const LocalStackedBar: React.FC<genericChartsProps> = ({ data ,visualTitl
                     tickFormatter={(value) => value}
                 />
                 <YAxis />
-                <Tooltip content={<ChartTooltipContent />} />
+                <Tooltip content={<ChartTooltipContent className="bg-white" />} />
                 <Legend />
                 {Object.keys(chartConfig).map((key) => (
                     <Bar

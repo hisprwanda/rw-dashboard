@@ -60,7 +60,7 @@ export const LocalAreaChart: React.FC<genericChartsProps> = ({ data,visualSettin
                     tickFormatter={(value) => value}
                 />
                 <YAxis />
-                <Tooltip content={<ChartTooltipContent />} />
+                <Tooltip content={<ChartTooltipContent className="bg-white" />} />
                 <Legend />
                 {Object.keys(chartConfig).map((key) => (
                     <Area

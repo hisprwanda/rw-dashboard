@@ -63,7 +63,7 @@ export const LocalRowStackedChart: React.FC<genericChartsProps> = ({ data, visua
                     axisLine={false}
                     width={80}
                 />
-                <Tooltip content={<ChartTooltipContent />} />
+                <Tooltip content={<ChartTooltipContent className="bg-white" />} />
                 <Legend />
                 {Object.keys(chartConfig).map((key) => (
                     <Bar
