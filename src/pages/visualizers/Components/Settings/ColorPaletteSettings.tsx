@@ -7,6 +7,7 @@ const ColorPaletteSettings = () => {
         setSelectedColorPalette,
         selectedColorPalette,
       } = useAuthorities();
+      
   // State to store the search term
   const [searchTerm, setSearchTerm] = useState<string>("");
   

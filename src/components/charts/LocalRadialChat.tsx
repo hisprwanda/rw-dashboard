@@ -19,7 +19,7 @@ export const LocalRadialChat: React.FC<genericChartsProps> = ({
 
     try {
       const transformedData = transformDataForGenericChart(data, "radial",visualSettings.visualColorPalette);
-      const config = generateChartConfig(data);
+      const config = generateChartConfig(data,visualSettings.visualColorPalette);
       return { chartData: transformedData, chartConfig: config, error: null };
     } catch (err) {
       return { chartData: [], chartConfig: {}, error: (err as Error).message };
@@ -78,10 +78,9 @@ export const LocalRadialChat: React.FC<genericChartsProps> = ({
           <LabelList
            position="insideStart"
             dataKey="name"
-          className="fill-white capitalize mix-blend-luminosity"
-            fontSize={11}
-
-            
+          className="capitalize"
+            fontSize={visualSettings.XAxisSettings.fontSize}
+            fill={visualSettings.fillColor}           
           />
         </RadialBar>
       </RadialBarChart>

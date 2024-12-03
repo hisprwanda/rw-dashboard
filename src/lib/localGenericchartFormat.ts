@@ -92,11 +92,9 @@ export function transformDataForGenericChart(inputData: InputData,chartType?:"pi
 
     
 }
-
-
  
-export function generateChartConfig(inputData: InputData): ChartConfig {
- const {selectedColorPalette} = useAuthorities()
+export function generateChartConfig(inputData: InputData,selectedColorPalette?:visualColorPaletteTypes): ChartConfig {
+
 
   console.log("Selected color palette:", selectedColorPalette);
 
@@ -106,7 +104,6 @@ export function generateChartConfig(inputData: InputData): ChartConfig {
 
   const config: ChartConfig = {};
   const dataItems = inputData.metaData.dimensions.dx;
-
   dataItems.forEach((item: string, index: number) => {
     const name = inputData.metaData.items[item].name;
 
@@ -153,8 +150,6 @@ function transformDataNoneAxisData(data:TransformedDataPoint[],selectedColorPale
   
     return transformedData;
   }
-
-
 
   ///////// tree map
 type InputDataType = {

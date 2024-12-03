@@ -38,7 +38,7 @@ function Visualizers() {
     const { data:dataItemsData, error:dataItemsFetchError, loading:isDataItemsLoading } = useDataItems();
     const defaultUserOrgUnit = orgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName
     const { data,loading } = useDataSourceData();
-    const { analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle,visualTitleAndSubTitle,visualSettings,setSelectedVisualSettings,setVisualsColorPalettes,selectedColorPalette,XAxisSettingsData,YAxisSettingsData} = useAuthorities();
+    const { analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle,visualTitleAndSubTitle,visualSettings,setSelectedVisualSettings,setVisualsColorPalettes,selectedColorPalette} = useAuthorities();
     const [isShowDataModal, setIsShowDataModal] = useState<boolean>(false);
     const [isShowOrganizationUnit, setIsShowOrganizationUnit] = useState<boolean>(false);
     const [isShowPeriod, setIsShowPeriod] = useState<boolean>(false);
@@ -86,7 +86,7 @@ function Visualizers() {
                 }
             })
              setVisualsColorPalettes(systemDefaultColorPalettes[0] || [])
-                setSelectedVisualSettings({ backgroundColor: '#ffffff',visualColorPalette:selectedColorPalette,fillColor:"#fa3333",XAxisSettings:XAxisSettingsData,YAxisSettings:YAxisSettingsData })
+                setSelectedVisualSettings({ backgroundColor: '#ffffff',visualColorPalette:selectedColorPalette,fillColor:"#fa3333",XAxisSettings:{color:"#22ff00",fontSize:12},YAxisSettings:{color:"#5b1616",fontSize:12} })
             /// set default data source
             if(data)
                 {

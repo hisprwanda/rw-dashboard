@@ -20,7 +20,7 @@ export const LocalLineChart: React.FC<genericChartsProps> = ({ data,visualSettin
 
         try {
             const transformedData = transformDataForGenericChart(data);
-            const config = generateChartConfig(data);
+            const config = generateChartConfig(data,visualSettings.visualColorPalette);
             return { chartData: transformedData, chartConfig: config, error: null };
         } catch (err) {
             return { chartData: [], chartConfig: {}, error: (err as Error).message };
@@ -57,8 +57,11 @@ export const LocalLineChart: React.FC<genericChartsProps> = ({ data,visualSettin
                     tickMargin={10}
                     axisLine={false}
                     tickFormatter={(value) => value}
+                    tick={{ fill:visualSettings.XAxisSettings.color, fontSize: visualSettings.XAxisSettings.fontSize, fontWeight: 'bold' }} 
                 />
-                <YAxis />
+                 <YAxis 
+                  tick={{ fill:visualSettings.YAxisSettings.color, fontSize: visualSettings.YAxisSettings.fontSize, fontWeight: 'bold' }}
+                />
                 <Tooltip content={<ChartTooltipContent className="bg-white" />} />
                 <Legend />
                 {Object.keys(chartConfig).map((key) => (
@@ -68,7 +71,7 @@ export const LocalLineChart: React.FC<genericChartsProps> = ({ data,visualSettin
                          stroke={chartConfig[key].color}
                          strokeWidth={2}
                          dot={{ r: 4 }}
-                         label={<CustomLabel />}
+                         label={<CustomLabel  visualSettings={visualSettings} />}
                      
                     >
                          
@@ -81,9 +84,10 @@ export const LocalLineChart: React.FC<genericChartsProps> = ({ data,visualSettin
 
 
 function CustomLabel(props: any) {
-    const { x, y, value } = props;
+    console.log("line charts",props)
+    const { x, y, value ,visualSettings } = props;
     return (
-      <text x={x} y={y} dy={-10} fill="var(--color-value)" fontSize={12} fontWeight={"bold"} textAnchor="middle">
+      <text x={x} y={y} dy={-10} fill={visualSettings.fillColor} fontSize={12} fontWeight={"bold"} textAnchor="middle">
         {value}
       </text>
     )}

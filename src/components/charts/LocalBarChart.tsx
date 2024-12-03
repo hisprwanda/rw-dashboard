@@ -22,7 +22,7 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleA
 
         try {
             const transformedData = transformDataForGenericChart(data);
-            const config = generateChartConfig(data);
+            const config = generateChartConfig(data,visualSettings.visualColorPalette);
             return { chartData: transformedData, chartConfig: config, error: null };
         } catch (err) {
             return { chartData: [], chartConfig: {}, error: (err as Error).message };
@@ -39,7 +39,6 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleA
 
   console.log("chartData bar",chartData)
 
- console.log("morgan waren x",visualSettings)
 
     return (
         <ChartContainer config={chartConfig}  style={{ backgroundColor: visualSettings.backgroundColor }} >
@@ -66,9 +65,9 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleA
                     tick={{ fill:visualSettings.XAxisSettings.color, fontSize: visualSettings.XAxisSettings.fontSize, fontWeight: 'bold' }} 
                 />
                 <YAxis 
-                  tick={{ fill: '#3f51b5', fontSize: 12, fontWeight: 'bold' }}
+                  tick={{ fill:visualSettings.YAxisSettings.color, fontSize: visualSettings.YAxisSettings.fontSize, fontWeight: 'bold' }}
                 />
-                <Tooltip    content={<ChartTooltipContent className="bg-white"  />} />
+                <Tooltip  content={<ChartTooltipContent className="bg-white"  />} />
                 <Legend />
                 {Object.keys(chartConfig).map((key) => (
                     <Bar

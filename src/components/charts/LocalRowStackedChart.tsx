@@ -17,7 +17,7 @@ export const LocalRowStackedChart: React.FC<genericChartsProps> = ({ data, visua
 
         try {
             const transformedData = transformDataForGenericChart(data);
-            const config = generateChartConfig(data);
+            const config = generateChartConfig(data,visualSettings.visualColorPalette);
             return { chartData: transformedData, chartConfig: config, error: null };
         } catch (err) {
             return { chartData: [], chartConfig: {}, error: (err as Error).message };
@@ -55,13 +55,14 @@ export const LocalRowStackedChart: React.FC<genericChartsProps> = ({ data, visua
                 height={chartData.length * 50 + 100}
             >
                 <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-                <XAxis type="number" />
+                <XAxis type="number"  tick={{ fill:visualSettings.XAxisSettings.color, fontSize: visualSettings.XAxisSettings.fontSize, fontWeight: 'bold' }}  />
                 <YAxis
                     dataKey="month"
                     type="category"
                     tickLine={false}
                     axisLine={false}
                     width={80}
+                    tick={{ fill:visualSettings.YAxisSettings.color, fontSize: visualSettings.YAxisSettings.fontSize, fontWeight: 'bold' }}
                 />
                 <Tooltip content={<ChartTooltipContent className="bg-white" />} />
                 <Legend />
@@ -76,7 +77,7 @@ export const LocalRowStackedChart: React.FC<genericChartsProps> = ({ data, visua
                         <LabelList
                             dataKey={key}
                             position="center"
-                            fill="white"
+                            fill={visualSettings.fillColor}
                             style={{ fontSize: '12px', fontWeight: 'bold' }}
                         />
                     </Bar>

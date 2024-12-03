@@ -21,7 +21,7 @@ export const LocalPieChart: React.FC<genericChartsProps> = ({
 
     try {
       const transformedData = transformDataForGenericChart(data, "pie",visualSettings.visualColorPalette);
-      const config = generateChartConfig(data);
+      const config = generateChartConfig(data,visualSettings.visualColorPalette);
       return { chartData: transformedData, chartConfig: config, error: null };
     } catch (err) {
       return { chartData: [], chartConfig: {}, error: (err as Error).message };
@@ -69,7 +69,7 @@ export const LocalPieChart: React.FC<genericChartsProps> = ({
           </div>
         )
       )}
-
+      
       <PieChart width={400} height={400}>
         <Tooltip content={<ChartTooltipContent className="bg-white" />} />
         <Legend />
@@ -78,6 +78,8 @@ export const LocalPieChart: React.FC<genericChartsProps> = ({
           dataKey="total"
           nameKey="name" 
           label
+          fill={visualSettings.fillColor}
+          style={{ fontSize: visualSettings.XAxisSettings.fontSize, fontWeight: 'bold' }}
         //   outerRadius={150}
         //   innerRadius={50}
         //   paddingAngle={5}

@@ -34,7 +34,7 @@ export const LocalTreeMapChart: React.FC<genericChartsProps> = ({
 
     try {
       const transformedData = transformDataForGenericChart(data, "tree");
-      const config = generateChartConfig(data);
+      const config = generateChartConfig(data,visualSettings.visualColorPalette);
       return { chartData: transformedData, chartConfig: config, error: null };
     } catch (err) {
       return { chartData: [], chartConfig: {}, error: (err as Error).message };
