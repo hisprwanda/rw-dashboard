@@ -20,7 +20,7 @@ export const LocalPieChart: React.FC<genericChartsProps> = ({
     }
 
     try {
-      const transformedData = transformDataForGenericChart(data, "pie");
+      const transformedData = transformDataForGenericChart(data, "pie",visualSettings.visualColorPalette);
       const config = generateChartConfig(data);
       return { chartData: transformedData, chartConfig: config, error: null };
     } catch (err) {

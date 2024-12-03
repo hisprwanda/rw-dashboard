@@ -18,7 +18,7 @@ export const LocalRadialChat: React.FC<genericChartsProps> = ({
     }
 
     try {
-      const transformedData = transformDataForGenericChart(data, "radial");
+      const transformedData = transformDataForGenericChart(data, "radial",visualSettings.visualColorPalette);
       const config = generateChartConfig(data);
       return { chartData: transformedData, chartConfig: config, error: null };
     } catch (err) {

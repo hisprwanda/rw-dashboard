@@ -6,13 +6,7 @@ import { genericChartsProps } from "../../types/visualSettingsTypes";
 import { useAuthorities } from "../../context/AuthContext";
 
 
-const COLORS = [
-  "hsl(var(--chart-1))",
-  "hsl(var(--chart-2))",
-  "hsl(var(--chart-3))",
-  "hsl(var(--chart-4))",
-  "hsl(var(--chart-5))",
-];
+
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length > 0 && payload[0].payload) {
@@ -32,7 +26,7 @@ export const LocalTreeMapChart: React.FC<genericChartsProps> = ({
   visualTitleAndSubTitle,
   visualSettings,
 }) => {
-  const {selectedColorPalette} = useAuthorities()
+
   const { chartData, chartConfig, error } = useMemo(() => {
     if (!isValidInputData(data)) {
       return { chartData: [], chartConfig: {}, error: "No data found" };
@@ -85,7 +79,7 @@ export const LocalTreeMapChart: React.FC<genericChartsProps> = ({
           dataKey="size"
           ratio={4 / 3}
           stroke="#fff"
-          content={<CustomizedContent colors={selectedColorPalette.itemsBackgroundColors} />}
+          content={<CustomizedContent colors={visualSettings.visualColorPalette.itemsBackgroundColors} />}
         >
           <Tooltip content={<CustomTooltip />} />
         </Treemap>
