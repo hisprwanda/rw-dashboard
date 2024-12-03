@@ -1,3 +1,4 @@
+import { XAxis } from "recharts";
 import { z } from "zod";
 
 // Schema definition using zod
@@ -29,7 +30,16 @@ export const VisualDataSchema = z.object({
       name: z.string(), 
       itemsBackgroundColors: z.array(z.string())
     }),
-    backgroundColor:z.string()?.optional()
+    backgroundColor:z.string()?.optional(),
+    fillColor:z.string()?.optional(),
+    XAxisSettings:z.object({
+      color: z.string(),
+      fontSize:z.number(),
+    }).optional(),
+    YAxisSettings:z.object({
+      color: z.string(),
+      fontSize:z.number(),
+    }).optional(),
   }),
   description: z.string(),
   query: z

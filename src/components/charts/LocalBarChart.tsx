@@ -11,7 +11,7 @@ import {genericChartsProps} from "../../types/visualSettingsTypes"
 
 
 export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleAndSubTitle,visualSettings }) => {
-   const {selectedColorPalette} =  useAuthorities()
+
  
     // below is error handling checking if the data exists before passing it to the formmater function or to the graph
 
@@ -63,8 +63,11 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleA
                     tickMargin={10}
                     axisLine={false}
                     tickFormatter={(value) => value}
+                    tick={{ fill: '#ff5722', fontSize: 12, fontWeight: 'bold' }} 
                 />
-                <YAxis  />
+                <YAxis 
+                  tick={{ fill: '#3f51b5', fontSize: 12, fontWeight: 'bold' }}
+                />
                 <Tooltip    content={<ChartTooltipContent className="bg-white"  />} />
                 <Legend />
                 {Object.keys(chartConfig).map((key) => (
@@ -77,32 +80,12 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleA
                           <LabelList
                  dataKey={key}
                 position="center"
-                fill="white"
+                fill="#691414"
                 style={{ fontSize: '12px', fontWeight: 'bold' }}
               />
                     </Bar>
                 ))}
             </BarChart>
         </ChartContainer>
-    );
-};
-
-
-const CustomChartTooltipContent = ({ active, payload, label }: any) => {
-    if (!active || !payload || payload.length === 0) {
-        return null;
-    }
-
-    return (
-        <div className="bg-white border rounded shadow-md p-2 text-sm">
-            <p className="font-bold">{label}</p>
-            <ul>
-                {payload.map((entry: any, index: number) => (
-                    <li key={index} style={{ color: entry.color }}>
-                        {entry.name}: {entry.value}
-                    </li>
-                ))}
-            </ul>
-        </div>
     );
 };

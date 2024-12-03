@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useAuthorities } from "../../../context/AuthContext";
 import { systemDefaultColorPalettes } from "../../../constants/colorPalettes";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../../../components/ui/accordion"
 
 interface VisualSettingsTypes {
   setIsShowStyles: (show: boolean) => void;
 }
 
 const VisualSettings: React.FC<VisualSettingsTypes> = ({ setIsShowStyles }) => {
-  const {
+  const { 
     visualSettings,
     setSelectedVisualSettings,
     setSelectedColorPalette,
@@ -69,9 +75,20 @@ const VisualSettings: React.FC<VisualSettingsTypes> = ({ setIsShowStyles }) => {
                 className="w-8 h-8 p-1 border rounded-md cursor-pointer border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1"
             />
 </li>
-
-      {/* Search input */}
-      <li>
+      <Accordion type="single" collapsible className="w-full">
+      <AccordionItem value="item-1">
+        <AccordionTrigger> <li
+      
+        className="px-4 py-2 text-gray-700 hover:text-primary hover:bg-gray-100 rounded-md cursor-pointer transition-all duration-200"
+      >
+        Color Palettes
+      </li></AccordionTrigger>
+        <AccordionContent>
+     
+  
+       {/* color palettes */}
+       <div>
+       <li>
         <div className="mb-4">
           <input
             type="text"
@@ -82,7 +99,6 @@ const VisualSettings: React.FC<VisualSettingsTypes> = ({ setIsShowStyles }) => {
           />
         </div>
       </li>
-
       {/* Display selected color palette */}
       <li>
         <div className="font-medium mb-2">Currently Selected Palette</div>
@@ -111,8 +127,7 @@ const VisualSettings: React.FC<VisualSettingsTypes> = ({ setIsShowStyles }) => {
         ) : (
           <div className="text-gray-500 text-center">No palette selected</div>
         )}
-      </li>
-
+      </li> 
       {/* Select a Color Palette */}
       <li>
         <div className="font-medium mb-2">Select a Color Palette</div>
@@ -147,6 +162,14 @@ const VisualSettings: React.FC<VisualSettingsTypes> = ({ setIsShowStyles }) => {
           ))}
         </div>
       </li>
+       </div>
+        {/* Search input */}
+
+        </AccordionContent>
+      </AccordionItem>
+  
+    </Accordion>
+
     </ul>
   );
 };

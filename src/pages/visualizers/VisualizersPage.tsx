@@ -5,8 +5,6 @@ import { useDataSourceData } from '../../services/DataSourceHooks';
 import { GenericModal, Loading } from "../../components";
 import { DataModal, OrganizationModal, PeriodModal } from './Components/MetaDataModals';
 import { useAuthorities } from '../../context/AuthContext';
-import { LocalBarChart } from '../../components/charts/LocalBarChart';
-import { LocalLineChart } from '../../components/charts/LocalLineChart';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
 import SelectChartType from './Components/SelectChartType';
 import { IoBarChartSharp } from "react-icons/io5";
