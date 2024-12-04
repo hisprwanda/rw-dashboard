@@ -78,8 +78,8 @@ export const LocalTreeMapChart: React.FC<genericChartsProps> = ({
           data={chartData}
           dataKey="size"
           ratio={4 / 3}
-          stroke="#fff"
-          content={<CustomizedContent colors={visualSettings.visualColorPalette.itemsBackgroundColors} />}
+          stroke={visualSettings.fillColor}
+          content={<CustomizedContent fontSize={visualSettings.XAxisSettings.fontSize} colors={visualSettings.visualColorPalette.itemsBackgroundColors} />}
         >
           <Tooltip content={<CustomTooltip />} />
         </Treemap>
@@ -89,7 +89,7 @@ export const LocalTreeMapChart: React.FC<genericChartsProps> = ({
 };
 
 const CustomizedContent = (props: any) => {
-  const { x, y, width, height, index, depth, name, colors, root } = props;
+  const { x, y, width, height, index, depth, name, colors, root,fontSize } = props;
 
   const centerX = x + width / 2;
   const centerY = y + height / 2;
@@ -127,7 +127,7 @@ const CustomizedContent = (props: any) => {
          textAnchor="middle"
          dominantBaseline="middle"
          fill="#fff"
-         fontSize={12}
+         fontSize={fontSize}
        >
         {name} 
         {/* {props.size}  */}

@@ -21,7 +21,7 @@ export const LocalRadarChart: React.FC<genericChartsProps> = ({ data,visualSetti
 
         try {
             const transformedData = transformDataForGenericChart(data);
-            const config = generateChartConfig(data);
+            const config = generateChartConfig(data,visualSettings.visualColorPalette);
             return { chartData: transformedData, chartConfig: config, error: null };
         } catch (err) {
             return { chartData: [], chartConfig: {}, error: (err as Error).message };
@@ -56,14 +56,17 @@ export const LocalRadarChart: React.FC<genericChartsProps> = ({ data,visualSetti
               cursor={false}
               content={<ChartTooltipContent indicator="line" className="bg-white"  />}
             />
-            <PolarAngleAxis dataKey="month" />
-            <PolarGrid />
+            <PolarAngleAxis dataKey="month"  
+             tick={{ fill:visualSettings.fillColor, fontSize: visualSettings.XAxisSettings.fontSize, fontWeight: 'bold' }} 
+            />
+            <PolarGrid   />
 
                 {Object.keys(chartConfig).map((key) => (
                    <Radar
                    dataKey={key}
                    fill={chartConfig[key].color}
                    fillOpacity={0.6}
+                   
                  />
             ))}
             </RadarChart>

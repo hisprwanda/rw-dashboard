@@ -21,7 +21,7 @@ export const LocalSingleValue: React.FC<genericChartsProps> = ({
 
     try {
       const transformedData = transformDataForGenericChart(data, "pie",visualSettings.visualColorPalette);
-      const config = generateChartConfig(data);
+      const config = generateChartConfig(data,visualSettings.visualColorPalette);
       return { chartData: transformedData, chartConfig: config, error: null };
     } catch (err) {
       return { chartData: [], chartConfig: {}, error: (err as Error).message };
@@ -74,8 +74,9 @@ export const LocalSingleValue: React.FC<genericChartsProps> = ({
   {chartData?.map((item: { name: string; total: number; fill: string }, index: number) => (
     <article
       key={index}
-      style={{ backgroundColor: item.fill }}
-      className="rounded-lg shadow-md p-6 text-white"
+      style={{ backgroundColor: item.fill,color: visualSettings.fillColor }}
+      className="rounded-lg shadow-md p-6"
+    
     >
       <h3 className="text-xl font-semibold mb-2">{item.name}</h3>
       <p className="text-3xl font-bold">{item.total}</p>
