@@ -23,7 +23,7 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
   const {data:allSavedVisuals,loading,isError}  = useFetchVisualsData()
   const navigate = useNavigate();
 
-
+   console.log("current Visual",generateUid())
   const engine = useDataEngine();
 
 

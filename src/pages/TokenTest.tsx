@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 const TokenTest = () => {
   const [url, setUrl] = useState("");
@@ -11,21 +12,15 @@ const TokenTest = () => {
     setError(null);
 
     try {
-      const res = await fetch(url, {
-        method: "GET",
+      const res = await axios.get(url, {
         headers: {
           Authorization: `ApiToken ${token}`,
         },
       });
 
-      if (!res.ok) {
-        throw new Error(`Error ${res.status}: ${res.statusText}`);
-      }
-
-      const data = await res.json();
-      setResponse(data);
+      setResponse(res.data);
     } catch (err) {
-      setError(err.message || "An error occurred");
+      setError(err.response?.statusText || err.message || "An error occurred");
     }
   };
 

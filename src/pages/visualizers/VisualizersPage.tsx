@@ -22,6 +22,7 @@ import GeneralChartsStyles from './Components/GeneralChartsOptions';
 import { NavigationMenuDemo } from './Components/ChartsMenu';
 import VisualSettings from './Components/VisualSettings';
 import {systemDefaultColorPalettes} from "../../constants/colorPalettes";
+import { useExternalDataItems } from '../../services/useExternalDataItems';
 
 
 
@@ -29,16 +30,13 @@ import {systemDefaultColorPalettes} from "../../constants/colorPalettes";
 
 function Visualizers() {
     const { id:visualId } = useParams();
-  
-
-  
-
     const {data:singleSavedVisualData,isError,loading:isFetchSingleVisualLoading} = useFetchSingleVisualData(visualId)
     const { loading:orgUnitLoading, error:fetchOrgUnitError, data:orgUnitsData } = useOrgUnitData();
-    const { data:dataItemsData, error:dataItemsFetchError, loading:isDataItemsLoading } = useDataItems();
+    const {  error:dataItemsFetchError, loading:isDataItemsLoading } = useDataItems();
+    const {fetchExternalDataItems,response,error } = useExternalDataItems()
     const defaultUserOrgUnit = orgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName
     const { data,loading } = useDataSourceData();
-    const { analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle,visualTitleAndSubTitle,visualSettings,setSelectedVisualSettings,setVisualsColorPalettes,selectedColorPalette} = useAuthorities();
+    const { dataItemsData,setDataItemsData,analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle,visualTitleAndSubTitle,visualSettings,setSelectedVisualSettings,setVisualsColorPalettes,selectedColorPalette} = useAuthorities();
     const [isShowDataModal, setIsShowDataModal] = useState<boolean>(false);
     const [isShowOrganizationUnit, setIsShowOrganizationUnit] = useState<boolean>(false);
     const [isShowPeriod, setIsShowPeriod] = useState<boolean>(false);
@@ -163,10 +161,26 @@ function Visualizers() {
       };
 
 // test
+const handleExternalData = ()=>{
+    const url = "https://his.moh.gov.rw/idsrtest/api"
+    const token = "d2pat_zmib3p13XftOIOnbsM5uvjg7xEB6VpK51997909538"
+
+    fetchExternalDataItems(url, token)
+  
+}
+
+
+useEffect(()=>{
+   console.log("Testing",dataItemsData)
+},[dataItemsData])
 
     /// main return
     return (
         <div className="min-h-screen bg-gray-50 p-4">
+            
+    <div>
+                <button onClick={handleExternalData} >external</button>
+            </div>
             { (isFetchSingleVisualLoading || loading) ? <Loading/> : 
             <>
                     <div className="flex justify-between items-start">
