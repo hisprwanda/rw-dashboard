@@ -41,8 +41,12 @@ const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }
         header: 'Type',
       },
       {
-        accessorKey: 'value.authentication.url',
+        accessorKey: 'value.url',
         header: 'Url',
+      },
+      {
+        accessorKey: 'value.description',
+        header: 'Description',
       },
      
     ],
