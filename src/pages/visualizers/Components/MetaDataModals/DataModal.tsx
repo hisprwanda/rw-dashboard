@@ -25,8 +25,8 @@ const DataModal: React.FC<DataModalProps> = ({ setIsShowDataModal,data,error,loa
 
     // Effect to map fetched data into the required TransferOption format
     useEffect(() => {
-        if (data?.dataItems?.dataItems) {
-            const transformedOptions = data.dataItems.dataItems.map((item: any) => ({
+        if (data?.dataItems) {
+            const transformedOptions = data?.dataItems?.map((item: any) => ({
                 label: item.name,  // Display the 'name' field in the Transfer list
                 value: item.id     // Use the 'id' field as the value
             }));

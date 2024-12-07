@@ -23,7 +23,7 @@ export const useDataItems = () => {
     // Update `dataItemsData` only when `data` changes
     useEffect(() => {
         if (data) {
-            setDataItemsData(data);
+            setDataItemsData(data.dataItems);
         }
     }, [data, setDataItemsData]);
 

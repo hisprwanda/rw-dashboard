@@ -172,6 +172,7 @@ const handleExternalData = ()=>{
 
 useEffect(()=>{
    console.log("Testing",dataItemsData)
+   console.log("testing two",dataItemsData?.dataItems?.pager?.total)
 },[dataItemsData])
 
     /// main return
@@ -180,6 +181,7 @@ useEffect(()=>{
             
     <div>
                 <button onClick={handleExternalData} >external</button>
+                <h3>Total: {dataItemsData?.pager?.total}</h3>
             </div>
             { (isFetchSingleVisualLoading || loading) ? <Loading/> : 
             <>
