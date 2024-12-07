@@ -21,7 +21,7 @@ export const useExternalDataItems = () => {
         };
 
         try {
-            const res = await axios.get(`${url}/40/dataItems.json`, {
+            const res = await axios.get(`${url}/api/40/dataItems.json`, {
                 headers: {
                     Authorization: `ApiToken ${token}`,
                 },

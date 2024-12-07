@@ -11,6 +11,8 @@ import { useDataEngine } from '@dhis2/app-runtime';
 import { useFetchOrgUnitById ,useOrgUnitData} from "../services/fetchOrgunitData";
 import {VisualSettingsTypes,VisualTitleAndSubtitleType,ColorPaletteTypes,visualColorPaletteTypes, AxisSettingsTypes} from "../types/visualSettingsTypes"
 import { systemDefaultColorPalettes } from "../constants/colorPalettes";
+import { DataSourceFormFields } from "../types/DataSource";
+import { useSystemInfo } from "../services/fetchSystemInfo";
 
 
 
@@ -54,7 +56,9 @@ interface AuthContextProps {
     visualsColorPalettes:ColorPaletteTypes;
     setVisualsColorPalettes:any;
     dataItemsData:any;
-    setDataItemsData:any
+    setDataItemsData:any;
+    selectedDataSourceDetails:DataSourceFormFields;
+     setSelectedDataSourceDetails:any
  
 }
 
@@ -75,8 +79,17 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const { data, loading, error } = useDataQuery(query);
+  const {  data:systemInfo } = useSystemInfo();
   const [authorities, setAuthorities] = useState<string[]>([]);
   const [userDatails, setUserDatails] = useState<{}>({});
+
+  const defaultDataSource: DataSourceFormFields = {
+    instanceName: systemInfo?.title?.applicationTitle || "", // Fallback to an empty string if undefined
+    isCurrentInstance: true,
+  };
+  
+  const [selectedDataSourceDetails, setSelectedDataSourceDetails] = useState<DataSourceFormFields>(defaultDataSource);
+  
 
   // metadata states
   const [dataItemsData,setDataItemsData] = useState<any>()
@@ -222,7 +235,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
  
   return (
-    <AuthContext.Provider value={{dataItemsData,setDataItemsData,setVisualsColorPalettes,visualsColorPalettes, selectedColorPalette,setSelectedColorPalette ,visualSettings,setSelectedVisualSettings,fetchSingleOrgUnitName,visualTitleAndSubTitle,setSelectedVisualTitleAndSubTitle,  selectedVisualsForDashboard, setSelectedVisualsForDashboard,setAnalyticsData,setAnalyticsQuery,selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery,selectedChartType,setSelectedChartType}}>
+    <AuthContext.Provider value={{selectedDataSourceDetails,setSelectedDataSourceDetails,dataItemsData,setDataItemsData,setVisualsColorPalettes,visualsColorPalettes, selectedColorPalette,setSelectedColorPalette ,visualSettings,setSelectedVisualSettings,fetchSingleOrgUnitName,visualTitleAndSubTitle,setSelectedVisualTitleAndSubTitle,  selectedVisualsForDashboard, setSelectedVisualsForDashboard,setAnalyticsData,setAnalyticsQuery,selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery,selectedChartType,setSelectedChartType}}>
       {children}
     </AuthContext.Provider>
   );

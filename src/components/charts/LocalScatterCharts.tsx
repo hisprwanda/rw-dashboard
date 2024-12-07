@@ -21,7 +21,7 @@ export const LocalScatterCharts: React.FC<genericChartsProps> = ({ data ,visualT
 
         try {
             const transformedData = transformDataForGenericChart(data);
-            const config = generateChartConfig(data);
+            const config = generateChartConfig(data,visualSettings.visualColorPalette);
             return { chartData: transformedData, chartConfig: config, error: null };
         } catch (err) {
             return { chartData: [], chartConfig: {}, error: (err as Error).message };
@@ -58,8 +58,11 @@ export const LocalScatterCharts: React.FC<genericChartsProps> = ({ data ,visualT
                     tickMargin={10}
                     axisLine={false}
                     tickFormatter={(value) => value}
+                    tick={{ fill:visualSettings.XAxisSettings.color, fontSize: visualSettings.XAxisSettings.fontSize, fontWeight: 'bold' }} 
+               />
+                <YAxis
+                 tick={{ fill:visualSettings.YAxisSettings.color, fontSize: visualSettings.YAxisSettings.fontSize, fontWeight: 'bold' }}
                 />
-                <YAxis />
                 <Tooltip content={<ChartTooltipContent />} />
                 <Legend />
                 {Object.keys(chartConfig).map((key) => (

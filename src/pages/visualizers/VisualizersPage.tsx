@@ -23,6 +23,7 @@ import { NavigationMenuDemo } from './Components/ChartsMenu';
 import VisualSettings from './Components/VisualSettings';
 import {systemDefaultColorPalettes} from "../../constants/colorPalettes";
 import { useExternalDataItems } from '../../services/useExternalDataItems';
+import { useSystemInfo } from '../../services/fetchSystemInfo';
 
 
 
@@ -30,13 +31,14 @@ import { useExternalDataItems } from '../../services/useExternalDataItems';
 
 function Visualizers() {
     const { id:visualId } = useParams();
+    const {  data:systemInfo } = useSystemInfo();
     const {data:singleSavedVisualData,isError,loading:isFetchSingleVisualLoading} = useFetchSingleVisualData(visualId)
     const { loading:orgUnitLoading, error:fetchOrgUnitError, data:orgUnitsData } = useOrgUnitData();
-    const {  error:dataItemsFetchError, loading:isDataItemsLoading,fetchCurrentInstanceData } = useDataItems();
-    const {fetchExternalDataItems,response,error } = useExternalDataItems()
+    const {  error:dataItemsFetchError, loading:isFetchCurrentInstanceDataItemsLoading,fetchCurrentInstanceData } = useDataItems();
+    const {fetchExternalDataItems,response,error,loading:isFetchExternalInstanceDataItemsLoading} = useExternalDataItems()
     const defaultUserOrgUnit = orgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName
-    const { data,loading } = useDataSourceData();
-    const { dataItemsData,setDataItemsData,analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle,visualTitleAndSubTitle,visualSettings,setSelectedVisualSettings,setVisualsColorPalettes,selectedColorPalette} = useAuthorities();
+    const { data:savedDataSource,loading } = useDataSourceData();
+    const { dataItemsData,selectedDataSourceDetails,setSelectedDataSourceDetails,analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle,visualTitleAndSubTitle,visualSettings,setSelectedVisualSettings,setVisualsColorPalettes,selectedColorPalette} = useAuthorities();
     const [isShowDataModal, setIsShowDataModal] = useState<boolean>(false);
     const [isShowOrganizationUnit, setIsShowOrganizationUnit] = useState<boolean>(false);
     const [isShowPeriod, setIsShowPeriod] = useState<boolean>(false);
@@ -49,11 +51,14 @@ function Visualizers() {
     const [titleOption, setTitleOption] = useState< 'none' | 'custom'>('none');
     const [subtitleOption, setSubtitleOption] = useState<'auto' | 'none' | 'custom'>('auto');
     //// data source options
-    const dataSourceOptions = data?.dataStore?.entries?.map((entry:any) => (
+    const dataSourceOptions = savedDataSource?.dataStore?.entries?.map((entry:any) => (
         <option key={entry?.key} value={entry?.key}>{entry?.value?.instanceName}</option>
     ));
 
 
+     useEffect(()=>{
+        console.log("selectedDataSourceDetails milller",selectedDataSourceDetails)
+     },[selectedDataSourceDetails])
 
 
     // if visualId is false then set all chart related states to default
@@ -86,13 +91,13 @@ function Visualizers() {
              setVisualsColorPalettes(systemDefaultColorPalettes[0] || [])
                 setSelectedVisualSettings({ backgroundColor: '#ffffff',visualColorPalette:selectedColorPalette,fillColor:"#fa3333",XAxisSettings:{color:"#22ff00",fontSize:12},YAxisSettings:{color:"#5b1616",fontSize:12} })
             /// set default data source
-            if(data)
+            if(savedDataSource)
                 {
-                    setSelectedDataSourceOption(data?.dataStore?.entries?.find(option => option?.value?.isCurrentDHIS2 == true )?.key)
+                    setSelectedDataSourceOption(savedDataSource?.dataStore?.entries?.find(option => option?.value?.isCurrentDHIS2 == true )?.key)
                 }
         }
        
-    },[visualId,data])
+    },[visualId,savedDataSource])
    
     /// set saved dataSource
     useEffect(()=>{
@@ -156,20 +161,42 @@ function Visualizers() {
     };
 
     /// handle data source onchange
-    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedDataSourceOption(e.target.value);
-      };
+    const handleDataSourceOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedValue = e.target.value;
+        setSelectedDataSourceOption(selectedValue);
+    
+        // Find the details for the selected data source
+        const selectedDataSourceDetailsData = savedDataSource?.dataStore?.entries?.find(
+            (item) => item.key === selectedValue
+        )?.value;
+    
+        if (selectedValue === "1") { // Assuming "1" is the string representation of the numeric value
+            setSelectedDataSourceDetails({
+                instanceName: systemInfo?.title?.applicationTitle || "", // Fallback to an empty string if undefined
+                isCurrentInstance: true,
+            });
+        } else {
+            // Handle the case where `selectedDataSourceDetailsData` might be undefined
+            setSelectedDataSourceDetails(selectedDataSourceDetailsData || {});
+        }
+    };
+    
 
-// test
-const handleExternalData = ()=>{
-    const url = "https://his.moh.gov.rw/idsrtest/api"
-    const token = "d2pat_zmib3p13XftOIOnbsM5uvjg7xEB6VpK51997909538"
+// fetch data source
+useEffect(() => {
+    // Ensure `selectedDataSourceDetails` is valid before proceeding
+    if (!selectedDataSourceDetails) return;
 
-    //fetchExternalDataItems(url, token)
+    if (selectedDataSourceDetails.isCurrentInstance === true) {
+        fetchCurrentInstanceData();
+    } else if (selectedDataSourceDetails.url && selectedDataSourceDetails.token) {
+        fetchExternalDataItems(selectedDataSourceDetails.url, selectedDataSourceDetails.token);
+    } else {
+        console.error("Invalid data source details: Missing URL or token.");
+    }
+}, [selectedDataSourceDetails]);
 
-    fetchCurrentInstanceData()
-  
-}
+
 
 
 
@@ -178,8 +205,8 @@ const handleExternalData = ()=>{
         <div className="min-h-screen bg-gray-50 p-4">
             
     <div>
-                <button onClick={handleExternalData} >external</button>
-                <h3>Total: {dataItemsData?.pager?.total}</h3>
+             
+                <h3>Test Total: {dataItemsData?.pager?.total}</h3>
             </div>
             { (isFetchSingleVisualLoading || loading) ? <Loading/> : 
             <>
@@ -204,20 +231,21 @@ const handleExternalData = ()=>{
                             {/* Select Data Source Dropdown */}
                             <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Select Data source</label>
-                                <select   value={selectedDataSourceOption} onChange={handleChange}
+                                <select   value={selectedDataSourceOption} onChange={handleDataSourceOnChange}
          className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                   <option value={1}  >{ systemInfo?.title?.applicationTitle}</option>
                                     {dataSourceOptions}
                                 </select>
                             </div>
                             {/* Indicators */}
                             <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Data</label>
-                                <Button variant="source" text="Add +" onClick={handleShowDataModal} />
+                                <Button disabled={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source" text={`${(isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading ) ? "Loading.." : "Add +"} `} onClick={handleShowDataModal} />
                             </div>
                             {/* Period */}
                             <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Period</label>
-                                <Button variant="source" text="Add +" onClick={handleShowPeriodModal} />
+                              <Button variant="source" text="Add +" onClick={handleShowPeriodModal} /> 
                             </div>
                             {/* Organization Unit */}
                             <div className="mb-4">
@@ -265,7 +293,7 @@ const handleExternalData = ()=>{
             </div>
             {/* Data, Organization Unit, and Period Modals */}
             <GenericModal isOpen={isShowDataModal} setIsOpen={setIsShowDataModal}>
-                <DataModal  data={dataItemsData} loading={isDataItemsLoading} error={dataItemsFetchError}  setIsShowDataModal={setIsShowDataModal} />
+                <DataModal  data={dataItemsData} loading={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} error={dataItemsFetchError}  setIsShowDataModal={setIsShowDataModal} />
             </GenericModal>
             <GenericModal isOpen={isShowOrganizationUnit} setIsOpen={setIsShowOrganizationUnit}>
                 <OrganizationModal  data={orgUnitsData}  loading={orgUnitLoading} error={fetchOrgUnitError} setIsShowOrganizationUnit={setIsShowOrganizationUnit}  />
