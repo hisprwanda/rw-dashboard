@@ -32,7 +32,7 @@ function Visualizers() {
     const { id:visualId } = useParams();
     const {data:singleSavedVisualData,isError,loading:isFetchSingleVisualLoading} = useFetchSingleVisualData(visualId)
     const { loading:orgUnitLoading, error:fetchOrgUnitError, data:orgUnitsData } = useOrgUnitData();
-    const {  error:dataItemsFetchError, loading:isDataItemsLoading } = useDataItems();
+    const {  error:dataItemsFetchError, loading:isDataItemsLoading,fetchCurrentInstanceData } = useDataItems();
     const {fetchExternalDataItems,response,error } = useExternalDataItems()
     const defaultUserOrgUnit = orgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName
     const { data,loading } = useDataSourceData();
@@ -165,15 +165,13 @@ const handleExternalData = ()=>{
     const url = "https://his.moh.gov.rw/idsrtest/api"
     const token = "d2pat_zmib3p13XftOIOnbsM5uvjg7xEB6VpK51997909538"
 
-    fetchExternalDataItems(url, token)
+    //fetchExternalDataItems(url, token)
+
+    fetchCurrentInstanceData()
   
 }
 
 
-useEffect(()=>{
-   console.log("Testing",dataItemsData)
-   console.log("testing two",dataItemsData?.dataItems?.pager?.total)
-},[dataItemsData])
 
     /// main return
     return (

@@ -1,10 +1,14 @@
-import { useEffect } from 'react';
+import { useState, useCallback } from 'react';
+import { useDataEngine } from '@dhis2/app-runtime';
 import { useAuthorities } from '../context/AuthContext';
-import { useDataQuery } from '@dhis2/app-runtime';
-
 
 export const useDataItems = () => {
-    const { dataItemsData, setDataItemsData } = useAuthorities();
+    const engine = useDataEngine();
+    const { setDataItemsData } = useAuthorities();
+    // Local state for managing loading, error, and data
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [data, setData] = useState(null);
 
     const query = {
         dataItems: {
@@ -18,14 +22,20 @@ export const useDataItems = () => {
         },
     };
 
-    const { loading, error, data, refetch } = useDataQuery(query);
-
-    // Update `dataItemsData` only when `data` changes
-    useEffect(() => {
-        if (data) {
-            setDataItemsData(data.dataItems);
+    // Function to fetch data, only called when explicitly invoked
+    const fetchCurrentInstanceData = useCallback(async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const result = await engine.query(query);
+            setData(result.dataItems);
+            setDataItemsData(result.dataItems); // Update context state
+        } catch (err) {
+            setError(err);
+        } finally {
+            setLoading(false);
         }
-    }, [data, setDataItemsData]);
+    }, [engine, query, setDataItemsData]);
 
-    return { loading, error, data, refetch };
+    return { loading, error, data, fetchCurrentInstanceData };
 };
