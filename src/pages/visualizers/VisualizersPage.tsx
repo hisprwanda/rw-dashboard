@@ -32,14 +32,14 @@ import { useSystemInfo } from '../../services/fetchSystemInfo';
 function Visualizers() {
     const { id:visualId } = useParams();
     const {  data:systemInfo } = useSystemInfo();
+    const {currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData, dataItemsData,selectedDataSourceDetails,setSelectedDataSourceDetails,analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle,visualTitleAndSubTitle,visualSettings,setSelectedVisualSettings,setVisualsColorPalettes,selectedColorPalette} = useAuthorities();
     const {data:singleSavedVisualData,isError,loading:isFetchSingleVisualLoading} = useFetchSingleVisualData(visualId)
-    const { loading:orgUnitLoading, error:fetchOrgUnitError, data:orgUnitsData } = useOrgUnitData();
+    const { loading:orgUnitLoading, error:fetchOrgUnitError, data:orgUnitsData,fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData();
     const {  error:dataItemsFetchError, loading:isFetchCurrentInstanceDataItemsLoading,fetchCurrentInstanceData } = useDataItems();
     const {fetchExternalDataItems,response,error,loading:isFetchExternalInstanceDataItemsLoading} = useExternalDataItems()
-    const defaultUserOrgUnit = orgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName
+    const defaultUserOrgUnit = currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName
     const { data:savedDataSource,loading } = useDataSourceData();
-    const { dataItemsData,selectedDataSourceDetails,setSelectedDataSourceDetails,analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle,visualTitleAndSubTitle,visualSettings,setSelectedVisualSettings,setVisualsColorPalettes,selectedColorPalette} = useAuthorities();
-    const [isShowDataModal, setIsShowDataModal] = useState<boolean>(false);
+      const [isShowDataModal, setIsShowDataModal] = useState<boolean>(false);
     const [isShowOrganizationUnit, setIsShowOrganizationUnit] = useState<boolean>(false);
     const [isShowPeriod, setIsShowPeriod] = useState<boolean>(false);
     const [isShowSaveVisualTypeForm,setIsShowSaveVisualTypeForm ] = useState<boolean>(false)
@@ -59,6 +59,9 @@ function Visualizers() {
      useEffect(()=>{
         console.log("selectedDataSourceDetails milller",selectedDataSourceDetails)
      },[selectedDataSourceDetails])
+
+
+      
 
 
     // if visualId is false then set all chart related states to default
@@ -181,7 +184,12 @@ function Visualizers() {
         }
     };
     
-
+/// fetch current user and Organization unit
+    const fetchCurrentUserAndOrgUnitData = async () => {
+        const result = await fetchCurrentUserInfoAndOrgUnitData(); 
+        setCurrentUserInfoAndOrgUnitsData(result); 
+        console.log("hello result", result);
+      };
 // fetch data source
 useEffect(() => {
     // Ensure `selectedDataSourceDetails` is valid before proceeding
@@ -189,6 +197,7 @@ useEffect(() => {
 
     if (selectedDataSourceDetails.isCurrentInstance === true) {
         fetchCurrentInstanceData();
+        fetchCurrentUserAndOrgUnitData()
     } else if (selectedDataSourceDetails.url && selectedDataSourceDetails.token) {
         fetchExternalDataItems(selectedDataSourceDetails.url, selectedDataSourceDetails.token);
     } else {
@@ -197,6 +206,9 @@ useEffect(() => {
 }, [selectedDataSourceDetails]);
 
 
+
+
+ 
 
 
 
@@ -296,7 +308,7 @@ useEffect(() => {
                 <DataModal  data={dataItemsData} loading={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} error={dataItemsFetchError}  setIsShowDataModal={setIsShowDataModal} />
             </GenericModal>
             <GenericModal isOpen={isShowOrganizationUnit} setIsOpen={setIsShowOrganizationUnit}>
-                <OrganizationModal  data={orgUnitsData}  loading={orgUnitLoading} error={fetchOrgUnitError} setIsShowOrganizationUnit={setIsShowOrganizationUnit}  />
+                <OrganizationModal  data={currentUserInfoAndOrgUnitsData}  loading={orgUnitLoading} error={fetchOrgUnitError} setIsShowOrganizationUnit={setIsShowOrganizationUnit}  />
             </GenericModal>
             <GenericModal isOpen={isShowPeriod} setIsOpen={setIsShowPeriod}>
                 <PeriodModal setIsShowPeriod={setIsShowPeriod} />
