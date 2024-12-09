@@ -24,6 +24,7 @@ import VisualSettings from './Components/VisualSettings';
 import {systemDefaultColorPalettes} from "../../constants/colorPalettes";
 import { useExternalDataItems } from '../../services/useExternalDataItems';
 import { useSystemInfo } from '../../services/fetchSystemInfo';
+import { useExternalOrgUnitData } from '../../services/fetchExternalOrgUnit';
 
 
 
@@ -37,6 +38,7 @@ function Visualizers() {
     const { loading:orgUnitLoading, error:fetchOrgUnitError, data:orgUnitsData,fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData();
     const {  error:dataItemsFetchError, loading:isFetchCurrentInstanceDataItemsLoading,fetchCurrentInstanceData } = useDataItems();
     const {fetchExternalDataItems,response,error,loading:isFetchExternalInstanceDataItemsLoading} = useExternalDataItems()
+    const {fetchExternalUserInfoAndOrgUnitData} = useExternalOrgUnitData()
     const defaultUserOrgUnit = currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName
     const { data:savedDataSource,loading } = useDataSourceData();
       const [isShowDataModal, setIsShowDataModal] = useState<boolean>(false);
@@ -58,7 +60,8 @@ function Visualizers() {
 
      useEffect(()=>{
         console.log("selectedDataSourceDetails milller",selectedDataSourceDetails)
-     },[selectedDataSourceDetails])
+        console.log("hello currentUserInfoAndOrgUnitsData", currentUserInfoAndOrgUnitsData)
+     },[selectedDataSourceDetails,currentUserInfoAndOrgUnitsData])
 
 
       
@@ -200,13 +203,14 @@ useEffect(() => {
         fetchCurrentUserAndOrgUnitData()
     } else if (selectedDataSourceDetails.url && selectedDataSourceDetails.token) {
         fetchExternalDataItems(selectedDataSourceDetails.url, selectedDataSourceDetails.token);
+        fetchExternalUserInfoAndOrgUnitData(selectedDataSourceDetails.url, selectedDataSourceDetails.token);
     } else {
         console.error("Invalid data source details: Missing URL or token.");
     }
 }, [selectedDataSourceDetails]);
 
 
-
+ 
 
  
 

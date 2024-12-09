@@ -2,12 +2,9 @@ import { useDataQuery } from "@dhis2/app-runtime";
 import { useState, useCallback } from "react";
 import { useDataEngine } from "@dhis2/app-runtime";
 
-
 // This service is responsible for fetching the current user and organization units
 export const useOrgUnitData = () => {
   const engine = useDataEngine();
-
-
   // Local states for loading, error, and data
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -58,45 +55,45 @@ export const useOrgUnitData = () => {
 
 
 
-export const useSingleOrgUnitData = () => {
-  const query = {
-    currentUser: {
-      resource: 'me',
-      params: {
-        fields: ['organisationUnits[id, displayName]'],
-      },
-    },
-    orgUnits: {
-      resource: 'organisationUnits',
-      params: {
-        fields: 'id,displayName,path,children[id,displayName,path,level],level',
-        paging: 'false',
-      },
-    },
-  };
-  const { loading, error, data } = useDataQuery(query);
-  return { loading, error, data };
-};
+// export const useSingleOrgUnitData = () => {
+//   const query = {
+//     currentUser: {
+//       resource: 'me',
+//       params: {
+//         fields: ['organisationUnits[id, displayName]'],
+//       },
+//     },
+//     orgUnits: {
+//       resource: 'organisationUnits',
+//       params: {
+//         fields: 'id,displayName,path,children[id,displayName,path,level],level',
+//         paging: 'false',
+//       },
+//     },
+//   };
+//   const { loading, error, data } = useDataQuery(query);
+//   return { loading, error, data };
+// };
 
 
 
-export const useFetchOrgUnitById = (orgUnitId:string | null) => {
+// export const useFetchOrgUnitById = (orgUnitId:string | null) => {
 
-  if(!orgUnitId) {
-    return { data: null, loading: false, error: null, isError: false };
-  }
+//   if(!orgUnitId) {
+//     return { data: null, loading: false, error: null, isError: false };
+//   }
 
-  const query = {
-    organisationUnit: {
-      resource: `organisationUnits/${orgUnitId}`,
-      params: {
-        fields: 'displayName',
-      },
+//   const query = {
+//     organisationUnit: {
+//       resource: `organisationUnits/${orgUnitId}`,
+//       params: {
+//         fields: 'displayName',
+//       },
     
-    },
-  };
+//     },
+//   };
 
-  const { data, loading, error, isError } = useDataQuery(query);
+//   const { data, loading, error, isError } = useDataQuery(query);
 
-  return { data, loading, error, isError };
-};
+//   return { data, loading, error, isError };
+// };

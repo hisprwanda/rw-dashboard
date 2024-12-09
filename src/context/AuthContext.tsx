@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import { useDataQuery } from "@dhis2/app-runtime";
 import { useDataEngine } from '@dhis2/app-runtime';
-import { useFetchOrgUnitById ,useOrgUnitData} from "../services/fetchOrgunitData";
+import {  useOrgUnitData} from "../services/fetchOrgunitData";
 import {VisualSettingsTypes,VisualTitleAndSubtitleType,ColorPaletteTypes,visualColorPaletteTypes, AxisSettingsTypes} from "../types/visualSettingsTypes"
 import { systemDefaultColorPalettes } from "../constants/colorPalettes";
 import { DataSourceFormFields } from "../types/DataSource";

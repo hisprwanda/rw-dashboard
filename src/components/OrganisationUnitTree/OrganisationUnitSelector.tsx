@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { InputField, MultiSelectField, MultiSelectOption, OrganisationUnitTree, CircularLoader } from '@dhis2/ui';
-import { useOrgUnitData } from '../../services/fetchOrgunitData';
 import { useOrgUnitSelection } from '../../hooks/useOrgUnitSelection';
 import Button from "../Button";
 import { useAuthorities } from '../../context/AuthContext';
