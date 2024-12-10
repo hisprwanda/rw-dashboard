@@ -151,7 +151,7 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
   /// handle 
   
 const handleNodeSelectExternalInstance = (node) => {
-  console.log('Selected node y:', node);
+  console.log('external selected node:', node);
 };
 
   // handle loading
@@ -208,8 +208,8 @@ const handleNodeSelectExternalInstance = (node) => {
       {/* Organization Unit Tree */}
       <div className=" p-4 rounded-lg mb-6 ">
           <div>
-            {
-              selectedDataSourceDetails.isCurrentInstance ? 
+            
+              {/* // selectedDataSourceDetails.isCurrentInstance ?  */}
               <OrganisationUnitTree
               disableSelection={isUseCurrentUserOrgUnits}
               roots={[currentUserOrgUnit.id]}
@@ -220,14 +220,16 @@ const handleNodeSelectExternalInstance = (node) => {
                 <span className="text-blue-600 font-medium">{node.displayName}</span>
               )}
               filter={filteredOrgUnitPaths?.length ? filteredOrgUnitPaths : undefined}
-            /> : 
-           <CustomOrganisationUnitTree
+            /> 
+           {/* <CustomOrganisationUnitTree
            apiUrl={selectedDataSourceDetails.url}
            token={selectedDataSourceDetails.token}
-           rootOrgUnitId={currentUserOrgUnit.id} // Example root ID
+           rootOrgUnitId={currentUserOrgUnit.id} 
            onNodeSelect={handleNodeSelectExternalInstance}
-       />
-            }
+           parentName={currentUserOrgUnit?.displayName}
+    
+       /> */}
+            
          
  
           </div>
