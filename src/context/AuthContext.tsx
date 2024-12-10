@@ -85,6 +85,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [authorities, setAuthorities] = useState<string[]>([]);
   const [userDatails, setUserDatails] = useState<{}>({});
 
+  /// this is the current instance definition as data source
   const defaultDataSource: DataSourceFormFields = {
     instanceName: systemInfo?.title?.applicationTitle || "", // Fallback to an empty string if undefined
     isCurrentInstance: true,
@@ -98,9 +99,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
  const [currentUserInfoAndOrgUnitsData, setCurrentUserInfoAndOrgUnitsData] = useState<any>()
  // const currentUserOrgUnitId = userDatails?.me?.organisationUnits?.[0]?.id || "Hjw70Lodtf2";
 
-  const {data:currentUserOrgData} = useOrgUnitData()
-  const defaultUserOrgUnit = currentUserOrgData?.currentUser?.organisationUnits?.[0]?.displayName
 
+  const defaultUserOrgUnit = currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName
   const [isFetchAnalyticsDataLoading, setIsFetchAnalyticsDataLoading] = useState(false);
   const [analyticsData, setAnalyticsData] = useState<any>(null);
   const [fetchAnalyticsDataError, setFetchAnalyticsDataError] = useState<any>(false);
@@ -124,7 +124,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
  const [selectedColorPalette, setSelectedColorPalette] = useState<visualColorPaletteTypes>(systemDefaultColorPalettes[0] || []);
 
  const [visualsColorPalettes,setVisualsColorPalettes] =useState<ColorPaletteTypes >(systemDefaultColorPalettes)
-  const [visualSettings, setSelectedVisualSettings] = useState<VisualSettingsTypes>({visualColorPalette:selectedColorPalette,backgroundColor:"#fff",fillColor:"#fa3333",XAxisSettings:{color:"#22ff00",fontSize:12},YAxisSettings:{color:"#5b1616",fontSize:12}})
+  const [visualSettings, setSelectedVisualSettings] = useState<VisualSettingsTypes>({ backgroundColor: '#ffffff',visualColorPalette:selectedColorPalette,fillColor:"#ffffff",XAxisSettings:{color:"#000000",fontSize:12},YAxisSettings:{color:"#000000",fontSize:12} })
 
 
   const [isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits] = useState<any>({
@@ -145,16 +145,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // test
   useEffect(()=>{
-       if(currentUserOrgData?.currentUser?.organisationUnits?.[0]?.displayName)
+       if(currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName)
        {
       setSelectedVisualTitleAndSubTitle({
           visualTitle:"",
-          DefaultSubTitle: [currentUserOrgData?.currentUser?.organisationUnits?.[0]?.displayName],
+          DefaultSubTitle: [currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName],
           customSubTitle:""
         })
 
        }
-  },[currentUserOrgData || []])
+  },[currentUserInfoAndOrgUnitsData || []])
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading user authorities</div>;

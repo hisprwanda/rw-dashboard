@@ -39,6 +39,7 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({
             token: '',
             type: 'DHIS2',
             isCurrentInstance: false,
+            
         },
         resolver: zodResolver(DataSourceSchema),
     });
