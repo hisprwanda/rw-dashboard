@@ -3,41 +3,41 @@ import { useQuery } from 'react-query'; // For data fetching
 import axios from 'axios'; // For API calls
 
 // Custom tree node component
-const TreeNode = ({ node, onExpand, selected, onSelect }) => {
+const TreeNode = ({ node, onExpand, selectedNodes, onSelect }) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
     const handleExpand = () => {
         setIsExpanded(!isExpanded);
-        if (!isExpanded) {
+        if (!isExpanded && !node.childrenFetched) {
             onExpand(node);
         }
     };
 
+    const handleCheckboxChange = () => {
+        onSelect(node);
+    };
+
     return (
         <div style={{ marginLeft: 20 }}>
-            <div
-                style={{
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                }}
-                onClick={() => onSelect(node)}
-            >
-                {node.children ? (
-                    <span onClick={handleExpand}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+                {node.hasChildren && (
+                    <span
+                        style={{
+                            cursor: 'pointer',
+                            paddingRight: 5,
+                            userSelect: 'none',
+                        }}
+                        onClick={handleExpand}
+                    >
                         {isExpanded ? '-' : '+'}
                     </span>
-                ) : (
-                    <span style={{ width: 10 }}></span>
                 )}
-                <span
-                    style={{
-                        paddingLeft: 10,
-                        fontWeight: selected?.id === node.id ? 'bold' : 'normal',
-                    }}
-                >
-                    {node.displayName}
-                </span>
+                <input
+                    type="checkbox"
+                    checked={selectedNodes.some((selected) => selected.id === node.id)}
+                    onChange={handleCheckboxChange}
+                />
+                <span style={{ paddingLeft: 10 }}>{node.displayName}</span>
             </div>
             {isExpanded &&
                 node.children &&
@@ -46,7 +46,7 @@ const TreeNode = ({ node, onExpand, selected, onSelect }) => {
                         key={child.id}
                         node={child}
                         onExpand={onExpand}
-                        selected={selected}
+                        selectedNodes={selectedNodes}
                         onSelect={onSelect}
                     />
                 ))}
@@ -57,12 +57,12 @@ const TreeNode = ({ node, onExpand, selected, onSelect }) => {
 // Main tree component
 const CustomOrganisationUnitTree = ({ apiUrl, token, rootOrgUnitId, onNodeSelect }) => {
     const [treeData, setTreeData] = useState({});
-    const [selectedNode, setSelectedNode] = useState(null);
+    const [selectedNodes, setSelectedNodes] = useState([]);
 
     const fetchOrgUnit = async (parentId) => {
-        const response = await axios.get(`${apiUrl}/organisationUnits/${parentId}`, {
+        const response = await axios.get(`${apiUrl}/api/organisationUnits/${parentId}`, {
             params: {
-                fields: 'id,displayName,path,children[id,displayName,path]',
+                fields: 'id,displayName,path,hasChildren,children[id,displayName,path,hasChildren]',
                 paging: false,
             },
             headers: {
@@ -72,7 +72,7 @@ const CustomOrganisationUnitTree = ({ apiUrl, token, rootOrgUnitId, onNodeSelect
         return response.data;
     };
 
-    const { isLoading, isError, data, refetch } = useQuery(
+    const { isLoading, isError } = useQuery(
         ['orgUnit', rootOrgUnitId],
         () => fetchOrgUnit(rootOrgUnitId),
         {
@@ -86,16 +86,23 @@ const CustomOrganisationUnitTree = ({ apiUrl, token, rootOrgUnitId, onNodeSelect
     const handleExpand = async (node) => {
         if (!treeData[node.id]) {
             const data = await fetchOrgUnit(node.id);
+            const updatedNode = { ...node, children: data.children, childrenFetched: true };
             setTreeData((prev) => ({
                 ...prev,
-                [node.id]: data,
+                [node.id]: updatedNode,
             }));
         }
     };
 
     const handleSelect = (node) => {
-        setSelectedNode(node);
-        onNodeSelect(node);
+        setSelectedNodes((prev) => {
+            const isAlreadySelected = prev.some((selected) => selected.id === node.id);
+            const updatedSelection = isAlreadySelected
+                ? prev.filter((selected) => selected.id !== node.id)
+                : [...prev, node];
+            onNodeSelect(updatedSelection);
+            return updatedSelection;
+        });
     };
 
     if (isLoading) return <div>Loading...</div>;
@@ -104,12 +111,12 @@ const CustomOrganisationUnitTree = ({ apiUrl, token, rootOrgUnitId, onNodeSelect
     return (
         <div>
             <h3>Organisation Unit Tree</h3>
-            {treeData[rootOrgUnitId]?.children.map((child) => (
+            {treeData[rootOrgUnitId]?.children?.map((child) => (
                 <TreeNode
-                    key={child.id}
+                    key={child?.id}
                     node={child}
                     onExpand={handleExpand}
-                    selected={selectedNode}
+                    selectedNodes={selectedNodes}
                     onSelect={handleSelect}
                 />
             ))}

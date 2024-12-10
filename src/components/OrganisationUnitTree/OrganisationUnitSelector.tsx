@@ -7,6 +7,7 @@ import { formatAnalyticsDimensions } from '../../lib/formatAnalyticsDimensions';
 import { IoSaveOutline } from 'react-icons/io5';
 import OrganizationUnitGroup from '../../pages/visualizers/Components/MetaDataModals/OrganizationUnitGroup';
 import OrganizationUnitLevels from '../../pages/visualizers/Components/MetaDataModals/OrganizationUnitLevels';
+import CustomOrganisationUnitTree from '../../pages/visualizers/Components/MetaDataModals/CustomOrganisationUnitTree';
 
 interface OrganisationUnitSelectProps {
   setIsShowOrganizationUnit:any;
@@ -36,6 +37,7 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
     fetchSingleOrgUnitName,
     visualTitleAndSubTitle,
     setSelectedVisualTitleAndSubTitle,  
+    selectedDataSourceDetails
   } = useAuthorities();
 
   //const { loading, error, data } = useOrgUnitData();
@@ -146,6 +148,12 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
     setIsShowOrganizationUnit(false)
   };
 
+  /// handle 
+  
+const handleNodeSelectExternalInstance = (node) => {
+  console.log('Selected node y:', node);
+};
+
   // handle loading
   if (loading) {
     return <CircularLoader />;
@@ -200,7 +208,9 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
       {/* Organization Unit Tree */}
       <div className=" p-4 rounded-lg mb-6 ">
           <div>
-            <OrganisationUnitTree
+            {
+              selectedDataSourceDetails.isCurrentInstance ? 
+              <OrganisationUnitTree
               disableSelection={isUseCurrentUserOrgUnits}
               roots={[currentUserOrgUnit.id]}
               selected={selectedOrgUnits}
@@ -210,7 +220,16 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
                 <span className="text-blue-600 font-medium">{node.displayName}</span>
               )}
               filter={filteredOrgUnitPaths?.length ? filteredOrgUnitPaths : undefined}
-            />
+            /> : 
+           <CustomOrganisationUnitTree
+           apiUrl={selectedDataSourceDetails.url}
+           token={selectedDataSourceDetails.token}
+           rootOrgUnitId={currentUserOrgUnit.id} // Example root ID
+           onNodeSelect={handleNodeSelectExternalInstance}
+       />
+            }
+         
+ 
           </div>
       </div>
 

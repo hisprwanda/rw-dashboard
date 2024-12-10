@@ -1,4 +1,5 @@
-import CustomOrganisationUnitTree from "../../testComp/CustomOrganisationUnitTree"
+import CustomOrganisationUnitTree from "../../pages/visualizers/Components/MetaDataModals/CustomOrganisationUnitTree";
+
 
 
 function transformDataToPieChartFormat(data:any, colors:any) {
@@ -27,12 +28,12 @@ function transformDataToPieChartFormat(data:any, colors:any) {
 
 
 const handleNodeSelect = (node) => {
-  console.log('Selected node:', node);
+  console.log('Selected node y:', node);
 };
 export function TestChart() {
   return (
     <CustomOrganisationUnitTree
-    apiUrl="https://play.im.dhis2.org/stable-2-41-2/api"
+    apiUrl="https://play.im.dhis2.org/stable-2-41-2"
     token="d2p_Tskgr5OBwAjaYGRYmyRh9dk9fnFBmvrkisLKjDOeQID20i2ZZI"
     rootOrgUnitId="ImspTQPwCqd" // Example root ID
     onNodeSelect={handleNodeSelect}
