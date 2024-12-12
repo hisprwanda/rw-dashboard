@@ -18,7 +18,7 @@ interface DataModalProps {
 const DataModal: React.FC<DataModalProps> = ({ setIsShowDataModal,data,error,loading }) => {
     // Fetch data using your custom hook
     //const { data, error, loading } = useDataItems();
-    const { analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, isFetchAnalyticsDataLoading } = useAuthorities();
+    const { analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, isFetchAnalyticsDataLoading ,selectedDataSourceDetails} = useAuthorities();
 
     // Initialize state for available options and selected options
     const [availableOptions, setAvailableOptions] = useState<TransferOption[]>([]);
@@ -47,7 +47,7 @@ const DataModal: React.FC<DataModalProps> = ({ setIsShowDataModal,data,error,loa
 
     // Function to handle the update logic
     const handleUpdate = async () => {
-        await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions));
+        await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions),selectedDataSourceDetails);
         setIsShowDataModal(false);
     };
 

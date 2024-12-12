@@ -13,6 +13,7 @@ import {VisualSettingsTypes,VisualTitleAndSubtitleType,ColorPaletteTypes,visualC
 import { systemDefaultColorPalettes } from "../constants/colorPalettes";
 import { DataSourceFormFields } from "../types/DataSource";
 import { useSystemInfo } from "../services/fetchSystemInfo";
+import axios from "axios";
 
 
 
@@ -94,6 +95,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [selectedDataSourceDetails, setSelectedDataSourceDetails] = useState<DataSourceFormFields>(defaultDataSource);
   
 
+
   // metadata states
   const [dataItemsData,setDataItemsData] = useState<any>()
  const [currentUserInfoAndOrgUnitsData, setCurrentUserInfoAndOrgUnitsData] = useState<any>()
@@ -163,41 +165,53 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // testing
   const engine = useDataEngine();
-  const fetchAnalyticsData = async (dimension: any ) => {
+  const fetchAnalyticsData = async (dimension: any,instance:DataSourceFormFields ) => {
     try {
       setIsFetchAnalyticsDataLoading(true);
-      setFetchAnalyticsDataError(false);
+      setFetchAnalyticsDataError(null);
+
       const orgUnitIds = selectedOrganizationUnits?.map((unit: any) => unit).join(';');
       const orgUnitLevelIds = selectedOrganizationUnitsLevels?.map((unit: any) => `LEVEL-${unit}`).join(';');
       const orgUnitGroupIds = selectedOrgUnitGroups?.map((item: any) => `OU_GROUP-${item}`).join(';');
 
-      console.log({ orgUnitGroupIds, orgUnitIds, orgUnitLevelIds });
+      const filter = `ou:${isUseCurrentUserOrgUnits
+        ? `${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT ? 'USER_ORGUNIT;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_CHILDREN ? 'USER_ORGUNIT_CHILDREN;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_GRANDCHILDREN ? 'USER_ORGUNIT_GRANDCHILDREN;' : ''}`.slice(0, -1)
+        : `${orgUnitIds};${orgUnitLevelIds};${orgUnitGroupIds}`}`;
 
-      const analyticsQuery = {
-        myData: {
-          resource: 'analytics',
-          params: {
-            dimension,
-            // if current org unit is checked use keyword, if not use other org units
-            filter: `ou:${isUseCurrentUserOrgUnits
-              ? `${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT ? 'USER_ORGUNIT;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_CHILDREN ? 'USER_ORGUNIT_CHILDREN;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_GRANDCHILDREN ? 'USER_ORGUNIT_GRANDCHILDREN;' : ''}`.slice(0, -1)
-              : `${orgUnitIds};${orgUnitLevelIds};${orgUnitGroupIds}`
-              }`,
-            displayProperty: 'NAME',
-            includeNumDen: true,
-          }
-        },
+      const queryParams = {
+        dimension,
+        filter,
+        displayProperty: 'NAME',
+        includeNumDen: true,
+      };
+
+      if (instance.isCurrentInstance) {
+        // Internal request via engine.query
+        const analyticsQuery = {
+          myData: {
+            resource: 'analytics',
+            params: queryParams,
+          },
+        };
+
+        const result = await engine.query(analyticsQuery);
+        setAnalyticsData(result?.myData);
+        setAnalyticsQuery(analyticsQuery);
+      } else {
+        // External request via axios
+        const response = await axios.get(`${instance.url}/api/40/analytics`, {
+          headers: {
+            Authorization: `ApiToken ${instance.token}`,
+          },
+          params: queryParams,
+        });
+
+        setAnalyticsData(response.data);
+        setAnalyticsQuery({ myData: { resource: 'analytics', params: queryParams } });
       }
-
-      const result = await engine.query(analyticsQuery);
-      setAnalyticsData(result?.myData);
-      // set analytics query
-      setAnalyticsQuery(analyticsQuery)
     } catch (error) {
-      // temporally commented
-     // setFetchAnalyticsDataError(error);
-      console.log("Error fetching analytics data:", error);
-    
+      setFetchAnalyticsDataError(error);
+      console.error('Error fetching analytics data:', error);
     } finally {
       setIsFetchAnalyticsDataLoading(false);
     }
@@ -205,6 +219,50 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
 
   };
+
+  /// current instance stable fetch, temporally commented out
+  // const fetchAnalyticsData = async (dimension: any,{isCurrentInstance,url,token}:{isCurrentInstance?:boolean,url?:string,token?:string} ) => {
+  //   try {
+  //     setIsFetchAnalyticsDataLoading(true);
+  //     setFetchAnalyticsDataError(false);
+  //     const orgUnitIds = selectedOrganizationUnits?.map((unit: any) => unit).join(';');
+  //     const orgUnitLevelIds = selectedOrganizationUnitsLevels?.map((unit: any) => `LEVEL-${unit}`).join(';');
+  //     const orgUnitGroupIds = selectedOrgUnitGroups?.map((item: any) => `OU_GROUP-${item}`).join(';');
+
+  //     console.log({ orgUnitGroupIds, orgUnitIds, orgUnitLevelIds });
+
+  //     const analyticsQuery = {
+  //       myData: {
+  //         resource: 'analytics',
+  //         params: {
+  //           dimension,
+  //           // if current org unit is checked use keyword, if not use other org units
+  //           filter: `ou:${isUseCurrentUserOrgUnits
+  //             ? `${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT ? 'USER_ORGUNIT;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_CHILDREN ? 'USER_ORGUNIT_CHILDREN;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_GRANDCHILDREN ? 'USER_ORGUNIT_GRANDCHILDREN;' : ''}`.slice(0, -1)
+  //             : `${orgUnitIds};${orgUnitLevelIds};${orgUnitGroupIds}`
+  //             }`,
+  //           displayProperty: 'NAME',
+  //           includeNumDen: true,
+  //         }
+  //       },
+  //     }
+
+  //     const result = await engine.query(analyticsQuery);
+  //     setAnalyticsData(result?.myData);
+  //     // set analytics query
+  //     setAnalyticsQuery(analyticsQuery)
+  //   } catch (error) {
+  //     // temporally commented
+  //    // setFetchAnalyticsDataError(error);
+  //     console.log("Error fetching analytics data:", error);
+    
+  //   } finally {
+  //     setIsFetchAnalyticsDataLoading(false);
+  //   }
+
+
+
+  // };
 
 
 
