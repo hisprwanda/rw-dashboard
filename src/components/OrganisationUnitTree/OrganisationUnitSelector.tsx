@@ -229,9 +229,6 @@ const handleNodeSelectExternalInstance = (node) => {
            parentName={currentUserOrgUnit?.displayName}
     
        /> */}
-            
-         
- 
           </div>
       </div>
 

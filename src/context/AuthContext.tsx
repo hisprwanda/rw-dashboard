@@ -163,7 +163,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // testing
   const engine = useDataEngine();
-  const fetchAnalyticsData = async (dimension: any) => {
+  const fetchAnalyticsData = async (dimension: any ) => {
     try {
       setIsFetchAnalyticsDataLoading(true);
       setFetchAnalyticsDataError(false);
@@ -185,9 +185,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               }`,
             displayProperty: 'NAME',
             includeNumDen: true,
-            // skipMeta: false,
-            // skipData: true,
-            // includeMetadataDetails: true
           }
         },
       }

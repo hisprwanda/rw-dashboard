@@ -1003,10 +1003,6 @@ video {
   max-height: 100%;
 }
 
-.max-h-\[250px\] {
-  max-height: 250px;
-}
-
 .max-h-\[400px\] {
   max-height: 400px;
 }
@@ -1715,10 +1711,6 @@ video {
   --tw-gradient-to: #9089fc var(--tw-gradient-to-position);
 }
 
-.fill-background {
-  fill: hsl(var(--background));
-}
-
 .object-cover {
   -o-object-fit: cover;
      object-fit: cover;
@@ -1847,10 +1839,6 @@ video {
 .py-9 {
   padding-top: 2.25rem;
   padding-bottom: 2.25rem;
-}
-
-.pb-0 {
-  padding-bottom: 0px;
 }
 
 .pb-3 {
@@ -3158,11 +3146,6 @@ video {
 .\[\&_\.recharts-surface\]\:outline-none .recharts-surface {
   outline: 2px solid transparent;
   outline-offset: 2px;
-}
-
-
-.\[\&_\.recharts-text\]\:fill-background .recharts-text {
-  fill: hsl(var(--background));
 }
 
 
