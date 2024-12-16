@@ -45,8 +45,7 @@ function Visualizers() {
     const [isShowPeriod, setIsShowPeriod] = useState<boolean>(false);
     const [isShowSaveVisualTypeForm,setIsShowSaveVisualTypeForm ] = useState<boolean>(false)
     const [isShowStyles,setIsShowStyles ] = useState<boolean>(false)
-
-
+    const selectedDataSourceDetailsRef = useRef(selectedDataSourceDetails);
     const [titleOption, setTitleOption] = useState< 'none' | 'custom'>('none');
     const [subtitleOption, setSubtitleOption] = useState<'auto' | 'none' | 'custom'>('auto');
     //// data source options
@@ -95,16 +94,12 @@ function Visualizers() {
         if(!visualId)
         {
             resetToDefaultValues() 
-            keepUpWithSelectedDataSource()    
+          /// if no visual created , fetch data of current instance
+          fetchCurrentInstanceData();
+          fetchCurrentUserAndOrgUnitData();
         }
        
     },[visualId])
-
-    useEffect(() => {
-        console.log("analyticsDimensions ========", analyticsDimensions);
-    }, [analyticsDimensions]);
-
-   
 
     //// run analytics API
     const debounceRunAnalytics = useCallback(debounce(() => {
@@ -185,7 +180,7 @@ function Visualizers() {
       };
       
 // keepUp with selected data source
-const selectedDataSourceDetailsRef = useRef(selectedDataSourceDetails);
+
 function keepUpWithSelectedDataSource() {
     const details = selectedDataSourceDetailsRef.current;
 
