@@ -79,7 +79,7 @@ export const useFetchSingleVisualData = (visualId: string) => {
         };
         setSelectedDataSourceDetails(currentInstanceDetails);
       } else {
-        setSelectedDataSourceDetails(selectedDataSourceDetails || {});
+        setSelectedDataSourceDetails(selectedDataSourceDetails );
       }
     },
     [savedDataSource, systemInfo, setSelectedDataSourceOption, setSelectedDataSourceDetails]

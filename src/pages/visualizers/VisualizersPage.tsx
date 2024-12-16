@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Button from "../../components/Button";
 import { IoSaveOutline } from 'react-icons/io5';
 import { useDataSourceData } from '../../services/DataSourceHooks';
@@ -94,7 +94,8 @@ function Visualizers() {
     useEffect(()=>{
         if(!visualId)
         {
-            resetToDefaultValues()     
+            resetToDefaultValues() 
+            keepUpWithSelectedDataSource()    
         }
        
     },[visualId])
@@ -104,20 +105,12 @@ function Visualizers() {
     }, [analyticsDimensions]);
 
    
-    // /// set saved dataSource
-    // useEffect(()=>{
-    //     if(singleSavedVisualData && visualId)
-    //     {
-    //         setSelectedDataSourceOption(singleSavedVisualData?.dataStore?.dataSourceId)
-    //     }  
-    // },[singleSavedVisualData,visualId])
-
 
     //// run analytics API
     const debounceRunAnalytics = useCallback(debounce(() => {
         if (singleSavedVisualData && visualId) {
             keepUpWithSelectedDataSource();
-            setAnalyticsData([]); // Clear old data
+            setAnalyticsData([]); 
             fetchAnalyticsData(
                 formatAnalyticsDimensions(analyticsDimensions),
                 selectedDataSourceDetails
@@ -192,26 +185,33 @@ function Visualizers() {
       };
       
 // keepUp with selected data source
+const selectedDataSourceDetailsRef = useRef(selectedDataSourceDetails);
+function keepUpWithSelectedDataSource() {
+    const details = selectedDataSourceDetailsRef.current;
 
- function keepUpWithSelectedDataSource(){
-    // Ensure `selectedDataSourceDetails` is valid before proceeding
-    if (!selectedDataSourceDetails) return;
+    if (!details) return;
 
-    if (selectedDataSourceDetails.isCurrentInstance === true) {
+    // Proceed with using the latest `details`
+    if (details.isCurrentInstance) {
         fetchCurrentInstanceData();
-        fetchCurrentUserAndOrgUnitData()
-    } else if (selectedDataSourceDetails.url && selectedDataSourceDetails.token) {
-        fetchExternalDataItems(selectedDataSourceDetails.url, selectedDataSourceDetails.token);
-        fetchExternalUserInfoAndOrgUnitData(selectedDataSourceDetails.url, selectedDataSourceDetails.token);
+        fetchCurrentUserAndOrgUnitData();
+    } else if (details.url && details.token) {
+        fetchExternalDataItems(details.url, details.token);
+        fetchExternalUserInfoAndOrgUnitData(details.url, details.token);
     } else {
         console.error("Invalid data source details: Missing URL or token.");
     }
- }
+}
+
+
+
 
 
 useEffect(() => {
-    keepUpWithSelectedDataSource()
+    selectedDataSourceDetailsRef.current = selectedDataSourceDetails;
 }, [selectedDataSourceDetails]);
+
+
 
 
  
