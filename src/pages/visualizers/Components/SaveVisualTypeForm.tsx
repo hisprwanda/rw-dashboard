@@ -20,7 +20,7 @@ interface SaveVisualTypeFormProps {
 }
 
 const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleSavedVisualData,setIsShowSaveVisualTypeForm ,selectedDataSourceId}) => {
-  const {visualSettings, analyticsQuery,userDatails,selectedChartType,selectedOrgUnits,selectedLevel, visualTitleAndSubTitle } = useAuthorities();
+  const {selectedDataSourceOption,setSelectedDataSourceOption,visualSettings, analyticsQuery,userDatails,selectedChartType,selectedOrgUnits,selectedLevel, visualTitleAndSubTitle } = useAuthorities();
   const {data:allSavedVisuals,loading,isError}  = useFetchVisualsData()
   const navigate = useNavigate();
 
@@ -38,7 +38,7 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
       visualTitleAndSubTitle:visualTitleAndSubTitle,  
       visualSettings:visualSettings,
       query: analyticsQuery,
-      dataSourceId: currentInstanceId, 
+      dataSourceId: selectedDataSourceOption, 
       createdBy:{
         name:userDatails?.me?.displayName,
         id:userDatails?.me?.id

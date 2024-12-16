@@ -51,9 +51,6 @@ const DataModal: React.FC<DataModalProps> = ({ setIsShowDataModal,data,error,loa
         setIsShowDataModal(false);
     };
 
-    useEffect(() => {
-        console.log("analyticsDimensions pp", analyticsDimensions);
-    }, [analyticsDimensions]);
 
     // if (loading) return <Loading/>
     if (error) return <div>Error loading data...</div>;

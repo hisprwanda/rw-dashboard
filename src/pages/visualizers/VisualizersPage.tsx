@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Button from "../../components/Button";
 import { IoSaveOutline } from 'react-icons/io5';
 import { useDataSourceData } from '../../services/DataSourceHooks';
@@ -26,11 +26,13 @@ import { useExternalDataItems } from '../../services/useExternalDataItems';
 import { useSystemInfo } from '../../services/fetchSystemInfo';
 import { useExternalOrgUnitData } from '../../services/fetchExternalOrgUnit';
 import { currentInstanceId } from '../../constants/currentInstanceInfo';
+import debounce from 'lodash/debounce';
+
 
 function Visualizers() {
     const { id:visualId } = useParams();
     const {  data:systemInfo } = useSystemInfo();
-    const {currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData, dataItemsData,selectedDataSourceDetails,setSelectedDataSourceDetails,analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle,visualTitleAndSubTitle,visualSettings,setSelectedVisualSettings,setVisualsColorPalettes,selectedColorPalette} = useAuthorities();
+    const {selectedDataSourceOption,setSelectedDataSourceOption,currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData, dataItemsData,selectedDataSourceDetails,setSelectedDataSourceDetails,analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle,visualTitleAndSubTitle,visualSettings,setSelectedVisualSettings,setVisualsColorPalettes,selectedColorPalette} = useAuthorities();
     const {data:singleSavedVisualData,isError,loading:isFetchSingleVisualLoading} = useFetchSingleVisualData(visualId)
     const { loading:orgUnitLoading, error:fetchOrgUnitError, data:orgUnitsData,fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData();
     const {  error:dataItemsFetchError, loading:isFetchCurrentInstanceDataItemsLoading,fetchCurrentInstanceData } = useDataItems();
@@ -43,9 +45,7 @@ function Visualizers() {
     const [isShowPeriod, setIsShowPeriod] = useState<boolean>(false);
     const [isShowSaveVisualTypeForm,setIsShowSaveVisualTypeForm ] = useState<boolean>(false)
     const [isShowStyles,setIsShowStyles ] = useState<boolean>(false)
-    
-    /// refine later (default dataSource visualId should be the current dhis2 instance)
-    const [selectedDataSourceOption, setSelectedDataSourceOption] = useState<string>("");
+
 
     const [titleOption, setTitleOption] = useState< 'none' | 'custom'>('none');
     const [subtitleOption, setSubtitleOption] = useState<'auto' | 'none' | 'custom'>('auto');
@@ -55,84 +55,85 @@ function Visualizers() {
     ));
 
 
-     useEffect(()=>{
-        console.log("selectedDataSourceDetails milller",selectedDataSourceDetails)
-        console.log("hello currentUserInfoAndOrgUnitsData", currentUserInfoAndOrgUnitsData)
-     },[selectedDataSourceDetails,currentUserInfoAndOrgUnitsData])
-
-
-      
+    /// function to clear reset to default values
+     function resetToDefaultValues() {
+        setSelectedDataSourceDetails({
+            instanceName: systemInfo?.title?.applicationTitle || "", // Fallback to an empty string if undefined
+            isCurrentInstance: true,
+          })
+         setAnalyticsData(null)
+        setSelectedChartType(chartComponents[0]?.type)
+        setAnalyticsQuery(null)
+        setAnalyticsDimensions({ dx: [], pe: ['LAST_12_MONTHS'] })
+        setIsSetPredifinedUserOrgUnits({
+            is_USER_ORGUNIT: true,
+            is_USER_ORGUNIT_CHILDREN: false,
+            is_USER_ORGUNIT_GRANDCHILDREN: false
+          })
+          setIsUseCurrentUserOrgUnits(true)
+        setSelectedOrganizationUnits([])
+        setSelectedOrgUnits([])
+        setSelectedOrgUnitGroups([])
+        setSelectedOrganizationUnitsLevels([])
+        setSelectedLevel([])
+        setSelectedVisualTitleAndSubTitle((prev)=>{
+            return {
+                ...prev,
+                 visualTitle:  "",
+                    DefaultSubTitle: [defaultUserOrgUnit],
+                    customSubTitle:""
+            }
+        })
+         setVisualsColorPalettes(systemDefaultColorPalettes[0] || [])
+            setSelectedVisualSettings({ backgroundColor: '#ffffff',visualColorPalette:selectedColorPalette,fillColor:"#ffffff",XAxisSettings:{color:"#000000",fontSize:12},YAxisSettings:{color:"#000000",fontSize:12} })
+            setSelectedDataSourceOption(currentInstanceId)
+     }
 
 
     // if visualId is false then set all chart related states to default
     useEffect(()=>{
         if(!visualId)
         {
-            setSelectedDataSourceDetails({
-                instanceName: systemInfo?.title?.applicationTitle || "", // Fallback to an empty string if undefined
-                isCurrentInstance: true,
-              })
-             setAnalyticsData(null)
-            setSelectedChartType(chartComponents[0]?.type)
-            setAnalyticsQuery(null)
-            setAnalyticsDimensions({ dx: [], pe: ['LAST_12_MONTHS'] })
-            setIsSetPredifinedUserOrgUnits({
-                is_USER_ORGUNIT: true,
-                is_USER_ORGUNIT_CHILDREN: false,
-                is_USER_ORGUNIT_GRANDCHILDREN: false
-              })
-              setIsUseCurrentUserOrgUnits(true)
-            setSelectedOrganizationUnits([])
-            setSelectedOrgUnits([])
-            setSelectedOrgUnitGroups([])
-            setSelectedOrganizationUnitsLevels([])
-            setSelectedLevel([])
-            setSelectedVisualTitleAndSubTitle((prev)=>{
-                return {
-                    ...prev,
-                     visualTitle:  "",
-                        DefaultSubTitle: [defaultUserOrgUnit],
-                        customSubTitle:""
-                }
-            })
-             setVisualsColorPalettes(systemDefaultColorPalettes[0] || [])
-                setSelectedVisualSettings({ backgroundColor: '#ffffff',visualColorPalette:selectedColorPalette,fillColor:"#ffffff",XAxisSettings:{color:"#000000",fontSize:12},YAxisSettings:{color:"#000000",fontSize:12} })
-            /// set default data source
-            if(savedDataSource)
-                {
-                    setSelectedDataSourceOption(savedDataSource?.dataStore?.entries?.find(option => option?.value?.isCurrentDHIS2 == true )?.key)
-                }
+            resetToDefaultValues()     
         }
        
-    },[visualId,savedDataSource])
+    },[visualId])
+
+    useEffect(() => {
+        console.log("analyticsDimensions ========", analyticsDimensions);
+    }, [analyticsDimensions]);
+
    
-    /// set saved dataSource
-    useEffect(()=>{
-        if(singleSavedVisualData && visualId)
-        {
-            setSelectedDataSourceOption(singleSavedVisualData?.dataStore?.dataSourceId)
-        }  
-    },[singleSavedVisualData,visualId])
+    // /// set saved dataSource
+    // useEffect(()=>{
+    //     if(singleSavedVisualData && visualId)
+    //     {
+    //         setSelectedDataSourceOption(singleSavedVisualData?.dataStore?.dataSourceId)
+    //     }  
+    // },[singleSavedVisualData,visualId])
 
 
     //// run analytics API
-    useEffect(() => {
+    const debounceRunAnalytics = useCallback(debounce(() => {
         if (singleSavedVisualData && visualId) {
-            // clear existing data
-            setAnalyticsData([])
-            // run analytics API
-            fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions));
+            keepUpWithSelectedDataSource();
+            setAnalyticsData([]); // Clear old data
+            fetchAnalyticsData(
+                formatAnalyticsDimensions(analyticsDimensions),
+                selectedDataSourceDetails
+            );
         }
-    }, [
-        selectedOrganizationUnits, 
-        selectedOrganizationUnitsLevels, 
-        selectedOrgUnitGroups, 
-        analyticsDimensions, 
-        isUseCurrentUserOrgUnits, 
-        isSetPredifinedUserOrgUnits, 
-        visualId,  
-        singleSavedVisualData 
-    ]);
+    }, 500), [analyticsDimensions, singleSavedVisualData, visualId]);
+    
+    useEffect(() => {
+        debounceRunAnalytics();
+        return debounceRunAnalytics.cancel; // Cleanup debounce on unmount
+    }, [debounceRunAnalytics]);
+    
+
+
+    
+
     
 
     // update if current user organization is selected
@@ -144,12 +145,6 @@ function Visualizers() {
      }
 
     },[isSetPredifinedUserOrgUnits])
-
-
-
-
-
-
 
     const handleShowSaveVisualTypeForm = ()=>{
         setIsShowSaveVisualTypeForm(true)
@@ -171,15 +166,17 @@ function Visualizers() {
     const handleDataSourceOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedValue = e.target.value;
         setSelectedDataSourceOption(selectedValue);
-    
+        console.log("data source selected changed")
+        // resetToDefaultValues all states
+        resetToDefaultValues()
         // Find the details for the selected data source
         const selectedDataSourceDetailsData = savedDataSource?.dataStore?.entries?.find(
             (item) => item.key === selectedValue
         )?.value;
     
-        if (selectedValue === currentInstanceId) { // Assuming "1" is the string representation of the numeric value
+        if (selectedValue === currentInstanceId) { 
             setSelectedDataSourceDetails({
-                instanceName: systemInfo?.title?.applicationTitle || "", // Fallback to an empty string if undefined
+                instanceName: systemInfo?.title?.applicationTitle || "", 
                 isCurrentInstance: true,
             });
         } else {
@@ -194,8 +191,9 @@ function Visualizers() {
         setCurrentUserInfoAndOrgUnitsData(result); 
       };
       
-// fetch data source
-useEffect(() => {
+// keepUp with selected data source
+
+ function keepUpWithSelectedDataSource(){
     // Ensure `selectedDataSourceDetails` is valid before proceeding
     if (!selectedDataSourceDetails) return;
 
@@ -208,6 +206,11 @@ useEffect(() => {
     } else {
         console.error("Invalid data source details: Missing URL or token.");
     }
+ }
+
+
+useEffect(() => {
+    keepUpWithSelectedDataSource()
 }, [selectedDataSourceDetails]);
 
 
