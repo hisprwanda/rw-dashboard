@@ -31,6 +31,13 @@ export const useOrgUnitData = () => {
         paging: "false",
       },
     },
+    orgUnitGroups: {
+      resource: "organisationUnitGroups",
+      params: {
+          fields: "id,displayName,organisationUnits[id,displayName]",
+          paging: "false",
+      },
+  },
   };
 
   // Function to explicitly fetch data

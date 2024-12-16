@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { MultiSelectField, MultiSelectOption, CircularLoader } from '@dhis2/ui';
-import { useSingleOrgUnitGroupsData } from '../../../../services/fetchOrgUnitGroups';
 import { useAuthorities } from '../../../..//context/AuthContext';
+import { useOrgUnitData } from '../../../../services/fetchOrgunitData';
 
 
 interface OrganizationUnitGroupProps {
@@ -9,11 +9,11 @@ interface OrganizationUnitGroupProps {
 }
 
 const OrganizationUnitGroup:React.FC<OrganizationUnitGroupProps> = ({isUseCurrentUserOrgUnits}) => {
-  const {selectedOrgUnitGroups,setSelectedOrgUnitGroups} = useAuthorities()
-  const { data, error, loading } = useSingleOrgUnitGroupsData();
+  const {selectedOrgUnitGroups,setSelectedOrgUnitGroups,currentUserInfoAndOrgUnitsData} = useAuthorities()
+
+      const {  error, loading } = useOrgUnitData();
 
 
-  console.log("organization unit group data", data);
 
   if (loading) {
     return <CircularLoader />;
@@ -23,7 +23,7 @@ const OrganizationUnitGroup:React.FC<OrganizationUnitGroupProps> = ({isUseCurren
     return <p className="text-red-500">Error: {error.message}</p>;
   }
 
-  const orgUnitGroups = data?.organisationUnitGroups?.organisationUnitGroups || [];
+  const orgUnitGroups = currentUserInfoAndOrgUnitsData?.orgUnitGroups?.organisationUnitGroups || [];
 
   const handleChange = ({ selected }) => {
     setSelectedOrgUnitGroups(selected);

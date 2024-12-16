@@ -68,6 +68,10 @@ function Visualizers() {
     useEffect(()=>{
         if(!visualId)
         {
+            setSelectedDataSourceDetails({
+                instanceName: systemInfo?.title?.applicationTitle || "", // Fallback to an empty string if undefined
+                isCurrentInstance: true,
+              })
              setAnalyticsData(null)
             setSelectedChartType(chartComponents[0]?.type)
             setAnalyticsQuery(null)
@@ -189,6 +193,7 @@ function Visualizers() {
         const result = await fetchCurrentUserInfoAndOrgUnitData(); 
         setCurrentUserInfoAndOrgUnitsData(result); 
       };
+      
 // fetch data source
 useEffect(() => {
     // Ensure `selectedDataSourceDetails` is valid before proceeding

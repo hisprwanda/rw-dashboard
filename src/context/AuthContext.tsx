@@ -147,6 +147,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // test
   useEffect(()=>{
+
        if(currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName)
        {
       setSelectedVisualTitleAndSubTitle({

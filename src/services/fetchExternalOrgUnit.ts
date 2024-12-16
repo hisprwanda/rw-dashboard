@@ -17,54 +17,65 @@ export const useExternalOrgUnitData = () => {
 
     // Define the queries and their parameters
     const endpoints = {
-      currentUser: `${url}/api/40/me`,
-      orgUnits: `${url}/api/40/organisationUnits`,
-      orgUnitLevels: `${url}/api/40/organisationUnitLevels`,
+        currentUser: `${url}/api/40/me`,
+        orgUnits: `${url}/api/40/organisationUnits`,
+        orgUnitLevels: `${url}/api/40/organisationUnitLevels`,
+        orgUnitGroups: `${url}/api/40/organisationUnitGroups`, // Added endpoint for orgUnitGroups
     };
 
     const params = {
-      currentUser: { fields: "organisationUnits[id,displayName]" },
-      orgUnits: {
-        fields: "id,displayName,path,children[id,displayName,path,level],level",
-        paging: "false",
-      },
-      orgUnitLevels: { fields: "id,displayName,level", paging: "false" },
+        currentUser: { fields: "organisationUnits[id,displayName]" },
+        orgUnits: {
+            fields: "id,displayName,path,children[id,displayName,path,level],level",
+            paging: "false",
+        },
+        orgUnitLevels: { fields: "id,displayName,level", paging: "false" },
+        orgUnitGroups: { // Added params for orgUnitGroups
+            fields: "id,displayName,organisationUnits[id,displayName]",
+            paging: "false",
+        },
     };
 
     try {
-      // Fetch all three endpoints concurrently
-      const [currentUserRes, orgUnitsRes, orgUnitLevelsRes] = await Promise.all([
-        axios.get(endpoints.currentUser, {
-          headers: { Authorization: `ApiToken ${token}` },
-          params: params.currentUser,
-        }),
-        axios.get(endpoints.orgUnits, {
-          headers: { Authorization: `ApiToken ${token}` },
-          params: params.orgUnits,
-        }),
-        axios.get(endpoints.orgUnitLevels, {
-          headers: { Authorization: `ApiToken ${token}` },
-          params: params.orgUnitLevels,
-        }),
-      ]);
+        // Fetch all endpoints concurrently
+        const [currentUserRes, orgUnitsRes, orgUnitLevelsRes, orgUnitGroupsRes] = await Promise.all([
+            axios.get(endpoints.currentUser, {
+                headers: { Authorization: `ApiToken ${token}` },
+                params: params.currentUser,
+            }),
+            axios.get(endpoints.orgUnits, {
+                headers: { Authorization: `ApiToken ${token}` },
+                params: params.orgUnits,
+            }),
+            axios.get(endpoints.orgUnitLevels, {
+                headers: { Authorization: `ApiToken ${token}` },
+                params: params.orgUnitLevels,
+            }),
+            axios.get(endpoints.orgUnitGroups, { // Fetch organisation unit groups
+                headers: { Authorization: `ApiToken ${token}` },
+                params: params.orgUnitGroups,
+            }),
+        ]);
 
-      // Combine results into a single object
-      const result = {
-        currentUser: currentUserRes.data,
-        orgUnits: orgUnitsRes.data,
-        orgUnitLevels: orgUnitLevelsRes.data,
-      };
+        // Combine results into a single object
+        const result = {
+            currentUser: currentUserRes.data,
+            orgUnits: orgUnitsRes.data,
+            orgUnitLevels: orgUnitLevelsRes.data,
+            orgUnitGroups: orgUnitGroupsRes.data, // Added organisation unit groups data
+        };
 
-      setResponse(result); // Save the combined response
-      setCurrentUserInfoAndOrgUnitsData(result)
-      return result; // Return the result to the caller
+        setResponse(result); // Save the combined response
+        setCurrentUserInfoAndOrgUnitsData(result);
+        return result; // Return the result to the caller
     } catch (err) {
-      setError(err.response?.statusText || err.message || "An error occurred");
-      return null; // Return null in case of error
+        setError(err.response?.statusText || err.message || "An error occurred");
+        return null; // Return null in case of error
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  }, []);
+}, []);
+
 
   return { response, error, loading, fetchExternalUserInfoAndOrgUnitData };
 };
