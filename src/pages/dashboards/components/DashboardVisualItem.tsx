@@ -3,6 +3,7 @@ import { useFetchSingleChartApi } from '../../../services/fetchSingleChart'
 import {  CircularLoader } from '@dhis2/ui';
 import {chartComponents} from "../../../constants/systemCharts"
 import {VisualSettingsTypes,VisualTitleAndSubtitleType} from "../../../types/visualSettingsTypes"
+import { useAuthorities } from '../../../context/AuthContext';
 
 
 interface DashboardVisualItem {
@@ -16,12 +17,13 @@ interface DashboardVisualItem {
 
 const DashboardVisualItem:React.FC<DashboardVisualItem> = ({query,visualType,visualSettings,visualTitleAndSubTitle,dataSourceId}) => {
 
+    const {data,error,loading,runSavedSingleVisualAnalytics} = useFetchSingleChartApi(query)
+    const {resultOfSavedSingleVisual,setResultOfSavedSingleVisual} =   useAuthorities()
 
 
-    const {data,error,loading} = useFetchSingleChartApi(query)
-
-    console.log("hello query",data)
-    console.log("hello dataSourceId",dataSourceId)
+     useEffect(()=>{
+            runSavedSingleVisualAnalytics()
+     },[])
     
     if(loading)
     {
@@ -34,7 +36,7 @@ const DashboardVisualItem:React.FC<DashboardVisualItem> = ({query,visualType,vis
         // Function to render the selected chart
         const renderChart = () => {
             const SelectedChart = chartComponents.find(chart => chart.type === visualType)?.component;
-            return SelectedChart ? <SelectedChart data={data?.myData} visualSettings={visualSettings}  visualTitleAndSubTitle={visualTitleAndSubTitle}  /> : null;
+            return SelectedChart ? <SelectedChart data={resultOfSavedSingleVisual?.myData} visualSettings={visualSettings}  visualTitleAndSubTitle={visualTitleAndSubTitle}  /> : null;
         };
     
 
