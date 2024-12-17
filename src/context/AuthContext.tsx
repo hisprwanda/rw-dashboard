@@ -193,6 +193,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         includeNumDen: true,
       };
 
+      
+
       if (instance.isCurrentInstance) {
         // Internal request via engine.query
         const analyticsQuery = {
@@ -207,6 +209,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setAnalyticsQuery(analyticsQuery);
       } else {
         // External request via axios
+
+        console.log("beta query",queryParams)
         const response = await axios.get(`${instance.url}/api/40/analytics`, {
           headers: {
             Authorization: `ApiToken ${instance.token}`,

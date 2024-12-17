@@ -87,6 +87,36 @@ function Visualizers() {
             setSelectedVisualSettings({ backgroundColor: '#ffffff',visualColorPalette:selectedColorPalette,fillColor:"#ffffff",XAxisSettings:{color:"#000000",fontSize:12},YAxisSettings:{color:"#000000",fontSize:12} })
             setSelectedDataSourceOption(currentInstanceId)
      }
+     ///
+     function resetOtherValuesToDefaultExceptDataSource() {
+   
+         setAnalyticsData(null)
+        setSelectedChartType(chartComponents[0]?.type)
+        setAnalyticsQuery(null)
+        setAnalyticsDimensions({ dx: [], pe: ['LAST_12_MONTHS'] })
+        setIsSetPredifinedUserOrgUnits({
+            is_USER_ORGUNIT: true,
+            is_USER_ORGUNIT_CHILDREN: false,
+            is_USER_ORGUNIT_GRANDCHILDREN: false
+          })
+          setIsUseCurrentUserOrgUnits(true)
+        setSelectedOrganizationUnits([])
+        setSelectedOrgUnits([])
+        setSelectedOrgUnitGroups([])
+        setSelectedOrganizationUnitsLevels([])
+        setSelectedLevel([])
+        setSelectedVisualTitleAndSubTitle((prev)=>{
+            return {
+                ...prev,
+                 visualTitle:  "",
+                    DefaultSubTitle: [defaultUserOrgUnit],
+                    customSubTitle:""
+            }
+        })
+         setVisualsColorPalettes(systemDefaultColorPalettes[0] || [])
+            setSelectedVisualSettings({ backgroundColor: '#ffffff',visualColorPalette:selectedColorPalette,fillColor:"#ffffff",XAxisSettings:{color:"#000000",fontSize:12},YAxisSettings:{color:"#000000",fontSize:12} })
+          
+     }
 
 
     // if visualId is false then set all chart related states to default
@@ -153,25 +183,38 @@ function Visualizers() {
     /// handle data source onchange
     const handleDataSourceOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedValue = e.target.value;
+        console.log("data source selected changed");
+    
+        // Step 1: Update selected data source option
         setSelectedDataSourceOption(selectedValue);
-        console.log("data source selected changed")
-        // resetToDefaultValues all states
-        resetToDefaultValues()
-        // Find the details for the selected data source
-        const selectedDataSourceDetailsData = savedDataSource?.dataStore?.entries?.find(
-            (item) => item.key === selectedValue
-        )?.value;
+    
+        // Step 2: Reset states *only* after updating selected data source details
+        let newSelectedDetails = {};
     
         if (selectedValue === currentInstanceId) { 
-            setSelectedDataSourceDetails({
+            newSelectedDetails = {
                 instanceName: systemInfo?.title?.applicationTitle || "", 
                 isCurrentInstance: true,
-            });
+            };
+
+            fetchCurrentInstanceData();
+            fetchCurrentUserAndOrgUnitData();
         } else {
-            // Handle the case where `selectedDataSourceDetailsData` might be undefined
-            setSelectedDataSourceDetails(selectedDataSourceDetailsData || {});
+            newSelectedDetails = savedDataSource?.dataStore?.entries?.find(
+                (item) => item.key === selectedValue
+            )?.value || {};
+
+            fetchExternalDataItems(newSelectedDetails.url, newSelectedDetails.token);
+            fetchExternalUserInfoAndOrgUnitData(newSelectedDetails.url, newSelectedDetails.token);
+
         }
+    
+        // Step 3: Update details and reset default values *afterwards*
+        setSelectedDataSourceDetails(newSelectedDetails);
+        resetOtherValuesToDefaultExceptDataSource() 
+    
     };
+    
     
 /// fetch current user and Organization unit
     const fetchCurrentUserAndOrgUnitData = async () => {
@@ -203,7 +246,9 @@ function keepUpWithSelectedDataSource() {
 
 
 useEffect(() => {
+   
     selectedDataSourceDetailsRef.current = selectedDataSourceDetails;
+  
 }, [selectedDataSourceDetails]);
 
 
