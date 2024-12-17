@@ -10,16 +10,19 @@ interface DashboardVisualItem {
     visualType: string;
     visualTitleAndSubTitle:VisualTitleAndSubtitleType;
     visualSettings: VisualSettingsTypes;
+    dataSourceId:string
   
 }
 
-const DashboardVisualItem:React.FC<DashboardVisualItem> = ({query,visualType,visualSettings,visualTitleAndSubTitle}) => {
-  console.log("hello query",query)
+const DashboardVisualItem:React.FC<DashboardVisualItem> = ({query,visualType,visualSettings,visualTitleAndSubTitle,dataSourceId}) => {
+
 
 
     const {data,error,loading} = useFetchSingleChartApi(query)
 
-
+    console.log("hello query",data)
+    console.log("hello dataSourceId",dataSourceId)
+    
     if(loading)
     {
         return <CircularLoader/>
