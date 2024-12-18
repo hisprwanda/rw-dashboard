@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { CircularLoader } from '@dhis2/ui';
+import { CircularLoader, NoticeBox } from '@dhis2/ui'; // Use NoticeBox for better error display
 import { chartComponents } from '../../../constants/systemCharts';
 import { VisualSettingsTypes, VisualTitleAndSubtitleType } from '../../../types/visualSettingsTypes';
 import { currentInstanceId } from '../../../constants/currentInstanceInfo';
@@ -22,17 +22,16 @@ const DashboardVisualItem: React.FC<DashboardVisualItemProps> = ({
     visualTitleAndSubTitle,
     dataSourceId,
 }) => {
-    const { data: savedDataSource } = useDataSourceData();
+    const { data: savedDataSource, loading, error, isError } = useDataSourceData();
     const { runSavedSingleVisualAnalytics, data: internalData, loading: internalLoading, error: internalError } = useFetchSingleChartApi(query);
     const { fetchExternalAnalyticsData, response: externalData, loading: externalLoading, error: externalError } = useExternalAnalyticsData();
 
     const [chartData, setChartData] = useState<any>(null);
 
-
-    useEffect(()=>{
-      console.log("externalData",externalData)
-      console.log("internalData",internalData)
-    },[externalData,internalData])
+    useEffect(() => {
+        console.log('externalData', externalData);
+        console.log('internalData', internalData);
+    }, [externalData, internalData]);
 
     // Determine data source and fetch data
     const fetchData = useCallback(async () => {
@@ -52,8 +51,10 @@ const DashboardVisualItem: React.FC<DashboardVisualItemProps> = ({
 
     // Fetch data on mount or when dependencies change
     useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+        if (!loading && !error) {
+            fetchData();
+        }
+    }, [loading, error]);
 
     // Update chart data based on fetch results
     useEffect(() => {
@@ -61,9 +62,14 @@ const DashboardVisualItem: React.FC<DashboardVisualItemProps> = ({
         setChartData(isCurrentInstance ? internalData : externalData);
     }, [internalData, externalData, dataSourceId]);
 
-    // Render loader or error state
-    if (internalLoading || externalLoading) return <CircularLoader />;
-    if (internalError || externalError) return <p>Error: {internalError?.message || externalError}</p>;
+    // Handle loading state
+    if (loading || internalLoading || externalLoading) return <CircularLoader />;
+
+    // Handle errors
+    if (isError || internalError || externalError) {
+        const errorMessage = error?.message || internalError?.message || externalError?.message;
+        return <NoticeBox title="Error" error>{errorMessage}</NoticeBox>;
+    }
 
     // Render the selected chart
     const renderChart = () => {
