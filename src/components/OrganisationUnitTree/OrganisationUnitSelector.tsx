@@ -144,7 +144,7 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
    // Handle update analytics API
    const handleUpdateAnalytics = async () => {
     // Continue with analytics fetch
-    await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions))
+    await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions),selectedDataSourceDetails)
     setIsShowOrganizationUnit(false)
   };
 

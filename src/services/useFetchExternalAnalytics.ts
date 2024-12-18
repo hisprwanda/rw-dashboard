@@ -32,7 +32,7 @@ export const useExternalAnalyticsData = () => {
             });
 
             setResponse(res.data);
-            setResultOfSavedSingleVisual(res.data); // Save the response to context
+           // setResultOfSavedSingleVisual(res.data); // Save the response to context
 
         } catch (err) {
             setError(err.response?.statusText || err.message || "An error occurred");
