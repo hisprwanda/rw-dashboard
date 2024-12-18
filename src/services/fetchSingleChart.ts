@@ -9,7 +9,6 @@ export const useFetchSingleChartApi = (query: any) => {
 
         return { data: null, loading: false, error: "Invalid query", isError: true, refetch: null };
     }
-   const {resultOfSavedSingleVisual,setResultOfSavedSingleVisual} =  useAuthorities()
     const engine = useDataEngine();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -20,9 +19,9 @@ export const useFetchSingleChartApi = (query: any) => {
         setLoading(true);
         setError(null);
         try {
-            setResultOfSavedSingleVisual(null); // Clear previous data
+     
             const result = await engine.query(query);
-            // setResultOfSavedSingleVisual(result?.myData); // Save fetched result
+        
             setData(result?.myData);
         } catch (err) {
             setError(err); // Ensure the error is handled correctly

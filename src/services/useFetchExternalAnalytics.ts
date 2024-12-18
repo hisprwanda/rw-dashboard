@@ -7,7 +7,7 @@ import { useAuthorities } from '../context/AuthContext';
 /// use this if current instance is false
 
 export const useExternalAnalyticsData = () => {
-    const { resultOfSavedSingleVisual, setResultOfSavedSingleVisual } = useAuthorities();
+
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -22,7 +22,7 @@ export const useExternalAnalyticsData = () => {
         const queryParams = query?.myData?.params
 
         try {
-            setResultOfSavedSingleVisual(null)
+
             // Make the request to the analytics API using the passed URL
             const res = await axios.get(`${url}/api/analytics.json`, {
                 headers: {
@@ -32,14 +32,14 @@ export const useExternalAnalyticsData = () => {
             });
 
             setResponse(res.data);
-           // setResultOfSavedSingleVisual(res.data); // Save the response to context
+
 
         } catch (err) {
             setError(err.response?.statusText || err.message || "An error occurred");
         } finally {
             setLoading(false);
         }
-    }, [setResultOfSavedSingleVisual]);
+    }, []);
 
     return { response, error, loading, fetchExternalAnalyticsData };
 };
