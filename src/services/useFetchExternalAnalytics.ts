@@ -18,13 +18,8 @@ export const useExternalAnalyticsData = () => {
         setError(null);
         setLoading(true);
 
-        // Prepare the request parameters based on the passed query
-        const params = {
-            filter: query.myData?.params?.filter || '',
-            dimension: query.myData?.params?.dimension.join(';') || '',
-            includeNumDen: query.myData?.params?.includeNumDen || false,
-            displayProperty: query.myData?.params?.displayProperty || '',
-        };
+
+        const queryParams = query?.myData?.params
 
         try {
             setResultOfSavedSingleVisual(null)
@@ -33,7 +28,7 @@ export const useExternalAnalyticsData = () => {
                 headers: {
                     Authorization: `ApiToken ${token}`,
                 },
-                params: params,
+                params:queryParams ,
             });
 
             setResponse(res.data);

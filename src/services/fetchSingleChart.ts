@@ -22,8 +22,8 @@ export const useFetchSingleChartApi = (query: any) => {
         try {
             setResultOfSavedSingleVisual(null); // Clear previous data
             const result = await engine.query(query);
-            setResultOfSavedSingleVisual(result); // Save fetched result
-            setData(result);
+            setResultOfSavedSingleVisual(result?.myData); // Save fetched result
+            setData(result?.myData);
         } catch (err) {
             setError(err); // Ensure the error is handled correctly
         } finally {
