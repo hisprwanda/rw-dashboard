@@ -60,10 +60,6 @@ const DataModal: React.FC<DataModalProps> = ({ setIsShowDataModal, data, error, 
         }
     }, [data, selectedDimensionItemType]);
 
-    useEffect(() => {
-        console.log("test final data", data);
-    }, [data]);
-
     // Handle the change of selected dimension item type
     const handleDimensionItemTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedType = dimensionItemTypes.find((type) => type.value === event.target.value);
@@ -88,9 +84,10 @@ const DataModal: React.FC<DataModalProps> = ({ setIsShowDataModal, data, error, 
         setIsShowDataModal(false);
     };
 
-    useEffect(() => {
-        console.log("selectedDimensionItemType changed", selectedDimensionItemType);
-    }, [selectedDimensionItemType]);
+
+    useEffect(()=>{
+        console.log("hello selected data",analyticsDimensions?.dx)
+    },[analyticsDimensions])
 
     // if (loading) return <Loading />
     if (error) return <div>Error loading data...</div>;
@@ -124,6 +121,7 @@ const DataModal: React.FC<DataModalProps> = ({ setIsShowDataModal, data, error, 
                     filterPlaceholder="Search options..."
                     options={availableOptions}
                     selected={analyticsDimensions?.dx}
+                
                     onChange={({ selected }) => handleChange(selected)}
                     loading={loading}
                     filterable

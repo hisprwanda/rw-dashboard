@@ -27,12 +27,13 @@ import { useSystemInfo } from '../../services/fetchSystemInfo';
 import { useExternalOrgUnitData } from '../../services/fetchExternalOrgUnit';
 import { currentInstanceId } from '../../constants/currentInstanceInfo';
 import debounce from 'lodash/debounce';
+import { dimensionItemTypes } from '../../constants/dimensionItemTypes';
 
 
 function Visualizers() {
     const { id:visualId } = useParams();
     const {  data:systemInfo } = useSystemInfo();
-    const {selectedDataSourceOption,setSelectedDataSourceOption,currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData, dataItemsData,selectedDataSourceDetails,setSelectedDataSourceDetails,analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle,visualTitleAndSubTitle,visualSettings,setSelectedVisualSettings,setVisualsColorPalettes,selectedColorPalette,selectedDimensionItemType} = useAuthorities();
+    const {selectedDataSourceOption,setSelectedDataSourceOption,currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData, dataItemsData,selectedDataSourceDetails,setSelectedDataSourceDetails,setSelectedDimensionItemType,analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle,visualTitleAndSubTitle,visualSettings,setSelectedVisualSettings,setVisualsColorPalettes,selectedColorPalette,selectedDimensionItemType} = useAuthorities();
     const {data:singleSavedVisualData,isError,loading:isFetchSingleVisualLoading} = useFetchSingleVisualData(visualId)
     const { loading:orgUnitLoading, error:fetchOrgUnitError, data:orgUnitsData,fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData();
     const {  error:dataItemsFetchError, loading:isFetchCurrentInstanceDataItemsLoading,fetchCurrentInstanceData } = useDataItems();
@@ -56,6 +57,7 @@ function Visualizers() {
 
     /// function to clear reset to default values
      function resetToDefaultValues() {
+        setSelectedDimensionItemType(dimensionItemTypes[0])
         setSelectedDataSourceDetails({
             instanceName: systemInfo?.title?.applicationTitle || "", // Fallback to an empty string if undefined
             isCurrentInstance: true,
@@ -89,7 +91,7 @@ function Visualizers() {
      }
      ///
      function resetOtherValuesToDefaultExceptDataSource() {
-   
+        setSelectedDimensionItemType(dimensionItemTypes[0])
          setAnalyticsData(null)
         setSelectedChartType(chartComponents[0]?.type)
         setAnalyticsQuery(null)
@@ -204,7 +206,7 @@ function Visualizers() {
                 (item) => item.key === selectedValue
             )?.value || {};
 
-            fetchExternalDataItems(newSelectedDetails.url, newSelectedDetails.token);
+            fetchExternalDataItems(newSelectedDetails.url, newSelectedDetails.token,selectedDimensionItemType);
             fetchExternalUserInfoAndOrgUnitData(newSelectedDetails.url, newSelectedDetails.token);
 
         }
@@ -234,7 +236,7 @@ function keepUpWithSelectedDataSource() {
         fetchCurrentInstanceData(selectedDimensionItemType);
         fetchCurrentUserAndOrgUnitData();
     } else if (details.url && details.token) {
-        fetchExternalDataItems(details.url, details.token);
+        fetchExternalDataItems(details.url, details.token,selectedDimensionItemType);
         fetchExternalUserInfoAndOrgUnitData(details.url, details.token);
     } else {
         console.error("Invalid data source details: Missing URL or token.");
@@ -255,7 +257,14 @@ useEffect(() => {
 /// handle selectedDimensionItemType onChange 
  useEffect(()=>{
     console.log("selectedDimensionItemType jack",selectedDimensionItemType)
-    fetchCurrentInstanceData(selectedDimensionItemType);
+    if(selectedDataSourceDetails.isCurrentInstance)
+    {
+        fetchCurrentInstanceData(selectedDimensionItemType);
+    }
+    else {
+        fetchExternalDataItems(selectedDataSourceDetails.url, selectedDataSourceDetails.token,selectedDimensionItemType);
+    }
+  
  },[selectedDimensionItemType])
 
 
