@@ -5,110 +5,88 @@ import { dimensionItemTypesTYPES } from '../types/dimensionDataItemTypes';
 
 export const useDataItems = () => {
     const engine = useDataEngine();
-    const { setDataItemsData,selectedDimensionItemType } = useAuthorities();
+    const { setDataItemsData, selectedDimensionItemType } = useAuthorities();
+
     // Local state for managing loading, error, and data
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [data, setData] = useState(null);
 
-    // Function to fetch data, only called when explicitly invoked
-    const fetchCurrentInstanceData = useCallback(async (selectedDimensionItemType:dimensionItemTypesTYPES) => {
-        
-        let query:any = {
-            dataItems: {
-                resource: 'dataItems.json',
-                params: {
-                    fields: ['id', 'displayName~rename(name)', 'dimensionItemType', 'expression'],
-                    order: 'displayName:asc',
-                    pageSize: 10000,
-                    page: 1,
-                },
-            },
+    // Helper function to build the query based on dimension type
+    const buildQuery = (dimensionType: string) => {
+        const commonParams = {
+            fields: ['id', 'displayName~rename(name)', 'dimensionItemType', 'expression'],
+            order: 'displayName:asc',
+            pageSize: 10000,
+            page: 1,
+            paging: true,
         };
-        if(selectedDimensionItemType.value === "dataItems")
-            {
-             query = {
-                dataItems: {
-                    resource: 'dataItems.json',
-                    params: {
-                        fields: ['id', 'displayName~rename(name)', 'dimensionItemType', 'expression'],
-                        order: 'displayName:asc',
-                        pageSize: 10000,
-                        page: 1,
+
+        switch (dimensionType) {
+            case 'dataItems':
+                return { dataItems: { resource: 'dataItems.json', params: commonParams } };
+            case 'indicators':
+                return { indicators: { resource: 'indicators.json', params: { ...commonParams, paging: true } } };
+            case 'dataElements':
+                return {
+                    dataElements: {
+                        resource: 'dataElements.json',
+                        params: { ...commonParams, filter: 'domainType:eq:AGGREGATE', paging: true },
                     },
-                },
-            }
-            }
-            else if(selectedDimensionItemType.value === "indicators")
-                {
-                 query = {
-                     indicators: {
-                         resource: 'indicators.json',
-                         params: {
-                             fields: 'id,displayName~rename(name),dimensionItemType',
-                             order: 'displayName:asc',
-                             paging: true,
-                             page: 1,
-                         },
-                     },
-                 };
-                }
-       else if(selectedDimensionItemType.value === "dataElements")
-       {
-        query = {
-            dataElements: {
-                resource: 'dataElements.json',
-                params: {
-                    fields: 'dimensionItem~rename(id),displayName~rename(name),dimensionItemType',
-                    order: 'displayName:asc',
-                    filter: 'domainType:eq:AGGREGATE',
-                    paging: true,
-                    page: 1,
-                },
-            },
-        };
-       }
-       else if(selectedDimensionItemType.value === "dataSets")
-       {
-        query = {
-            dataSets: {
-                resource: 'dataSets.json',
-                params: {
-                    fields: 'dimensionItem~rename(id),displayName~rename(name),dimensionItemType',
-                    order: 'displayName:asc',
-                    paging: true,
-                    page: 1,
-                },
-            },
-        };
-       }
- 
+                };
+            case 'dataSets':
+                return { dataSets: { resource: 'dataSets.json', params: { ...commonParams, paging: true } } };
+            case 'Event Data Item':
+                return {
+                    dataItems: {
+                        resource: 'dataItems',
+                        params: {
+                            ...commonParams,
+                            filter: 'dimensionItemType:in:[PROGRAM_DATA_ELEMENT,PROGRAM_ATTRIBUTE]',
+                        },
+                    },
+                };
+            case 'Program Indicator':
+                return {
+                    dataItems: {
+                        resource: 'dataItems',
+                        params: {
+                            ...commonParams,
+                            filter: 'dimensionItemType:eq:PROGRAM_INDICATOR',
+                        },
+                    },
+                };
+            case 'Calculation':
+                return {
+                    dataItems: {
+                        resource: 'dataItems',
+                        params: {
+                            ...commonParams,
+                            filter: 'dimensionItemType:eq:EXPRESSION_DIMENSION_ITEM',
+                        },
+                    },
+                };
+            default:
+                return {};
+        }
+    };
+
+    // Function to fetch data, only called when explicitly invoked
+    const fetchCurrentInstanceData = useCallback(async (selectedDimensionItemType: dimensionItemTypesTYPES) => {
+        const { value } = selectedDimensionItemType;
+        const query = buildQuery(value);
 
         setLoading(true);
         setError(null);
+
         try {
             const result = await engine.query(query);
-            if(selectedDimensionItemType.value === "dataItems"){
-                setData(result.dataItems);
-                setDataItemsData(result.dataItems);
-            }
-            else if(selectedDimensionItemType.value === "indicators")
-            {
-                setData(result.indicators);
-                setDataItemsData(result.indicators);
-            }
-            else if(selectedDimensionItemType.value === "dataElements")
-            {
-                setData(result.dataElements);
-                setDataItemsData(result.dataElements);
-            }
-            else if(selectedDimensionItemType.value === "dataSets")
-            {
-                setData(result.dataSets);
-                setDataItemsData(result.dataSets);
-            }
+            const dataKey = ['dataItems', 'Event Data Item', 'Program Indicator', 'Calculation'].includes(value) ? 'dataItems' : value;
 
-      
+            const fetchedData = result[dataKey];
+
+            setData(fetchedData);
+            setDataItemsData(fetchedData);
         } catch (err) {
             setError(err);
         } finally {

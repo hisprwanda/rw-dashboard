@@ -254,6 +254,7 @@ useEffect(() => {
 
 /// handle selectedDimensionItemType onChange 
  useEffect(()=>{
+    console.log("selectedDimensionItemType jack",selectedDimensionItemType)
     fetchCurrentInstanceData(selectedDimensionItemType);
  },[selectedDimensionItemType])
 
