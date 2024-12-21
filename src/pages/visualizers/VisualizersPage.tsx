@@ -32,7 +32,7 @@ import debounce from 'lodash/debounce';
 function Visualizers() {
     const { id:visualId } = useParams();
     const {  data:systemInfo } = useSystemInfo();
-    const {selectedDataSourceOption,setSelectedDataSourceOption,currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData, dataItemsData,selectedDataSourceDetails,setSelectedDataSourceDetails,analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle,visualTitleAndSubTitle,visualSettings,setSelectedVisualSettings,setVisualsColorPalettes,selectedColorPalette} = useAuthorities();
+    const {selectedDataSourceOption,setSelectedDataSourceOption,currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData, dataItemsData,selectedDataSourceDetails,setSelectedDataSourceDetails,analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle,visualTitleAndSubTitle,visualSettings,setSelectedVisualSettings,setVisualsColorPalettes,selectedColorPalette,selectedDimensionItemType} = useAuthorities();
     const {data:singleSavedVisualData,isError,loading:isFetchSingleVisualLoading} = useFetchSingleVisualData(visualId)
     const { loading:orgUnitLoading, error:fetchOrgUnitError, data:orgUnitsData,fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData();
     const {  error:dataItemsFetchError, loading:isFetchCurrentInstanceDataItemsLoading,fetchCurrentInstanceData } = useDataItems();
@@ -125,7 +125,7 @@ function Visualizers() {
         {
             resetToDefaultValues() 
           /// if no visual created , fetch data of current instance
-          fetchCurrentInstanceData();
+          fetchCurrentInstanceData(selectedDimensionItemType);
           fetchCurrentUserAndOrgUnitData();
         }
        
@@ -197,7 +197,7 @@ function Visualizers() {
                 isCurrentInstance: true,
             };
 
-            fetchCurrentInstanceData();
+            fetchCurrentInstanceData(selectedDimensionItemType);
             fetchCurrentUserAndOrgUnitData();
         } else {
             newSelectedDetails = savedDataSource?.dataStore?.entries?.find(
@@ -231,7 +231,7 @@ function keepUpWithSelectedDataSource() {
 
     // Proceed with using the latest `details`
     if (details.isCurrentInstance) {
-        fetchCurrentInstanceData();
+        fetchCurrentInstanceData(selectedDimensionItemType);
         fetchCurrentUserAndOrgUnitData();
     } else if (details.url && details.token) {
         fetchExternalDataItems(details.url, details.token);
@@ -252,7 +252,17 @@ useEffect(() => {
 }, [selectedDataSourceDetails]);
 
 
+/// handle selectedDimensionItemType onChange 
+ useEffect(()=>{
+    fetchCurrentInstanceData(selectedDimensionItemType);
+ },[selectedDimensionItemType])
 
+
+
+   //// testing data items
+   useEffect(()=>{
+    console.log("here is updated data items",dataItemsData)
+  },[dataItemsData])
 
  
 

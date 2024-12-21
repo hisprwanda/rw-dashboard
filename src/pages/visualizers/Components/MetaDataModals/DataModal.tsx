@@ -1,24 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Transfer, TransferOption } from "@dhis2/ui";
+import { Transfer, TransferOption, SingleSelectField, SingleSelectOption, colors } from "@dhis2/ui";
 import Button from "../../../../components/Button";
 import { IoSaveOutline } from 'react-icons/io5';
 import { useDataItems } from '../../../../services/fetchDataItems';
 import Loading from '../../../../components/Loading';
 import { useAuthorities } from '../../../../context/AuthContext';
 import { formatAnalyticsDimensions } from '../../../../lib/formatAnalyticsDimensions';
-
+import { dimensionItemTypes } from '../../../../constants/dimensionItemTypes';
+import { dimensionItemTypesTYPES } from "../../../../types/dimensionDataItemTypes";
 
 interface DataModalProps {
     setIsShowDataModal: any;
-    data:any;
-    loading:boolean;
+    data: any;
+    loading: boolean;
     error: any;
 }
 
-const DataModal: React.FC<DataModalProps> = ({ setIsShowDataModal,data,error,loading }) => {
-    // Fetch data using your custom hook
-    //const { data, error, loading } = useDataItems();
-    const { analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, isFetchAnalyticsDataLoading ,selectedDataSourceDetails} = useAuthorities();
+const DataModal: React.FC<DataModalProps> = ({ setIsShowDataModal, data, error, loading }) => {
+    const { selectedDimensionItemType, setSelectedDimensionItemType } = useAuthorities();
+
+    const { analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, isFetchAnalyticsDataLoading, selectedDataSourceDetails } = useAuthorities();
 
     // Initialize state for available options and selected options
     const [availableOptions, setAvailableOptions] = useState<TransferOption[]>([]);
@@ -34,6 +35,14 @@ const DataModal: React.FC<DataModalProps> = ({ setIsShowDataModal,data,error,loa
         }
     }, [data]);
 
+    // Handle the change of selected dimension item type
+    const handleDimensionItemTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedType = dimensionItemTypes.find((type) => type.value === event.target.value);
+        if (selectedType) {
+            setSelectedDimensionItemType(selectedType);
+        }
+    };
+
     // Function to handle the transfer of options between available and selected lists
     const handleChange = (newSelected: string[]) => {
         setAnalyticsDimensions((prev: any) => {
@@ -44,21 +53,44 @@ const DataModal: React.FC<DataModalProps> = ({ setIsShowDataModal,data,error,loa
         });
     };
 
-
     // Function to handle the update logic
     const handleUpdate = async () => {
-        await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions),selectedDataSourceDetails);
+        await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions), selectedDataSourceDetails);
         setIsShowDataModal(false);
     };
 
+    useEffect(() => {
+        console.log("selectedDimensionItemType changed", selectedDimensionItemType);
+    }, [selectedDimensionItemType]);
 
-    // if (loading) return <Loading/>
+    // if (loading) return <Loading />
     if (error) return <div>Error loading data...</div>;
 
     return (
         <div>
-            <h3>Data</h3>
+            <div className="space-y-2 mb-3">
+                <label
+                    htmlFor="dimensionItemType"
+                    className="block text-sm font-medium text-gray-700"
+                >
+                    Dimension Item Type
+                </label>
+                <select
+                    id="dimensionItemType"
+                    value={selectedDimensionItemType?.value || ""}
+                    onChange={handleDimensionItemTypeChange}
+                    className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-sm"
+                >
+                    {dimensionItemTypes.map((type) => (
+                        <option key={type.value} value={type.value}>
+                            {type.label}
+                        </option>
+                    ))}
+                </select>
+            </div>
+
             <Transfer
+                className=" z-40 bg-white"
                 filterPlaceholder="Search options..."
                 options={availableOptions}
                 selected={analyticsDimensions?.dx}

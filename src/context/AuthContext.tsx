@@ -14,6 +14,8 @@ import { systemDefaultColorPalettes } from "../constants/colorPalettes";
 import { DataSourceFormFields } from "../types/DataSource";
 import { useSystemInfo } from "../services/fetchSystemInfo";
 import axios from "axios";
+import { dimensionItemTypesTYPES } from "../types/dimensionDataItemTypes";
+import { dimensionItemTypes } from "../constants/dimensionItemTypes";
 
 
 
@@ -63,7 +65,9 @@ interface AuthContextProps {
      currentUserInfoAndOrgUnitsData:any;
      setCurrentUserInfoAndOrgUnitsData:any;
      selectedDataSourceOption:string;
-      setSelectedDataSourceOption:any
+      setSelectedDataSourceOption:any;
+      selectedDimensionItemType:dimensionItemTypesTYPES;
+       setSelectedDimensionItemType:any
  
 }
 
@@ -96,7 +100,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   
   const [selectedDataSourceDetails, setSelectedDataSourceDetails] = useState<DataSourceFormFields>(defaultDataSource);
 
-
+    const [selectedDimensionItemType, setSelectedDimensionItemType] = useState<dimensionItemTypesTYPES>(dimensionItemTypes[0])
 
   // metadata states
   const [dataItemsData,setDataItemsData] = useState<any>()
@@ -301,8 +305,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }
 
 
+
+
+
   return (
-    <AuthContext.Provider value={{selectedDataSourceOption,setSelectedDataSourceOption,currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData,selectedDataSourceDetails,setSelectedDataSourceDetails,dataItemsData,setDataItemsData,setVisualsColorPalettes,visualsColorPalettes, selectedColorPalette,setSelectedColorPalette ,visualSettings,setSelectedVisualSettings,fetchSingleOrgUnitName,visualTitleAndSubTitle,setSelectedVisualTitleAndSubTitle,  selectedVisualsForDashboard, setSelectedVisualsForDashboard,setAnalyticsData,setAnalyticsQuery,selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery,selectedChartType,setSelectedChartType}}>
+    <AuthContext.Provider value={{selectedDimensionItemType,setSelectedDimensionItemType,selectedDataSourceOption,setSelectedDataSourceOption,currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData,selectedDataSourceDetails,setSelectedDataSourceDetails,dataItemsData,setDataItemsData,setVisualsColorPalettes,visualsColorPalettes, selectedColorPalette,setSelectedColorPalette ,visualSettings,setSelectedVisualSettings,fetchSingleOrgUnitName,visualTitleAndSubTitle,setSelectedVisualTitleAndSubTitle,  selectedVisualsForDashboard, setSelectedVisualsForDashboard,setAnalyticsData,setAnalyticsQuery,selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery,selectedChartType,setSelectedChartType}}>
       {children}
     </AuthContext.Provider>
   );
