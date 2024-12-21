@@ -17,6 +17,9 @@ interface DataModalProps {
 }
 
 const DataModal: React.FC<DataModalProps> = ({ setIsShowDataModal, data, error, loading }) => {
+
+
+    
     const { selectedDimensionItemType, setSelectedDimensionItemType } = useAuthorities();
 
     const { analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, isFetchAnalyticsDataLoading, selectedDataSourceDetails } = useAuthorities();
@@ -26,14 +29,53 @@ const DataModal: React.FC<DataModalProps> = ({ setIsShowDataModal, data, error, 
 
     // Effect to map fetched data into the required TransferOption format
     useEffect(() => {
-        if (data?.dataItems) {
-            const transformedOptions = data?.dataItems?.map((item: any) => ({
-                label: item.name,  // Display the 'name' field in the Transfer list
-                value: item.id     // Use the 'id' field as the value
-            }));
-            setAvailableOptions(transformedOptions);
+        if(selectedDimensionItemType.value === "dataItems")
+        {
+            if (data?.dataItems) {
+                const transformedOptions = data?.dataItems?.map((item: any) => ({
+                    label: item.name,  // Display the 'name' field in the Transfer list
+                    value: item.id     // Use the 'id' field as the value
+                }));
+                setAvailableOptions(transformedOptions);
+            }
         }
-    }, [data]);
+        else if (selectedDimensionItemType.value === "indicators")
+            {
+                if (data?.indicators) {
+                    const transformedOptions = data?.indicators?.map((item: any) => ({
+                        label: item.name,  // Display the 'name' field in the Transfer list
+                        value: item.id     // Use the 'id' field as the value
+                    }));
+                    setAvailableOptions(transformedOptions);
+                } 
+            }
+        else if (selectedDimensionItemType.value === "dataElements")
+        {
+            if (data?.dataElements) {
+                const transformedOptions = data?.dataElements?.map((item: any) => ({
+                    label: item.name,  // Display the 'name' field in the Transfer list
+                    value: item.id     // Use the 'id' field as the value
+                }));
+                setAvailableOptions(transformedOptions);
+            } 
+        }
+        else if (selectedDimensionItemType.value === "dataSets")
+        {
+            if (data?.dataSets) {
+                const transformedOptions = data?.dataSets?.map((item: any) => ({
+                    label: item.name,  // Display the 'name' field in the Transfer list
+                    value: item.id     // Use the 'id' field as the value
+                }));
+                setAvailableOptions(transformedOptions);
+            } 
+        }
+    
+    }, [data,selectedDimensionItemType]);
+
+
+    useEffect(()=>{
+   console.log("test final data",data)
+    },[data])
 
     // Handle the change of selected dimension item type
     const handleDimensionItemTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {

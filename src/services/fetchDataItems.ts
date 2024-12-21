@@ -25,20 +25,64 @@ export const useDataItems = () => {
                 },
             },
         };
-       if(selectedDimensionItemType.value === "dataElements")
+        if(selectedDimensionItemType.value === "dataItems")
+            {
+             query = {
+                dataItems: {
+                    resource: 'dataItems.json',
+                    params: {
+                        fields: ['id', 'displayName~rename(name)', 'dimensionItemType', 'expression'],
+                        order: 'displayName:asc',
+                        pageSize: 10000,
+                        page: 1,
+                    },
+                },
+            }
+            }
+            else if(selectedDimensionItemType.value === "indicators")
+                {
+                 query = {
+                     indicators: {
+                         resource: 'indicators.json',
+                         params: {
+                             fields: 'id,displayName~rename(name),dimensionItemType',
+                             order: 'displayName:asc',
+                             paging: true,
+                             page: 1,
+                         },
+                     },
+                 };
+                }
+       else if(selectedDimensionItemType.value === "dataElements")
        {
         query = {
             dataElements: {
                 resource: 'dataElements.json',
                 params: {
-                    fields: ['id', 'displayName~rename(name)', 'dimensionItemType', 'expression'],
+                    fields: 'dimensionItem~rename(id),displayName~rename(name),dimensionItemType',
                     order: 'displayName:asc',
-                    pageSize: 10000,
+                    filter: 'domainType:eq:AGGREGATE',
+                    paging: true,
                     page: 1,
                 },
             },
         };
        }
+       else if(selectedDimensionItemType.value === "dataSets")
+       {
+        query = {
+            dataSets: {
+                resource: 'dataSets.json',
+                params: {
+                    fields: 'dimensionItem~rename(id),displayName~rename(name),dimensionItemType',
+                    order: 'displayName:asc',
+                    paging: true,
+                    page: 1,
+                },
+            },
+        };
+       }
+ 
 
         setLoading(true);
         setError(null);
@@ -48,10 +92,20 @@ export const useDataItems = () => {
                 setData(result.dataItems);
                 setDataItemsData(result.dataItems);
             }
+            else if(selectedDimensionItemType.value === "indicators")
+            {
+                setData(result.indicators);
+                setDataItemsData(result.indicators);
+            }
             else if(selectedDimensionItemType.value === "dataElements")
             {
                 setData(result.dataElements);
                 setDataItemsData(result.dataElements);
+            }
+            else if(selectedDimensionItemType.value === "dataSets")
+            {
+                setData(result.dataSets);
+                setDataItemsData(result.dataSets);
             }
 
       
