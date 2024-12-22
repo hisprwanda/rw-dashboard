@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Transfer, TransferOption, SingleSelectField, SingleSelectOption, colors } from "@dhis2/ui";
+
 import Button from "../../../../components/Button";
 import { IoSaveOutline } from 'react-icons/io5';
 import { useDataItems } from '../../../../services/fetchDataItems';
@@ -18,7 +19,7 @@ interface DataModalProps {
 
 const DataModal: React.FC<DataModalProps> = ({ setIsShowDataModal, data, error, loading }) => {
     const { selectedDimensionItemType, setSelectedDimensionItemType } = useAuthorities();
-    const { analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, isFetchAnalyticsDataLoading, selectedDataSourceDetails } = useAuthorities();
+    const {dataItemsDataPage,setDataItemsDataPage, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, isFetchAnalyticsDataLoading, selectedDataSourceDetails } = useAuthorities();
 
     // Initialize state for available options and selected options
     const [availableOptions, setAvailableOptions] = useState<TransferOption[]>([]);
@@ -82,12 +83,22 @@ const DataModal: React.FC<DataModalProps> = ({ setIsShowDataModal, data, error, 
     const handleUpdate = async () => {
         await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions), selectedDataSourceDetails);
         setIsShowDataModal(false);
+        // reset to page one
+        setDataItemsDataPage(1)
     };
+
+    const handleEndReached = () => {
+        if (!loading) {
+        setDataItemsDataPage((prev:number) => prev + 1);
+        // don't work about running pagination api calls, I'm calling it in another component when setDataItemsDataPage change by using useEffect
+        }
+    };
+    
 
 
     useEffect(()=>{
-        console.log("hello selected data",analyticsDimensions?.dx)
-    },[analyticsDimensions])
+        console.log("hello dataItemsDataPage page",dataItemsDataPage)
+    },[dataItemsDataPage])
 
     // if (loading) return <Loading />
     if (error) return <div>Error loading data...</div>;
@@ -114,21 +125,18 @@ const DataModal: React.FC<DataModalProps> = ({ setIsShowDataModal, data, error, 
                     ))}
                 </select>
             </div>
-
-            {availableOptions.length > 0 ? (
                 <Transfer
                     className="z-40 bg-white"
                     filterPlaceholder="Search options..."
                     options={availableOptions}
                     selected={analyticsDimensions?.dx}
-                
                     onChange={({ selected }) => handleChange(selected)}
                     loading={loading}
                     filterable
+                    onEndReached={handleEndReached}
+                    
                 />
-            ) : (
-                <div className="text-gray-500 text-center">No Data Found</div>
-            )}
+         
 
             <div className="mt-4 flex justify-end">
                 <Button

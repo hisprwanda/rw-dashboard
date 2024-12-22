@@ -33,7 +33,7 @@ import { dimensionItemTypes } from '../../constants/dimensionItemTypes';
 function Visualizers() {
     const { id:visualId } = useParams();
     const {  data:systemInfo } = useSystemInfo();
-    const {selectedDataSourceOption,setSelectedDataSourceOption,currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData, dataItemsData,selectedDataSourceDetails,setSelectedDataSourceDetails,setSelectedDimensionItemType,analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle,visualTitleAndSubTitle,visualSettings,setSelectedVisualSettings,setVisualsColorPalettes,selectedColorPalette,selectedDimensionItemType} = useAuthorities();
+    const {  setDataItemsDataPage,dataItemsDataPage,selectedDataSourceOption,setSelectedDataSourceOption,currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData, dataItemsData,selectedDataSourceDetails,setSelectedDataSourceDetails,setSelectedDimensionItemType,analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle,visualTitleAndSubTitle,visualSettings,setSelectedVisualSettings,setVisualsColorPalettes,selectedColorPalette,selectedDimensionItemType} = useAuthorities();
     const {data:singleSavedVisualData,isError,loading:isFetchSingleVisualLoading} = useFetchSingleVisualData(visualId)
     const { loading:orgUnitLoading, error:fetchOrgUnitError, data:orgUnitsData,fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData();
     const {  error:dataItemsFetchError, loading:isFetchCurrentInstanceDataItemsLoading,fetchCurrentInstanceData } = useDataItems();
@@ -250,22 +250,23 @@ function keepUpWithSelectedDataSource() {
 useEffect(() => {
    
     selectedDataSourceDetailsRef.current = selectedDataSourceDetails;
-  
+       // reset to page one
+       setDataItemsDataPage(1)
 }, [selectedDataSourceDetails]);
 
 
 /// handle selectedDimensionItemType onChange 
  useEffect(()=>{
-    console.log("selectedDimensionItemType jack",selectedDimensionItemType)
+   
     if(selectedDataSourceDetails.isCurrentInstance)
     {
-        fetchCurrentInstanceData(selectedDimensionItemType);
+        fetchCurrentInstanceData(selectedDimensionItemType,dataItemsDataPage);
     }
     else {
-        fetchExternalDataItems(selectedDataSourceDetails.url, selectedDataSourceDetails.token,selectedDimensionItemType);
+        fetchExternalDataItems(selectedDataSourceDetails.url, selectedDataSourceDetails.token,selectedDimensionItemType,dataItemsDataPage);
     }
   
- },[selectedDimensionItemType])
+ },[selectedDimensionItemType,dataItemsDataPage])
 
 
 

@@ -5,7 +5,7 @@ import { dimensionItemTypesTYPES } from '../types/dimensionDataItemTypes';
 
 export const useDataItems = () => {
     const engine = useDataEngine();
-    const { setDataItemsData, selectedDimensionItemType } = useAuthorities();
+    const { setDataItemsData, selectedDimensionItemType} = useAuthorities();
 
     // Local state for managing loading, error, and data
     const [loading, setLoading] = useState(false);
@@ -13,12 +13,12 @@ export const useDataItems = () => {
     const [data, setData] = useState(null);
 
     // Helper function to build the query based on dimension type
-    const buildQuery = (dimensionType: string) => {
+    const buildQuery = (dimensionType: string,dataItemsDataPage?:number) => {
         const commonParams = {
             fields: ['id', 'displayName~rename(name)', 'dimensionItemType', 'expression'],
             order: 'displayName:asc',
-            pageSize: 10000,
-            page: 1,
+            pageSize: 50,
+            page: dataItemsDataPage ,
             paging: true,
         };
 
@@ -72,9 +72,9 @@ export const useDataItems = () => {
     };
 
     // Function to fetch data, only called when explicitly invoked
-    const fetchCurrentInstanceData = useCallback(async (selectedDimensionItemType: dimensionItemTypesTYPES) => {
+    const fetchCurrentInstanceData = useCallback(async (selectedDimensionItemType: dimensionItemTypesTYPES,dataItemsDataPage?:number) => {
         const { value } = selectedDimensionItemType;
-        const query = buildQuery(value);
+        const query = buildQuery(value,dataItemsDataPage);
 
         setLoading(true);
         setError(null);
@@ -88,7 +88,7 @@ export const useDataItems = () => {
             setData(fetchedData);
             setDataItemsData(fetchedData);
         } catch (err) {
-            setError(err);
+            setError(err);d
         } finally {
             setLoading(false);
         }

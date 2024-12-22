@@ -10,12 +10,12 @@ export const useExternalDataItems = () => {
     const [loading, setLoading] = useState(false);
 
     // Helper function to build API path and params
-    const buildApiPathAndParams = (dimensionType: string) => {
+    const buildApiPathAndParams = (dimensionType: string,dataItemsDataPage?:number) => {
         const commonParams = {
             fields: 'id,displayName~rename(name),dimensionItemType,expression',
             order: 'displayName:asc',
-            pageSize: 10000,
-            page: 1,
+            pageSize: 50,
+            page: dataItemsDataPage,
         };
 
         switch (dimensionType) {
@@ -61,9 +61,9 @@ export const useExternalDataItems = () => {
 
     // Fetch external data items
     const fetchExternalDataItems = useCallback(
-        async (url: string, token: string, selectedDimensionItemType: dimensionItemTypesTYPES) => {
+        async (url: string, token: string, selectedDimensionItemType: dimensionItemTypesTYPES,dataItemsDataPage?:number) => {
             const { value } = selectedDimensionItemType;
-            const { path, params } = buildApiPathAndParams(value);
+            const { path, params } = buildApiPathAndParams(value, dataItemsDataPage);
 
             if (!path) {
                 setError('Invalid dimension item type selected.');
