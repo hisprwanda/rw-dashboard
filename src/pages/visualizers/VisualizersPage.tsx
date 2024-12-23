@@ -327,12 +327,12 @@ useEffect(() => {
                             {/* Period */}
                             <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Period</label>
-                              <Button variant="source" text="Add +" onClick={handleShowPeriodModal} /> 
+                              <Button disabled={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source"  text={`${(isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading ) ? "Loading.." : "Add +"} `} onClick={handleShowPeriodModal} /> 
                             </div>
                             {/* Organization Unit */}
                             <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Organisation Unit</label>
-                                <Button variant="source" text="Add +" onClick={handleShowOrganizationUnitModal} />
+                                <Button disabled={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source"  text={`${(isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading ) ? "Loading.." : "Add +"} `} onClick={handleShowOrganizationUnitModal} />
                             </div>
                         </div>
                     </TabsContent>
