@@ -6,91 +6,116 @@ import { dimensionItemTypesTYPES } from '../types/dimensionDataItemTypes';
 export const useExternalDataItems = () => {
     const { setDataItemsData } = useAuthorities();
     const [response, setResponse] = useState(null);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
     // Helper function to build API path and params
-    const buildApiPathAndParams = (dimensionType: string,dataItemsDataPage?:number) => {
-        const commonParams = {
-            fields: 'id,displayName~rename(name),dimensionItemType,expression',
-            order: 'displayName:asc',
-            pageSize: 50,
-            page: dataItemsDataPage,
-        };
+    const buildApiPathAndParams = useCallback(
+        (dimensionType: string, searchItem?: string, dataItemsDataPage: number = 1) => {
+            const commonParams = {
+                fields: 'id,displayName~rename(name),dimensionItemType,expression',
+                order: 'displayName:asc',
+                pageSize: 50,
+                page: dataItemsDataPage,
+                filter: searchItem ? `displayName:ilike:${searchItem}` : undefined,
+            };
 
-        switch (dimensionType) {
-            case 'dataItems':
-                return { path: 'dataItems.json', params: commonParams };
-            case 'indicators':
-                return { path: 'indicators.json', params: { ...commonParams } };
-            case 'dataElements':
-                return {
-                    path: 'dataElements.json',
-                    params: { ...commonParams, filter: 'domainType:eq:AGGREGATE' },
-                };
-            case 'dataSets':
-                return { path: 'dataSets.json', params: { ...commonParams } };
-            case 'Event Data Item':
-                return {
-                    path: 'dataItems.json',
-                    params: {
-                        ...commonParams,
-                        filter: 'dimensionItemType:in:[PROGRAM_DATA_ELEMENT,PROGRAM_ATTRIBUTE]',
-                    },
-                };
-            case 'Program Indicator':
-                return {
-                    path: 'dataItems.json',
-                    params: {
-                        ...commonParams,
-                        filter: 'dimensionItemType:eq:PROGRAM_INDICATOR',
-                    },
-                };
-            case 'Calculation':
-                return {
-                    path: 'dataItems.json',
-                    params: {
-                        ...commonParams,
-                        filter: 'dimensionItemType:eq:EXPRESSION_DIMENSION_ITEM',
-                    },
-                };
-            default:
-                return { path: '', params: {} };
-        }
-    };
+            switch (dimensionType) {
+                case 'dataItems':
+                    return { path: 'dataItems.json', params: commonParams };
+                case 'indicators':
+                    return { path: 'indicators.json', params: { ...commonParams } };
+                case 'dataElements':
+                    return {
+                        path: 'dataElements.json',
+                        params: {
+                            ...commonParams,
+                            filter: [
+                                `domainType:eq:AGGREGATE`,
+                                searchItem && `displayName:ilike:${searchItem}`,
+                            ].filter(Boolean).join(','),
+                        },
+                    };
+                case 'dataSets':
+                    return { path: 'dataSets.json', params: commonParams };
+                case 'Event Data Item':
+                    return {
+                        path: 'dataItems.json',
+                        params: {
+                            ...commonParams,
+                            filter: [
+                                `dimensionItemType:in:[PROGRAM_DATA_ELEMENT,PROGRAM_ATTRIBUTE]`,
+                                searchItem && `displayName:ilike:${searchItem}`,
+                            ].filter(Boolean).join(','),
+                        },
+                    };
+                case 'Program Indicator':
+                    return {
+                        path: 'dataItems.json',
+                        params: {
+                            ...commonParams,
+                            filter: [
+                                `dimensionItemType:eq:PROGRAM_INDICATOR`,
+                                searchItem && `displayName:ilike:${searchItem}`,
+                            ].filter(Boolean).join(','),
+                        },
+                    };
+                case 'Calculation':
+                    return {
+                        path: 'dataItems.json',
+                        params: {
+                            ...commonParams,
+                            filter: [
+                                `dimensionItemType:eq:EXPRESSION_DIMENSION_ITEM`,
+                                searchItem && `displayName:ilike:${searchItem}`,
+                            ].filter(Boolean).join(','),
+                        },
+                    };
+                default:
+                    return { path: '', params: {} };
+            }
+        },
+        []
+    );
 
     // Fetch external data items
     const fetchExternalDataItems = useCallback(
-        async (url: string, token: string, selectedDimensionItemType: dimensionItemTypesTYPES,dataItemsDataPage?:number) => {
+        async (
+            url: string,
+            token: string,
+            selectedDimensionItemType: dimensionItemTypesTYPES,
+            searchItem?: string,
+            dataItemsDataPage: number = 1
+        ) => {
             const { value } = selectedDimensionItemType;
-            const { path, params } = buildApiPathAndParams(value, dataItemsDataPage);
+            const { path, params } = buildApiPathAndParams(value, searchItem, dataItemsDataPage);
 
             if (!path) {
                 setError('Invalid dimension item type selected.');
                 return;
             }
 
-            setResponse(null);
-            setError(null);
             setLoading(true);
+            setError(null);
+            setResponse(null);
 
             try {
                 const res = await axios.get(`${url}/api/40/${path}`, {
                     headers: {
                         Authorization: `ApiToken ${token}`,
                     },
-                    params: params,
+                    params,
                 });
 
                 setResponse(res.data);
                 setDataItemsData(res.data); // Update context state
-            } catch (err) {
+            } catch (err: any) {
                 setError(err.response?.statusText || err.message || 'An error occurred');
             } finally {
                 setLoading(false);
             }
         },
-        [setDataItemsData]
+        [buildApiPathAndParams, setDataItemsData]
     );
 
     return { response, error, loading, fetchExternalDataItems };

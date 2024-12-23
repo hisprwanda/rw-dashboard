@@ -22,6 +22,8 @@ const DataModal: React.FC<DataModalProps> = ({
   error,
   loading,
 }) => {
+  const [searchDataItem, setSearchDataItem] = useState<string>("");
+  const [debouncedSearch, setDebouncedSearch] = useState<string>("");
   const {
     error: dataItemsFetchError,
     loading: isFetchCurrentInstanceDataItemsLoading,
@@ -47,12 +49,24 @@ const DataModal: React.FC<DataModalProps> = ({
   } = useAuthorities();
 
   const [availableOptions, setAvailableOptions] = useState<TransferOption[]>([]);
-  const transferRef = useRef<HTMLDivElement>(null); // Ref to reset scroll
+  const transferRef = useRef<HTMLDivElement>(null);
 
-  // Map fetched data to Transfer options
+  // Debounced handler for search
+  const debouncedSearchHandler = useCallback(
+    debounce((value: string) => {
+      setDebouncedSearch(value);
+      setDataItemsDataPage(1); // Reset pagination on new search
+    }, 300),
+    []
+  );
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchDataItem(e.target.value);
+    debouncedSearchHandler(e.target.value);
+  };
+
   useEffect(() => {
     let transformedOptions: TransferOption[] = [];
-
     if (
       ["dataItems", "Event Data Item", "Program Indicator", "Calculation"].includes(
         selectedDimensionItemType.value
@@ -83,26 +97,19 @@ const DataModal: React.FC<DataModalProps> = ({
         })) || [];
     }
 
-    setAvailableOptions((prev) => {
-      // Ensure we append new data only if the page > 1
-      return dataItemsDataPage > 1 ? [...prev, ...transformedOptions] : transformedOptions;
-    });
+    setAvailableOptions((prev) =>
+      dataItemsDataPage > 1 ? [...prev, ...transformedOptions] : transformedOptions
+    );
   }, [data, selectedDimensionItemType, dataItemsDataPage]);
 
-  // Reset pagination when dimension type changes
-  const handleDimensionItemTypeChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const selectedType = dimensionItemTypes.find(
-      (type) => type.value === event.target.value
-    );
+  const handleDimensionItemTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedType = dimensionItemTypes.find((type) => type.value === event.target.value);
     if (selectedType) {
       setSelectedDimensionItemType(selectedType);
       setDataItemsDataPage(1); // Reset to page 1
     }
   };
 
-  // Handle transfer list changes
   const handleChange = (newSelected: string[]) => {
     setAnalyticsDimensions((prev: any) => ({
       ...prev,
@@ -110,17 +117,15 @@ const DataModal: React.FC<DataModalProps> = ({
     }));
   };
 
-  // Handle update logic
   const handleUpdate = async () => {
     await fetchAnalyticsData(
       formatAnalyticsDimensions(analyticsDimensions),
       selectedDataSourceDetails
     );
     setIsShowDataModal(false);
-    setDataItemsDataPage(1); // Reset pagination on close
+    setDataItemsDataPage(1);
   };
 
-  // Handle end reached with debounce
   const handleEndReached = useCallback(
     debounce(() => {
       if (!loading) {
@@ -130,29 +135,26 @@ const DataModal: React.FC<DataModalProps> = ({
     [loading]
   );
 
-  // Fetch data when dimension type or page changes
   useEffect(() => {
     if (selectedDataSourceDetails.isCurrentInstance) {
-      fetchCurrentInstanceData(selectedDimensionItemType, dataItemsDataPage);
+      fetchCurrentInstanceData(selectedDimensionItemType, debouncedSearch, dataItemsDataPage);
     } else {
       fetchExternalDataItems(
         selectedDataSourceDetails.url,
         selectedDataSourceDetails.token,
         selectedDimensionItemType,
+        debouncedSearch,
         dataItemsDataPage
       );
     }
-  }, [selectedDimensionItemType, dataItemsDataPage]);
+  }, [selectedDimensionItemType, debouncedSearch, dataItemsDataPage]);
 
   if (error) return <div>Error loading data...</div>;
 
   return (
     <div>
       <div className="space-y-2 mb-3">
-        <label
-          htmlFor="dimensionItemType"
-          className="block text-sm font-medium text-gray-700"
-        >
+        <label htmlFor="dimensionItemType" className="block text-sm font-medium text-gray-700">
           Dimension Item Type
         </label>
         <select
@@ -168,15 +170,26 @@ const DataModal: React.FC<DataModalProps> = ({
           ))}
         </select>
       </div>
+      <div className="space-y-2 mb-3">
+        <label htmlFor="search" className="block text-sm font-medium text-gray-700">
+          Search
+        </label>
+        <input
+          id="search"
+          type="text"
+          value={searchDataItem}
+          onChange={handleSearchChange}
+          placeholder="Search data items..."
+          className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-sm"
+        />
+      </div>
       <div ref={transferRef}>
         <Transfer
           className="z-40 bg-white"
-          filterPlaceholder="Search options..."
           options={availableOptions}
           selected={analyticsDimensions?.dx}
           onChange={({ selected }) => handleChange(selected)}
           loading={loading || isFetchCurrentInstanceDataItemsLoading}
-          filterable
           onEndReached={handleEndReached}
         />
       </div>

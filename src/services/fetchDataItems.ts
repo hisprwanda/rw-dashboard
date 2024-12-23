@@ -5,65 +5,81 @@ import { dimensionItemTypesTYPES } from '../types/dimensionDataItemTypes';
 
 export const useDataItems = () => {
     const engine = useDataEngine();
-    const { setDataItemsData, selectedDimensionItemType} = useAuthorities();
+    const { setDataItemsData, selectedDimensionItemType } = useAuthorities();
 
     // Local state for managing loading, error, and data
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [data, setData] = useState(null);
 
-    // Helper function to build the query based on dimension type
-    const buildQuery = (dimensionType: string,dataItemsDataPage?:number) => {
+    // Helper function to build the query based on dimension type and search item
+    const buildQuery = (dimensionType: string, searchItem?: string, dataItemsDataPage?: number) => {
         const commonParams = {
             fields: ['id', 'displayName~rename(name)', 'dimensionItemType', 'expression'],
             order: 'displayName:asc',
             pageSize: 50,
-            page: dataItemsDataPage ,
+            page: dataItemsDataPage,
             paging: true,
         };
 
+        // Add dynamic filter for searchItem
+        const filterParams = [];
+        if (searchItem) {
+            filterParams.push(`displayName:ilike:${searchItem}`);
+        }
+
         switch (dimensionType) {
             case 'dataItems':
-                return { dataItems: { resource: 'dataItems.json', params: commonParams } };
+                return {
+                    dataItems: {
+                        resource: 'dataItems.json',
+                        params: { ...commonParams, filter: filterParams },
+                    },
+                };
             case 'indicators':
-                return { indicators: { resource: 'indicators.json', params: { ...commonParams, paging: true } } };
+                return {
+                    indicators: {
+                        resource: 'indicators.json',
+                        params: { ...commonParams, filter: filterParams },
+                    },
+                };
             case 'dataElements':
+                filterParams.push('domainType:eq:AGGREGATE');
                 return {
                     dataElements: {
                         resource: 'dataElements.json',
-                        params: { ...commonParams, filter: 'domainType:eq:AGGREGATE', paging: true },
+                        params: { ...commonParams, filter: filterParams },
                     },
                 };
             case 'dataSets':
-                return { dataSets: { resource: 'dataSets.json', params: { ...commonParams, paging: true } } };
+                return {
+                    dataSets: {
+                        resource: 'dataSets.json',
+                        params: { ...commonParams, filter: filterParams },
+                    },
+                };
             case 'Event Data Item':
+                filterParams.push('dimensionItemType:in:[PROGRAM_DATA_ELEMENT,PROGRAM_ATTRIBUTE]');
                 return {
                     dataItems: {
                         resource: 'dataItems',
-                        params: {
-                            ...commonParams,
-                            filter: 'dimensionItemType:in:[PROGRAM_DATA_ELEMENT,PROGRAM_ATTRIBUTE]',
-                        },
+                        params: { ...commonParams, filter: filterParams },
                     },
                 };
             case 'Program Indicator':
+                filterParams.push('dimensionItemType:eq:PROGRAM_INDICATOR');
                 return {
                     dataItems: {
                         resource: 'dataItems',
-                        params: {
-                            ...commonParams,
-                            filter: 'dimensionItemType:eq:PROGRAM_INDICATOR',
-                        },
+                        params: { ...commonParams, filter: filterParams },
                     },
                 };
             case 'Calculation':
+                filterParams.push('dimensionItemType:eq:EXPRESSION_DIMENSION_ITEM');
                 return {
                     dataItems: {
                         resource: 'dataItems',
-                        params: {
-                            ...commonParams,
-                            filter: 'dimensionItemType:eq:EXPRESSION_DIMENSION_ITEM',
-                        },
+                        params: { ...commonParams, filter: filterParams },
                     },
                 };
             default:
@@ -71,28 +87,37 @@ export const useDataItems = () => {
         }
     };
 
-    // Function to fetch data, only called when explicitly invoked
-    const fetchCurrentInstanceData = useCallback(async (selectedDimensionItemType: dimensionItemTypesTYPES,dataItemsDataPage?:number) => {
-        const { value } = selectedDimensionItemType;
-        const query = buildQuery(value,dataItemsDataPage);
+    // Function to fetch data, explicitly invoked with a search term
+    const fetchCurrentInstanceData = useCallback(
+        async (
+            selectedDimensionItemType: dimensionItemTypesTYPES,
+            searchItem?: string,
+            dataItemsDataPage?: number
+        ) => {
+            const { value } = selectedDimensionItemType;
+            const query = buildQuery(value, searchItem, dataItemsDataPage);
 
-        setLoading(true);
-        setError(null);
+            setLoading(true);
+            setError(null);
 
-        try {
-            const result = await engine.query(query);
-            const dataKey = ['dataItems', 'Event Data Item', 'Program Indicator', 'Calculation'].includes(value) ? 'dataItems' : value;
+            try {
+                const result = await engine.query(query);
+                const dataKey = ['dataItems', 'Event Data Item', 'Program Indicator', 'Calculation'].includes(value)
+                    ? 'dataItems'
+                    : value;
 
-            const fetchedData = result[dataKey];
+                const fetchedData = result[dataKey];
 
-            setData(fetchedData);
-            setDataItemsData(fetchedData);
-        } catch (err) {
-            setError(err);d
-        } finally {
-            setLoading(false);
-        }
-    }, [engine, setDataItemsData]);
+                setData(fetchedData);
+                setDataItemsData(fetchedData);
+            } catch (err) {
+                setError(err);
+            } finally {
+                setLoading(false);
+            }
+        },
+        [engine, setDataItemsData]
+    );
 
     return { loading, error, data, fetchCurrentInstanceData };
 };
