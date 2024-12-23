@@ -1,154 +1,196 @@
-import React, { useState, useEffect } from 'react';
-import { Transfer, TransferOption, SingleSelectField, SingleSelectOption, colors } from "@dhis2/ui";
-
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { Transfer, TransferOption } from "@dhis2/ui";
 import Button from "../../../../components/Button";
-import { IoSaveOutline } from 'react-icons/io5';
-import { useDataItems } from '../../../../services/fetchDataItems';
-import Loading from '../../../../components/Loading';
-import { useAuthorities } from '../../../../context/AuthContext';
-import { formatAnalyticsDimensions } from '../../../../lib/formatAnalyticsDimensions';
-import { dimensionItemTypes } from '../../../../constants/dimensionItemTypes';
-import { dimensionItemTypesTYPES } from "../../../../types/dimensionDataItemTypes";
+import { IoSaveOutline } from "react-icons/io5";
+import { useDataItems } from "../../../../services/fetchDataItems";
+import { useAuthorities } from "../../../../context/AuthContext";
+import { formatAnalyticsDimensions } from "../../../../lib/formatAnalyticsDimensions";
+import { dimensionItemTypes } from "../../../../constants/dimensionItemTypes";
+import { useExternalDataItems } from "../../../../services/useExternalDataItems";
+import { debounce } from "lodash";
 
 interface DataModalProps {
-    setIsShowDataModal: any;
-    data: any;
-    loading: boolean;
-    error: any;
+  setIsShowDataModal: (isShow: boolean) => void;
+  data: any;
+  loading: boolean;
+  error: any;
 }
 
-const DataModal: React.FC<DataModalProps> = ({ setIsShowDataModal, data, error, loading }) => {
-    const { selectedDimensionItemType, setSelectedDimensionItemType } = useAuthorities();
-    const {dataItemsDataPage,setDataItemsDataPage, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, isFetchAnalyticsDataLoading, selectedDataSourceDetails } = useAuthorities();
+const DataModal: React.FC<DataModalProps> = ({
+  setIsShowDataModal,
+  data,
+  error,
+  loading,
+}) => {
+  const {
+    error: dataItemsFetchError,
+    loading: isFetchCurrentInstanceDataItemsLoading,
+    fetchCurrentInstanceData,
+  } = useDataItems();
 
-    // Initialize state for available options and selected options
-    const [availableOptions, setAvailableOptions] = useState<TransferOption[]>([]);
+  const {
+    fetchExternalDataItems,
+    error: errorFetchingExternalDataItems,
+    loading: isFetchExternalInstanceDataItemsLoading,
+  } = useExternalDataItems();
 
-    // Effect to map fetched data into the required TransferOption format
-    useEffect(() => {
-        if(['dataItems', 'Event Data Item', 'Program Indicator', 'Calculation'].includes(selectedDimensionItemType.value)) {
-            if (data?.dataItems) {
-                const transformedOptions = data?.dataItems?.map((item: any) => ({
-                    label: item.name,  // Display the 'name' field in the Transfer list
-                    value: item.id     // Use the 'id' field as the value
-                }));
-                setAvailableOptions(transformedOptions);
-            }
-        } else if (selectedDimensionItemType.value === "indicators") {
-            if (data?.indicators) {
-                const transformedOptions = data?.indicators?.map((item: any) => ({
-                    label: item.name,  // Display the 'name' field in the Transfer list
-                    value: item.id     // Use the 'id' field as the value
-                }));
-                setAvailableOptions(transformedOptions);
-            } 
-        } else if (selectedDimensionItemType.value === "dataElements") {
-            if (data?.dataElements) {
-                const transformedOptions = data?.dataElements?.map((item: any) => ({
-                    label: item.name,  // Display the 'name' field in the Transfer list
-                    value: item.id     // Use the 'id' field as the value
-                }));
-                setAvailableOptions(transformedOptions);
-            } 
-        } else if (selectedDimensionItemType.value === "dataSets") {
-            if (data?.dataSets) {
-                const transformedOptions = data?.dataSets?.map((item: any) => ({
-                    label: item.name,  
-                    value: item.id     
-                }));
-                setAvailableOptions(transformedOptions);
-            } 
-        }
-    }, [data, selectedDimensionItemType]);
+  const {
+    selectedDimensionItemType,
+    setSelectedDimensionItemType,
+    dataItemsDataPage,
+    setDataItemsDataPage,
+    analyticsDimensions,
+    setAnalyticsDimensions,
+    fetchAnalyticsData,
+    isFetchAnalyticsDataLoading,
+    selectedDataSourceDetails,
+  } = useAuthorities();
 
-    // Handle the change of selected dimension item type
-    const handleDimensionItemTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedType = dimensionItemTypes.find((type) => type.value === event.target.value);
-        if (selectedType) {
-            setSelectedDimensionItemType(selectedType);
-        }
-    };
+  const [availableOptions, setAvailableOptions] = useState<TransferOption[]>([]);
+  const transferRef = useRef<HTMLDivElement>(null); // Ref to reset scroll
 
-    // Function to handle the transfer of options between available and selected lists
-    const handleChange = (newSelected: string[]) => {
-        setAnalyticsDimensions((prev: any) => {
-            return {
-                ...prev,
-                dx: [...newSelected],
-            };
-        });
-    };
+  // Map fetched data to Transfer options
+  useEffect(() => {
+    let transformedOptions: TransferOption[] = [];
 
-    // Function to handle the update logic
-    const handleUpdate = async () => {
-        await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions), selectedDataSourceDetails);
-        setIsShowDataModal(false);
-        // reset to page one
-        setDataItemsDataPage(1)
-    };
+    if (
+      ["dataItems", "Event Data Item", "Program Indicator", "Calculation"].includes(
+        selectedDimensionItemType.value
+      )
+    ) {
+      transformedOptions =
+        data?.dataItems?.map((item: any) => ({
+          label: item.name,
+          value: item.id,
+        })) || [];
+    } else if (selectedDimensionItemType.value === "indicators") {
+      transformedOptions =
+        data?.indicators?.map((item: any) => ({
+          label: item.name,
+          value: item.id,
+        })) || [];
+    } else if (selectedDimensionItemType.value === "dataElements") {
+      transformedOptions =
+        data?.dataElements?.map((item: any) => ({
+          label: item.name,
+          value: item.id,
+        })) || [];
+    } else if (selectedDimensionItemType.value === "dataSets") {
+      transformedOptions =
+        data?.dataSets?.map((item: any) => ({
+          label: item.name,
+          value: item.id,
+        })) || [];
+    }
 
-    const handleEndReached = () => {
-        if (!loading) {
-        setDataItemsDataPage((prev:number) => prev + 1);
-        // don't work about running pagination api calls, I'm calling it in another component when setDataItemsDataPage change by using useEffect
-        }
-    };
-    
+    setAvailableOptions((prev) => {
+      // Ensure we append new data only if the page > 1
+      return dataItemsDataPage > 1 ? [...prev, ...transformedOptions] : transformedOptions;
+    });
+  }, [data, selectedDimensionItemType, dataItemsDataPage]);
 
-
-    useEffect(()=>{
-        console.log("hello dataItemsDataPage page",dataItemsDataPage)
-    },[dataItemsDataPage])
-
-    // if (loading) return <Loading />
-    if (error) return <div>Error loading data...</div>;
-
-    return (
-        <div>
-            <div className="space-y-2 mb-3">
-                <label
-                    htmlFor="dimensionItemType"
-                    className="block text-sm font-medium text-gray-700"
-                >
-                    Dimension Item Type
-                </label>
-                <select
-                    id="dimensionItemType"
-                    value={selectedDimensionItemType?.value || ""}
-                    onChange={handleDimensionItemTypeChange}
-                    className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-sm"
-                >
-                    {dimensionItemTypes.map((type) => (
-                        <option key={type.value} value={type.value}>
-                            {type.label}
-                        </option>
-                    ))}
-                </select>
-            </div>
-                <Transfer
-                    className="z-40 bg-white"
-                    filterPlaceholder="Search options..."
-                    options={availableOptions}
-                    selected={analyticsDimensions?.dx}
-                    onChange={({ selected }) => handleChange(selected)}
-                    loading={loading}
-                    filterable
-                    onEndReached={handleEndReached}
-                    
-                />
-         
-
-            <div className="mt-4 flex justify-end">
-                <Button
-                    variant="primary"
-                    text={isFetchAnalyticsDataLoading ? "Loading" : "Update"}
-                    type="button"
-                    icon={<IoSaveOutline />}
-                    onClick={handleUpdate}
-                />
-            </div>
-        </div>
+  // Reset pagination when dimension type changes
+  const handleDimensionItemTypeChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const selectedType = dimensionItemTypes.find(
+      (type) => type.value === event.target.value
     );
+    if (selectedType) {
+      setSelectedDimensionItemType(selectedType);
+      setDataItemsDataPage(1); // Reset to page 1
+    }
+  };
+
+  // Handle transfer list changes
+  const handleChange = (newSelected: string[]) => {
+    setAnalyticsDimensions((prev: any) => ({
+      ...prev,
+      dx: [...newSelected],
+    }));
+  };
+
+  // Handle update logic
+  const handleUpdate = async () => {
+    await fetchAnalyticsData(
+      formatAnalyticsDimensions(analyticsDimensions),
+      selectedDataSourceDetails
+    );
+    setIsShowDataModal(false);
+    setDataItemsDataPage(1); // Reset pagination on close
+  };
+
+  // Handle end reached with debounce
+  const handleEndReached = useCallback(
+    debounce(() => {
+      if (!loading) {
+        setDataItemsDataPage((prev: number) => prev + 1);
+      }
+    }, 300),
+    [loading]
+  );
+
+  // Fetch data when dimension type or page changes
+  useEffect(() => {
+    if (selectedDataSourceDetails.isCurrentInstance) {
+      fetchCurrentInstanceData(selectedDimensionItemType, dataItemsDataPage);
+    } else {
+      fetchExternalDataItems(
+        selectedDataSourceDetails.url,
+        selectedDataSourceDetails.token,
+        selectedDimensionItemType,
+        dataItemsDataPage
+      );
+    }
+  }, [selectedDimensionItemType, dataItemsDataPage]);
+
+  if (error) return <div>Error loading data...</div>;
+
+  return (
+    <div>
+      <div className="space-y-2 mb-3">
+        <label
+          htmlFor="dimensionItemType"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Dimension Item Type
+        </label>
+        <select
+          id="dimensionItemType"
+          value={selectedDimensionItemType?.value || ""}
+          onChange={handleDimensionItemTypeChange}
+          className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-sm"
+        >
+          {dimensionItemTypes.map((type) => (
+            <option key={type.value} value={type.value}>
+              {type.label}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div ref={transferRef}>
+        <Transfer
+          className="z-40 bg-white"
+          filterPlaceholder="Search options..."
+          options={availableOptions}
+          selected={analyticsDimensions?.dx}
+          onChange={({ selected }) => handleChange(selected)}
+          loading={loading || isFetchCurrentInstanceDataItemsLoading}
+          filterable
+          onEndReached={handleEndReached}
+        />
+      </div>
+      <div className="mt-4 flex justify-end">
+        <Button
+          variant="primary"
+          text={isFetchAnalyticsDataLoading ? "Loading..." : "Update"}
+          type="button"
+          icon={<IoSaveOutline />}
+          onClick={handleUpdate}
+        />
+      </div>
+    </div>
+  );
 };
 
 export default DataModal;

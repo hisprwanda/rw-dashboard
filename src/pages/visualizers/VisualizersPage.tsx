@@ -256,17 +256,18 @@ useEffect(() => {
 
 
 /// handle selectedDimensionItemType onChange 
- useEffect(()=>{
+//  useEffect(()=>{
    
-    if(selectedDataSourceDetails.isCurrentInstance)
-    {
-        fetchCurrentInstanceData(selectedDimensionItemType,dataItemsDataPage);
-    }
-    else {
-        fetchExternalDataItems(selectedDataSourceDetails.url, selectedDataSourceDetails.token,selectedDimensionItemType,dataItemsDataPage);
-    }
+//     if(selectedDataSourceDetails.isCurrentInstance)
+//     {
+//         fetchCurrentInstanceData(selectedDimensionItemType,1);
+//     }
+//     else {
+//         fetchExternalDataItems(selectedDataSourceDetails.url, selectedDataSourceDetails.token,selectedDimensionItemType,1);
+//     }
   
- },[selectedDimensionItemType,dataItemsDataPage])
+//  },[selectedDimensionItemType])
+ 
 
 
 
