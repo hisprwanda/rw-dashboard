@@ -185,8 +185,6 @@ function Visualizers() {
     /// handle data source onchange
     const handleDataSourceOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedValue = e.target.value;
-        console.log("data source selected changed");
-    
         // Step 1: Update selected data source option
         setSelectedDataSourceOption(selectedValue);
     
@@ -217,7 +215,6 @@ function Visualizers() {
     
     };
     
-    
 /// fetch current user and Organization unit
     const fetchCurrentUserAndOrgUnitData = async () => {
         const result = await fetchCurrentUserInfoAndOrgUnitData(); 
@@ -225,7 +222,6 @@ function Visualizers() {
       };
       
 // keepUp with selected data source
-
 function keepUpWithSelectedDataSource() {
     const details = selectedDataSourceDetailsRef.current;
 
@@ -242,45 +238,16 @@ function keepUpWithSelectedDataSource() {
         console.error("Invalid data source details: Missing URL or token.");
     }
 }
-
-
-
-
-
-useEffect(() => {
-   
+useEffect(() => { 
     selectedDataSourceDetailsRef.current = selectedDataSourceDetails;
        // reset to page one
        setDataItemsDataPage(1)
 }, [selectedDataSourceDetails]);
 
-
-/// handle selectedDimensionItemType onChange 
-//  useEffect(()=>{
-   
-//     if(selectedDataSourceDetails.isCurrentInstance)
-//     {
-//         fetchCurrentInstanceData(selectedDimensionItemType,1);
-//     }
-//     else {
-//         fetchExternalDataItems(selectedDataSourceDetails.url, selectedDataSourceDetails.token,selectedDimensionItemType,1);
-//     }
-  
-//  },[selectedDimensionItemType])
- 
-
-
-
    //// testing data items
    useEffect(()=>{
     console.log("here is updated data items",dataItemsData)
   },[dataItemsData])
-
- 
-
- 
-
-
 
     /// main return
     return (
@@ -373,7 +340,7 @@ useEffect(() => {
                     </div>
                 </div>
             </div>
-            {/* Data, Organization Unit, and Period Modals */}
+            {/* Data, Organization Unit, and Period Modals */} 
             <GenericModal isOpen={isShowDataModal} setIsOpen={setIsShowDataModal}>
                 <DataModal  data={dataItemsData} loading={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} error={dataItemsFetchError}  setIsShowDataModal={setIsShowDataModal} />
             </GenericModal>
@@ -383,7 +350,6 @@ useEffect(() => {
             <GenericModal isOpen={isShowPeriod} setIsOpen={setIsShowPeriod}>
                 <PeriodModal setIsShowPeriod={setIsShowPeriod} />
             </GenericModal>
-
             {/* save visual type form */}
             <GenericModal isOpen={isShowSaveVisualTypeForm} setIsOpen={setIsShowSaveVisualTypeForm}>
                 <SaveVisualTypeForm  visualId={visualId}  singleSavedVisualData={singleSavedVisualData} setIsShowSaveVisualTypeForm={setIsShowSaveVisualTypeForm } selectedChartType={selectedChartType}  selectedDataSourceId={selectedDataSourceOption} />
