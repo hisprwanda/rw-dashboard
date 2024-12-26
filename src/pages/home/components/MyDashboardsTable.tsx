@@ -86,7 +86,7 @@ const MyDashboardsTable: React.FC<MyDashboardsTableProps> = ({ dashboards }) => 
     },
     {
       accessorKey: "isFavorite",
-      header: "Favorite",
+      header: "Actions",
       Cell: ({ row }) => {
         // Default to an empty array if favorites is undefined
         const isFavorited = (row.original.value.favorites || []).includes(userId);

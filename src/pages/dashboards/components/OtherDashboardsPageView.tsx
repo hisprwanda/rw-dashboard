@@ -6,8 +6,9 @@ import {
   TabsTrigger,
 } from "../../../components/ui/tabs";
 import BoxView from "./BoxView";
-import TableView from "./TableView";
+
 import { IconApps24, IconList24 } from "@dhis2/ui";
+import OtherDashboardsTable from "../../../pages/home/components/OtherDashboardsTable";
 
 // Using the same interfaces as defined earlier
 interface User {
@@ -82,7 +83,7 @@ export default function OtherDashboardsPageView({
           <BoxView dashboards={savedDashboardData} />
         </TabsContent>
         <TabsContent value="tableView">
-          <TableView dashboards={savedDashboardData} />
+          <OtherDashboardsTable dashboards={savedDashboardData} />
         </TabsContent>
       </Tabs>
     </div>

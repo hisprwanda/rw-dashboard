@@ -6,8 +6,8 @@ import {
   TabsTrigger,
 } from "../../../components/ui/tabs";
 import BoxView from "./BoxView";
-import TableView from "./TableView";
 import { IconApps24, IconList24 } from "@dhis2/ui";
+import MyDashboardsTable from "../../../pages/home/components/MyDashboardsTable";
 
 interface User {
   id: string;
@@ -79,7 +79,8 @@ export default function MyDashboardsPageView({ dashboards }: MyDashboardsPageVie
           <BoxView dashboards={dashboards} />
         </TabsContent>
         <TabsContent value="tableView">
-          <TableView dashboards={dashboards} />
+      
+           <MyDashboardsTable dashboards={dashboards} />
         </TabsContent>
       </Tabs>
     </div>

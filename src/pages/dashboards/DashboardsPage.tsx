@@ -14,6 +14,7 @@ import MyDashboardsPageView from "./components/MyDashboardsPageView";
 import OtherDashboardsPageView from "./components/OtherDashboardsPageView";
 import Loading from "../../components/Loading";
 
+
 interface User {
   id: string;
   name: string;
@@ -132,6 +133,7 @@ const DashboardsPage: React.FC = () => {
             <TabsContent value="mydashboards">
             
               <MyDashboardsPageView dashboards={myDashboards} />
+             
             </TabsContent>
 
             {/* Other Dashboards Tab Content */}

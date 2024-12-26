@@ -5,6 +5,8 @@ import {
   type MRT_ColumnDef,
 } from "mantine-react-table";
 import { IconStar24, IconStarFilled24 } from "@dhis2/ui";
+import { useNavigate } from "react-router-dom";
+import { FaEye } from "react-icons/fa";
 interface User {
   id: string;
   name: string;
@@ -53,6 +55,10 @@ interface OtherDashboardsTableProps {
 }
 
 const OtherDashboardsTable: React.FC<OtherDashboardsTableProps> = ({ dashboards }) => {
+    const navigate = useNavigate();
+    const handleViewMore = (dashboardId: string) => {
+      navigate(`/dashboard/${dashboardId}`);
+    };
   const columns = useMemo<MRT_ColumnDef<DashboardData>[]>(
     () => [
       {
@@ -63,10 +69,28 @@ const OtherDashboardsTable: React.FC<OtherDashboardsTableProps> = ({ dashboards 
         accessorFn: (row) => new Date(row.value.createdAt).toLocaleDateString(),
         header: "Created At",
       },
-      {
-        accessorFn: (row) => row.value.createdBy.name,
-        header: "Created By",
-      }
+       {
+
+           header: "Actions",
+           Cell: ({ row }) => {
+     
+             return (
+               <div className="flex items-center gap-3">
+                   {/* View More Icon */}
+               <FaEye
+                 className="text-gray-500 text-2xl hover:text-blue-500 cursor-pointer transition-colors"
+                 onClick={() => handleViewMore(row.original.key)}
+                 title="View More"
+               />
+           
+             
+             
+             </div>
+             
+           
+             );
+           },
+         },
     ],
     []
   );
