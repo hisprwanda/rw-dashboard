@@ -85,15 +85,18 @@ const TransferList = ({ availableOptions, selectedOptions, onSelect, onDeselect 
     );
 };
 
-const PeriodPicker = ({ onUpdate }) => {
+interface PeriodPickerProps {
+    setIsShowPeriod: any;
+    onUpdate:any
+}
 
+const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod }) => {
+ const { analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, isFetchAnalyticsDataLoading, selectedDataSourceDetails } = useAuthorities();
     const [selectedTab, setSelectedTab] = useState('relative');
     const [selectedPeriodGroup, setSelectedPeriodGroup] = useState('days');
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [selectedPeriodType, setSelectedPeriodType] = useState('monthly');
     const [availablePeriods, setAvailablePeriods] = useState([]);
-    const [analyticsDimensions, setAnalyticsDimensions] = useState({ dx: [], pe: [] });
-    const [selectedPeriods, setSelectedPeriods] = useState([]);
     const [allPeriodOptions, setAllPeriodOptions] = useState(new Map());
     const generateFixedPeriods = (year, periodType) => {
         const periods = [];
@@ -252,7 +255,6 @@ const PeriodPicker = ({ onUpdate }) => {
 
         return periods;
     };
-
     const filterRelativePeriods = (group) => {
         const periods = groupedPeriods[group] || [];
         return periods.map(period => ({ 
@@ -280,7 +282,7 @@ const PeriodPicker = ({ onUpdate }) => {
 
         // Filter out already selected periods from available periods
         setAvailablePeriods(
-            newPeriods.filter(period => !selectedPeriods.includes(period.value))
+            newPeriods.filter(period => !analyticsDimensions?.pe?.includes(period.value))
         );
     };
     const handleTabChange = (tab) => {
@@ -289,8 +291,8 @@ const PeriodPicker = ({ onUpdate }) => {
     };
 
     const handlePeriodSelect = (period) => {
-        const newSelectedPeriods = [...selectedPeriods, period.value];
-        setSelectedPeriods(newSelectedPeriods);
+        const newSelectedPeriods = [...analyticsDimensions.pe, period.value];
+       
         setAnalyticsDimensions(prev => ({
             ...prev,
             pe: newSelectedPeriods
@@ -299,8 +301,8 @@ const PeriodPicker = ({ onUpdate }) => {
     };
 
     const handlePeriodDeselect = (period) => {
-        const newSelectedPeriods = selectedPeriods.filter(value => value !== period.value);
-        setSelectedPeriods(newSelectedPeriods);
+        const newSelectedPeriods = analyticsDimensions?.pe?.filter(value => value !== period.value);
+     
         setAnalyticsDimensions(prev => ({
             ...prev,
             pe: newSelectedPeriods
@@ -314,24 +316,26 @@ const PeriodPicker = ({ onUpdate }) => {
         }
     };
 
-    const handleUpdate = () => {
-        onUpdate?.(selectedPeriods);
+    const handleUpdate = async() => {
+        onUpdate?.(analyticsDimensions.pe);
+        await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions), selectedDataSourceDetails);
+        setIsShowPeriod(false);
     };
 
     useEffect(() => {
         updateAvailablePeriods();
     }, [selectedTab, selectedPeriodGroup, selectedYear, selectedPeriodType]);
-    analyticsDimensions.pe
+  
        // Get selected period objects with labels
-       const selectedPeriodObjects = selectedPeriods.map(periodValue => {
+       const selectedPeriodObjects = analyticsDimensions?.pe?.map(periodValue => {
         const periodObject = allPeriodOptions.get(periodValue);
         return periodObject || { value: periodValue, label: periodValue }; // Fallback if not found
     });
 
     useEffect(()=>{
-        console.log("selectedPeriods",selectedPeriods)
+      
         console.log("selectedPeriods x",analyticsDimensions.pe)
-    },[selectedPeriods])
+    },[analyticsDimensions.pe])
 
   return (
         <div className="w-full max-w-4xl p-6 bg-white rounded-lg shadow">
@@ -419,12 +423,15 @@ const PeriodPicker = ({ onUpdate }) => {
             />
 
             <div className="flex justify-end mt-6">
-                <button
+
+            <Button
+                    text={isFetchAnalyticsDataLoading ? 'Loading' : 'Update'}
                     onClick={handleUpdate}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                >
-                    Update
-                </button>
+                    variant="primary"
+                    type="button"
+                    icon={<IoSaveOutline />}
+                />
+            
             </div>
         </div>
     );
