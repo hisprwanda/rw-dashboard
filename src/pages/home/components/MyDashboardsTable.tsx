@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuthorities } from "../../../context/AuthContext";
 import { useUpdateDashboardFavorite } from "../../../hooks/useUpdateDashFavorite";
 import { useDashboardsData } from "../../../services/fetchDashboard";
+import { FaEye } from "react-icons/fa";
+
 
 interface User {
   id: string;
@@ -88,18 +90,37 @@ const MyDashboardsTable: React.FC<MyDashboardsTableProps> = ({ dashboards }) => 
       Cell: ({ row }) => {
         // Default to an empty array if favorites is undefined
         const isFavorited = (row.original.value.favorites || []).includes(userId);
+     
   
         return (
+          <div className="flex items-center gap-3">
+              {/* View More Icon */}
+          <FaEye
+            className="text-gray-500 text-2xl hover:text-blue-500 cursor-pointer transition-colors"
+            onClick={() => handleViewMore(row.original.key)}
+            title="View More"
+          />
+          {/* Favorite Icon */}
           <span
             onClick={() => toggleFavorite(row.original.key, row.original.value)}
-            style={{ cursor: isUpdatingDashboard ? "not-allowed" : "pointer" }}
+            className={`transition-transform ${
+              isUpdatingDashboard
+                ? "cursor-not-allowed opacity-50"
+                : "cursor-pointer hover:scale-110"
+            }`}
+            title={isFavorited ? "Remove from favorites" : "Add to favorites"}
           >
             {isFavorited ? (
-              <IconStarFilled24 color="gold" />
+              <IconStarFilled24 color="gold" className="text-2xl" />
             ) : (
-              <IconStar24 color="gray" />
+              <IconStar24 color="gray" className="text-2xl" />
             )}
           </span>
+        
+        
+        </div>
+        
+      
         );
       },
     },

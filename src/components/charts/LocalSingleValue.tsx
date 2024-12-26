@@ -69,20 +69,24 @@ export const LocalSingleValue: React.FC<genericChartsProps> = ({
           </div>
         )
       )}
-      {/* display them in grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
+      
+      <div
+  className="flex flex-wrap justify-center items-center gap-6 p-4 h-full w-full"
+  style={{ minHeight: "100%", height: "100%" }}
+>
   {chartData?.map((item: { name: string; total: number; fill: string }, index: number) => (
     <article
       key={index}
-      style={{ backgroundColor: item.fill,color: visualSettings.fillColor }}
-      className="rounded-lg shadow-md p-6"
-    
+      style={{ backgroundColor: item.fill, color: visualSettings.fillColor }}
+      className="rounded-lg shadow-md p-6 min-w-4 text-center"
     >
       <h3 className="text-xl font-semibold mb-2">{item.name}</h3>
       <p className="text-3xl font-bold">{item.total}</p>
     </article>
   ))}
 </div>
+
+
 
 
     </ChartContainer>

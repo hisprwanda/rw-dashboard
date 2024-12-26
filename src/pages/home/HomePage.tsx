@@ -99,8 +99,6 @@ const filterPinnedDashboard = (
   return data.filter((item) => item.value.isOfficialDashboard === true);
 };
  
-
-
 export default function HomePage() {
   const navigate = useNavigate();
   const { data, loading, isError } = useDashboardsData();
