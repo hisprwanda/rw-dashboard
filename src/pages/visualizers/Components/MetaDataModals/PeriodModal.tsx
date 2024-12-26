@@ -41,7 +41,7 @@ const TabButton = ({ selected, onClick, children }) => (
         onClick={onClick}
         className={`px-4 py-2 font-medium rounded-t-lg ${
             selected 
-                ? 'bg-white border-b-2 border-blue-500 text-blue-600' 
+                ? 'bg-white border-b-2 border-primary text-primary' 
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
         }`}
     >
@@ -379,7 +379,8 @@ const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod 
             )}
 
             {selectedTab === 'fixed' && (
-                <div className="space-y-4 mb-6">
+                <div className=" flex gap-3 ">
+                    {/*     Period Type  */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Period Type
@@ -399,7 +400,7 @@ const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod 
                             ))}
                         </select>
                     </div>
-                    
+                    {/* year */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Year
