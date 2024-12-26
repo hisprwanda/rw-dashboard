@@ -6,7 +6,7 @@ import {
 } from "mantine-react-table";
 import { IconStar24, IconStarFilled24 } from "@dhis2/ui";
 import { useNavigate } from "react-router-dom";
-import { FaEye } from "react-icons/fa";
+import { FaEye, FaRegPlayCircle } from "react-icons/fa";
 interface User {
   id: string;
   name: string;
@@ -59,6 +59,9 @@ const OtherDashboardsTable: React.FC<OtherDashboardsTableProps> = ({ dashboards 
     const handleViewMore = (dashboardId: string) => {
       navigate(`/dashboard/${dashboardId}`);
     };
+    const handlePresentDashboard = (dashboardId: string) => {
+      navigate(`/dashboard/${dashboardId}/present`);
+    };
   const columns = useMemo<MRT_ColumnDef<DashboardData>[]>(
     () => [
       {
@@ -80,6 +83,11 @@ const OtherDashboardsTable: React.FC<OtherDashboardsTableProps> = ({ dashboards 
                <FaEye
                  className="text-gray-500 text-2xl hover:text-blue-500 cursor-pointer transition-colors"
                  onClick={() => handleViewMore(row.original.key)}
+                 title="View More"
+               />
+               <FaRegPlayCircle
+                 className="text-gray-500 text-2xl hover:text-blue-500 cursor-pointer transition-colors"
+                 onClick={() => handlePresentDashboard(row.original.key)}
                  title="View More"
                />
            

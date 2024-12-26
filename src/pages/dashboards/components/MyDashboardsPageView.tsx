@@ -79,7 +79,6 @@ export default function MyDashboardsPageView({ dashboards }: MyDashboardsPageVie
           <BoxView dashboards={dashboards} />
         </TabsContent>
         <TabsContent value="tableView">
-      
            <MyDashboardsTable dashboards={dashboards} />
         </TabsContent>
       </Tabs>

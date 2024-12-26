@@ -49,7 +49,7 @@ const App: React.FC = () => {
               <Route path="data-source" element={<DataSourcePage />} />
               <Route path="unauthorized" element={<UnauthorizedPage />} />
               <Route path="visualizers/:id?" element={<VisualizersPage />} />
-              <Route path="dashboard/:id?" element={<CreateDashboardPage />} />
+              <Route path="dashboard/:id?/:present?" element={<CreateDashboardPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Route>
 

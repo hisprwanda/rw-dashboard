@@ -9,6 +9,8 @@ import { useAuthorities } from "../../../context/AuthContext";
 import { useDashboardsData } from "../../../services/fetchDashboard";
 import { useUpdateDashboardFavorite } from "../../../hooks/useUpdateDashFavorite";
 import { Loading } from "../../../components";
+import { FaEye } from "react-icons/fa";
+import { FaRegPlayCircle } from "react-icons/fa";
 
 interface User {
   id: string;
@@ -83,6 +85,9 @@ const BoxView: React.FC<BoxViewProps> = ({ dashboards }) => {
   const handleViewMore = (dashboardId: string) => {
     navigate(`/dashboard/${dashboardId}`);
   };
+  const handlePresentDashboard = (dashboardId: string) => {
+    navigate(`/dashboard/${dashboardId}/present`);
+  };
 
    if(isUpdatingDashboard || loading)
    {
@@ -112,6 +117,26 @@ const BoxView: React.FC<BoxViewProps> = ({ dashboards }) => {
               {dashboard.value.dashboardName}
             </p>
             <div className="flex items-center space-x-2">
+                   {/* View More Icon */}
+                   <div
+                className="cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent box click propagation
+                  handleViewMore(dashboard.key);
+                }}
+              >
+                <FaEye   className="text-gray-500 text-2xl hover:text-blue-500 cursor-pointer transition-colors"/>
+              </div>
+                   {/* Play Dashboard Icon */}
+                   <div
+                className="cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent box click propagation
+                  handlePresentDashboard(dashboard.key);
+                }}
+              >
+                <FaRegPlayCircle   className="text-gray-500 text-2xl hover:text-blue-500 cursor-pointer transition-colors"/>
+              </div>
               {/* Favorite Icon */}
               <button
                 disabled={isUpdatingDashboard}
@@ -128,16 +153,7 @@ const BoxView: React.FC<BoxViewProps> = ({ dashboards }) => {
                 )}
               </button>
         
-              {/* View More Icon */}
-              <div
-                className="cursor-pointer"
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent box click propagation
-                  handleViewMore(dashboard.key);
-                }}
-              >
-                <IconMore24 />
-              </div>
+         
             </div>
           </div>
         

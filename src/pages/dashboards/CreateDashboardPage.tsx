@@ -22,7 +22,7 @@ import { FaPlay} from "react-icons/fa"
 import { IoSaveOutline } from "react-icons/io5";
 
 const CreateDashboardPage: React.FC = () => {
-    const { id: dashboardId } = useParams();
+    const { id: dashboardId ,present:isPresentModeFromView} = useParams();
     const navigate = useNavigate();
     const { data: allSavedVisuals ,error,isError,loading} = useFetchVisualsData();
     const {data:singleSavedDashboardData,error:singleSavedDashboardDataError,isError:isErrorFetchSingleSavedDashboardData,loading:isLoadingFetchSingleSavedDashboardData} = useFetchSingleDashboardData(dashboardId)
@@ -65,6 +65,14 @@ const CreateDashboardPage: React.FC = () => {
 
     /// if edit mode, then reassigning dashboard
     useEffect(() => {
+        if(isPresentModeFromView)
+            {
+                setIsPresentMode(true)
+            }
+        if(!isPresentModeFromView)
+            {
+                setIsPresentMode(false)
+            }
         if (dashboardId && singleSavedDashboardData) {
             reset((prevValues) => ({
                 ...prevValues, 
@@ -78,6 +86,7 @@ const CreateDashboardPage: React.FC = () => {
                 favorites: singleSavedDashboardData?.dataStore?.favorites || prevValues.favorites,
             }));
         }
+      
     }, [singleSavedDashboardData, dashboardId, reset]);
     const selectedVisuals = watch("selectedVisuals");
 

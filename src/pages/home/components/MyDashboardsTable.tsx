@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthorities } from "../../../context/AuthContext";
 import { useUpdateDashboardFavorite } from "../../../hooks/useUpdateDashFavorite";
 import { useDashboardsData } from "../../../services/fetchDashboard";
-import { FaEye } from "react-icons/fa";
+import { FaEye, FaRegPlayCircle } from "react-icons/fa";
 
 
 interface User {
@@ -66,6 +66,9 @@ const MyDashboardsTable: React.FC<MyDashboardsTableProps> = ({ dashboards }) => 
   const handleViewMore = (dashboardId: string) => {
     navigate(`/dashboard/${dashboardId}`);
   };
+  const handlePresentDashboard = (dashboardId: string) => {
+    navigate(`/dashboard/${dashboardId}/present`);
+  };
   
   const { userDatails } = useAuthorities();
   const userId = userDatails?.me?.id; 
@@ -98,7 +101,13 @@ const MyDashboardsTable: React.FC<MyDashboardsTableProps> = ({ dashboards }) => 
           <FaEye
             className="text-gray-500 text-2xl hover:text-blue-500 cursor-pointer transition-colors"
             onClick={() => handleViewMore(row.original.key)}
-            title="View More"
+          
+          />
+            {/* Play Dashboard Icon */}
+            <FaRegPlayCircle
+            className="text-gray-500 text-2xl hover:text-blue-500 cursor-pointer transition-colors"
+            onClick={() => handlePresentDashboard(row.original.key)}
+         
           />
           {/* Favorite Icon */}
           <span
