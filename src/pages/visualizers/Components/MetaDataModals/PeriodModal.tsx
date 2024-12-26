@@ -90,6 +90,8 @@ interface PeriodPickerProps {
     onUpdate:any
 }
 
+// const [analyticsDimensions?.pe?, setSelectedPeriods] = useState([])
+
 const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod }) => {
  const { analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, isFetchAnalyticsDataLoading, selectedDataSourceDetails } = useAuthorities();
     const [selectedTab, setSelectedTab] = useState('relative');
@@ -438,18 +440,3 @@ const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod 
 };
 
 export default PeriodPicker;
-
-
-
-/// response from DHIS2 API AI
-
-// Based on the information provided in the knowledge sources, I can address your question about how the Transfer component handles filtered options and selected values that are not present in the current options list.
-// As of DHIS2 UI version 8.10.0, there is a feature that addresses this exact scenario. According to the changelog:
-// "select: use selection value as a label as fallback in production"
-// This means that if a selected value doesn't have a corresponding option in the current options prop (which can happen when filtering), the Transfer component will fall back to using the value itself as the label.
-// In your specific example:
-// Your filtered transferOptions only include ANC 3rd, 4th, and 5th visits.
-// Your selected array includes 'anc_1st_visit' and 'anc_2st_visit', which are not in the current options.
-// The Transfer component should still display these selected items, using their values ('anc_1st_visit' and 'anc_2st_visit') as labels if the corresponding full option objects are not available.
-// This behavior ensures that selected items are not lost when filtering options, even if the Transfer component doesn't have access to their original labels.
-// However, it's important to note that this fallback behavior might not provide the most user-friendly labels (as 'anc_1st_visit' is less readable than 'ANC 1st visit'). If possible, it would be better to maintain a complete list of options for reference, even when filtering, to ensure that proper labels are always available for selected items.
