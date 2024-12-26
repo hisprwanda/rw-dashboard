@@ -32,12 +32,7 @@ const handleNodeSelect = (node) => {
 };
 export function TestChart() {
   return (
-    <CustomOrganisationUnitTree
-    apiUrl="https://play.im.dhis2.org/stable-2-41-2"
-    token="d2p_LZyRuotqOwC35a0sgE9sx5W0xfDIbsuOFE9Sm36oWAcs0Oqjft"
-    rootOrgUnitId="ImspTQPwCqd" // Example root ID
-    onNodeSelect={handleNodeSelect}
-/>
+   <h2>Hello test</h2>
   );
 }
 
