@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Tab, Tabs, TabBar, Transfer } from '@dhis2/ui';
 import { useAuthorities } from '../../../../context/AuthContext';
 import { formatAnalyticsDimensions } from '../../../../lib/formatAnalyticsDimensions';
 import Button from '../../../../components/Button';
 import { IoSaveOutline } from 'react-icons/io5';
-import { useRelativePeriodsData } from '../../../../services/FetchRelativePeriods';
 
 const groupedPeriods = {
     days: ['TODAY', 'YESTERDAY', 'LAST_3_DAYS', 'LAST_7_DAYS', 'LAST_14_DAYS', 'LAST_30_DAYS'],
@@ -18,105 +16,352 @@ const groupedPeriods = {
     years: ['THIS_YEAR', 'LAST_YEAR', 'LAST_5_YEARS', 'LAST_10_YEARS', 'LAST_5_FINANCIAL_YEARS', 'LAST_10_FINANCIAL_YEARS']
 };
 
-interface PeriodPickerProps {
-    setIsShowPeriod: any;
-}
+const fixedPeriodTypes = [
+    { label: 'Daily', value: 'daily' },
+    { label: 'Weekly', value: 'weekly' },
+    { label: 'Weekly (Start Wednesday)', value: 'weeklyWed' },
+    { label: 'Weekly (Start Thursday)', value: 'weeklyThu' },
+    { label: 'Weekly (Start Saturday)', value: 'weeklySat' },
+    { label: 'Weekly (Start Sunday)', value: 'weeklySun' },
+    { label: 'Bi-weekly', value: 'biWeekly' },
+    { label: 'Monthly', value: 'monthly' },
+    { label: 'Bi-monthly', value: 'biMonthly' },
+    { label: 'Quarterly', value: 'quarterly' },
+    { label: 'Six-monthly', value: 'sixMonthly' },
+    { label: 'Six-monthly April', value: 'sixMonthlyApril' },
+    { label: 'Yearly', value: 'yearly' },
+    { label: 'Financial Year (April)', value: 'financialApril' },
+    { label: 'Financial Year (July)', value: 'financialJuly' },
+    { label: 'Financial Year (October)', value: 'financialOct' }
+];
 
-const PeriodPicker: React.FC<PeriodPickerProps> = ({ setIsShowPeriod }) => {
-    const { data, error, isError, loading } = useRelativePeriodsData();
-    const { analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, isFetchAnalyticsDataLoading, selectedDataSourceDetails } = useAuthorities();
+
+const TabButton = ({ selected, onClick, children }) => (
+    <button
+        onClick={onClick}
+        className={`px-4 py-2 font-medium rounded-t-lg ${
+            selected 
+                ? 'bg-white border-b-2 border-blue-500 text-blue-600' 
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+        }`}
+    >
+        {children}
+    </button>
+);
+
+const TransferList = ({ availableOptions, selectedOptions, onSelect, onDeselect }) => {
+    return (
+        <div className="grid grid-cols-2 gap-4 mt-4">
+            <div className="border rounded-lg p-4">
+                <h3 className="font-medium mb-2">Available Periods</h3>
+                <div className="space-y-2 max-h-64 overflow-y-auto">
+                    {availableOptions.map(option => (
+                        <button
+                            key={option.value}
+                            onClick={() => onSelect(option)}
+                            className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded"
+                        >
+                            {option.label}
+                        </button>
+                    ))}
+                </div>
+            </div>
+            <div className="border rounded-lg p-4">
+                <h3 className="font-medium mb-2">Selected Periods</h3>
+                <div className="space-y-2 max-h-64 overflow-y-auto">
+                    {selectedOptions.map(option => (
+                        <button
+                            key={option.value}
+                            onClick={() => onDeselect(option)}
+                            className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded flex justify-between items-center"
+                        >
+                            <span>{option.label}</span>
+                            <span className="text-red-500">×</span>
+                        </button>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const PeriodPicker = ({ onUpdate }) => {
 
     const [selectedTab, setSelectedTab] = useState('relative');
-    const [selectedPeriodGroup, setSelectedPeriodGroup] = useState('days'); // Default group
-    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // Current year by default
+    const [selectedPeriodGroup, setSelectedPeriodGroup] = useState('days');
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const [selectedPeriodType, setSelectedPeriodType] = useState('monthly');
     const [availablePeriods, setAvailablePeriods] = useState([]);
-
-    // Handle tab switching (relative vs fixed)
-    const handleTabChange = (tab: string) => {
-        setSelectedTab(tab);
-        if (tab === 'relative') {
-            setAvailablePeriods(filterRelativePeriods(selectedPeriodGroup));
-        } else {
-            setAvailablePeriods(generateMonthsForYear(selectedYear));
-        }
-    };
-
-    // Filter relative periods based on the selected group
-    const filterRelativePeriods = (group: string) => {
-        if (!data?.results) return [];
-        const periods = groupedPeriods[group] || [];
-        return data.results
-            .filter((period: string) => periods.includes(period))
-            .map((period: string) => ({ label: period.replace(/_/g, ' '), value: period })); // Format label for readability
-    };
-
-    // Generate fixed periods (months for a specific year)
-    const generateMonthsForYear = (year: number) => {
+    const [analyticsDimensions, setAnalyticsDimensions] = useState({ dx: [], pe: [] });
+    const [selectedPeriods, setSelectedPeriods] = useState([]);
+    const [allPeriodOptions, setAllPeriodOptions] = useState(new Map());
+    const generateFixedPeriods = (year, periodType) => {
+        const periods = [];
         const months = [
             'January', 'February', 'March', 'April', 'May', 'June',
             'July', 'August', 'September', 'October', 'November', 'December'
         ];
-        return months.map((month, index) => ({
-            label: `${month} ${year}`,
-            value: `${year}${(index + 1).toString().padStart(2, '0')}`, // Format: YYYYMM
-        }));
-    };
 
-    // Handle year change for fixed periods
-    const handleYearChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newYear = parseInt(event.target.value, 10);
-        setSelectedYear(newYear);
-        setAvailablePeriods(generateMonthsForYear(newYear));
-    };
+        switch (periodType) {
+            case 'daily':
+                for (let day = 1; day <= 31; day++) {
+                    const formattedDay = day.toString().padStart(2, '0');
+                    periods.push({
+                        label: `${year}-${formattedDay}`,
+                        value: `${year}${formattedDay}`
+                    });
+                }
+                break;
 
-    // Handle group change for relative periods
-    const handleGroupChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const newGroup = event.target.value;
-        setSelectedPeriodGroup(newGroup);
-        setAvailablePeriods(filterRelativePeriods(newGroup));
-    };
+            case 'weekly':
+                for (let week = 1; week <= 52; week++) {
+                    const formattedWeek = week.toString().padStart(2, '0');
+                    periods.push({
+                        label: `Week ${week}, ${year}`,
+                        value: `${year}W${formattedWeek}`
+                    });
+                }
+                break;
 
-    // Handle period selection
-    const handlePeriodSelect = ({ selected }) => {
-        setAnalyticsDimensions((prev: any) => ({
-            ...prev,
-            pe: [...selected], // Update the `pe` array with selected periods
-        }));
-    };
+            case 'weeklyWed':
+                for (let week = 1; week <= 52; week++) {
+                    periods.push({
+                        label: `Week ${week} (Wed), ${year}`,
+                        value: `${year}WedW${week}`
+                    });
+                }
+                break;
 
-    // Handle update button click
-    const handleUpdate = async () => {
-        await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions), selectedDataSourceDetails);
-        setIsShowPeriod(false);
-    };
+            case 'weeklyThu':
+                for (let week = 1; week <= 52; week++) {
+                    periods.push({
+                        label: `Week ${week} (Thu), ${year}`,
+                        value: `${year}ThuW${week}`
+                    });
+                }
+                break;
 
-    // Initial setup and reactivity
-    useEffect(() => {
-        if (selectedTab === 'relative') {
-            setAvailablePeriods(filterRelativePeriods(selectedPeriodGroup));
-        } else {
-            setAvailablePeriods(generateMonthsForYear(selectedYear));
+            case 'weeklySat':
+                for (let week = 1; week <= 52; week++) {
+                    periods.push({
+                        label: `Week ${week} (Sat), ${year}`,
+                        value: `${year}SatW${week}`
+                    });
+                }
+                break;
+
+            case 'weeklySun':
+                for (let week = 1; week <= 52; week++) {
+                    periods.push({
+                        label: `Week ${week} (Sun), ${year}`,
+                        value: `${year}SunW${week}`
+                    });
+                }
+                break;
+
+            case 'biWeekly':
+                for (let biWeek = 1; biWeek <= 26; biWeek++) {
+                    periods.push({
+                        label: `Bi-week ${biWeek}, ${year}`,
+                        value: `${year}BiW${biWeek}`
+                    });
+                }
+                break;
+
+            case 'monthly':
+                months.forEach((month, index) => {
+                    periods.push({
+                        label: `${month} ${year}`,
+                        value: `${year}${(index + 1).toString().padStart(2, '0')}`
+                    });
+                });
+                break;
+
+            case 'biMonthly':
+                for (let i = 0; i < 6; i++) {
+                    periods.push({
+                        label: `${months[i * 2]}-${months[i * 2 + 1]} ${year}`,
+                        value: `${year}${(i + 1).toString()}B`
+                    });
+                }
+                break;
+
+            case 'quarterly':
+                for (let quarter = 1; quarter <= 4; quarter++) {
+                    periods.push({
+                        label: `Q${quarter} ${year}`,
+                        value: `${year}Q${quarter}`
+                    });
+                }
+                break;
+
+            case 'sixMonthly':
+                periods.push(
+                    {
+                        label: `January-June ${year}`,
+                        value: `${year}S1`
+                    },
+                    {
+                        label: `July-December ${year}`,
+                        value: `${year}S2`
+                    }
+                );
+                break;
+
+            case 'sixMonthlyApril':
+                periods.push(
+                    {
+                        label: `April-September ${year}`,
+                        value: `${year}AprilS1`
+                    },
+                    {
+                        label: `October-March ${year}`,
+                        value: `${year}AprilS2`
+                    }
+                );
+                break;
+
+            case 'yearly':
+                periods.push({
+                    label: year.toString(),
+                    value: year.toString()
+                });
+                break;
+
+            case 'financialApril':
+                periods.push({
+                    label: `April ${year} - March ${year + 1}`,
+                    value: `${year}April`
+                });
+                break;
+
+            case 'financialJuly':
+                periods.push({
+                    label: `July ${year} - June ${year + 1}`,
+                    value: `${year}July`
+                });
+                break;
+
+            case 'financialOct':
+                periods.push({
+                    label: `October ${year} - September ${year + 1}`,
+                    value: `${year}Oct`
+                });
+                break;
         }
-    }, [selectedTab, selectedPeriodGroup, selectedYear, data]);
 
-    return (
-        <div style={{ width: '600px', padding: '20px' }}>
-            <TabBar>
-                <Tab selected={selectedTab === 'relative'} onClick={() => handleTabChange('relative')}>
+        return periods;
+    };
+
+    const filterRelativePeriods = (group) => {
+        const periods = groupedPeriods[group] || [];
+        return periods.map(period => ({ 
+            label: period.replace(/_/g, ' '), 
+            value: period,
+            type: 'relative'
+        }));
+    };
+
+    
+    const updateAvailablePeriods = () => {
+        let newPeriods;
+        if (selectedTab === 'relative') {
+            newPeriods = filterRelativePeriods(selectedPeriodGroup);
+        } else {
+            newPeriods = generateFixedPeriods(selectedYear, selectedPeriodType);
+        }
+        
+        // Update all period options map
+        const newOptionsMap = new Map(allPeriodOptions);
+        newPeriods.forEach(period => {
+            newOptionsMap.set(period.value, period);
+        });
+        setAllPeriodOptions(newOptionsMap);
+
+        // Filter out already selected periods from available periods
+        setAvailablePeriods(
+            newPeriods.filter(period => !selectedPeriods.includes(period.value))
+        );
+    };
+    const handleTabChange = (tab) => {
+        setSelectedTab(tab);
+        updateAvailablePeriods();
+    };
+
+    const handlePeriodSelect = (period) => {
+        const newSelectedPeriods = [...selectedPeriods, period.value];
+        setSelectedPeriods(newSelectedPeriods);
+        setAnalyticsDimensions(prev => ({
+            ...prev,
+            pe: newSelectedPeriods
+        }));
+        setAvailablePeriods(prev => prev.filter(p => p.value !== period.value));
+    };
+
+    const handlePeriodDeselect = (period) => {
+        const newSelectedPeriods = selectedPeriods.filter(value => value !== period.value);
+        setSelectedPeriods(newSelectedPeriods);
+        setAnalyticsDimensions(prev => ({
+            ...prev,
+            pe: newSelectedPeriods
+        }));
+        
+        if (
+            (selectedTab === 'relative' && period.type === 'relative') ||
+            (selectedTab === 'fixed' && period.type !== 'relative')
+        ) {
+            setAvailablePeriods(prev => [...prev, period]);
+        }
+    };
+
+    const handleUpdate = () => {
+        onUpdate?.(selectedPeriods);
+    };
+
+    useEffect(() => {
+        updateAvailablePeriods();
+    }, [selectedTab, selectedPeriodGroup, selectedYear, selectedPeriodType]);
+    analyticsDimensions.pe
+       // Get selected period objects with labels
+       const selectedPeriodObjects = selectedPeriods.map(periodValue => {
+        const periodObject = allPeriodOptions.get(periodValue);
+        return periodObject || { value: periodValue, label: periodValue }; // Fallback if not found
+    });
+
+    useEffect(()=>{
+        console.log("selectedPeriods",selectedPeriods)
+        console.log("selectedPeriods x",analyticsDimensions.pe)
+    },[selectedPeriods])
+
+  return (
+        <div className="w-full max-w-4xl p-6 bg-white rounded-lg shadow">
+            <div className="flex gap-2 mb-6 border-b">
+                <TabButton 
+                    selected={selectedTab === 'relative'} 
+                    onClick={() => handleTabChange('relative')}
+                >
                     Relative periods
-                </Tab>
-                <Tab selected={selectedTab === 'fixed'} onClick={() => handleTabChange('fixed')}>
+                </TabButton>
+                <TabButton 
+                    selected={selectedTab === 'fixed'} 
+                    onClick={() => handleTabChange('fixed')}
+                >
                     Fixed periods
-                </Tab>
-            </TabBar>
+                </TabButton>
+            </div>
 
             {selectedTab === 'relative' && (
-                <div>
-                    <label>Period group</label>
+                <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Period group
+                    </label>
                     <select
                         value={selectedPeriodGroup}
-                        onChange={handleGroupChange}
-                        style={{ display: 'block', width: '100%', padding: '8px', marginTop: '10px', background: '#fff', zIndex: 1 }}
+                        onChange={(e) => {
+                            setSelectedPeriodGroup(e.target.value);
+                            updateAvailablePeriods();
+                        }}
+                        className="w-full p-2 border rounded-md bg-white"
                     >
                         {Object.keys(groupedPeriods).map((group) => (
                             <option key={group} value={group}>
@@ -128,36 +373,76 @@ const PeriodPicker: React.FC<PeriodPickerProps> = ({ setIsShowPeriod }) => {
             )}
 
             {selectedTab === 'fixed' && (
-                <div>
-                    <label>Year</label>
-                    <input
-                        type="number"
-                        value={selectedYear}
-                        onChange={handleYearChange}
-                        style={{ display: 'block', width: '100%', padding: '8px', marginTop: '10px', background: '#fff', zIndex: 1 }}
-                    />
+                <div className="space-y-4 mb-6">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Period Type
+                        </label>
+                        <select
+                            value={selectedPeriodType}
+                            onChange={(e) => {
+                                setSelectedPeriodType(e.target.value);
+                                updateAvailablePeriods();
+                            }}
+                            className="w-full p-2 border rounded-md bg-white"
+                        >
+                            {fixedPeriodTypes.map((type) => (
+                                <option key={type.value} value={type.value}>
+                                    {type.label}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Year
+                        </label>
+                        <input
+                            type="number"
+                            value={selectedYear}
+                            onChange={(e) => {
+                                setSelectedYear(parseInt(e.target.value, 10));
+                                updateAvailablePeriods();
+                            }}
+                            className="w-full p-2 border rounded-md bg-white"
+                        />
+                    </div>
                 </div>
             )}
 
-            <Transfer
-                options={availablePeriods}
-                selected={analyticsDimensions?.pe}
-                onChange={handlePeriodSelect}
-                leftHeader="Available Periods"
-                rightHeader="Selected Periods"
+            <TransferList
+                availableOptions={availablePeriods}
+                selectedOptions={selectedPeriodObjects}
+                onSelect={handlePeriodSelect}
+                onDeselect={handlePeriodDeselect}
             />
 
-            <div className="flex justify-end mt-2">
-                <Button
-                    text={isFetchAnalyticsDataLoading ? 'Loading' : 'Update'}
+            <div className="flex justify-end mt-6">
+                <button
                     onClick={handleUpdate}
-                    variant="primary"
-                    type="button"
-                    icon={<IoSaveOutline />}
-                />
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                >
+                    Update
+                </button>
             </div>
         </div>
     );
 };
 
 export default PeriodPicker;
+
+
+
+/// response from DHIS2 API AI
+
+// Based on the information provided in the knowledge sources, I can address your question about how the Transfer component handles filtered options and selected values that are not present in the current options list.
+// As of DHIS2 UI version 8.10.0, there is a feature that addresses this exact scenario. According to the changelog:
+// "select: use selection value as a label as fallback in production"
+// This means that if a selected value doesn't have a corresponding option in the current options prop (which can happen when filtering), the Transfer component will fall back to using the value itself as the label.
+// In your specific example:
+// Your filtered transferOptions only include ANC 3rd, 4th, and 5th visits.
+// Your selected array includes 'anc_1st_visit' and 'anc_2st_visit', which are not in the current options.
+// The Transfer component should still display these selected items, using their values ('anc_1st_visit' and 'anc_2st_visit') as labels if the corresponding full option objects are not available.
+// This behavior ensures that selected items are not lost when filtering options, even if the Transfer component doesn't have access to their original labels.
+// However, it's important to note that this fallback behavior might not provide the most user-friendly labels (as 'anc_1st_visit' is less readable than 'ANC 1st visit'). If possible, it would be better to maintain a complete list of options for reference, even when filtering, to ensure that proper labels are always available for selected items.
