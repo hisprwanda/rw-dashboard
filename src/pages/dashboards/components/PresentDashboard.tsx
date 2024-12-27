@@ -98,6 +98,18 @@ const PresentDashboard: React.FC<PresentDashboardProps> = ({
   }, [isFullscreen]);
 
   useEffect(() => {
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement) {
+        setIsFullscreen(false);
+        setShowControls(true);
+      }
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
+  useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.code === "Space") {
         e.preventDefault();
@@ -150,7 +162,7 @@ const PresentDashboard: React.FC<PresentDashboardProps> = ({
       className={`w-full h-full bg-background transition-all duration-300 ${isFullscreen ? 'p-0' : 'p-6'}`}
       onMouseMove={handleMouseMove}
     >
-      <div className={`max-w-7xl mx-auto space-y-6 ${isFullscreen ? 'h-screen flex flex-col' : ''}`}>
+      <div className={`max-w-7xl mx-auto space-y-6 ${isFullscreen ? 'h-screen flex flex-col' : 'min-h-screen flex flex-col'}`}>
         {(!isFullscreen || showControls) && (
           <>
             <div className="flex items-center justify-between mb-6">
@@ -215,7 +227,7 @@ const PresentDashboard: React.FC<PresentDashboardProps> = ({
           </>
         )}
 
-        <div className={`relative ${isFullscreen ? 'flex-1 flex items-center' : ''}`}>
+        <div className="flex-1 flex items-center relative">
           <button
             onClick={scrollPrev}
             className={`absolute left-4 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors ${
@@ -226,23 +238,21 @@ const PresentDashboard: React.FC<PresentDashboardProps> = ({
             <ChevronLeft className="h-6 w-6 text-primary" />
           </button>
 
-          <div ref={emblaRef} className="overflow-hidden h-full">
-            <div className="flex h-full">
+          <div ref={emblaRef} className="overflow-hidden h-full w-full">
+            <div className="flex h-full items-center">
               {dashboardData.map((item, index) => (
                 <div
                   key={index}
-                  className={`flex-[0_0_auto] min-w-0 px-4 ${
-                    isFullscreen ? 'h-full flex items-center' : ''
-                  }`}
+                  className="flex-[0_0_auto] min-w-0 px-4 h-full flex items-center"
                   style={{ width: `${100 / slidesToShow}%` }}
                 >
-                  <div className={`space-y-2 ${isFullscreen ? 'h-full' : ''}`}>
+                  <div className="space-y-2 w-full">
                     {(!isFullscreen || showControls) && (
                       <h4 className="text-xl font-medium">
                         {index + 1}. {item.visualName}
                       </h4>
                     )}
-                    <div className={`${isFullscreen ? 'h-full overflow-auto' : ''}`}>
+                    <div className="h-full">
                       <DashboardVisualItem
                         query={item.visualQuery}
                         dataSourceId={item.dataSourceId}
