@@ -11,6 +11,7 @@ import { useDashboardsData } from "../../services/fetchDashboard";
 import { useAuthorities } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Loading } from "../../components";
+import { FaEye, FaRegPlayCircle } from "react-icons/fa";
 
 
 
@@ -67,7 +68,6 @@ interface DataStoreResponse {
     entries: DashboardData[];
   };
 }
-
 interface UserDetails {
   me?: {
     id: string;
@@ -118,7 +118,9 @@ export default function HomePage() {
 
   const handleViewMore = (dashboardId:string)=>{
     navigate(`/dashboard/${dashboardId}`)
-  
+  }
+  const handlePresentDashboard = (dashboardId:string)=>{
+    navigate(`/dashboard/${dashboardId}/present`)
   }
 
   if(loading)
@@ -129,19 +131,46 @@ export default function HomePage() {
   return (
     <section className="px-14 py-9">
       <h1 className="text-primary font-semibold">Pinned Dashboards</h1>
+
       <div className="mt-7 flex gap-8 overflow-auto  ">
         {pinnedDashboards.map((dashboard, index) => (
-          <div
-            key={index}
-            className="bg-dhisGrey500 rounded-[5px] border border-primary min-w-[300px] w-[300px] cursor-pointer"
-            onClick={()=>handleViewMore(dashboard.key)}
-          >
-            <div className="p-2 font-semibold">{dashboard.value.dashboardName}</div>
-            <div className="flex h-48 items-center justify-center bg-white rounded-b-[5px]">
-            <img  className="w-full h-full" src={dashboard.value.previewImg} alt={dashboard.value.dashboardName} />
-  
-            </div>
-          </div>
+       <article
+       key={index}
+       className="relative bg-dhisGrey500 rounded-[5px] border border-primary min-w-[300px] w-[300px] cursor-pointer group"
+     >
+       {/* Dashboard Name */}
+       <div className="p-2 font-semibold">{dashboard.value.dashboardName}</div>
+     
+       {/* Image Section */}
+       <div className="relative flex h-48 items-center justify-center bg-white rounded-b-[5px] overflow-hidden">
+         {/* Image */}
+         <img
+           className="w-full h-full object-cover"
+           src={dashboard.value.previewImg}
+           alt={dashboard.value.dashboardName}
+         />
+     
+         {/* Overlay on Hover */}
+         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+           {/* Icons */}
+           <FaEye
+             className="text-white text-3xl mx-2 hover:text-primary cursor-pointer"
+             onClick={(e) => {
+               e.stopPropagation(); // Prevent triggering article click
+               handleViewMore(dashboard.key);
+             }}
+           />
+           <FaRegPlayCircle
+             className="text-white text-3xl mx-2 hover:text-green-500 cursor-pointer"
+             onClick={(e) => {
+               e.stopPropagation(); // Prevent triggering article click
+               handlePresentDashboard(dashboard.key);
+             }}
+           />
+         </div>
+       </div>
+     </article>
+     
         ))}
       </div>
       <div className="mt-14">
