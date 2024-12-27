@@ -166,9 +166,9 @@ const PresentDashboard: React.FC<PresentDashboardProps> = ({
         {(!isFullscreen || showControls) && (
           <>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-semibold text-primary">
-                {dashboardName}
-              </h3>
+            <h3 className={`text-2xl font-semibold ${isFullscreen ? 'text-white' : 'text-primary'}`}>
+            {dashboardName}
+          </h3>
               <span className="text-sm text-muted-foreground">
                 Slide {currentSlide} of {dashboardData.length}
               </span>
