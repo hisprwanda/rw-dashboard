@@ -5,10 +5,18 @@ import { Card, CardContent } from "../../../components/ui/card";
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 import Button from "../../../components/Button";
-import { Maximize2, Minimize2, ChevronLeft, ChevronRight } from "lucide-react";
+
 import { FaPause, FaPlay } from "react-icons/fa";
 import { IoMdExit } from "react-icons/io";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
 import DashboardVisualItem from "./DashboardVisualItem";
+import song1 from "../../../songs/song1.mp3";
+import { ChevronLeft, ChevronRight, Music2, Pause, Play, RotateCcw, ZoomIn, ZoomOut, Maximize2, Minimize2 } from "lucide-react";
+const mp3Files = [
+  { name: "Track 1", src: song1 },
+  { name: "Track 2", src: song1 },
+  { name: "Track 3", src: song1 },
+];
 
 interface PresentDashboardProps {
   dashboardData: any[];
@@ -21,6 +29,9 @@ const PresentDashboard: React.FC<PresentDashboardProps> = ({
   setIsPresentMode,
   dashboardName,
 }) => {
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+  
+    const [currentTrack, setCurrentTrack] = useState<string | null>(null);
   const [slidesToShow, setSlidesToShow] = useState(1);
   const [delay, setDelay] = useState(2000);
   const [isPaused, setIsPaused] = useState(false);
@@ -156,6 +167,46 @@ const PresentDashboard: React.FC<PresentDashboardProps> = ({
     }
   }, [emblaApi, delay]);
 
+
+  /// handle song
+    const handleTrackChange = (value: string) => {
+      setCurrentTrack(value);
+      if (audioRef.current) {
+        audioRef.current.src = value;
+        audioRef.current.play();
+      }
+    };
+  
+    const resetAudio = () => {
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0;
+        audioRef.current.play();
+      }
+    };
+  
+    const togglePlayback = useCallback(() => {
+      if (isPaused) {
+        autoplayPlugin.current.play();
+        audioRef.current?.play();
+      } else {
+        autoplayPlugin.current.stop();
+        audioRef.current?.pause();
+      }
+      setIsPaused(!isPaused);
+    }, [isPaused]);
+
+      useEffect(() => {
+        const handleKeyPress = (event: KeyboardEvent) => {
+          if (event.code === "Space") {
+            event.preventDefault();
+            togglePlayback();
+          }
+        };
+    
+        window.addEventListener("keydown", handleKeyPress);
+        return () => window.removeEventListener("keydown", handleKeyPress);
+      }, [isPaused]);
+
   return (
     <div 
       ref={containerRef} 
@@ -222,6 +273,39 @@ const PresentDashboard: React.FC<PresentDashboardProps> = ({
                     aria-label="Exit presentation mode"
                   />
                 </div>
+
+
+                {/* songs */}
+                <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label className={`text-sm flex items-center gap-2 `}>
+                    <Music2 className="h-4 w-4" /> Background Music
+                  </Label>
+                  <Select value={currentTrack || ''} onValueChange={handleTrackChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a track" />
+                    </SelectTrigger>
+                    <SelectContent >
+                      {mp3Files.map((file, index) => (
+                        <SelectItem 
+                          key={index} 
+                          value={file.src}
+                            >
+                          {file.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex justify-center gap-4">
+                  <Button
+                    onClick={resetAudio}
+                    text=""
+                    icon={<RotateCcw className="h-5 w-5" />}
+
+                  />
+                </div>
+              </div>
               </div>
             )}
           </>
@@ -248,7 +332,7 @@ const PresentDashboard: React.FC<PresentDashboardProps> = ({
                 >
                   <div className="space-y-2 w-full">
                     {(!isFullscreen || showControls) && (
-                      <h4 className="text-xl font-medium">
+                      <h4 className="text-xl font-medium text-center">
                         {index + 1}. {item.visualName}
                       </h4>
                     )}
@@ -293,6 +377,7 @@ const PresentDashboard: React.FC<PresentDashboardProps> = ({
           </div>
         )}
       </div>
+      <audio ref={audioRef} className="hidden" />
     </div>
   );
 };
