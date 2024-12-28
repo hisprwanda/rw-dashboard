@@ -11,11 +11,17 @@ import { IoMdExit } from "react-icons/io";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
 import DashboardVisualItem from "./DashboardVisualItem";
 import song1 from "../../../songs/song1.mp3";
+import song2 from "../../../songs/song2.mp3";
+import song3 from "../../../songs/song3.mp3";
+import song4 from "../../../songs/song4.mp3";
+
+
 import { ChevronLeft, ChevronRight, Music2, Pause, Play, RotateCcw, ZoomIn, ZoomOut, Maximize2, Minimize2 } from "lucide-react";
 const mp3Files = [
   { name: "Track 1", src: song1 },
-  { name: "Track 2", src: song1 },
-  { name: "Track 3", src: song1 },
+  { name: "Track 2", src: song2 },
+  { name: "Track 3", src: song3 },
+  { name: "Track 4", src: song4 },
 ];
 
 interface PresentDashboardProps {
@@ -214,47 +220,85 @@ const PresentDashboard: React.FC<PresentDashboardProps> = ({
       onMouseMove={handleMouseMove}
     >
       <div className={`max-w-7xl mx-auto space-y-6 ${isFullscreen ? 'h-screen flex flex-col' : 'min-h-screen flex flex-col'}`}>
-        {(!isFullscreen || showControls) && (
-          <>
-            <div className="flex items-center justify-between mb-6">
-            <h3 className={`text-2xl font-semibold ${isFullscreen ? 'text-white' : 'text-primary'}`}>
+      <div className="flex items-center justify-center gap-2  ">
+            <h3 className={`text-2xl font-semibold text-center ${isFullscreen ? 'text-white' : 'text-primary'}`}>
             {dashboardName}
           </h3>
-              <span className="text-sm text-muted-foreground">
-                Slide {currentSlide} of {dashboardData.length}
-              </span>
+          <span className={`text-sm text-muted-foreground font-semibold ${isFullscreen ? 'text-white' : 'text-primary'}`}>
+     (Slide {currentSlide} of {dashboardData.length}) 
+</span>
+
             </div>
+      
+        {(!isFullscreen || showControls) && (
+          <>
+          
 
             {!isFullscreen && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div className="space-y-2">
-                  <Label htmlFor="slidesToShow">Slides to Show</Label>
-                  <Input
-                    id="slidesToShow"
-                    type="number"
-                    min="1"
-                    max="5"
-                    value={slidesToShow}
-                    onChange={(e) => setSlidesToShow(Number(e.target.value))}
-                    className="w-full"
-                    aria-label="Number of slides to show"
-                  />
+            <div className="bg-white rounded-lg p-4 shadow-sm">
+            <div className="flex flex-col space-y-4">
+              {/* Main Controls Row */}
+              <div className="flex flex-wrap gap-4">
+                {/* Slides and Delay Controls */}
+                <div className="flex gap-4 flex-1 min-w-[200px]">
+                  <div className="flex-1">
+                    <Label htmlFor="slidesToShow" className="text-sm text-gray-600">Slides</Label>
+                    <Input
+                      id="slidesToShow"
+                      type="number"
+                      min="1"
+                      max="5"
+                      value={slidesToShow}
+                      onChange={(e) => setSlidesToShow(Number(e.target.value))}
+                      className="h-9"
+                      aria-label="Number of slides to show"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <Label htmlFor="delay" className="text-sm text-gray-600">Delay (ms)</Label>
+                    <Input
+                      id="delay"
+                      type="number"
+                      min="500"
+                      step="500"
+                      value={delay}
+                      onChange={(e) => setDelay(Number(e.target.value))}
+                      className="h-9"
+                      aria-label="Slide transition delay in milliseconds"
+                    />
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="delay">Delay (ms)</Label>
-                  <Input
-                    id="delay"
-                    type="number"
-                    min="500"
-                    step="500"
-                    value={delay}
-                    onChange={(e) => setDelay(Number(e.target.value))}
-                    className="w-full"
-                    aria-label="Slide transition delay in milliseconds"
+      
+                {/* Music Controls */}
+                <div className="flex-1 min-w-[200px]">
+                  <Label className="text-sm text-gray-600 flex items-center gap-2">
+                    <Music2 className="w-4" /> Background Music
+                  </Label>
+                  <div className="flex gap-2">
+                    <Select value={currentTrack || ''} onValueChange={handleTrackChange}>
+                      <SelectTrigger className="h-9 flex-1">
+                        <SelectValue placeholder="Select a track" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {mp3Files.map((file, index) => (
+                          <SelectItem key={index} value={file.src}>
+                            {file.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Button
+                    onClick={resetAudio}
+                    text=""
+                    icon={<RotateCcw className="h-5 w-5" />}
+
                   />
+                  </div>
                 </div>
-                <div className="flex items-end justify-end gap-2">
-                  <Button
+      
+                {/* Presentation Controls */}
+                <div className="flex gap-2 items-end">
+                <Button
                     onClick={togglePause}
                     text={isPaused ? "Play" : "Pause"}
                     icon={isPaused ? <FaPlay className="w-4 h-4" /> : <FaPause className="w-4 h-4" />}
@@ -266,6 +310,7 @@ const PresentDashboard: React.FC<PresentDashboardProps> = ({
                     icon={isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
                     aria-label={isFullscreen ? "Exit fullscreen mode" : "Enter fullscreen mode"}
                   />
+
                   <Button
                     onClick={() => setIsPresentMode(false)}
                     text="Exit"
@@ -273,40 +318,9 @@ const PresentDashboard: React.FC<PresentDashboardProps> = ({
                     aria-label="Exit presentation mode"
                   />
                 </div>
-
-
-                {/* songs */}
-                <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label className={`text-sm flex items-center gap-2 `}>
-                    <Music2 className="h-4 w-4" /> Background Music
-                  </Label>
-                  <Select value={currentTrack || ''} onValueChange={handleTrackChange}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a track" />
-                    </SelectTrigger>
-                    <SelectContent >
-                      {mp3Files.map((file, index) => (
-                        <SelectItem 
-                          key={index} 
-                          value={file.src}
-                            >
-                          {file.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex justify-center gap-4">
-                  <Button
-                    onClick={resetAudio}
-                    text=""
-                    icon={<RotateCcw className="h-5 w-5" />}
-
-                  />
-                </div>
               </div>
-              </div>
+            </div>
+          </div>
             )}
           </>
         )}
@@ -331,11 +345,14 @@ const PresentDashboard: React.FC<PresentDashboardProps> = ({
                   style={{ width: `${100 / slidesToShow}%` }}
                 >
                   <div className="space-y-2 w-full">
-                    {(!isFullscreen || showControls) && (
-                      <h4 className="text-xl font-medium text-center">
-                        {index + 1}. {item.visualName}
-                      </h4>
-                    )}
+                  <h4 
+                  className={`text-xl font-medium text-center ${
+            (!isFullscreen || showControls) ? "text-gray-400" : "text-gray-400"
+                   }`}
+                 >
+                {index + 1}. {item.visualName}
+                   </h4>
+
                     <div className="h-full">
                       <DashboardVisualItem
                         query={item.visualQuery}
