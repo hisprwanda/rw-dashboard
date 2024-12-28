@@ -98,11 +98,22 @@ const CreateDashboardPage: React.FC = () => {
     console.log('dashboard data Form data changed:', watchedValues);
   }, [watchedValues]);
 
-    const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
-        <option key={entry.key} value={entry.key}>
-            {entry.value.visualName} ({entry.value.visualType})
-        </option>
-    ));
+  
+  const isVisualSelected = (visualKey: string) => {
+    return selectedVisuals.some(v => v.i === visualKey);
+};
+
+const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
+    <option 
+        key={entry.key} 
+        value={entry.key}
+        disabled={isVisualSelected(entry.key)}
+        className={isVisualSelected(entry.key) ? 'bg-gray-100 text-gray-500' : ''}
+    >
+        {entry.value.visualName} ({entry.value.visualType}) 
+        {isVisualSelected(entry.key) ? ' - Already Added' : ''}
+    </option>
+));
 
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedKey = e.target.value;
@@ -271,6 +282,7 @@ const MemoizedGridLayout = React.memo(({
         rowHeight={rowHeight}
         width={width}
         draggableHandle=".drag-handle"
+        resizeHandles={['se', 'sw', 'ne', 'nw', 'e', 'w', 's', 'n']}
     >
         {layout.map((widget) => (
             <div key={widget.i} className="widget bg-white " style={{ position: "relative", padding: "10px" }}>
