@@ -13,15 +13,13 @@ import DashboardVisualItem from "./DashboardVisualItem";
 import song1 from "../../../songs/song1.mp3";
 import song2 from "../../../songs/song2.mp3";
 import song3 from "../../../songs/song3.mp3";
-import song4 from "../../../songs/song4.mp3";
 
 
 import { ChevronLeft, ChevronRight, Music2, Pause, Play, RotateCcw, ZoomIn, ZoomOut, Maximize2, Minimize2 } from "lucide-react";
 const mp3Files = [
   { name: "Track 1", src: song1 },
   { name: "Track 2", src: song2 },
-  { name: "Track 3", src: song3 },
-  { name: "Track 4", src: song4 },
+  { name: "Track 3", src: song3 }
 ];
 
 interface PresentDashboardProps {
@@ -36,6 +34,7 @@ const PresentDashboard: React.FC<PresentDashboardProps> = ({
   dashboardName,
 }) => {
     const audioRef = useRef<HTMLAudioElement | null>(null);
+    const [isTrackPaused, setIsTrackPaused] = useState(false)
   
     const [currentTrack, setCurrentTrack] = useState<string | null>(null);
   const [slidesToShow, setSlidesToShow] = useState(1);
@@ -180,23 +179,53 @@ const PresentDashboard: React.FC<PresentDashboardProps> = ({
       if (audioRef.current) {
         audioRef.current.src = value;
         audioRef.current.play();
+     
       }
     };
   
     const resetAudio = () => {
-      if (audioRef.current) {
+      if (audioRef.current  && audioRef.current.src) {
         audioRef.current.currentTime = 0;
-        audioRef.current.play();
+     
       }
     };
+ // Function to play the audio
+ const playAudio = () => {
+  if (audioRef.current && audioRef.current.src && audioRef.current.readyState >= 2) {
+    audioRef.current.play();
+    setIsTrackPaused(false);
+  }
+};
+
+
+// Function to pause the audio
+const pauseAudio = () => {
+  if (audioRef.current && audioRef.current.src) {
+    audioRef.current.pause();
+    setIsTrackPaused(true)
+  }
+};
+
+// Function to stop the audio
+const stopAudio = () => {
+  if (audioRef.current) {
+    audioRef.current.src = null
+    setCurrentTrack(null)
+  }
+};
+
+  
   
     const togglePlayback = useCallback(() => {
       if (isPaused) {
+
         autoplayPlugin.current.play();
-        audioRef.current?.play();
+         playAudio()
+       // audioRef.current?.play();
       } else {
         autoplayPlugin.current.stop();
-        audioRef.current?.pause();
+        pauseAudio()
+       // audioRef.current?.pause();
       }
       setIsPaused(!isPaused);
     }, [isPaused]);
@@ -235,14 +264,14 @@ const PresentDashboard: React.FC<PresentDashboardProps> = ({
           
 
             {!isFullscreen && (
-            <div className="bg-white rounded-lg p-4 shadow-sm">
-            <div className="flex flex-col space-y-4">
+            <div className="bg-gray-100 rounded-lg p-4 shadow-sm">
+            <div className="flex  justify-between">
               {/* Main Controls Row */}
               <div className="flex flex-wrap gap-4">
                 {/* Slides and Delay Controls */}
-                <div className="flex gap-4 flex-1 min-w-[200px]">
+                <div className="flex gap-4 min-w-[200px]">
                   <div className="flex-1">
-                    <Label htmlFor="slidesToShow" className="text-sm text-gray-600">Slides</Label>
+                    <Label htmlFor="slidesToShow" className="text-sm">Slides</Label>
                     <Input
                       id="slidesToShow"
                       type="number"
@@ -255,7 +284,7 @@ const PresentDashboard: React.FC<PresentDashboardProps> = ({
                     />
                   </div>
                   <div className="flex-1">
-                    <Label htmlFor="delay" className="text-sm text-gray-600">Delay (ms)</Label>
+                    <Label htmlFor="delay" className="text-sm">Delay (ms)</Label>
                     <Input
                       id="delay"
                       type="number"
@@ -270,9 +299,9 @@ const PresentDashboard: React.FC<PresentDashboardProps> = ({
                 </div>
       
                 {/* Music Controls */}
-                <div className="flex-1 min-w-[200px]">
-                  <Label className="text-sm text-gray-600 flex items-center gap-2">
-                    <Music2 className="w-4" /> Background Music
+                <div className="min-w-[220px]">
+                  <Label className="text-sm flex items-center gap-2">
+                    <Music2 className="" /> Background Music
                   </Label>
                   <div className="flex gap-2">
                     <Select value={currentTrack || ''} onValueChange={handleTrackChange}>
@@ -291,16 +320,28 @@ const PresentDashboard: React.FC<PresentDashboardProps> = ({
                     onClick={resetAudio}
                     text=""
                     icon={<RotateCcw className="h-5 w-5" />}
-
+                  />
+                    <Button
+                    onClick={ isTrackPaused ? playAudio : pauseAudio}
+                    text= "Track"
+                    icon={isPaused ? <FaPlay className="w-4 h-4" /> : <FaPause className="w-4 h-4" />}
+                  />
+                    <Button
+                    onClick={stopAudio}
+                    text="Stop"
+                    variant="danger"
                   />
                   </div>
                 </div>
       
-                {/* Presentation Controls */}
-                <div className="flex gap-2 items-end">
+            
+              </div>
+
+                  {/* Presentation Controls */}
+                  <div className="flex gap-2 items-end">
                 <Button
                     onClick={togglePause}
-                    text={isPaused ? "Play" : "Pause"}
+                    text="Slides"
                     icon={isPaused ? <FaPlay className="w-4 h-4" /> : <FaPause className="w-4 h-4" />}
                     aria-label={isPaused ? "Play slideshow" : "Pause slideshow"}
                   />
@@ -318,7 +359,6 @@ const PresentDashboard: React.FC<PresentDashboardProps> = ({
                     aria-label="Exit presentation mode"
                   />
                 </div>
-              </div>
             </div>
           </div>
             )}
