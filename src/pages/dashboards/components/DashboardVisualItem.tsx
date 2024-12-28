@@ -1,11 +1,12 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { CircularLoader, NoticeBox } from '@dhis2/ui'; // Use NoticeBox for better error display
+import React, { useCallback, useEffect, useState, useRef } from 'react';
+import { CircularLoader, NoticeBox } from '@dhis2/ui';
 import { chartComponents } from '../../../constants/systemCharts';
 import { VisualSettingsTypes, VisualTitleAndSubtitleType } from '../../../types/visualSettingsTypes';
 import { currentInstanceId } from '../../../constants/currentInstanceInfo';
 import { useDataSourceData } from '../../../services/DataSourceHooks';
 import { useFetchSingleChartApi } from '../../../services/fetchSingleChart';
 import { useExternalAnalyticsData } from '../../../services/useFetchExternalAnalytics';
+
 
 interface DashboardVisualItemProps {
     query: any;
@@ -27,63 +28,86 @@ const DashboardVisualItem: React.FC<DashboardVisualItemProps> = ({
     const { fetchExternalAnalyticsData, response: externalData, loading: externalLoading, error: externalError } = useExternalAnalyticsData();
 
     const [chartData, setChartData] = useState<any>(null);
+    const [renderKey, setRenderKey] = useState(0);
 
-    useEffect(() => {
-        console.log('externalData', externalData);
-        console.log('internalData', internalData);
-    }, [externalData, internalData]);
-
-    // Determine data source and fetch data
+    // Fetch data based on source
     const fetchData = useCallback(async () => {
-        const isCurrentInstance = dataSourceId === currentInstanceId;
-
-        if (isCurrentInstance) {
-            // Fetch data from the current instance
-            await runSavedSingleVisualAnalytics();
-        } else {
-            // Fetch data from an external instance
-            const externalSource = savedDataSource?.dataStore?.entries?.find((item: any) => item.key === dataSourceId)?.value;
-            if (externalSource) {
-                await fetchExternalAnalyticsData(query, externalSource.token, externalSource.url);
+        try {
+            const isCurrentInstance = dataSourceId === currentInstanceId;
+            if (isCurrentInstance) {
+                await runSavedSingleVisualAnalytics();
+            } else {
+                const externalSource = savedDataSource?.dataStore?.entries?.find(
+                    (item: any) => item.key === dataSourceId
+                )?.value;
+                if (externalSource) {
+                    await fetchExternalAnalyticsData(query, externalSource.token, externalSource.url);
+                }
             }
+        } catch (err) {
+            console.error('Error fetching data:', err);
         }
     }, [dataSourceId, savedDataSource, query, runSavedSingleVisualAnalytics, fetchExternalAnalyticsData]);
 
-    // Fetch data on mount or when dependencies change
+    // Initial data fetch
     useEffect(() => {
         if (!loading && !error) {
             fetchData();
         }
-    }, [loading, error]);
+    }, [loading, error, fetchData]);
 
-    // Update chart data based on fetch results
+    // Update chart data when source changes
     useEffect(() => {
         const isCurrentInstance = dataSourceId === currentInstanceId;
-        setChartData(isCurrentInstance ? internalData : externalData);
-    }, [internalData, externalData, dataSourceId]);
+        const newData = isCurrentInstance ? internalData : externalData;
+        if (newData !== chartData) {
+            setChartData(newData);
+        }
+    }, [internalData, externalData, dataSourceId, chartData]);
 
-    // Handle loading state
-    if (loading || internalLoading || externalLoading) return <CircularLoader />;
+    // Handle resize events from the grid layout
+    useEffect(() => {
+        const handleResize = () => {
+            setRenderKey(prev => prev + 1);
+        };
 
-    // Handle errors
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    if (loading || internalLoading || externalLoading) {
+        return (
+            <div className="flex items-center justify-center h-full min-h-[100px]">
+                <CircularLoader small />
+            </div>
+        );
+    }
+
     if (isError || internalError || externalError) {
         const errorMessage = error?.message || internalError?.message || externalError?.message;
         return <NoticeBox title="Error" error>{errorMessage}</NoticeBox>;
     }
 
-    // Render the selected chart
     const renderChart = () => {
         const SelectedChart = chartComponents.find((chart) => chart.type === visualType)?.component;
-        return SelectedChart ? (
-            <SelectedChart
-                data={chartData}
-                visualSettings={visualSettings}
-                visualTitleAndSubTitle={visualTitleAndSubTitle}
-            />
-        ) : null;
+        if (!SelectedChart || !chartData) return null;
+
+        return (
+            <div key={renderKey} className="h-full w-full">
+                <SelectedChart
+                    data={chartData}
+                    visualSettings={visualSettings}
+                    visualTitleAndSubTitle={visualTitleAndSubTitle}
+                />
+            </div>
+        );
     };
 
-    return <div>{renderChart()}</div>;
+    return (
+        <div className="h-full w-full overflow-hidden">
+            {renderChart()}
+        </div>
+    );
 };
 
-export default DashboardVisualItem;
+export default React.memo(DashboardVisualItem);

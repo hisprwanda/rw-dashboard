@@ -1,4 +1,4 @@
-import React, { useEffect, useState ,useRef} from 'react';
+import React, { useEffect, useState ,useRef,useCallback} from 'react';
 import Button from "../../components/Button";
 import { useFetchVisualsData } from '../../services/fetchVisuals';
 import GridLayout, { Layout } from "react-grid-layout";
@@ -28,7 +28,7 @@ const CreateDashboardPage: React.FC = () => {
     const {data:singleSavedDashboardData,error:singleSavedDashboardDataError,isError:isErrorFetchSingleSavedDashboardData,loading:isLoadingFetchSingleSavedDashboardData} = useFetchSingleDashboardData(dashboardId)
     const [isPresentMode,setIsPresentMode] = useState(false)
 
-    const [tempDashboardSettings,setTempDashboardSettings] = useState<dashboardSettings>({backgroundColor:"#601515"})
+    const [tempDashboardSettings,setTempDashboardSettings] = useState<dashboardSettings>({backgroundColor:"#d5d5d5"})
     // variable to store snapshot of grid box
     const captureRef = useRef<HTMLDivElement>(null);
 
@@ -118,10 +118,11 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
         key={entry.key} 
         value={entry.key}
         disabled={isVisualSelected(entry.key)}
+        title={isVisualSelected(entry.key) ? "Visual already selected" : ""}
         className={isVisualSelected(entry.key) ? 'bg-gray-100 text-gray-500' : ''}
     >
         {entry.value.visualName} ({entry.value.visualType}) 
-        {isVisualSelected(entry.key) ? ' - Already Added' : ''}
+     
     </option>
 ));
 
@@ -147,16 +148,27 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
 
     };
 
-    const handleLayoutChange = (layout: Layout[]) => {
-        const updatedLayout = layout.map(layoutItem => {
-            const existingVisual = selectedVisuals.find(v => v.i === layoutItem.i);
-            return existingVisual
-                ? { ...layoutItem, visualName: existingVisual.visualName, visualQuery: existingVisual.visualQuery, visualType: existingVisual.visualType , visualSettings: existingVisual.visualSettings,
-                    visualTitleAndSubTitle:existingVisual.visualTitleAndSubTitle, dataSourceId:existingVisual.dataSourceId }
-                : layoutItem;
-        });
-        setValue("selectedVisuals", updatedLayout);
+    const debounce = (func, delay) => {
+        let timer;
+        return (...args) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => func(...args), delay);
+        };
     };
+    
+    const handleLayoutChange = useCallback(
+        debounce((layout: Layout[]) => {
+            const updatedLayout = layout.map((layoutItem) => {
+                const existingVisual = selectedVisuals.find((v) => v.i === layoutItem.i);
+                return existingVisual
+                    ? { ...layoutItem, ...existingVisual }
+                    : layoutItem;
+            });
+            setValue("selectedVisuals", updatedLayout);
+        }, 300),
+        [selectedVisuals, setValue]
+    );
+    
 
     const handleDeleteWidget = (id: string) => {
         setValue("selectedVisuals", selectedVisuals.filter(widget => widget.i !== id));
@@ -269,7 +281,7 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
                 <option value="">{loading ? "Loading" : "Select a visual..."}</option>
                 {visualOptions}
             </select>
-            <div ref={captureRef} >
+            <div ref={captureRef} className="w-full h-auto relative bg-red-400 " >
             <MemoizedGridLayout
                 layout={selectedVisuals}
                 onLayoutChange={handleLayoutChange}
@@ -300,36 +312,57 @@ const MemoizedGridLayout = React.memo(({
     cols: number;
     rowHeight: number;
     width: number;
-    backgroundColor:string;
+    backgroundColor: string;
     onDeleteWidget: (id: string) => void;
 }) => (
-  
-    <GridLayout
-        className="layout"
-        style={{backgroundColor,minHeight:"400px"}}
-        layout={layout}
-        onLayoutChange={onLayoutChange}
-        cols={cols}
-        rowHeight={rowHeight}
-        width={width}
-        draggableHandle=".drag-handle"
-        resizeHandles={['se', 'sw', 'ne', 'nw', 'e', 'w', 's', 'n']}
-    >
-        {layout.map((widget) => (
-            <div key={widget.i} className="widget bg-white " style={{ position: "relative", padding: "10px" }}>
-                <div className="drag-handle" style={{ cursor: "move" }}>
-                    {widget.visualName}
+    <div style={{ backgroundColor }}>
+        <GridLayout
+            className="layout"
+            layout={layout}
+            onLayoutChange={onLayoutChange}
+            cols={cols}
+            rowHeight={rowHeight}
+            width={width}
+            draggableHandle=".drag-handle"
+            resizeHandles={['se', 'sw', 'ne', 'nw', 'e', 'w', 's', 'n']}
+            style={{ minHeight: "400px" }}
+            compactType={null}
+            preventCollision={true}
+            isResizable={true}
+            isBounded={true}
+        >
+            {layout.map((widget) => (
+                <div 
+                    key={widget.i} 
+                    className="widget bg-white"
+                    style={{ 
+                        position: "relative",
+                        height: "100%",
+                        padding: "10px",
+                        display: 'flex',
+                        flexDirection: 'column'
+                    }}
+                >
+                    <div className="drag-handle flex justify-between items-center mb-2 p-1">
+                        <span>{widget.visualName}</span>
+                        <FaTrash
+                            className="cursor-pointer text-red-700 hover:text-red-900"
+                            onClick={() => onDeleteWidget(widget.i)}
+                        />
+                    </div>
+                    <div className="flex-1 min-h-0">
+                        <DashboardVisualItem
+                            query={widget.visualQuery}
+                            visualType={widget.visualType}
+                            visualSettings={widget.visualSettings}
+                            dataSourceId={widget.dataSourceId}
+                            visualTitleAndSubTitle={widget.visualTitleAndSubTitle}
+                        />
+                    </div>
                 </div>
-                <DashboardVisualItem  query={widget.visualQuery} visualType={widget.visualType} visualSettings={widget.visualSettings}  dataSourceId={widget.dataSourceId} visualTitleAndSubTitle={widget.visualTitleAndSubTitle} />
-                <FaTrash
-                    style={{ position: "absolute", top: "10px", right: "10px", cursor: "pointer" ,color:"#7d0000"}}
-                    onClick={() => onDeleteWidget(widget.i)}
-                />
-            </div>
-        ))}
-    </GridLayout>
- 
-
+            ))}
+        </GridLayout>
+    </div>
 ));
 
 export default CreateDashboardPage;
