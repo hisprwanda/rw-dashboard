@@ -13,7 +13,7 @@ import { z } from "zod";
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useParams ,useNavigate} from 'react-router-dom';
-import { DashboardSchema, DashboardFormFields } from '../../types/dashboard';
+import { DashboardSchema, DashboardFormFields, dashboardSettings } from '../../types/dashboard';
 import { useFetchSingleDashboardData } from '../../services/fetchDashboard';
 import { Loading } from '../../components';
 import html2canvas from 'html2canvas';
@@ -27,6 +27,8 @@ const CreateDashboardPage: React.FC = () => {
     const { data: allSavedVisuals ,error,isError,loading} = useFetchVisualsData();
     const {data:singleSavedDashboardData,error:singleSavedDashboardDataError,isError:isErrorFetchSingleSavedDashboardData,loading:isLoadingFetchSingleSavedDashboardData} = useFetchSingleDashboardData(dashboardId)
     const [isPresentMode,setIsPresentMode] = useState(false)
+
+    const [tempDashboardSettings,setTempDashboardSettings] = useState<dashboardSettings>({backgroundColor:"#601515"})
     // variable to store snapshot of grid box
     const captureRef = useRef<HTMLDivElement>(null);
 
@@ -57,7 +59,8 @@ const CreateDashboardPage: React.FC = () => {
             sharing: [],
             previewImg:"",
             isOfficialDashboard: false,
-            favorites:[]
+            favorites:[],
+            dashboardSettings:tempDashboardSettings
     
         },
     });
@@ -84,20 +87,27 @@ const CreateDashboardPage: React.FC = () => {
                 createdAt: singleSavedDashboardData?.dataStore?.createdAt || prevValues.createdAt,
                 isOfficialDashboard: singleSavedDashboardData?.dataStore?.isOfficialDashboard || prevValues.isOfficialDashboard,
                 favorites: singleSavedDashboardData?.dataStore?.favorites || prevValues.favorites,
+                dashboardSettings: singleSavedDashboardData?.dataStore?.dashboardSettings || prevValues.dashboardSettings,
             }));
         }
       
     }, [singleSavedDashboardData, dashboardId, reset]);
     const selectedVisuals = watch("selectedVisuals");
+    const backgroundColor = watch("dashboardSettings.backgroundColor", tempDashboardSettings.backgroundColor);
+
 
          // Watch form values
-  const watchedValues = watch();
+     const watchedValues = watch();
 
   // Log form data when it changes
   useEffect(() => {
     console.log('dashboard data Form data changed:', watchedValues);
   }, [watchedValues]);
 
+  useEffect(() => {
+    console.log("Background color changed:", backgroundColor);
+    setTempDashboardSettings((prev) => ({ ...prev, backgroundColor }));
+  }, [backgroundColor]);
   
   const isVisualSelected = (visualKey: string) => {
     return selectedVisuals.some(v => v.i === visualKey);
@@ -118,7 +128,6 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedKey = e.target.value;
         const visual = allSavedVisuals?.dataStore?.entries?.find((entry: any) => entry.key === selectedKey);
-
         if (visual && !selectedVisuals.some(v => v.i === visual.key)) {
             const newVisual = {
                 i: visual.key,
@@ -135,6 +144,7 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
             };
             setValue("selectedVisuals", [...selectedVisuals, newVisual]);
         }
+
     };
 
     const handleLayoutChange = (layout: Layout[]) => {
@@ -180,6 +190,7 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
         }
     };
 
+
         // loading
         if(isLoadingFetchSingleSavedDashboardData || loading)
             {
@@ -222,15 +233,31 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
                     className="block w-full px-3 py-2 border rounded-md shadow-sm mt-3"
                 />
              <div className="flex items-center gap-2 mt-4">
+                <div className="flex items-center gap-1 justify-between px-4 py-2 text-gray-700 hover:text-primary hover:bg-gray-100 rounded-md cursor-pointer transition-colors duration-200" >
+                <label htmlFor="officialDashboard" className="text-gray-700 font-medium">
+        Official Dashboard
+    </label>
     <input
         type="checkbox"
         {...register("isOfficialDashboard")}
         id="officialDashboard"
         className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
     />
-    <label htmlFor="officialDashboard" className="text-gray-700 font-medium">
-        Official Dashboard
-    </label>
+                </div>
+ 
+        <div className="flex items-center gap-2">
+  <label htmlFor="backgroundColor" className="text-sm font-medium">
+    Background Color:
+  </label>
+  <input
+    id="backgroundColor"
+    type="color"
+    defaultValue={tempDashboardSettings.backgroundColor}
+    {...register("dashboardSettings.backgroundColor")}
+    className="w-8 h-8 p-1 border rounded-md cursor-pointer border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1"
+  />
+</div>
+
 </div>
            
             </div>
@@ -250,6 +277,7 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
                 rowHeight={100}
                 width={1200}
                 onDeleteWidget={handleDeleteWidget}
+                backgroundColor={tempDashboardSettings.backgroundColor}
             />
             </div>
           
@@ -264,6 +292,7 @@ const MemoizedGridLayout = React.memo(({
     cols,
     rowHeight,
     width,
+    backgroundColor,
     onDeleteWidget,
 }: {
     layout: ExtendedLayout[];
@@ -271,11 +300,13 @@ const MemoizedGridLayout = React.memo(({
     cols: number;
     rowHeight: number;
     width: number;
+    backgroundColor:string;
     onDeleteWidget: (id: string) => void;
 }) => (
   
     <GridLayout
-        className="layout bg-[#f4f6f8]"
+        className="layout"
+        style={{backgroundColor,minHeight:"400px"}}
         layout={layout}
         onLayoutChange={onLayoutChange}
         cols={cols}

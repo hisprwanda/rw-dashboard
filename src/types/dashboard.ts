@@ -51,8 +51,19 @@ export const DashboardSchema = z.object({
   sharing: z.array(z.unknown()).optional(),
   previewImg: z.string().optional(),
   isOfficialDashboard: z.boolean(),
-  favorites: z.array(z.string()).optional()
+  favorites: z.array(z.string()).optional(),
+  dashboardSettings: z.object({
+    backgroundColor:z.string(), 
+  }),
 });
 
 // Infer form fields from the schema
 export type DashboardFormFields = z.infer<typeof DashboardSchema>;
+
+
+
+
+/////// dashboard settings
+export type dashboardSettings = {
+  backgroundColor: string;
+}
