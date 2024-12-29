@@ -28,10 +28,10 @@ const CreateDashboardPage: React.FC = () => {
     const {data:singleSavedDashboardData,error:singleSavedDashboardDataError,isError:isErrorFetchSingleSavedDashboardData,loading:isLoadingFetchSingleSavedDashboardData} = useFetchSingleDashboardData(dashboardId)
     const [isPresentMode,setIsPresentMode] = useState(false)
 
-    const [tempDashboardSettings,setTempDashboardSettings] = useState<dashboardSettings>({backgroundColor:"#601515"})
+    const [tempDashboardSettings,setTempDashboardSettings] = useState<dashboardSettings>({backgroundColor:"#dcdcdc"})
     // variable to store snapshot of grid box
     const captureRef = useRef<HTMLDivElement>(null);
-
+    const [containerWidth, setContainerWidth] = useState(window.innerWidth);
 
    // console.log("test single data",singleSavedDashboardData)
     const { userDatails } = useAuthorities();
@@ -64,7 +64,13 @@ const CreateDashboardPage: React.FC = () => {
     
         },
     });
-
+    ////// automatically set width of grid layout
+    useEffect(() => {
+        const handleResize = () => setContainerWidth(window.innerWidth);
+        window.addEventListener("resize", handleResize);
+    
+        return () => window.removeEventListener("resize", handleResize);
+      }, []);
 
     /// if edit mode, then reassigning dashboard
     useEffect(() => {
@@ -121,7 +127,7 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
         className={isVisualSelected(entry.key) ? 'bg-gray-100 text-gray-500' : ''}
     >
         {entry.value.visualName} ({entry.value.visualType}) 
-        {isVisualSelected(entry.key) ? ' - Already Added' : ''}
+
     </option>
 ));
 
@@ -275,7 +281,7 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
                 onLayoutChange={handleLayoutChange}
                 cols={12}
                 rowHeight={100}
-                width={1200}
+                width={containerWidth - 20} 
                 onDeleteWidget={handleDeleteWidget}
                 backgroundColor={tempDashboardSettings.backgroundColor}
             />
