@@ -1193,6 +1193,10 @@ video {
   min-width: 30vw;
 }
 
+.min-w-\[400px\] {
+  min-width: 400px;
+}
+
 .min-w-\[8rem\] {
   min-width: 8rem;
 }
@@ -1321,6 +1325,10 @@ video {
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
+}
+
+.resize {
+  resize: both;
 }
 
 .list-inside {

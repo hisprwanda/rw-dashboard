@@ -207,11 +207,48 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
        {/* how can I pass dashboard name in PresentDashboard */}
       <PresentDashboard dashboardData={selectedVisuals} setIsPresentMode={setIsPresentMode}  dashboardName={dashboardName}   />
     </div>  :
-        <form className="p-6" onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex justify-end gap-2">
-            <Button onClick={()=>setIsPresentMode(true)} icon={<FaPlay/>}  text= "Present"  disabled={isSubmitting} />
+        <form className="p-2" onSubmit={handleSubmit(onSubmit)}>
+            <div className=" flex justify-between ">
+                {/* dashboard name and description container */}
+             <div className='flex gap-2' >
+    {/* dashboard name */}
+    <div>
+                <input
+                    {...register("dashboardName")}
+                    type="text"
+                    placeholder="Dashboard Name"
+                    className="block w-full min-w-[400px] px-3 py-2 border rounded-md shadow-sm mt-3"
+                />
+                {errors.dashboardName && <p className="text-red-500">{errors.dashboardName.message}</p>}
+                </div>
+             {/* dashboard description */}
+                <textarea
+                    {...register("dashboardDescription")}
+                    placeholder="Dashboard Description"
+                    className="block w-full px-3 py-2 border rounded-md shadow-sm mt-3"
+                />
+                  {/* is dashboard official */}
+             <div className="flex items-center gap-1 justify-between  text-gray-700 hover:text-primary hover:bg-gray-100 rounded-md cursor-pointer transition-colors duration-200" >
+                <label htmlFor="officialDashboard" className="text-gray-700 font-medium whitespace-nowrap ">
+        Is Official Dashboard
+    </label>
+    <input
+        type="checkbox"
+        {...register("isOfficialDashboard")}
+        id="officialDashboard"
+        className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+    />
+                </div>
+             </div>
+           
+
+             {/* action btns container */}
+             <div  className="flex items-center  gap-2" >
+             <Button onClick={()=>setIsPresentMode(true)} icon={<FaPlay/>}  text= "Present"  disabled={isSubmitting} />
                 <Button type="submit" text= {isSubmitting ? "Loading" : dashboardId ? "UPDATE" :  "Save changes" } disabled={isSubmitting} icon={<IoSaveOutline/>}  />
           
+             </div>
+         
             </div>
             {/* temporally is success message */}
             {isSuccess && (
@@ -222,35 +259,8 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
 
 
             <div className="mt-4 grid grid-cols-2 gap-2">
-                <div>
-                <input
-                    {...register("dashboardName")}
-                    type="text"
-                    placeholder="Dashboard Name"
-                    className="block w-full px-3 py-2 border rounded-md shadow-sm mt-3"
-                />
-                {errors.dashboardName && <p className="text-red-500">{errors.dashboardName.message}</p>}
-                </div>
-             
-            
-                <textarea
-                    {...register("dashboardDescription")}
-                    placeholder="Dashboard Description"
-                    className="block w-full px-3 py-2 border rounded-md shadow-sm mt-3"
-                />
+               
              <div className="flex items-center gap-2 mt-4">
-                <div className="flex items-center gap-1 justify-between px-4 py-2 text-gray-700 hover:text-primary hover:bg-gray-100 rounded-md cursor-pointer transition-colors duration-200" >
-                <label htmlFor="officialDashboard" className="text-gray-700 font-medium">
-        Official Dashboard
-    </label>
-    <input
-        type="checkbox"
-        {...register("isOfficialDashboard")}
-        id="officialDashboard"
-        className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-    />
-                </div>
- 
         <div className="flex items-center gap-2">
   <label htmlFor="backgroundColor" className="text-sm font-medium">
     Background Color:
