@@ -31,20 +31,24 @@ export const useFetchSingleDashboardData = (dashboardId: string) => {
 
 
 
-
-export const useDashboardsData = ()=>{
-
-    const query = {
-        dataStore: {  
-            resource: `dataStore/${process.env.REACT_APP_DASHBOARD_STORE}`,
-            params: () => ({
+export const useDashboardsData = () => {
+  const query = {
+      dataStore: {
+          resource: `dataStore/${process.env.REACT_APP_DASHBOARD_STORE}`,
+          params: () => ({
               fields: '.',
-            }),
-        },
-    };
+              paging: false,
+          }),
+      },
+  };
 
-    const { data, loading, error ,isError,refetch} = useDataQuery(query);
+  const { data, loading, error, isError, refetch } = useDataQuery(query);
 
-    return { data, loading, error,isError,refetch };
+  // Sort the entries based on `updatedAt` in descending order
+  const sortedData = data?.dataStore?.entries?.sort(
+      (a, b) => b.value.updatedAt - a.value.updatedAt
+  );
 
-}
+  return { data: { ...data, dataStore: { ...data?.dataStore, entries: sortedData } }, loading, error, isError, refetch };
+};
+
