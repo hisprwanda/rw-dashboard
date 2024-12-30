@@ -149,6 +149,12 @@ const DataModal: React.FC<DataModalProps> = ({
     }
   }, [selectedDimensionItemType, debouncedSearch, dataItemsDataPage]);
 
+
+  useEffect(()=>{
+    console.log("analyticsDimensions?.dx",analyticsDimensions?.dx)
+    console.log("availableOptions",availableOptions)
+  },[analyticsDimensions?.dx,availableOptions])
+
   if (error) return <div>Error loading data...</div>;
 
   return (

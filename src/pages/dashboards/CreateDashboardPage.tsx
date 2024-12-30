@@ -1,5 +1,6 @@
 import React, { useEffect, useState ,useRef} from 'react';
 import Button from "../../components/Button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
 import { useFetchVisualsData } from '../../services/fetchVisuals';
 import GridLayout, { Layout } from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
@@ -46,12 +47,12 @@ const CreateDashboardPage: React.FC = () => {
             dashboardName: '',
             dashboardDescription: '',
             createdBy: {
-                name: userDatails?.me?.displayName || '',
-                id: userDatails?.me?.id || '',
+                name: userDatails?.me?.displayName ,
+                id: userDatails?.me?.id ,
             },
             updatedBy: {
-                name: userDatails?.me?.displayName || '',
-                id: userDatails?.me?.id || '',
+                name: userDatails?.me?.displayName ,
+                id: userDatails?.me?.id ,
             },
             createdAt: Date.now(),
             updatedAt: Date.now(),
@@ -277,14 +278,19 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
 </div>
            
             </div>
+<div>
+    <select
+        onChange={handleSelectChange}
+        className="block w-full px-3 py-2 border rounded-md shadow-sm mt-3"
+    >
+        <option value="">{loading ? "Loading" : "Select a visual..."}</option>
+        {visualOptions}
+    </select>
+</div>
 
-            <select
-                onChange={handleSelectChange}
-                className="block w-full px-3 py-2 border rounded-md shadow-sm mt-3"
-            >
-                <option value="">{loading ? "Loading" : "Select a visual..."}</option>
-                {visualOptions}
-            </select>
+
+
+          
             <div ref={captureRef} >
             <MemoizedGridLayout
                 layout={selectedVisuals}
