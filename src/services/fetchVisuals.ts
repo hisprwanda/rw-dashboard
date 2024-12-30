@@ -147,7 +147,10 @@ export const useFetchVisualsData = ()=>{
     };
 
     const { data, loading, error ,isError,refetch} = useDataQuery(query);
-
+  // Sort the entries based on `updatedAt` in descending order
+  const sortedData = data?.dataStore?.entries?.sort(
+    (a, b) => b.value.updatedAt - a.value.updatedAt
+);
     return { data, loading, error,isError,refetch };
 
 }

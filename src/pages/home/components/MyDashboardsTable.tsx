@@ -11,7 +11,6 @@ import { useUpdateDashboardFavorite } from "../../../hooks/useUpdateDashFavorite
 import { useDashboardsData } from "../../../services/fetchDashboard";
 import { FaEye, FaRegPlayCircle } from "react-icons/fa";
 
-
 interface User {
   id: string;
   name: string;
@@ -63,20 +62,37 @@ interface MyDashboardsTableProps {
 
 const MyDashboardsTable: React.FC<MyDashboardsTableProps> = ({ dashboards }) => {
   const navigate = useNavigate();
-  const handleViewMore = (dashboardId: string) => {
-    navigate(`/dashboard/${dashboardId}`);
-  };
-  const handlePresentDashboard = (dashboardId: string) => {
-    navigate(`/dashboard/${dashboardId}/present`);
-  };
-  
   const { userDatails } = useAuthorities();
-  const userId = userDatails?.me?.id; 
+  const userId = userDatails?.me?.id;
   const { refetch, loading } = useDashboardsData();
   const { isUpdatingDashboard, toggleFavorite } = useUpdateDashboardFavorite({
     userId,
     refetch,
   });
+
+  const handleViewMore = (dashboardId: string) => {
+    navigate(`/dashboard/${dashboardId}`);
+  };
+
+  const handlePresentDashboard = (dashboardId: string) => {
+    navigate(`/dashboard/${dashboardId}/present`);
+  };
+
+  // Sort dashboards by favorite status
+  const sortedDashboards = useMemo(() => {
+    if (!dashboards || !userId) return [];
+
+    return [...dashboards].sort((a, b) => {
+      const aIsFavorite = (a.value.favorites || []).includes(userId);
+      const bIsFavorite = (b.value.favorites || []).includes(userId);
+
+      if (aIsFavorite && !bIsFavorite) return -1;
+      if (!aIsFavorite && bIsFavorite) return 1;
+
+      // If both have same favorite status, sort by name
+      return a.value.dashboardName.localeCompare(b.value.dashboardName);
+    });
+  }, [dashboards, userId]);
 
   const columns = useMemo<MRT_ColumnDef<DashboardData>[]>(() => [
     {
@@ -91,54 +107,42 @@ const MyDashboardsTable: React.FC<MyDashboardsTableProps> = ({ dashboards }) => 
       accessorKey: "isFavorite",
       header: "Actions",
       Cell: ({ row }) => {
-        // Default to an empty array if favorites is undefined
         const isFavorited = (row.original.value.favorites || []).includes(userId);
-     
-  
+
         return (
           <div className="flex items-center gap-3">
-              {/* View More Icon */}
-          <FaEye
-            className="text-gray-500 text-2xl hover:text-blue-500 cursor-pointer transition-colors"
-            onClick={() => handleViewMore(row.original.key)}
-          
-          />
-            {/* Play Dashboard Icon */}
+            <FaEye
+              className="text-gray-500 text-2xl hover:text-blue-500 cursor-pointer transition-colors"
+              onClick={() => handleViewMore(row.original.key)}
+            />
             <FaRegPlayCircle
-            className="text-gray-500 text-2xl hover:text-blue-500 cursor-pointer transition-colors"
-            onClick={() => handlePresentDashboard(row.original.key)}
-         
-          />
-          {/* Favorite Icon */}
-          <span
-            onClick={() => toggleFavorite(row.original.key, row.original.value)}
-            className={`transition-transform ${
-              isUpdatingDashboard
-                ? "cursor-not-allowed opacity-50"
-                : "cursor-pointer hover:scale-110"
-            }`}
-            title={isFavorited ? "Remove from favorites" : "Add to favorites"}
-          >
-            {isFavorited ? (
-              <IconStarFilled24 color="gold" className="text-2xl" />
-            ) : (
-              <IconStar24 color="gray" className="text-2xl" />
-            )}
-          </span>
-        
-        
-        </div>
-        
-      
+              className="text-gray-500 text-2xl hover:text-blue-500 cursor-pointer transition-colors"
+              onClick={() => handlePresentDashboard(row.original.key)}
+            />
+            <span
+              onClick={() => toggleFavorite(row.original.key, row.original.value)}
+              className={`transition-transform ${
+                isUpdatingDashboard
+                  ? "cursor-not-allowed opacity-50"
+                  : "cursor-pointer hover:scale-110"
+              }`}
+              title={isFavorited ? "Remove from favorites" : "Add to favorites"}
+            >
+              {isFavorited ? (
+                <IconStarFilled24 color="gold" className="text-2xl" />
+              ) : (
+                <IconStar24 color="gray" className="text-2xl" />
+              )}
+            </span>
+          </div>
         );
       },
     },
   ], [userId, isUpdatingDashboard, toggleFavorite]);
-  
 
   const table = useMantineReactTable({
     columns,
-    data: dashboards,
+    data: sortedDashboards, // Use the sorted dashboards instead of the original
   });
 
   return <MantineReactTable table={table} />;
