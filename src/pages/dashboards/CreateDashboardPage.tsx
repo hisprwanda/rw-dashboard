@@ -180,7 +180,7 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
             }
         try {
             await engine.mutate({
-                resource: `dataStore/rw-dashboard/${uuid}`,
+                resource: `dataStore/${process.env.REACT_APP_DASHBOARD_STORE}/${uuid}`,
                 type: dashboardId ? "update" : 'create',
                 data,
             });

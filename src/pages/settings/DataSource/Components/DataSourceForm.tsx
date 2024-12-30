@@ -63,7 +63,7 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({
         try {
             const uid = action === 'update' && data ? data.key : generateUid();
             await engine.mutate({
-                resource: `dataStore/r-data-source/${uid}`,
+                resource: `dataStore/${process.env.REACT_APP_DATA_SOURCES_STORE}/${uid}`,
                 type: action === 'update' ? 'update' : 'create',
                 data: formData,
             });

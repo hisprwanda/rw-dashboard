@@ -54,7 +54,7 @@ export const useFetchSingleVisualData = (visualId: string) => {
   // Query definition
   const query = {
     dataStore: {
-      resource: `dataStore/rw-visuals/${visualId}`,
+      resource: `dataStore/${process.env.REACT_APP_VISUALS_STORE}/${visualId}`,
     },
   };
 
@@ -139,7 +139,7 @@ export const useFetchVisualsData = ()=>{
 
     const query = {
         dataStore: {  
-            resource: 'dataStore/rw-visuals',
+            resource: `dataStore/${process.env.REACT_APP_VISUALS_STORE}`,
             params: () => ({
               fields: '.',
             }),

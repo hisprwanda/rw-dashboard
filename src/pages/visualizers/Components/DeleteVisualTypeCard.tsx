@@ -21,7 +21,7 @@ const DeleteVisualTypeCard: React.FC<DeleteProps> = ({ id, refetch,setIsShowDele
         try {
             setIsLoading(true);
           const resp =  await engine.mutate({
-                resource: `dataStore/rw-visuals/${id}`,
+                resource: `dataStore/${process.env.REACT_APP_VISUALS_STORE}/${id}`,
                 type: "delete",
             });
             console.log('Delete response:', resp);

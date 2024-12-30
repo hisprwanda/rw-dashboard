@@ -21,7 +21,7 @@ const DeleteDataSourceCard: React.FC<DeleteProps> = ({ id, refetch,setIsShowDele
         try {
             setIsLoading(true);
           const resp =  await engine.mutate({
-                resource: `dataStore/r-data-source/${id}`,
+                resource: `dataStore/${process.env.REACT_APP_DATA_SOURCES_STORE}/${id}`,
                 type: "delete",
             });
             console.log('Delete response:', resp);

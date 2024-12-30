@@ -11,7 +11,7 @@ export const useFetchSingleDashboardData = (dashboardId: string) => {
   // Define the query
   const query = {
     dataStore: {
-      resource: `dataStore/rw-dashboard/${dashboardId}`,
+      resource: `dataStore/${process.env.REACT_APP_DASHBOARD_STORE}/${dashboardId}`,
     },
   };
 
@@ -36,7 +36,7 @@ export const useDashboardsData = ()=>{
 
     const query = {
         dataStore: {  
-            resource: 'dataStore/rw-dashboard',
+            resource: `dataStore/${process.env.REACT_APP_DASHBOARD_STORE}`,
             params: () => ({
               fields: '.',
             }),

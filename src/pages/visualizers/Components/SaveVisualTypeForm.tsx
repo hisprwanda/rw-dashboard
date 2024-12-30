@@ -105,9 +105,8 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
     const uid = visualId || generateUid(); 
 
     try {
-        // Submit the form data to the DHIS2 DataStore (path: rw-visuals)
         await engine.mutate({
-            resource: `dataStore/rw-visuals/${uid}`,
+            resource: `dataStore/${process.env.REACT_APP_VISUALS_STORE}/${uid}`,
             type:visualId ? "update" : 'create',
             data: formData,
         });

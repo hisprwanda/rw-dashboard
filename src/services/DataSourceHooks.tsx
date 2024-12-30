@@ -4,7 +4,7 @@ export const useDataSourceData = ()=>{
 
     const query = {
         dataStore: {
-            resource: 'dataStore/r-data-source',
+            resource: `dataStore/${process.env.REACT_APP_DATA_SOURCES_STORE}`,
             params: () => ({
               fields: '.',
             }),

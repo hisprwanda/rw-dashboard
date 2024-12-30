@@ -25,7 +25,7 @@ export const useUpdateDashboardFavorite = ({ userId, refetch }: UseUpdateDashboa
     try {
       setIsUpdatingDashboard(true);
       await engine.mutate({
-        resource: `dataStore/rw-dashboard/${dashboardId}`,
+        resource: `dataStore/${process.env.REACT_APP_DASHBOARD_STORE}/${dashboardId}`,
         type: "update",
         data: { ...dashboard, favorites: updatedFavorites },
       });
