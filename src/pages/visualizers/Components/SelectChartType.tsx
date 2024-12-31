@@ -10,16 +10,17 @@ const SelectChartType = ({ chartComponents, selectedChartType, setSelectedChartT
 
     return (
         // make it fill it's containers
-        <div className='max-w-[600px] overflow-auto ' >
+        <div className='max-w-[800px] overflow-auto  flex gap-1' >
             {/* Search Input */}
             <input
+           
                 type="text"
-                placeholder="Search charts..."
-                className="block w-full p-1 border rounded-md mb-2"
+                placeholder="Search visual..."
+                className="block w-[250px] p-1 border rounded-md mb-2"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <span>{chartComponents.length}</span>
+    
             
             {/* make it fill it's containers */}
             <div className="  overflow-x-auto">

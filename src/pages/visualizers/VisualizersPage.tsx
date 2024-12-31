@@ -255,7 +255,7 @@ useEffect(() => {
             
     <div>
              
-                <h3>Test Total: {dataItemsData?.pager?.total}</h3>
+                {/* <h3>Test Total: {dataItemsData?.pager?.total}</h3> */}
             </div>
             { (isFetchSingleVisualLoading || loading) ? <Loading/> : 
             <>

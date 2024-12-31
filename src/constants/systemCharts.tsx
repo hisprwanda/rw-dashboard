@@ -15,7 +15,12 @@ import { IoBarChartSharp, IoPieChart } from 'react-icons/io5';
 import { FaChartLine ,FaChartArea} from 'react-icons/fa';
 import { FaChartSimple } from 'react-icons/fa6';
 import {VisualSettingsTypes,VisualTitleAndSubtitleType} from "../types/visualSettingsTypes"
-
+import { FaTableCells } from "react-icons/fa6";
+import { VscListTree } from "react-icons/vsc";
+import { RxValue } from "react-icons/rx";
+import { TbChartRadar } from "react-icons/tb";
+import { PiChartScatterDuotone } from "react-icons/pi";
+import { GiRadialBalance } from "react-icons/gi";
 type ChartProps = {
     data: any;
     visualTitleAndSubTitle:VisualTitleAndSubtitleType;
@@ -43,7 +48,7 @@ export const chartComponents: ChartComponent = [
         type: 'Table', 
         component: LocalTableVisual, 
         description: 'A bar chart displaying data', 
-        icon: <IoBarChartSharp /> 
+        icon: <FaTableCells /> 
     },
     { 
         type: 'Stacked Col', 
@@ -85,32 +90,32 @@ export const chartComponents: ChartComponent = [
         type: 'Radial', 
         component: LocalRadialChat, 
         description: 'A bar chart displaying data', 
-        icon: <IoBarChartSharp /> 
+        icon: <GiRadialBalance /> 
     },
     { 
         type: 'Tree Map', 
         component: LocalTreeMapChart, 
         description: 'A bar chart displaying data', 
-        icon: <IoBarChartSharp /> 
+        icon: <VscListTree /> 
     },
     { 
         type: 'Single Value', 
         component: LocalSingleValue, 
         description: 'A bar chart displaying data', 
-        icon: <IoBarChartSharp /> 
+        icon: <RxValue /> 
     },
     // change icon later
     { 
         type: 'Radar', 
         component: LocalRadarChart, 
         description: 'A line chart showing trends over time', 
-        icon: <FaChartSimple /> 
+        icon: <TbChartRadar /> 
     },  
     { 
         type: 'Scatter', 
         component: LocalScatterCharts, 
         description: 'A line chart showing trends over time', 
-        icon: <FaChartSimple /> 
+        icon: <PiChartScatterDuotone /> 
     }, 
   
 ];
