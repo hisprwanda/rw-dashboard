@@ -4,4 +4,6 @@ node_modules
 src/locales
 build
 .env
+.env.development
+.env.production
 /draft/
