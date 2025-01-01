@@ -37,44 +37,47 @@ const SingleSelectionOrgUnitTree = () => {
   }
 
   return (
-    <div className="container mx-auto p-6 bg-white shadow-md rounded-lg">
-      <h2 className="text-2xl font-semibold mb-4 text-center">
-        Single Selection: Choose an Organization Unit
-      </h2>
+    <>
+    
+    </>
+    // <div className="container mx-auto p-6 bg-white shadow-md rounded-lg">
+    //   <h2 className="text-2xl font-semibold mb-4 text-center">
+    //     Single Selection: Choose an Organization Unit
+    //   </h2>
 
-      <div className="mb-4">
-        <InputField
-          className="w-full"
-          label="Search Organization Unit"
-          value={searchTerm}
-          onChange={(e) => handleSearchChange(e.value)}
-          placeholder="Type to search..."
-        />
-      </div>
+    //   <div className="mb-4">
+    //     <InputField
+    //       className="w-full"
+    //       label="Search Organization Unit"
+    //       value={searchTerm}
+    //       onChange={(e) => handleSearchChange(e.value)}
+    //       placeholder="Type to search..."
+    //     />
+    //   </div>
 
-      <div className="bg-gray-50 p-4 rounded-lg mb-6 shadow-inner">
-        {currentUserOrgUnit && (
-          <OrganisationUnitTree
-            roots={[currentUserOrgUnit.id]}
-            selected={selectedOrgUnit ? [selectedOrgUnit.path] : []}
-            onChange={handleOrgUnitClick}
-            singleSelection={true}
-            renderNodeLabel={({ node }) => (
-              <span className="text-blue-600 font-medium">{node.displayName}</span>
-            )}
-            filter={filteredOrgUnitPaths.length ? filteredOrgUnitPaths : undefined}
-          />
-        )}
-      </div>
+    //   <div className="bg-gray-50 p-4 rounded-lg mb-6 shadow-inner">
+    //     {currentUserOrgUnit && (
+    //       <OrganisationUnitTree
+    //         roots={[currentUserOrgUnit.id]}
+    //         selected={selectedOrgUnit ? [selectedOrgUnit.path] : []}
+    //         onChange={handleOrgUnitClick}
+    //         singleSelection={true}
+    //         renderNodeLabel={({ node }) => (
+    //           <span className="text-blue-600 font-medium">{node.displayName}</span>
+    //         )}
+    //         filter={filteredOrgUnitPaths.length ? filteredOrgUnitPaths : undefined}
+    //       />
+    //     )}
+    //   </div>
 
-      {selectedOrgUnit && (
-        <div className="text-center text-lg text-green-600">
-          <p>Selected Organization Unit Path: {selectedOrgUnit.path}</p>
-          <p>Selected Organization Unit ID: {selectedOrgUnit.id}</p>
-          <p>Selected Organization Unit Name: {selectedOrgUnit.displayName}</p>
-        </div>
-      )}
-    </div>
+    //   {selectedOrgUnit && (
+    //     <div className="text-center text-lg text-green-600">
+    //       <p>Selected Organization Unit Path: {selectedOrgUnit.path}</p>
+    //       <p>Selected Organization Unit ID: {selectedOrgUnit.id}</p>
+    //       <p>Selected Organization Unit Name: {selectedOrgUnit.displayName}</p>
+    //     </div>
+    //   )}
+    // </div>
   );
 };
 

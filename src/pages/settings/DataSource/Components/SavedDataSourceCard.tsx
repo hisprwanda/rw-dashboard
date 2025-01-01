@@ -12,7 +12,7 @@ type SavedDataProps = {
             username: string;
             password: string;
         };
-        isCurrentDHIS2: boolean;
+        isCurrentInstance: boolean;
     };
 };
 
@@ -24,7 +24,7 @@ const SavedDataSourceCard: React.FC<SavedDataProps> = ({ data }) => {
                     <h3 className="text-2xl font-bold text-gray-900 mb-2">Instance Name</h3>
                     <p className="text-lg text-gray-700 mb-2">{data.instanceName}</p>
                     <p className="text-sm text-gray-500 mb-4">Data Source Type: {data.type}</p>
-                    {data.isCurrentDHIS2 && (
+                    {data.isCurrentInstance && (
                         <span className="inline-block px-4 py-1 text-xs font-medium bg-green-100 text-green-600 rounded-full">
                             Current DHIS2
                         </span>
@@ -37,7 +37,7 @@ const SavedDataSourceCard: React.FC<SavedDataProps> = ({ data }) => {
                 <div className="border-t border-gray-300 pt-6">
                     <h4 className="text-xl font-semibold text-gray-900 mb-3">Authentication Details</h4>
                     <p className="text-base text-gray-700 mb-2">
-                        <strong className="font-medium">URL:</strong> {data.authentication.url}
+                        <strong className="font-medium">URL:</strong> {data.url}
                     </p>
                     {/* Uncomment when needed
                     <p className="text-base text-gray-700 mb-2">

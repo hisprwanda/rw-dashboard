@@ -10,6 +10,7 @@ import { IoSaveOutline } from 'react-icons/io5';
 import { useAuthorities } from '../../../context/AuthContext';
 import { useFetchVisualsData } from '../../../services/fetchVisuals';
 import { useNavigate } from 'react-router-dom';
+import { currentInstanceId } from '../../../constants/currentInstanceInfo';
 
 interface SaveVisualTypeFormProps {
   setIsShowSaveVisualTypeForm: any;
@@ -19,11 +20,11 @@ interface SaveVisualTypeFormProps {
 }
 
 const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleSavedVisualData,setIsShowSaveVisualTypeForm ,selectedDataSourceId}) => {
-  const {visualSettings, analyticsQuery,userDatails,selectedChartType,selectedOrgUnits,selectedLevel, visualTitleAndSubTitle } = useAuthorities();
+  const {selectedDataSourceOption,setSelectedDataSourceOption,visualSettings, analyticsQuery,userDatails,selectedChartType,selectedOrgUnits,selectedLevel, visualTitleAndSubTitle } = useAuthorities();
   const {data:allSavedVisuals,loading,isError}  = useFetchVisualsData()
   const navigate = useNavigate();
 
-
+   console.log("current Visual",generateUid())
   const engine = useDataEngine();
 
 
@@ -37,7 +38,7 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
       visualTitleAndSubTitle:visualTitleAndSubTitle,  
       visualSettings:visualSettings,
       query: analyticsQuery,
-      dataSourceId: selectedDataSourceId, 
+      dataSourceId: selectedDataSourceOption, 
       createdBy:{
         name:userDatails?.me?.displayName,
         id:userDatails?.me?.id

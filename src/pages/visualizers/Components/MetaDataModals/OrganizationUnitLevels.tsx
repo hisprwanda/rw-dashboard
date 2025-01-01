@@ -13,7 +13,7 @@ const OrganizationUnitLevels: React.FC<OrganizationUnitLevelsProps> = ({
   isUseCurrentUserOrgUnits,
 }) => {
     const { data, error, loading } = useOrgUnitData();
-    const {setSelectedOrganizationUnitsLevels,selectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel} = useAuthorities()
+    const {currentUserInfoAndOrgUnitsData,setSelectedOrganizationUnitsLevels,selectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel} = useAuthorities()
 
     // states
     useEffect(()=>{
@@ -29,7 +29,7 @@ const OrganizationUnitLevels: React.FC<OrganizationUnitLevelsProps> = ({
     return <p className="text-red-500">Error: {error.message}</p>;
   }
   
-  const orgUnitLevels = data?.orgUnitLevels?.organisationUnitLevels || [];
+  const orgUnitLevels = currentUserInfoAndOrgUnitsData?.orgUnitLevels?.organisationUnitLevels || [];
   const handleChange = ({ selected }: { selected: string[] }) => {
     const selectedLevelsAsNumbers = selected.map(Number);
     setSelectedLevel(selectedLevelsAsNumbers);

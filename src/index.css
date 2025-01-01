@@ -1003,10 +1003,6 @@ video {
   max-height: 100%;
 }
 
-.max-h-\[250px\] {
-  max-height: 250px;
-}
-
 .max-h-\[400px\] {
   max-height: 400px;
 }
@@ -1558,6 +1554,11 @@ video {
   border-color: rgb(252 165 165 / var(--tw-border-opacity));
 }
 
+.border-red-500 {
+  --tw-border-opacity: 1;
+  border-color: rgb(239 68 68 / var(--tw-border-opacity));
+}
+
 .border-slate-300 {
   --tw-border-opacity: 1;
   border-color: rgb(203 213 225 / var(--tw-border-opacity));
@@ -1602,6 +1603,11 @@ video {
 .bg-blue-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(219 234 254 / var(--tw-bg-opacity));
+}
+
+.bg-blue-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(59 130 246 / var(--tw-bg-opacity));
 }
 
 .bg-card {
@@ -1705,9 +1711,11 @@ video {
   --tw-gradient-to: #9089fc var(--tw-gradient-to-position);
 }
 
+
 .fill-background {
   fill: hsl(var(--background));
 }
+
 
 .object-cover {
   -o-object-fit: cover;
@@ -1837,10 +1845,6 @@ video {
 .py-9 {
   padding-top: 2.25rem;
   padding-bottom: 2.25rem;
-}
-
-.pb-0 {
-  padding-bottom: 0px;
 }
 
 .pb-3 {
@@ -2126,10 +2130,6 @@ video {
 
 .opacity-90 {
   opacity: 0.9;
-}
-
-.mix-blend-luminosity {
-  mix-blend-mode: luminosity;
 }
 
 .shadow {
@@ -2492,6 +2492,12 @@ video {
 .focus\:ring-red-300:focus {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(252 165 165 / var(--tw-ring-opacity));
+}
+
+
+.focus\:ring-red-500:focus {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(239 68 68 / var(--tw-ring-opacity));
 }
 
 
@@ -3146,11 +3152,6 @@ video {
 .\[\&_\.recharts-surface\]\:outline-none .recharts-surface {
   outline: 2px solid transparent;
   outline-offset: 2px;
-}
-
-
-.\[\&_\.recharts-text\]\:fill-background .recharts-text {
-  fill: hsl(var(--background));
 }
 
 

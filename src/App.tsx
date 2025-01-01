@@ -20,6 +20,8 @@ import {
 } from './pages';
 import { CreateDashboardPage } from "./pages/dashboards";
 import { TestChart } from "./components/charts/TestChart";
+import TokenTest from "./pages/TokenTest";
+import UserCredentials from "./pages/UserCredentials";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -41,6 +43,8 @@ const App: React.FC = () => {
               <Route path="visualization" element={<VisualizationPage />} />
               <Route path="alerts" element={<AlertsPage />} />
               <Route path="test" element={<TestChart />} />
+              <Route path="token-test" element={<TokenTest />} />
+              <Route path="credentials" element={<UserCredentials />} />
               <Route path="settings" element={<DataSourcePage />} />
               <Route path="data-source" element={<DataSourcePage />} />
               <Route path="unauthorized" element={<UnauthorizedPage />} />

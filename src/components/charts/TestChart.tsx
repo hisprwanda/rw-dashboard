@@ -1,57 +1,5 @@
-"use client"
+import CustomOrganisationUnitTree from "../../pages/visualizers/Components/MetaDataModals/CustomOrganisationUnitTree";
 
-import { TrendingUp } from "lucide-react"
-import { LabelList, Pie, PieChart } from "recharts"
-
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "../../components/ui/card"
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "../../components/ui/chart"
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 90, fill: "var(--color-other)" },
-]
-
-
-
-const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  chrome: {
-    label: "Chrome",
-    color: "hsl(var(--chart-1))",
-  },
-  safari: {
-    label: "Safari",
-    color: "hsl(var(--chart-2))",
-  },
-  firefox: {
-    label: "Firefox",
-    color: "hsl(var(--chart-3))",
-  },
-  edge: {
-    label: "Edge",
-    color: "hsl(var(--chart-4))",
-  },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
-  },
-} satisfies ChartConfig
 
 
 function transformDataToPieChartFormat(data:any, colors:any) {
@@ -77,136 +25,19 @@ function transformDataToPieChartFormat(data:any, colors:any) {
   return transformedData;
 }
 
-function transformDataToMonthsAndRange(data:any) {
-  // Extract all unique months from the data
-  const allMonths = data.map((entry) => entry.month);
-
-  // Determine the range string
-  const range = `${allMonths[0]}-${allMonths[allMonths.length - 1]}`;
-
-  // Return the desired format
-  return [{ allMonths, range }];
-}
-
-const colors = [
-  "var(--color-chrome)",
-  "var(--color-safari)",
-  "var(--color-firefox)",
-
-  "var(--color-other)",
-];
-
-const inputData  = [
-  {
-      "month": "Nov 2023",
-      "Measles": 155,
-      "Acute Flaccid Paralysis": 25
-  },
-  {
-      "month": "Dec 2023",
-      "Measles": 137,
-      "Acute Flaccid Paralysis": 12
-  },
-  {
-      "month": "Jan 2024",
-      "Measles": 80,
-      "Acute Flaccid Paralysis": 24
-  },
-  {
-      "month": "Feb 2024",
-      "Measles": 128,
-      "Acute Flaccid Paralysis": 29
-  },
-  {
-      "month": "Mar 2024",
-      "Measles": 147,
-      "Acute Flaccid Paralysis": 43
-  },
-  {
-      "month": "Apr 2024",
-      "Measles": 130,
-      "Acute Flaccid Paralysis": 35
-  },
-  {
-      "month": "May 2024",
-      "Measles": 201,
-      "Acute Flaccid Paralysis": 49
-  },
-  {
-      "month": "Jun 2024",
-      "Measles": 172,
-      "Acute Flaccid Paralysis": 24
-  },
-  {
-      "month": "Jul 2024",
-      "Measles": 113,
-      "Acute Flaccid Paralysis": 11
-  },
-  {
-      "month": "Aug 2024",
-      "Measles": 41,
-      "Acute Flaccid Paralysis": 7
-  }
-]
-
-const chartConfig2 = {
-  month: {
-    label: "Month",
-  },
-  Measles: {
-    label: "Measles",
-    color: "hsl(var(--chart-1))", // First color in the theme
-  },
-  "Acute Flaccid Paralysis": {
-    label: "Acute Flaccid Paralysis",
-    color: "hsl(var(--chart-2))", // Second color in the theme
-  },
-} satisfies ChartConfig;
 
 
-const chartData2 = transformDataToPieChartFormat(inputData, colors);
-const result2 = transformDataToMonthsAndRange(inputData);
-console.log("hello pie data",chartData2);
-console.log("hello pie data 2",result2);
+const handleNodeSelect = (node) => {
+  console.log('Selected node y:', node);
+};
 export function TestChart() {
   return (
-    <Card className="flex flex-col">
-      <CardHeader className="items-center pb-0">
-        <CardTitle>Pie Chart - Label List</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
-      </CardHeader>
-      <CardContent className="flex-1 pb-0">
-        <ChartContainer
-          config={chartConfig2}
-          className="mx-auto aspect-square max-h-[250px] [&_.recharts-text]:fill-background"
-        >
-          <PieChart>
-            <ChartTooltip
-              content={<ChartTooltipContent nameKey="name" hideLabel />}
-            />
-            <Pie data={chartData2} dataKey="total" nameKey="name">
-              <LabelList
-                dataKey="name"
-                className="fill-background"
-                stroke="none"
-                fontSize={12}
-                formatter={(value: keyof typeof chartConfig2) =>
-                  chartConfig2[value]?.label || value
-                }
-              />
-            </Pie>
-          </PieChart>
-        </ChartContainer>
-      </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter>
-    </Card>
+    <CustomOrganisationUnitTree
+    apiUrl="https://play.im.dhis2.org/stable-2-41-2"
+    token="d2p_LZyRuotqOwC35a0sgE9sx5W0xfDIbsuOFE9Sm36oWAcs0Oqjft"
+    rootOrgUnitId="ImspTQPwCqd" // Example root ID
+    onNodeSelect={handleNodeSelect}
+/>
   );
 }
 

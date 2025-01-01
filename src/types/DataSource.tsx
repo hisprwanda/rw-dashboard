@@ -1,18 +1,21 @@
 import { z } from 'zod';
 
-// Schema definition using zod
+// Schema definition using Zod
 export const DataSourceSchema = z.object({
-    id: z.string(),
-    type: z.enum(['DHIS2', 'API']),
-    authentication: z.object({
-        url: z.string().url({ message: 'Must be a valid URL' }),
-        username: z.string().nonempty({ message: 'Username is required' }),
-        password: z.string().nonempty({ message: 'Password is required' }),
-    }),
-    isCurrentDHIS2: z.boolean(),
     instanceName: z.string().nonempty({ message: 'Instance name is required' }),
-    description: z.string(),
+    description: z.string().optional(),
+    url: z.string().url({ message: 'Must be a valid URL' }),
+    token: z
+        .string()
+        .min(20, { message: 'Token must be at least 20 characters long' }) // Minimum length validation
+        .max(256, { message: 'Token cannot exceed 256 characters' }) // Maximum length validation
+        .regex(/^[a-zA-Z0-9_-]+$/, { message: 'Token can only contain alphanumeric characters, dashes, or underscores' }), // Format validation
+    type: z.enum(['DHIS2', 'API']),
+    isCurrentInstance: z.boolean(),
 });
 
 // Infer form fields from the schema
 export type DataSourceFormFields = z.infer<typeof DataSourceSchema>;
+
+
+

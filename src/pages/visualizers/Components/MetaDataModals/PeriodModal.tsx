@@ -26,7 +26,7 @@ interface PeriodPickerProps {
 }
 
 const PeriodPicker: React.FC<PeriodPickerProps> = ({ setIsShowPeriod }) => {
-    const { analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, isFetchAnalyticsDataLoading } = useAuthorities();
+    const { analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, isFetchAnalyticsDataLoading ,selectedDataSourceDetails} = useAuthorities();
     const [selectedTab, setSelectedTab] = useState('relative');
     const [selectedPeriodType, setSelectedPeriodType] = useState('Months');
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // Current year by default
@@ -85,7 +85,7 @@ const PeriodPicker: React.FC<PeriodPickerProps> = ({ setIsShowPeriod }) => {
     const handleUpdate = async () => {
 
         // Run analytics
-        await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions));
+        await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions),selectedDataSourceDetails);
         setIsShowPeriod(false);
     };
 

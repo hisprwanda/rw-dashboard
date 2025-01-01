@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { InputField, MultiSelectField, MultiSelectOption, OrganisationUnitTree, CircularLoader } from '@dhis2/ui';
-import { useOrgUnitData } from '../../services/fetchOrgunitData';
 import { useOrgUnitSelection } from '../../hooks/useOrgUnitSelection';
 import Button from "../Button";
 import { useAuthorities } from '../../context/AuthContext';
@@ -8,6 +7,7 @@ import { formatAnalyticsDimensions } from '../../lib/formatAnalyticsDimensions';
 import { IoSaveOutline } from 'react-icons/io5';
 import OrganizationUnitGroup from '../../pages/visualizers/Components/MetaDataModals/OrganizationUnitGroup';
 import OrganizationUnitLevels from '../../pages/visualizers/Components/MetaDataModals/OrganizationUnitLevels';
+import CustomOrganisationUnitTree from '../../pages/visualizers/Components/MetaDataModals/CustomOrganisationUnitTree';
 
 interface OrganisationUnitSelectProps {
   setIsShowOrganizationUnit:any;
@@ -37,6 +37,7 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
     fetchSingleOrgUnitName,
     visualTitleAndSubTitle,
     setSelectedVisualTitleAndSubTitle,  
+    selectedDataSourceDetails
   } = useAuthorities();
 
   //const { loading, error, data } = useOrgUnitData();
@@ -143,9 +144,15 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
    // Handle update analytics API
    const handleUpdateAnalytics = async () => {
     // Continue with analytics fetch
-    await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions))
+    await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions),selectedDataSourceDetails)
     setIsShowOrganizationUnit(false)
   };
+
+  /// handle 
+  
+const handleNodeSelectExternalInstance = (node) => {
+  console.log('external selected node:', node);
+};
 
   // handle loading
   if (loading) {
@@ -201,7 +208,9 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
       {/* Organization Unit Tree */}
       <div className=" p-4 rounded-lg mb-6 ">
           <div>
-            <OrganisationUnitTree
+            
+               {/* {selectedDataSourceDetails.isCurrentInstance  ? */}
+              <OrganisationUnitTree
               disableSelection={isUseCurrentUserOrgUnits}
               roots={[currentUserOrgUnit.id]}
               selected={selectedOrgUnits}
@@ -211,17 +220,27 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
                 <span className="text-blue-600 font-medium">{node.displayName}</span>
               )}
               filter={filteredOrgUnitPaths?.length ? filteredOrgUnitPaths : undefined}
-            />
+            /> 
+      {/* //     <CustomOrganisationUnitTree
+      //      apiUrl={selectedDataSourceDetails.url}
+      //      token={selectedDataSourceDetails.token}
+      //      rootOrgUnitId={currentUserOrgUnit.id} 
+      //      onNodeSelect={handleNodeSelectExternalInstance}
+      //      parentName={currentUserOrgUnit?.displayName}
+    
+      //  />  */}
+       
           </div>
       </div>
 
       {/* MultiSelectField for Organization Unit Level */}
       <div className="mb-6">
         <div className='flex gap-2'   >
-        {/* organization unit group */}
-        <OrganizationUnitGroup isUseCurrentUserOrgUnits={isUseCurrentUserOrgUnits} />
+
         {/* levels test */}
         <OrganizationUnitLevels isUseCurrentUserOrgUnits={isUseCurrentUserOrgUnits}   />
+                {/* organization unit group */}
+                <OrganizationUnitGroup isUseCurrentUserOrgUnits={isUseCurrentUserOrgUnits} />
         </div>
  
         <button

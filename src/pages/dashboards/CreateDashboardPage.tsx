@@ -110,7 +110,8 @@ const CreateDashboardPage: React.FC = () => {
                 visualQuery: visual.value.query,
                 visualType: visual.value.visualType,
                 visualSettings: visual.value.visualSettings,
-                visualTitleAndSubTitle: visual.value.visualTitleAndSubTitle
+                visualTitleAndSubTitle: visual.value.visualTitleAndSubTitle,
+                dataSourceId: visual.value.dataSourceId
             };
             setValue("selectedVisuals", [...selectedVisuals, newVisual]);
         }
@@ -121,7 +122,7 @@ const CreateDashboardPage: React.FC = () => {
             const existingVisual = selectedVisuals.find(v => v.i === layoutItem.i);
             return existingVisual
                 ? { ...layoutItem, visualName: existingVisual.visualName, visualQuery: existingVisual.visualQuery, visualType: existingVisual.visualType , visualSettings: existingVisual.visualSettings,
-                    visualTitleAndSubTitle:existingVisual.visualTitleAndSubTitle }
+                    visualTitleAndSubTitle:existingVisual.visualTitleAndSubTitle, dataSourceId:existingVisual.dataSourceId }
                 : layoutItem;
         });
         setValue("selectedVisuals", updatedLayout);
@@ -267,7 +268,7 @@ const MemoizedGridLayout = React.memo(({
                 <div className="drag-handle" style={{ cursor: "move" }}>
                     {widget.visualName}
                 </div>
-                <DashboardVisualItem  query={widget.visualQuery} visualType={widget.visualType} visualSettings={widget.visualSettings} visualTitleAndSubTitle={widget.visualTitleAndSubTitle} />
+                <DashboardVisualItem  query={widget.visualQuery} visualType={widget.visualType} visualSettings={widget.visualSettings}  dataSourceId={widget.dataSourceId} visualTitleAndSubTitle={widget.visualTitleAndSubTitle} />
                 <FaTrash
                     style={{ position: "absolute", top: "10px", right: "10px", cursor: "pointer" ,color:"#7d0000"}}
                     onClick={() => onDeleteWidget(widget.i)}
