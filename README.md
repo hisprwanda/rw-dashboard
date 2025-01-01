@@ -1,3 +1,6 @@
+ ## Release Notes for Visualizer Studio 1.0.0
+ ## Release Date: January 1, 2025
+
 # Visualizer Studio  
 
 Visualizer Studio is a powerful data visualization tool developed by **HISP Rwanda**. It offers an interactive dashboard experience, enabling users to create dynamic slides with highly customizable visualizations. The application integrates seamlessly with multiple DHIS2 instances and provides an intuitive interface for analyzing and presenting data effectively.  
