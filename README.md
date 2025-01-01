@@ -1,37 +1,130 @@
-This project was bootstrapped with [DHIS2 Application Platform](https://github.com/dhis2/app-platform).
+# Visualizer Studio  
 
-## Available Scripts
+Visualizer Studio is a powerful data visualization tool developed by **HISP Rwanda**. It offers an interactive dashboard experience, enabling users to create dynamic slides with highly customizable visualizations. The application integrates seamlessly with multiple DHIS2 instances and provides an intuitive interface for analyzing and presenting data effectively.  
 
-In the project directory, you can run:
+---
 
-### `yarn start`
+## Features  
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### 1. Data Source Management  
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+Visualizer Studio allows secure and efficient integration with multiple DHIS2 instances.  
 
-### `yarn test`
+**Requirements**: To add a data source, the following details are required:  
+- **Instance Name**  
+- **Instance URL**  
+- **Access Token**: Generated from the DHIS2 instance by the user, with an expiration date.   
+- Expired tokens can be updated anytime with valid ones.  
 
-Launches the test runner and runs all available tests found in `/src`.<br />
+ATTENTION: Whitelist Configuration:  
+- Add the Visualizer Studio URL to the DHIS2 instance whitelist to avoid CORS (Cross-Origin Resource Sharing) errors.  
 
-See the section about [running tests](https://platform.dhis2.nu/#/scripts/test) for more information.
+Once added, Visualizer Studio can securely fetch and analyze data from these data sources.  
 
-### `yarn build`
+---
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 2. Visualizer Management  
 
-The build is minified and the filenames include the hashes.<br />
-A deployable `.zip` file can be found in `build/bundle`!
+Create visually appealing and customizable data visualizations with the following features:  
 
-See the section about [building](https://platform.dhis2.nu/#/scripts/build) for more information.
+- **Dimensions**: Configure visuals using three key dimensions:  
+  1. **Data**  
+  2. **Period**  
+  3. **Organization Unit**  
 
-### `yarn deploy`
+- **Visualization Types**: Choose from 13 types, including:  
+  - Table  
+  - Column, Stacked Column  
+  - Bar, Stacked Bar  
+  - Line, Area  
+  - Pie, Radar, Scatter  
+  - Radial, Single Value, Tree Map  
 
-Deploys the built app in the `build` folder to a running DHIS2 instance.<br />
-This command will prompt you to enter a server URL as well as the username and password of a DHIS2 user with the App Management authority.<br/>
-You must run `yarn build` before running `yarn deploy`.<br />
+- **Customization**: Modify visual attributes, such as:  
+  - Color palette  
+  - Axis font size  
+  - Headings and subheadings  
 
-See the section about [deploying](https://platform.dhis2.nu/#/scripts/deploy) for more information.
+- **Dynamic Data Source Switching**: Change data sources on the fly while designing visuals.  
+
+---
+
+### 3. Dashboard Management  
+
+Combine multiple visuals to build fully customizable dashboards:  
+
+- **Grid-Based Layout**:  
+  - Drag, resize, and arrange visuals flexibly.  
+
+- **Customization Options**:  
+  1. Change dashboard background.  
+  2. Pin dashboards to the home page for easy access.  
+  3. Mark dashboards as favorites for quick retrieval.  
+
+---
+
+### 4. Presentation Mode  
+
+Transform dashboards into dynamic slide presentations:  
+
+- **Configuration Options**:  
+  1. Define the number of slides to display at a time.  
+  2. Set the duration for each slide.  
+  3. Select available tracks for enhanced presentation effects.  
+
+- **Interactivity**:  
+  - **Pause and Resume Presentations**  
+  - **Hover Over Visuals**: View details interactively.  
+  - **Fullscreen Mode**: Offers a better viewing experience for presentations.  
+
+---
+
+## What's Next?  
+
+Visualizer Studio is evolving! Here are the planned features for future releases:  
+
+1. **Calculated Indicators**: Integration for advanced analytics.  
+2. **Dashboard Grouping**: Organize dashboards into folders or groups.  
+3. **Filtering Capabilities**: Add filters similar to the official DHIS2 Data Visualizer app.  
+4. **Dedicated Visual Settings**: Customize each visualization type uniquely.  
+5. **Collaboration**: Enable multiple users to collaborate on visualizations.  
+6. **Advanced Export**: Support exporting visuals in multiple formats.  
+7. **Live Data Fetching**: Fetch data from non-DHIS2 systems for cross-platform analysis.  
+8. **New Visualization Types**: Maps, Heatmaps, Gauge Charts, Combined Visualizations, and Time-Series Visuals.  
+
+---
+
+## Key Technologies  
+
+Visualizer Studio is built using the following technologies:  
+
+- **React with TypeScript**: For building the user interface.  
+- **Tailwind CSS**: For designing responsive and modern UI components.  
+- **React Query**: For efficient data fetching and state management.  
+- **DHIS2 App Runtime**: For seamless integration with DHIS2 APIs.  
+- **Recharts & Mantine**: For dynamic and rich visualizations.  
+- **React Hook Form**: For easy and validated form management.  
+
+---
+
+## Acknowledgments  
+
+We extend our heartfelt gratitude to the following developers who contributed to this project:  
+
+- **Roger Ndutiye**: [rogerndutiye@gmail.com]  
+- **Nsengiyumva Christian**: [cristiannsengi@gmail.com] 
+
+---
+
+## Getting Started  
+
+To get started with Visualizer Studio, run the following commands:  
+
+ yarn install
+ yarn build:css && yarn start
+
+ ## Contact Us
+For support or feedback, reach out to us at:
+HISP Rwanda
+Email: [rogerndutiye@gmail.com]
+Website:[www.hisprwanda.org]

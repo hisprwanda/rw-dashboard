@@ -1,18 +1,19 @@
 {
-  "name": "rw-dashbaord",
+  "name": "Visualizer-Studio",
   "version": "1.0.0",
-  "description": "",
+  "description": "A Visualizer Studio, developed by HISP Rwanda, featuring an interactive dashboard that can be presented as dynamic slides, with a wide range of customizable visualization types for enhanced data representation.",
   "license": "BSD-3-Clause",
   "private": true,
   "scripts": {
     "build:css": "postcss src/styles/index.css -o src/index.css",
     "watch:css": "postcss src/styles/index.css -o src/index.css -w",
-    "build": "build:css & d2-app-scripts build",
+    "build": "concurrently \"yarn build:css\" \"d2-app-scripts build\"",
     "start": "watch:css & d2-app-scripts start",
     "test": "d2-app-scripts test",
     "deploy": "d2-app-scripts deploy"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@dhis2/cli-app-scripts": "^11.7.1",
     "@tanstack/eslint-plugin-query": "^5.53.0",
     "@types/axios": "^0.14.4",
@@ -21,6 +22,7 @@
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10.4.20",
+    "concurrently": "^9.1.2",
     "eslint": "^9.9.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-react-app": "^7.0.1",
