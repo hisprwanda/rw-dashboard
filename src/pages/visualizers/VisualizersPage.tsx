@@ -22,6 +22,7 @@ import GeneralChartsStyles from './Components/GeneralChartsOptions';
 import { NavigationMenuDemo } from './Components/ChartsMenu';
 import VisualSettings from './Components/VisualSettings';
 import {systemDefaultColorPalettes} from "../../constants/colorPalettes";
+
 import { useExternalDataItems } from '../../services/useExternalDataItems';
 import { useSystemInfo } from '../../services/fetchSystemInfo';
 import { useExternalOrgUnitData } from '../../services/fetchExternalOrgUnit';
@@ -29,11 +30,13 @@ import { currentInstanceId } from '../../constants/currentInstanceInfo';
 import debounce from 'lodash/debounce';
 
 
+
 function Visualizers() {
     const { id:visualId } = useParams();
     const {  data:systemInfo } = useSystemInfo();
     const {selectedDataSourceOption,setSelectedDataSourceOption,currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData, dataItemsData,selectedDataSourceDetails,setSelectedDataSourceDetails,analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle,visualTitleAndSubTitle,visualSettings,setSelectedVisualSettings,setVisualsColorPalettes,selectedColorPalette} = useAuthorities();
     const {data:singleSavedVisualData,isError,loading:isFetchSingleVisualLoading} = useFetchSingleVisualData(visualId)
+
     const { loading:orgUnitLoading, error:fetchOrgUnitError, data:orgUnitsData,fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData();
     const {  error:dataItemsFetchError, loading:isFetchCurrentInstanceDataItemsLoading,fetchCurrentInstanceData } = useDataItems();
     const {fetchExternalDataItems,response,error,loading:isFetchExternalInstanceDataItemsLoading} = useExternalDataItems()
@@ -41,6 +44,14 @@ function Visualizers() {
     const defaultUserOrgUnit = currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName
     const { data:savedDataSource,loading } = useDataSourceData();
       const [isShowDataModal, setIsShowDataModal] = useState<boolean>(false);
+
+<!--     const { loading:orgUnitLoading, error:fetchOrgUnitError, data:orgUnitsData } = useOrgUnitData();
+    const { data:dataItemsData, error:dataItemsFetchError, loading:isDataItemsLoading } = useDataItems();
+    const defaultUserOrgUnit = orgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName
+    const { data,loading } = useDataSourceData();
+    const { analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle,visualTitleAndSubTitle,visualSettings,setSelectedVisualSettings,setVisualsColorPalettes,selectedColorPalette} = useAuthorities();
+    const [isShowDataModal, setIsShowDataModal] = useState<boolean>(false); -->
+
     const [isShowOrganizationUnit, setIsShowOrganizationUnit] = useState<boolean>(false);
     const [isShowPeriod, setIsShowPeriod] = useState<boolean>(false);
     const [isShowSaveVisualTypeForm,setIsShowSaveVisualTypeForm ] = useState<boolean>(false)
@@ -52,6 +63,7 @@ function Visualizers() {
     const dataSourceOptions = savedDataSource?.dataStore?.entries?.map((entry:any) => (
         <option key={entry?.key} value={entry?.key}>{entry?.value?.instanceName}</option>
     ));
+
 
 
     /// function to clear reset to default values
@@ -119,6 +131,7 @@ function Visualizers() {
      }
 
 
+
     // if visualId is false then set all chart related states to default
     useEffect(()=>{
         if(!visualId)
@@ -127,12 +140,48 @@ function Visualizers() {
           /// if no visual created , fetch data of current instance
           fetchCurrentInstanceData();
           fetchCurrentUserAndOrgUnitData();
+
+<!--              setAnalyticsData(null)
+            setSelectedChartType(chartComponents[0]?.type)
+            setAnalyticsQuery(null)
+            setAnalyticsDimensions({ dx: [], pe: ['LAST_12_MONTHS'] })
+            setIsSetPredifinedUserOrgUnits({
+                is_USER_ORGUNIT: true,
+                is_USER_ORGUNIT_CHILDREN: false,
+                is_USER_ORGUNIT_GRANDCHILDREN: false
+              })
+              setIsUseCurrentUserOrgUnits(true)
+            setSelectedOrganizationUnits([])
+            setSelectedOrgUnits([])
+            setSelectedOrgUnitGroups([])
+            setSelectedOrganizationUnitsLevels([])
+            setSelectedLevel([])
+            setSelectedVisualTitleAndSubTitle((prev)=>{
+                return {
+                    ...prev,
+                     visualTitle:  "",
+                        DefaultSubTitle: [defaultUserOrgUnit],
+                        customSubTitle:""
+                }
+            })
+             setVisualsColorPalettes(systemDefaultColorPalettes[0] || [])
+                setSelectedVisualSettings({ backgroundColor: '#ffffff',visualColorPalette:selectedColorPalette,fillColor:"#fa3333",XAxisSettings:{color:"#22ff00",fontSize:12},YAxisSettings:{color:"#5b1616",fontSize:12} })
+            /// set default data source
+            if(data)
+                {
+                    setSelectedDataSourceOption(data?.dataStore?.entries?.find(option => option?.value?.isCurrentDHIS2 == true )?.key)
+                } -->
+
         }
        
     },[visualId])
 
     //// run analytics API
+
     const debounceRunAnalytics = useCallback(debounce(() => {
+
+//     useEffect(() => {
+
         if (singleSavedVisualData && visualId) {
             keepUpWithSelectedDataSource();
             setAnalyticsData([]); 

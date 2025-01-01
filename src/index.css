@@ -1711,6 +1711,12 @@ video {
   --tw-gradient-to: #9089fc var(--tw-gradient-to-position);
 }
 
+
+.fill-background {
+  fill: hsl(var(--background));
+}
+
+
 .object-cover {
   -o-object-fit: cover;
      object-fit: cover;
