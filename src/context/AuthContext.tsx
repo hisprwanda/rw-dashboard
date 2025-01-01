@@ -9,7 +9,8 @@ import React, {
 import { useDataQuery } from "@dhis2/app-runtime";
 import { useDataEngine } from '@dhis2/app-runtime';
 import { useFetchOrgUnitById ,useOrgUnitData} from "../services/fetchOrgunitData";
-import {VisualSettingsTypes,VisualTitleAndSubtitleType} from "../types/visualSettingsTypes"
+import {VisualSettingsTypes,VisualTitleAndSubtitleType,ColorPaletteTypes,visualColorPaletteTypes, AxisSettingsTypes} from "../types/visualSettingsTypes"
+import { systemDefaultColorPalettes } from "../constants/colorPalettes";
 
 
 
@@ -46,8 +47,13 @@ interface AuthContextProps {
    visualTitleAndSubTitle: VisualTitleAndSubtitleType;
     setSelectedVisualTitleAndSubTitle:any;
     fetchSingleOrgUnitName:any;
-    visualSettings:VisualSettingsTypes, 
-    setSelectedVisualSettings:any
+    visualSettings:VisualSettingsTypes;
+    setSelectedVisualSettings:any;
+   selectedColorPalette:visualColorPaletteTypes;
+    setSelectedColorPalette :any;
+    visualsColorPalettes:ColorPaletteTypes;
+    setVisualsColorPalettes:any;
+ 
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -93,7 +99,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     DefaultSubTitle: [defaultUserOrgUnit],
     customSubTitle:""
   })
-  const [visualSettings, setSelectedVisualSettings] = useState<VisualSettingsTypes>({backgroundColor:"#ffffff"})
+
+
+ const [selectedColorPalette, setSelectedColorPalette] = useState<visualColorPaletteTypes>(systemDefaultColorPalettes[0] || []);
+
+ const [visualsColorPalettes,setVisualsColorPalettes] =useState<ColorPaletteTypes >(systemDefaultColorPalettes)
+  const [visualSettings, setSelectedVisualSettings] = useState<VisualSettingsTypes>({visualColorPalette:selectedColorPalette,backgroundColor:"#fff",fillColor:"#fa3333",XAxisSettings:{color:"#22ff00",fontSize:12},YAxisSettings:{color:"#5b1616",fontSize:12}})
 
 
   const [isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits] = useState<any>({
@@ -102,6 +113,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     is_USER_ORGUNIT_GRANDCHILDREN: false
   });
 
+
+   
 
   useEffect(() => {
     if (data) {
@@ -204,7 +217,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
  
   return (
-    <AuthContext.Provider value={{visualSettings,setSelectedVisualSettings,fetchSingleOrgUnitName,visualTitleAndSubTitle,setSelectedVisualTitleAndSubTitle,  selectedVisualsForDashboard, setSelectedVisualsForDashboard,setAnalyticsData,setAnalyticsQuery,selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery,selectedChartType,setSelectedChartType}}>
+    <AuthContext.Provider value={{setVisualsColorPalettes,visualsColorPalettes, selectedColorPalette,setSelectedColorPalette ,visualSettings,setSelectedVisualSettings,fetchSingleOrgUnitName,visualTitleAndSubTitle,setSelectedVisualTitleAndSubTitle,  selectedVisualsForDashboard, setSelectedVisualsForDashboard,setAnalyticsData,setAnalyticsQuery,selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery,selectedChartType,setSelectedChartType}}>
       {children}
     </AuthContext.Provider>
   );

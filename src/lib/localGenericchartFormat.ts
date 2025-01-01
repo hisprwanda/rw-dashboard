@@ -1,4 +1,8 @@
+import { useAuthorities } from '../context/AuthContext';
 import { ChartConfig } from "../components/ui/chart";
+import {visualColorPaletteTypes} from "../types/visualSettingsTypes"
+
+
 
 export interface InputData {
     headers: any[];
@@ -41,9 +45,9 @@ function combineDataByMonth(data:TransformedDataPoint[]):TransformedDataPoint[] 
   }
 
   // temporarily colors
-  const colors = [`hsl(var(--chart-1))`, `hsl(var(--chart-2))`,`hsl(var(--chart-3))`,`hsl(var(--chart-4))`,`hsl(var(--chart-5))`];
+//  const colors = [`hsl(var(--chart-1))`, `hsl(var(--chart-2))`,`hsl(var(--chart-3))`,`hsl(var(--chart-4))`,`hsl(var(--chart-5))`];
   
-export function transformDataForGenericChart(inputData: InputData,chartType?:"pie" | "radial" | "single" | "tree"): TransformedDataPoint[] | any {
+export function transformDataForGenericChart(inputData: InputData,chartType?:"pie" | "radial" | "single" | "tree",selectedColorPalette?:visualColorPaletteTypes): TransformedDataPoint[] | any {
     if (!isValidInputData(inputData)) {
         throw new Error("Invalid input data structure");
     }
@@ -77,7 +81,7 @@ export function transformDataForGenericChart(inputData: InputData,chartType?:"pi
      const finalTransformedData = combineDataByMonth(transformedData) as TransformedDataPoint[]
 
      if(chartType === "pie" || chartType === "radial"){
-        const result = transformDataToPieChartFormat(finalTransformedData,colors)
+        const result = transformDataNoneAxisData(finalTransformedData,selectedColorPalette)
         return result
      } else if(chartType === "tree"){
           const result = convertDataForTreeMap(finalTransformedData)
@@ -88,32 +92,45 @@ export function transformDataForGenericChart(inputData: InputData,chartType?:"pi
 
     
 }
+ 
+export function generateChartConfig(inputData: InputData,selectedColorPalette?:visualColorPaletteTypes): ChartConfig {
 
-export function generateChartConfig(inputData: InputData): ChartConfig {
-    if (!isValidInputData(inputData)) {
-        throw new Error("Invalid input data structure");
-    }
 
-    const config: ChartConfig = {};
-    const dataItems = inputData.metaData.dimensions.dx;
+  console.log("Selected color palette:", selectedColorPalette);
 
-    dataItems.forEach((item: string, index: number) => {
-        const name = inputData.metaData.items[item].name;
-        config[name] = {
-            label: name,
-            color: `hsl(var(--chart-${index + 1}))`,
-        };
-    });
+  if (!isValidInputData(inputData)) {
+    throw new Error("Invalid input data structure");
+  }
 
-    return config;
+  const config: ChartConfig = {};
+  const dataItems = inputData.metaData.dimensions.dx;
+  dataItems.forEach((item: string, index: number) => {
+    const name = inputData.metaData.items[item].name;
+
+    // Determine color based on the format of selectedColorPalette
+    const color =
+      selectedColorPalette.itemsBackgroundColors.every(color => color.startsWith("hsl")) // Check if all are HSL
+        ? selectedColorPalette.itemsBackgroundColors[index] || `hsl(var(--chart-${index + 1}))`
+        : selectedColorPalette.itemsBackgroundColors[index] || selectedColorPalette.itemsBackgroundColors[0]; // Use first color as fallback for HEX or RGB
+
+    config[name] = {
+      label: name,
+      color,
+    };
+  });
+
+  return config;
 }
 
 
 
+
 ////// other formats
-function transformDataToPieChartFormat(data:TransformedDataPoint[], colors:string[]) {
+function transformDataNoneAxisData(data:TransformedDataPoint[],selectedColorPalette?:visualColorPaletteTypes) {
+
     const totals = {};
-    const colorCount = colors.length; // Number of available colors
+    const colorCount = selectedColorPalette.itemsBackgroundColors.length; // Number of available colors
+
   
     // Calculate totals for each disease dynamically
     data.forEach((entry) => {
@@ -128,13 +145,11 @@ function transformDataToPieChartFormat(data:TransformedDataPoint[], colors:strin
     const transformedData = Object.entries(totals).map(([name, total], index) => ({
       name,
       total,
-      fill: colors[index % colorCount], // Assign colors cyclically
+      fill: selectedColorPalette.itemsBackgroundColors[index % colorCount], // Assign colors cyclically
     }));
   
     return transformedData;
   }
-
-
 
   ///////// tree map
 type InputDataType = {

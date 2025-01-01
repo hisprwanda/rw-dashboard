@@ -30,7 +30,20 @@ export const DashboardSchema = z.object({
             DefaultSubTitle: z.array(z.string())?.optional(),
           }),
           visualSettings: z.object({
-            backgroundColor: z.string()?.optional(),
+            visualColorPalette: z.object({
+              name: z.string(), 
+              itemsBackgroundColors: z.array(z.string()),
+            }),
+            backgroundColor:z.string()?.optional(),
+            fillColor:z.string()?.optional(),
+            XAxisSettings:z.object({
+              color: z.string(),
+              fontSize:z.number(),
+            }).optional(),
+            YAxisSettings:z.object({
+              color: z.string(),
+              fontSize:z.number(),
+            }).optional(),
           }),
       })
   ),

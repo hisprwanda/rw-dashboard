@@ -10,6 +10,7 @@ import OtherDashboardsTable from "./components/OtherDashboardsTable";
 import { useDashboardsData } from "../../services/fetchDashboard";
 import { useAuthorities } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { Loading } from "../../components";
 
 
 
@@ -120,6 +121,11 @@ export default function HomePage() {
   const handleViewMore = (dashboardId:string)=>{
     navigate(`/dashboard/${dashboardId}`)
   
+  }
+
+  if(loading)
+  {
+    return <Loading/>
   }
 
   return (

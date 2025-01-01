@@ -3,14 +3,10 @@ import { Treemap, ResponsiveContainer, Tooltip } from "recharts";
 import { ChartContainer } from "../../components/ui/chart";
 import { transformDataForGenericChart, generateChartConfig, isValidInputData } from "../../lib/localGenericchartFormat";
 import { genericChartsProps } from "../../types/visualSettingsTypes";
+import { useAuthorities } from "../../context/AuthContext";
 
-const COLORS = [
-  "hsl(var(--chart-1))",
-  "hsl(var(--chart-2))",
-  "hsl(var(--chart-3))",
-  "hsl(var(--chart-4))",
-  "hsl(var(--chart-5))",
-];
+
+
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length > 0 && payload[0].payload) {
@@ -30,6 +26,7 @@ export const LocalTreeMapChart: React.FC<genericChartsProps> = ({
   visualTitleAndSubTitle,
   visualSettings,
 }) => {
+
   const { chartData, chartConfig, error } = useMemo(() => {
     if (!isValidInputData(data)) {
       return { chartData: [], chartConfig: {}, error: "No data found" };
@@ -37,12 +34,12 @@ export const LocalTreeMapChart: React.FC<genericChartsProps> = ({
 
     try {
       const transformedData = transformDataForGenericChart(data, "tree");
-      const config = generateChartConfig(data);
+      const config = generateChartConfig(data,visualSettings.visualColorPalette);
       return { chartData: transformedData, chartConfig: config, error: null };
     } catch (err) {
       return { chartData: [], chartConfig: {}, error: (err as Error).message };
     }
-  }, [data]);
+  }, [data,visualSettings]);
 
   if (error || chartData.length === 0) {
     return (
@@ -81,8 +78,8 @@ export const LocalTreeMapChart: React.FC<genericChartsProps> = ({
           data={chartData}
           dataKey="size"
           ratio={4 / 3}
-          stroke="#fff"
-          content={<CustomizedContent colors={COLORS} />}
+          stroke={visualSettings.fillColor}
+          content={<CustomizedContent fontSize={visualSettings.XAxisSettings.fontSize} colors={visualSettings.visualColorPalette.itemsBackgroundColors} />}
         >
           <Tooltip content={<CustomTooltip />} />
         </Treemap>
@@ -92,7 +89,7 @@ export const LocalTreeMapChart: React.FC<genericChartsProps> = ({
 };
 
 const CustomizedContent = (props: any) => {
-  const { x, y, width, height, index, depth, name, colors, root } = props;
+  const { x, y, width, height, index, depth, name, colors, root,fontSize } = props;
 
   const centerX = x + width / 2;
   const centerY = y + height / 2;
@@ -130,7 +127,7 @@ const CustomizedContent = (props: any) => {
          textAnchor="middle"
          dominantBaseline="middle"
          fill="#fff"
-         fontSize={12}
+         fontSize={fontSize}
        >
         {name} 
         {/* {props.size}  */}

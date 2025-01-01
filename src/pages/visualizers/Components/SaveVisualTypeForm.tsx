@@ -130,6 +130,12 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
 };
 
 
+useEffect(() => {
+  if (Object.keys(errors).length > 0) {
+    console.error('Validation Errors:', errors);
+  }
+}, [errors]);
+
   return (
     <div className="max-w-md mx-auto p-6 border border-gray-300 rounded-md">
       <h1 className="text-2xl font-bold mb-4">Save visualization as</h1>
@@ -146,19 +152,20 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
         </AlertBar>
       )}
 
-         {/* Zod Validation Errors */}
-  {Object.keys(errors).length > 0 && (
-    <div className="p-4 bg-red-100 border border-red-300 rounded-md mb-4">
-      <h2 className="text-red-600 font-bold mb-2">Validation Errors:</h2>
-      <ul className="list-disc list-inside">
-        {Object.entries(errors).map(([key, error]) => (
-          <li key={key} className="text-red-500">
-            {error?.message}
-          </li>
-        ))}
-      </ul>
-    </div>
-  )}
+{/* Validation Errors Section */}
+{Object.keys(errors).length > 0 && (
+  <div className="p-4 bg-red-100 border border-red-300 rounded-md mb-4">
+    <h2 className="text-red-600 font-bold mb-2">Validation Errors:</h2>
+    <ul className="list-disc list-inside">
+      {Object.entries(errors).map(([fieldName, error]) => (
+        <li key={fieldName} className="text-red-500">
+          {error?.message   }
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
+
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
        {/* show zod errors here, because some fields are not on the screen so it's hard to detect the error, so show them here  */}

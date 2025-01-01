@@ -55,15 +55,17 @@ export function NavigationMenuDemo() {
   return (
     <NavigationMenu>
       <NavigationMenuList>
+
         {/* Options */}
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Options</NavigationMenuTrigger>
+          <NavigationMenuTrigger>Styles</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="bg-white w-[500px]">
+            <ul className="bg-white">
               <li>Styles</li>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
+
 {/* Download */}
         <NavigationMenuItem>
           <NavigationMenuTrigger>Download</NavigationMenuTrigger>

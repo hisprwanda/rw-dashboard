@@ -21,12 +21,12 @@ export const LocalAreaChart: React.FC<genericChartsProps> = ({ data,visualSettin
 
         try {
             const transformedData = transformDataForGenericChart(data);
-            const config = generateChartConfig(data);
+            const config = generateChartConfig(data,visualSettings.visualColorPalette);
             return { chartData: transformedData, chartConfig: config, error: null };
         } catch (err) {
             return { chartData: [], chartConfig: {}, error: (err as Error).message };
         }
-    }, [data]);
+    }, [data,visualSettings]);
 
     if (error || chartData.length === 0) {
         return (
@@ -58,9 +58,12 @@ export const LocalAreaChart: React.FC<genericChartsProps> = ({ data,visualSettin
                     tickMargin={10}
                     axisLine={false}
                     tickFormatter={(value) => value}
+                    tick={{ fill:visualSettings.XAxisSettings.color, fontSize: visualSettings.XAxisSettings.fontSize, fontWeight: 'bold' }} 
                 />
-                <YAxis />
-                <Tooltip content={<ChartTooltipContent />} />
+                 <YAxis 
+                  tick={{ fill:visualSettings.YAxisSettings.color, fontSize: visualSettings.YAxisSettings.fontSize, fontWeight: 'bold' }}
+                />
+                <Tooltip content={<ChartTooltipContent className="bg-white" />} />
                 <Legend />
                 {Object.keys(chartConfig).map((key) => (
                     <Area
@@ -71,11 +74,12 @@ export const LocalAreaChart: React.FC<genericChartsProps> = ({ data,visualSettin
                         name={chartConfig[key].label}
                          type="natural"
                         stackId="a"
+                    
                     >
                           <LabelList
                  dataKey={key}
                 position="center"
-                fill="black"
+                fill={visualSettings.fillColor}
                 style={{ fontSize: '12px', fontWeight: 'bold' }}
               />
                     </Area>

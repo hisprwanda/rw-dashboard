@@ -18,13 +18,13 @@ export const LocalRadialChat: React.FC<genericChartsProps> = ({
     }
 
     try {
-      const transformedData = transformDataForGenericChart(data, "radial");
-      const config = generateChartConfig(data);
+      const transformedData = transformDataForGenericChart(data, "radial",visualSettings.visualColorPalette);
+      const config = generateChartConfig(data,visualSettings.visualColorPalette);
       return { chartData: transformedData, chartConfig: config, error: null };
     } catch (err) {
       return { chartData: [], chartConfig: {}, error: (err as Error).message };
     }
-  }, [data]);
+  }, [data,visualSettings]);
 
   if (error || chartData.length === 0) {
     return (
@@ -67,20 +67,20 @@ export const LocalRadialChat: React.FC<genericChartsProps> = ({
 
       <RadialBarChart
         data={chartData}
-        startAngle={-90}
+        startAngle={-130}
         endAngle={380}
         innerRadius={30}
         outerRadius={110}
       >
-        <Tooltip content={<ChartTooltipContent hideLabel nameKey="name" />} />
+        <Tooltip content={<ChartTooltipContent hideLabel nameKey="name" className="bg-white" />} />
         <Legend />
         <RadialBar dataKey="total" background>
           <LabelList
            position="insideStart"
             dataKey="name"
-          className="fill-white capitalize mix-blend-luminosity"
-            fontSize={11}
-            
+          className="capitalize"
+            fontSize={visualSettings.XAxisSettings.fontSize}
+            fill={visualSettings.fillColor}           
           />
         </RadialBar>
       </RadialBarChart>
