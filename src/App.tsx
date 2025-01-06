@@ -22,6 +22,7 @@ import { CreateDashboardPage } from "./pages/dashboards";
 import { TestChart } from "./components/charts/TestChart";
 import TokenTest from "./pages/TokenTest";
 import UserCredentials from "./pages/UserCredentials";
+import { Toaster } from "./components/ui/toaster";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -65,6 +66,7 @@ const App: React.FC = () => {
             } />
           </Routes>
         </Router>
+        <Toaster />
       </AuthProvider>
     </QueryClientProvider>
   );

@@ -21,8 +21,10 @@ import html2canvas from 'html2canvas';
 import  PresentDashboard from './components/PresentDashboard';
 import { FaPlay} from "react-icons/fa"
 import { IoSaveOutline } from "react-icons/io5";
+import { useToast } from "../../components/ui/use-toast";
 
 const CreateDashboardPage: React.FC = () => {
+    const { toast } = useToast();
     const { id: dashboardId ,present:isPresentModeFromView} = useParams();
     const navigate = useNavigate();
     const { data: allSavedVisuals ,error,isError,loading} = useFetchVisualsData();
@@ -185,6 +187,10 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
                 data,
             });
             //temporally success message
+            toast({
+                title: "Success",
+                description: "You have successfully logged in",
+              });
             setIsSuccess(true);
             if(!dashboardId){
                 // temporary fix to navigate to edit mode after saving new dashboard
