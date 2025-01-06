@@ -44,6 +44,7 @@ export const useFetchSingleVisualData = (visualId: string) => {
     setSelectedVisualTitleAndSubTitle,
     setSelectedVisualSettings,
     setSelectedColorPalette,
+    setBackedSelectedItems
   } = useAuthorities();
 
   // Return default values if no visualId is provided
@@ -106,6 +107,7 @@ export const useFetchSingleVisualData = (visualId: string) => {
       setSelectedVisualTitleAndSubTitle(data?.dataStore?.visualTitleAndSubTitle);
       setSelectedColorPalette(data?.dataStore?.visualSettings?.visualColorPalette);
       setSelectedVisualSettings(data?.dataStore?.visualSettings);
+      setBackedSelectedItems(data?.dataStore?.backedSelectedItems);
     }
   }, [
     data,
@@ -123,6 +125,7 @@ export const useFetchSingleVisualData = (visualId: string) => {
     setSelectedOrganizationUnitsLevels,
     setSelectedVisualSettings,
     setSelectedVisualTitleAndSubTitle,
+    setBackedSelectedItems
   ]);
 
   // Return the query result and metadata

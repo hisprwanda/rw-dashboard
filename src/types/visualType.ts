@@ -25,6 +25,11 @@ export const VisualDataSchema = z.object({
     customSubTitle: z.string()?.optional(),
     DefaultSubTitle: z.array(z.string())?.optional(),
   }),
+  backedSelectedItems:z.array(z.object({
+    label: z.string(),
+    id: z.string(),
+ 
+  })),
   visualSettings:  z.object({
     visualColorPalette: z.object({
       name: z.string(), 
@@ -64,3 +69,21 @@ export const VisualDataSchema = z.object({
 
 // Infer form fields from the schema
 export type VisualDataFormFields = z.infer<typeof VisualDataSchema>;
+
+export type BackedSelectedItem = {
+  id: string;
+  label: string;
+};
+export type visualTypes =  "Table"|
+"Column"|
+"Stacked Col"|
+"Bar"|
+"Stacked Bar"|
+"Line"|
+"Area"|
+"Pie"|
+"Radar"|
+"Scatter"|
+"Radial"|
+"Single Value"|
+"Tree Map"

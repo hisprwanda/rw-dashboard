@@ -14,10 +14,7 @@ type TransferOption = {
   value: string;
 };
 
-type BackedSelectedItem = {
-  id: string;
-  label: string;
-};
+
 
 interface DataModalProps {
   setIsShowDataModal: (isShow: boolean) => void;
@@ -42,7 +39,10 @@ const CustomTransfer: React.FC<{
   onEndReached,
   className = ''
 }) => {
-  const [backedSelectedItems, setBackedSelectedItems] = useState<BackedSelectedItem[]>([]);
+
+    const {
+    backedSelectedItems,setBackedSelectedItems
+  } = useAuthorities();
   
   useEffect(() => {
     const updatedBackedItems = selected.map(id => {
@@ -172,6 +172,7 @@ const DataModal: React.FC<DataModalProps> = ({
     fetchAnalyticsData,
     isFetchAnalyticsDataLoading,
     selectedDataSourceDetails,
+    backedSelectedItems,setBackedSelectedItems
   } = useAuthorities();
 
   const [availableOptions, setAvailableOptions] = useState<TransferOption[]>([]);

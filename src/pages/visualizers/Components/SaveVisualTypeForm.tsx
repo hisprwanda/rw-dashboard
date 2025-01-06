@@ -21,7 +21,7 @@ interface SaveVisualTypeFormProps {
 }
 
 const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleSavedVisualData,setIsShowSaveVisualTypeForm ,selectedDataSourceId}) => {
-  const {selectedDataSourceOption,setSelectedDataSourceOption,visualSettings, analyticsQuery,userDatails,selectedChartType,selectedOrgUnits,selectedLevel, visualTitleAndSubTitle } = useAuthorities();
+  const {selectedDataSourceOption,setSelectedDataSourceOption,visualSettings, analyticsQuery,userDatails,selectedChartType,selectedOrgUnits,selectedLevel, visualTitleAndSubTitle ,backedSelectedItems} = useAuthorities();
   const {data:allSavedVisuals,loading,isError}  = useFetchVisualsData()
   const navigate = useNavigate();
    const { toast } = useToast();
@@ -36,9 +36,11 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
       visualName:  "",
       description:   "",
       visualType: selectedChartType,
+      backedSelectedItems:backedSelectedItems,
       visualTitleAndSubTitle:visualTitleAndSubTitle,  
       visualSettings:visualSettings,
       query: analyticsQuery,
+      
       dataSourceId: selectedDataSourceOption, 
       createdBy:{
         name:userDatails?.me?.displayName,
@@ -71,6 +73,7 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
             ...prevValues,
             id: singleSavedVisualData?.dataStore?.id,
             visualName: singleSavedVisualData?.dataStore?.visualName || prevValues.visualName,
+            backedSelectedItems: singleSavedVisualData?.dataStore?.backedSelectedItems || prevValues.backedSelectedItems,
             description: singleSavedVisualData?.dataStore?.description || prevValues.description,
             createdAt: singleSavedVisualData?.dataStore?.createdAt || prevValues.createdAt,
         }));
