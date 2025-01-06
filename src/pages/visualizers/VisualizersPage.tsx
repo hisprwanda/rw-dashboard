@@ -28,10 +28,13 @@ import { useExternalOrgUnitData } from '../../services/fetchExternalOrgUnit';
 import { currentInstanceId } from '../../constants/currentInstanceInfo';
 import debounce from 'lodash/debounce';
 import { dimensionItemTypes } from '../../constants/dimensionItemTypes';
+import { useToast } from "../../components/ui/use-toast";
+
 
 
 function Visualizers() {
     const { id:visualId } = useParams();
+      const { toast } = useToast();
     const {  data:systemInfo } = useSystemInfo();
     const {searchDataItem,setSearchDataItem,  setDataItemsDataPage,dataItemsDataPage,selectedDataSourceOption,setSelectedDataSourceOption,currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData, dataItemsData,selectedDataSourceDetails,setSelectedDataSourceDetails,setSelectedDimensionItemType,analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle,visualTitleAndSubTitle,visualSettings,setSelectedVisualSettings,setVisualsColorPalettes,selectedColorPalette,selectedDimensionItemType} = useAuthorities();
     const {data:singleSavedVisualData,isError,loading:isFetchSingleVisualLoading} = useFetchSingleVisualData(visualId)

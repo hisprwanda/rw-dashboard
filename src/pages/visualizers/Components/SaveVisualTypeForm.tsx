@@ -11,6 +11,7 @@ import { useAuthorities } from '../../../context/AuthContext';
 import { useFetchVisualsData } from '../../../services/fetchVisuals';
 import { useNavigate } from 'react-router-dom';
 import { currentInstanceId } from '../../../constants/currentInstanceInfo';
+import { useToast } from "../../../components/ui/use-toast";
 
 interface SaveVisualTypeFormProps {
   setIsShowSaveVisualTypeForm: any;
@@ -23,7 +24,7 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
   const {selectedDataSourceOption,setSelectedDataSourceOption,visualSettings, analyticsQuery,userDatails,selectedChartType,selectedOrgUnits,selectedLevel, visualTitleAndSubTitle } = useAuthorities();
   const {data:allSavedVisuals,loading,isError}  = useFetchVisualsData()
   const navigate = useNavigate();
-
+   const { toast } = useToast();
    console.log("current Visual",generateUid())
   const engine = useDataEngine();
 
@@ -110,10 +111,15 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
             type:visualId ? "update" : 'create',
             data: formData,
         });
+        toast({
+          title: "Success",
+          description: "saved successfully",
+          variant: "default",
+        });
 
-        setSuccessMessage('Visual saved successfully!');
+       // setSuccessMessage('Visual saved successfully!');
         // Delay a bit to show success message
-        await new Promise((resolve) => setTimeout(() => resolve(), 2000));
+       // await new Promise((resolve) => setTimeout(() => resolve(), 2000));
         // Close modal
         setIsShowSaveVisualTypeForm(false);
         // go in edit mode after saving first visual
@@ -125,6 +131,11 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
     
     } catch (error) {
         console.error('Error saving visual:', error);
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+          variant: "destructive",
+        });
         setErrorMessage('Failed to save visual. Please try again.');
     }
 };

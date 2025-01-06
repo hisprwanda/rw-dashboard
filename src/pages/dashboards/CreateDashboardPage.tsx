@@ -189,7 +189,8 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
             //temporally success message
             toast({
                 title: "Success",
-                description: "You have successfully logged in",
+                description: "saved successfully",
+                variant: "default",
               });
             setIsSuccess(true);
             if(!dashboardId){
@@ -199,6 +200,11 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
                      }
             console.log("Dashboard saved successfully");
         } catch (error) {
+            toast({
+                title: "Error",
+                description: "Something went wrong",
+                variant: "destructive",
+              });
             console.error("Error saving dashboard:", error);
         }
     };
@@ -257,12 +263,7 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
              </div>
          
             </div>
-            {/* temporally is success message */}
-            {isSuccess && (
-  <p className="mt-2 p-4 text-green-700 bg-green-100 border border-green-300 rounded-md">
-    Dashboard saved successfully
-  </p>
-)}
+  
 
 
             <div className="mt-4 grid grid-cols-2 gap-2">
