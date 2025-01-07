@@ -72,6 +72,14 @@ const OtherDashboardsTable: React.FC<OtherDashboardsTableProps> = ({ dashboards 
         accessorFn: (row) => new Date(row.value.createdAt).toLocaleDateString(),
         header: "Created At",
       },
+      {
+        accessorFn: (row) => new Date(row.value.updatedAt).toLocaleDateString(),
+        header: "Updated At",
+      },
+      {
+        accessorFn: (row) => row.value.createdBy.name,
+        header: "Created By",
+      },
        {
 
            header: "Actions",

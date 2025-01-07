@@ -207,6 +207,10 @@ const MyDashboardsTable: React.FC<MyDashboardsTableProps> = ({ dashboards }) => 
       header: "Created At",
     },
     {
+      accessorFn: (row) => new Date(row.value.updatedAt).toLocaleDateString(),
+      header: "Updated At",
+    },
+    {
       accessorKey: "isFavorite",
       header: "Actions",
       Cell: ({ row }) => {
