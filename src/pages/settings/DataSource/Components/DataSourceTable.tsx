@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import { FaRegEdit } from "react-icons/fa";
+import { FaEye, FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { IoIosMore } from "react-icons/io";
 import { CiEdit } from "react-icons/ci";
@@ -87,9 +87,9 @@ const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }
     },
     renderRowActions: ({ row }) => (
       <div className="flex gap-2  "> 
-      <IoIosMore className='text-xl hover:cursor-pointer  hover:text-primary '   onClick={() => handleView(row?.original)} />
+      <FaEye className='text-xl hover:cursor-pointer  hover:text-primary '   onClick={() => handleView(row?.original)} />
       <CiEdit className='text-xl hover:cursor-pointer  hover:text-primary '   onClick={() => handleEdit(row?.original)} />
-      <RiDeleteBin5Line className='text-xl  hover:cursor-pointer  hover:text-red-600 '    onClick={() => handleDelete(row?.original)} />
+      <RiDeleteBin5Line className='text-xl  hover:cursor-pointer text-red-600 hover:text-red-900 '    onClick={() => handleDelete(row?.original)} />
        </div>
     ),
    

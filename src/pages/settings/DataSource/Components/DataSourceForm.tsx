@@ -11,7 +11,7 @@ import { useToast } from "../../../../components/ui/use-toast";
 
 const dataSourceOptions = [
     { name: 'DHIS2', value: 'DHIS2' },
-    { name: 'API', value: 'API' },
+    // { name: 'API', value: 'API' },
 ];
 
 type DataSourceFormProps = {

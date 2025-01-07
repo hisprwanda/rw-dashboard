@@ -37,7 +37,7 @@ const DataSourcePage = () => {
       <div className=" container flex justify-between py-5" >
         <h3 className="text-[#2C6693] text-xl font-bold " >Data source</h3>
 
-<Button variant="primary" text="Add data source"     type="button"
+<Button variant="primary" text="New data source"     type="button"
       onClick={handleShowDataSourceForm}  icon={<IoIosAddCircle />} />
 
 

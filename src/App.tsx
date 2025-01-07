@@ -46,8 +46,8 @@ const App: React.FC = () => {
               <Route path="test" element={<TestChart />} />
               <Route path="token-test" element={<TokenTest />} />
               <Route path="credentials" element={<UserCredentials />} />
-              <Route path="settings" element={<DataSourcePage />} />
-              <Route path="data-source" element={<DataSourcePage />} />
+              <Route path="datasource" element={<DataSourcePage />} />
+              {/* <Route path="data-source" element={<DataSourcePage />} /> */}
               <Route path="unauthorized" element={<UnauthorizedPage />} />
               <Route path="visualizers/:id?" element={<VisualizersPage />} />
               <Route path="dashboard/:id?/:present?" element={<CreateDashboardPage />} />
