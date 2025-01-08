@@ -1,4 +1,4 @@
-import React, { useEffect, useState ,useRef} from 'react';
+import React, { useEffect, useState ,useRef, useCallback} from 'react';
 import Button from "../../components/Button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
 import { useFetchVisualsData } from '../../services/fetchVisuals';
@@ -22,6 +22,7 @@ import  PresentDashboard from './components/PresentDashboard';
 import { FaPlay} from "react-icons/fa"
 import { IoSaveOutline } from "react-icons/io5";
 import { useToast } from "../../components/ui/use-toast";
+import {  Maximize2, Minimize2 } from "lucide-react";
 
 const CreateDashboardPage: React.FC = () => {
     const { toast } = useToast();
@@ -34,6 +35,7 @@ const CreateDashboardPage: React.FC = () => {
     const [tempDashboardSettings,setTempDashboardSettings] = useState<dashboardSettings>({backgroundColor:"#dcdcdc"})
     // variable to store snapshot of grid box
     const captureRef = useRef<HTMLDivElement>(null);
+      const [isFullscreen, setIsFullscreen] = useState(false);
     const [containerWidth, setContainerWidth] = useState(window.innerWidth);
 
    // console.log("test single data",singleSavedDashboardData)
@@ -209,6 +211,41 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
         }
     };
 
+      /// view dashboard in full screen mode
+      const toggleFullscreen = useCallback(() => {
+        if (!document.fullscreenElement) {
+            captureRef.current?.requestFullscreen();
+          setIsFullscreen(true);
+         
+        } else {
+          document.exitFullscreen();
+          setIsFullscreen(false);
+       
+        }
+      }, []);
+
+       // Handle fullscreen exit on Escape key press
+       useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === "Escape" && document.fullscreenElement) {
+                setIsFullscreen(false);
+                document.exitFullscreen?.();
+            }
+        };
+    
+        const handleFullscreenChange = () => {
+            setIsFullscreen(!!document.fullscreenElement);
+        };
+    
+        window.addEventListener("keydown", handleKeyDown);
+        document.addEventListener("fullscreenchange", handleFullscreenChange);
+    
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+            document.removeEventListener("fullscreenchange", handleFullscreenChange);
+        };
+    }, []);
+    
 
         // loading
         if(isLoadingFetchSingleSavedDashboardData || loading)
@@ -257,6 +294,7 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
 
              {/* action btns container */}
              <div  className="flex items-center  gap-2" >
+             <Button onClick={toggleFullscreen} icon={<Maximize2/>}  text= "FullScreen"  disabled={isSubmitting} />
              <Button onClick={()=>setIsPresentMode(true)} icon={<FaPlay/>}  text= "Present"  disabled={isSubmitting} />
                 <Button type="submit" text= {isSubmitting ? "Loading" : dashboardId ? "UPDATE" :  "Save changes" } disabled={isSubmitting} icon={<IoSaveOutline/>}  />
           
@@ -298,7 +336,7 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
 
 
           
-            <div ref={captureRef} >
+            <div ref={captureRef} className='overflow-y-auto' >
             <MemoizedGridLayout
                 layout={selectedVisuals}
                 onLayoutChange={handleLayoutChange}
@@ -307,6 +345,7 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
                 width={containerWidth - 20} 
                 onDeleteWidget={handleDeleteWidget}
                 backgroundColor={tempDashboardSettings.backgroundColor}
+                isFullscreen={isFullscreen}
             />
             </div>
           
@@ -323,6 +362,7 @@ const MemoizedGridLayout = React.memo(({
     width,
     backgroundColor,
     onDeleteWidget,
+    isFullscreen
 }: {
     layout: ExtendedLayout[];
     onLayoutChange: (layout: Layout[]) => void;
@@ -331,6 +371,7 @@ const MemoizedGridLayout = React.memo(({
     width: number;
     backgroundColor:string;
     onDeleteWidget: (id: string) => void;
+    isFullscreen: boolean;
 }) => (
   
     <GridLayout
@@ -346,14 +387,14 @@ const MemoizedGridLayout = React.memo(({
     >
         {layout.map((widget) => (
             <div key={widget.i} className="widget bg-white " style={{ position: "relative", padding: "10px" }}>
-                <div className="drag-handle" style={{ cursor: "move" }}>
+                <div className="drag-handle  text-center " style={{ cursor: "move" }}>
                     {widget.visualName}
                 </div>
                 <DashboardVisualItem  query={widget.visualQuery} visualType={widget.visualType} visualSettings={widget.visualSettings}  dataSourceId={widget.dataSourceId} visualTitleAndSubTitle={widget.visualTitleAndSubTitle} />
-                <FaTrash
+             {!isFullscreen && <FaTrash
                     style={{ position: "absolute", top: "10px", right: "10px", cursor: "pointer" ,color:"#7d0000"}}
                     onClick={() => onDeleteWidget(widget.i)}
-                />
+                /> }   
             </div>
         ))}
     </GridLayout>
