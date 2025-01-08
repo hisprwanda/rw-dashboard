@@ -29,6 +29,7 @@ import { currentInstanceId } from '../../constants/currentInstanceInfo';
 import debounce from 'lodash/debounce';
 import { dimensionItemTypes } from '../../constants/dimensionItemTypes';
 import { useToast } from "../../components/ui/use-toast";
+import { Maximize2 } from 'lucide-react';
 
 
 
@@ -52,6 +53,8 @@ function Visualizers() {
     const selectedDataSourceDetailsRef = useRef(selectedDataSourceDetails);
     const [titleOption, setTitleOption] = useState< 'none' | 'custom'>('none');
     const [subtitleOption, setSubtitleOption] = useState<'auto' | 'none' | 'custom'>('auto');
+       const captureRef = useRef<HTMLDivElement>(null);
+          const [isFullscreen, setIsFullscreen] = useState(false);
     //// data source options
     const dataSourceOptions = savedDataSource?.dataStore?.entries?.map((entry:any) => (
         <option key={entry?.key} value={entry?.key}>{entry?.value?.instanceName}</option>
@@ -185,6 +188,8 @@ function Visualizers() {
         return SelectedChart ? <SelectedChart data={analyticsData} visualTitleAndSubTitle={visualTitleAndSubTitle} visualSettings={visualSettings}   /> : null;
     };
 
+  
+
     /// handle data source onchange
     const handleDataSourceOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedValue = e.target.value;
@@ -247,10 +252,41 @@ useEffect(() => {
        setDataItemsDataPage(1)
 }, [selectedDataSourceDetails]);
 
-   //// testing data items
-   useEffect(()=>{
-    console.log("here is updated data items",dataItemsData)
-  },[dataItemsData])
+
+       /// view dashboard in full screen mode
+       const toggleFullscreen = useCallback(() => {
+         if (!document.fullscreenElement) {
+             captureRef.current?.requestFullscreen();
+           setIsFullscreen(true);
+          
+         } else {
+           document.exitFullscreen();
+           setIsFullscreen(false);
+        
+         }
+       }, []);
+
+         // Handle fullscreen exit on Escape key press
+              useEffect(() => {
+               const handleKeyDown = (event: KeyboardEvent) => {
+                   if (event.key === "Escape" && document.fullscreenElement) {
+                       setIsFullscreen(false);
+                       document.exitFullscreen?.();
+                   }
+               };
+           
+               const handleFullscreenChange = () => {
+                   setIsFullscreen(!!document.fullscreenElement);
+               };
+           
+               window.addEventListener("keydown", handleKeyDown);
+               document.addEventListener("fullscreenchange", handleFullscreenChange);
+           
+               return () => {
+                   window.removeEventListener("keydown", handleKeyDown);
+                   document.removeEventListener("fullscreenchange", handleFullscreenChange);
+               };
+           }, []);
 
     /// main return
     return (
@@ -329,16 +365,18 @@ useEffect(() => {
                             />
                     </div>
               
-                            <div>
+                               {/* action btns container */}
+                           <div  className="flex items-center  gap-2" >
+                            <Button onClick={toggleFullscreen} icon={<Maximize2/>}  />
                             <Button variant="primary" text={visualId  ? "Update" : "Save" } type="button" icon={<IoSaveOutline />}  onClick={handleShowSaveVisualTypeForm}/>
                             </div>
                        
                     </div>
-                    <div className="h-[600px] flex items-center justify-center border border-gray-300 rounded-lg bg-gray-100">
+                    <div className="h-[600px] flex items-center justify-center border border-gray-300 rounded-lg " style={{backgroundColor:visualSettings.backgroundColor}} >
                         {isFetchAnalyticsDataLoading ? (
                             <Loading />
                         ) : (
-                            <div className="flex items-center justify-center w-full h-[600px]">
+                            <div ref={captureRef} className="flex items-center justify-center w-full h-[600px]">
                                 <div className="w-[100%] max-h-[100%]">
                                      { fetchAnalyticsDataError ?
                                       <p className='text-center text-red-600 bg-red-100 p-4 rounded-lg shadow-sm border border-red-300'  >{fetchAnalyticsDataError?.message}</p> :

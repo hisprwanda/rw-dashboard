@@ -377,14 +377,14 @@ const stopAudio = () => {
           </button>
 
           <div ref={emblaRef} className="overflow-hidden h-full w-full">
-            <div className="flex h-full items-center">
+            <div className="flex h-full items-center ">
               {dashboardData.map((item, index) => (
                 <div
                   key={index}
-                  className="flex-[0_0_auto] min-w-0 px-4 h-full flex items-center"
-                  style={{ width: `${100 / slidesToShow}%` }}
+                  className="flex-[0_0_auto] min-w-0 w-full h-full flex items-center"
+                  style={{ width: `${100 / slidesToShow}%`,backgroundColor:item.visualSettings.backgroundColor }}
                 >
-                  <div className="space-y-2 w-full">
+                  <div className=" w-full">
                   <h4 
                   className={`text-xl font-medium text-center ${
             (!isFullscreen || showControls) ? "text-gray-400" : "text-gray-400"
@@ -393,7 +393,7 @@ const stopAudio = () => {
                 {index + 1}. {item.visualName}
                    </h4>
 
-                    <div className="h-full">
+                    <div className="h-full" style={{backgroundColor:item.visualSettings.backgroundColor}} >
                       <DashboardVisualItem
                         query={item.visualQuery}
                         dataSourceId={item.dataSourceId}
