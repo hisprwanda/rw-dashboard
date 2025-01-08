@@ -367,7 +367,7 @@ useEffect(() => {
               
                                {/* action btns container */}
                            <div  className="flex items-center  gap-2" >
-                            <Button onClick={toggleFullscreen} icon={<Maximize2/>}  />
+                            {/* <Button onClick={toggleFullscreen} icon={<Maximize2/>}  /> */}
                             <Button variant="primary" text={visualId  ? "Update" : "Save" } type="button" icon={<IoSaveOutline />}  onClick={handleShowSaveVisualTypeForm}/>
                             </div>
                        
