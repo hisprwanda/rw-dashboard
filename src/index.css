@@ -980,6 +980,10 @@ video {
   height: 26px;
 }
 
+.h-\[30px\] {
+  height: 30px;
+}
+
 .h-\[36px\] {
   height: 36px;
 }
@@ -1801,6 +1805,10 @@ video {
   --tw-bg-opacity: 0.5;
 }
 
+.bg-opacity-75 {
+  --tw-bg-opacity: 0.75;
+}
+
 .bg-gradient-to-tr {
   background-image: linear-gradient(to top right, var(--tw-gradient-stops));
 }
@@ -2337,6 +2345,10 @@ video {
   transition-duration: 300ms;
 }
 
+.ease-in-out {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 @keyframes enter {
 
   from {
@@ -2359,6 +2371,10 @@ video {
 
 .duration-300 {
   animation-duration: 300ms;
+}
+
+.ease-in-out {
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Your custom CSS here */

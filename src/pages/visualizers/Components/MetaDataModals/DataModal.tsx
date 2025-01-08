@@ -7,6 +7,7 @@ import { formatAnalyticsDimensions } from "../../../../lib/formatAnalyticsDimens
 import { dimensionItemTypes } from "../../../../constants/dimensionItemTypes";
 import { useExternalDataItems } from "../../../../services/useExternalDataItems";
 import { debounce } from "lodash";
+import { CiCircleRemove } from "react-icons/ci";
 
 // Types
 type TransferOption = {
@@ -92,6 +93,13 @@ const CustomTransfer: React.FC<{
           className="flex-1 overflow-y-auto p-2"
           onScroll={handleScroll}
         >
+         {loading && options.length === 0 && (
+            <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10">
+              <div className="text-center text-gray-500">
+                Searching...
+              </div>
+            </div>
+          )}
           {options.map(option => (
             <div
               key={option.value}
@@ -103,9 +111,9 @@ const CustomTransfer: React.FC<{
               <span className="text-sm">{option.label}</span>
             </div>
           ))}
-          {loading && (
+          {loading && options.length > 0 && (
             <div className="p-2 text-center text-gray-500">
-              Loading...
+              Loading more...
             </div>
           )}
         </div>
@@ -122,12 +130,12 @@ const CustomTransfer: React.FC<{
               className="p-2 hover:bg-gray-50 flex items-center justify-between rounded"
             >
               <span className="text-sm">{item.label}</span>
-              <button
-                onClick={() => handleDeselect(item.id)}
-                className="text-red-500 hover:text-red-700"
-              >
-                Remove
-              </button>
+              <CiCircleRemove
+  onClick={() => handleDeselect(item.id)}
+  className=" cursor-pointer h-[30px] text-red-500 hover:text-red-700 focus:ring-2 focus:ring-red-500 focus:outline-none transition duration-200 ease-in-out text-xl"
+/>
+
+             
             </div>
           ))}
           {backedSelectedItems.length === 0 && (
@@ -150,6 +158,7 @@ const DataModal: React.FC<DataModalProps> = ({
 }) => {
   const [searchDataItem, setSearchDataItem] = useState<string>("");
   const [debouncedSearch, setDebouncedSearch] = useState<string>("");
+  const [isSearching, setIsSearching] = useState(false);
   const {
     error: dataItemsFetchError,
     loading: isFetchCurrentInstanceDataItemsLoading,
@@ -180,6 +189,7 @@ const DataModal: React.FC<DataModalProps> = ({
 
   const debouncedSearchHandler = useCallback(
     debounce((value: string) => {
+      setIsSearching(true); 
       setDebouncedSearch(value);
       setDataItemsDataPage(1);
     }, 300),
@@ -263,7 +273,8 @@ const DataModal: React.FC<DataModalProps> = ({
 
   useEffect(() => {
     if (selectedDataSourceDetails.isCurrentInstance) {
-      fetchCurrentInstanceData(selectedDimensionItemType, debouncedSearch, dataItemsDataPage);
+      fetchCurrentInstanceData(selectedDimensionItemType, debouncedSearch, dataItemsDataPage)
+      .finally(() => setIsSearching(false));
     } else {
       fetchExternalDataItems(
         selectedDataSourceDetails.url,
@@ -271,7 +282,7 @@ const DataModal: React.FC<DataModalProps> = ({
         selectedDimensionItemType,
         debouncedSearch,
         dataItemsDataPage
-      );
+      ).finally(() => setIsSearching(false));
     }
   }, [selectedDimensionItemType, debouncedSearch, dataItemsDataPage]);
 
@@ -320,7 +331,7 @@ const DataModal: React.FC<DataModalProps> = ({
           options={availableOptions}
           selected={analyticsDimensions?.dx}
           onChange={({ selected }) => handleChange(selected)}
-          loading={loading || isFetchCurrentInstanceDataItemsLoading}
+          loading={loading || isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading || isSearching}
           onEndReached={handleEndReached}
         />
       </div>
