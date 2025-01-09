@@ -22,11 +22,13 @@ interface DataModalProps {
   data: any;
   loading: boolean;
   error: any;
+  subDataItemsData:any
 }
 
 // Custom Transfer Component
 const CustomTransfer: React.FC<{
   options: TransferOption[];
+  availableSubOptions?:TransferOption[]
   selected: string[];
   onChange: (params: { selected: string[] }) => void;
   loading?: boolean;
@@ -34,6 +36,7 @@ const CustomTransfer: React.FC<{
   className?: string;
 }> = ({
   options,
+  availableSubOptions,
   selected,
   onChange,
   loading = false,
@@ -44,6 +47,8 @@ const CustomTransfer: React.FC<{
     const {
     backedSelectedItems,setBackedSelectedItems
   } = useAuthorities();
+
+
   
   useEffect(() => {
     const updatedBackedItems = selected.map(id => {
@@ -155,6 +160,7 @@ const DataModal: React.FC<DataModalProps> = ({
   data,
   error,
   loading,
+  subDataItemsData
 }) => {
   const [searchDataItem, setSearchDataItem] = useState<string>("");
   const [debouncedSearch, setDebouncedSearch] = useState<string>("");
@@ -185,6 +191,7 @@ const DataModal: React.FC<DataModalProps> = ({
   } = useAuthorities();
 
   const [availableOptions, setAvailableOptions] = useState<TransferOption[]>([]);
+  const [availableSubOptions, setAvailableSubOptions] = useState<TransferOption[]>([]);
   const transferRef = useRef<HTMLDivElement>(null);
 
   const debouncedSearchHandler = useCallback(
@@ -203,6 +210,9 @@ const DataModal: React.FC<DataModalProps> = ({
 
   useEffect(() => {
     let transformedOptions: TransferOption[] = [];
+    let transformedSubOptions: TransferOption[] = [];
+
+    console.log("before transform selectedDimensionItemType",selectedDimensionItemType)
     if (
       ["dataItems", "Event Data Item", "Program Indicator", "Calculation"].includes(
         selectedDimensionItemType.value
@@ -214,14 +224,29 @@ const DataModal: React.FC<DataModalProps> = ({
           value: item.id,
         })) || [];
     } else if (selectedDimensionItemType.value === "indicators") {
+
       transformedOptions =
         data?.indicators?.map((item: any) => ({
           label: item.name,
           value: item.id,
         })) || [];
+        /// setting indicators group
+        transformedSubOptions  =
+        subDataItemsData?.indicatorGroups?.map((item: any) => ({
+          label: item.name,
+          value: item.id,
+        })) || [];
+
     } else if (selectedDimensionItemType.value === "dataElements") {
       transformedOptions =
         data?.dataElements?.map((item: any) => ({
+          label: item.name,
+          value: item.id,
+        })) || [];
+
+        /// setting data elements group   dataElementGroups
+        transformedSubOptions =
+        subDataItemsData?.dataElementGroups?.map((item: any) => ({
           label: item.name,
           value: item.id,
         })) || [];
@@ -236,7 +261,18 @@ const DataModal: React.FC<DataModalProps> = ({
     setAvailableOptions((prev) =>
       dataItemsDataPage > 1 ? [...prev, ...transformedOptions] : transformedOptions
     );
-  }, [data, selectedDimensionItemType, dataItemsDataPage]);
+      // setting sub options (sub options represents like groups of data items)
+      
+      setAvailableSubOptions((prev) =>
+      dataItemsDataPage > 1 ? [...prev, ...transformedSubOptions] : transformedSubOptions
+    );
+  }, [data,subDataItemsData, selectedDimensionItemType, dataItemsDataPage]);
+
+  useEffect(()=>{
+    console.log("availableSubOptions",availableSubOptions)
+  },[availableSubOptions])
+
+
 
   const handleDimensionItemTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedType = dimensionItemTypes.find((type) => type.value === event.target.value);
@@ -291,13 +327,23 @@ const DataModal: React.FC<DataModalProps> = ({
     console.log("analyticsDimensions",analyticsDimensions.dx)
   },[analyticsDimensions.dx])
 
+   const [defaultGroupOrOtherData, setDefaultGroupOrOtherData] = useState<any>("")
+
+       
+
+        useEffect(()=>{
+          console.log("selectedDimensionItemType",selectedDimensionItemType)
+          setDefaultGroupOrOtherData(`All groups`)  
+        },[selectedDimensionItemType])
+
+
   if (error) return <div>Error loading data...</div>;
 
   return (
     <div>
       <div className="space-y-2 mb-3">
         <label htmlFor="dimensionItemType" className="block text-sm font-medium text-gray-700">
-          Dimension Item Type
+          DataType
         </label>
         <select
           id="dimensionItemType"
@@ -311,6 +357,29 @@ const DataModal: React.FC<DataModalProps> = ({
             </option>
           ))}
         </select>
+  
+      </div>
+      {/* Data items group */}
+      <div className="space-y-2 mb-3">
+        <label htmlFor="dimensionItemType" className="block text-sm font-medium text-gray-700">
+          Group
+        </label>
+        <select
+          id="dimensionItemType"
+         // value={selectedDimensionItemType?.value || ""}
+          //onChange={handleDimensionItemTypeChange}
+          className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-sm"
+        >
+            <option>{defaultGroupOrOtherData}</option>
+          {availableSubOptions.map((type) => {
+         
+            // main
+            return (
+                  <option key={type.value} value={type.value}>{type.label}</option>
+            )
+          })}
+        </select>
+  
       </div>
       <div className="space-y-2 mb-3">
         <label htmlFor="search" className="block text-sm font-medium text-gray-700">
@@ -329,6 +398,7 @@ const DataModal: React.FC<DataModalProps> = ({
         <CustomTransfer
           className="z-40 bg-white"
           options={availableOptions}
+          availableSubOptions = {availableSubOptions}
           selected={analyticsDimensions?.dx}
           onChange={({ selected }) => handleChange(selected)}
           loading={loading || isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading || isSearching}

@@ -37,7 +37,7 @@ function Visualizers() {
     const { id:visualId } = useParams();
       const { toast } = useToast();
     const {  data:systemInfo } = useSystemInfo();
-    const {searchDataItem,setSearchDataItem,  setDataItemsDataPage,dataItemsDataPage,selectedDataSourceOption,setSelectedDataSourceOption,currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData, dataItemsData,selectedDataSourceDetails,setSelectedDataSourceDetails,setSelectedDimensionItemType,analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle,visualTitleAndSubTitle,visualSettings,setSelectedVisualSettings,setVisualsColorPalettes,selectedColorPalette,selectedDimensionItemType} = useAuthorities();
+    const {searchDataItem,setSearchDataItem,  setDataItemsDataPage,subDataItemsData,selectedDataSourceOption,setSelectedDataSourceOption,currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData, dataItemsData,selectedDataSourceDetails,setSelectedDataSourceDetails,setSelectedDimensionItemType,analyticsData, isFetchAnalyticsDataLoading,selectedChartType,setSelectedChartType,setAnalyticsQuery ,isUseCurrentUserOrgUnits,analyticsQuery,analyticsDimensions,setAnalyticsDimensions,setIsSetPredifinedUserOrgUnits,isSetPredifinedUserOrgUnits,selectedOrganizationUnits,setSelectedOrganizationUnits,setIsUseCurrentUserOrgUnits,selectedOrgUnits,setSelectedOrgUnits,selectedOrgUnitGroups,setSelectedOrgUnitGroups,selectedOrganizationUnitsLevels ,setSelectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel,fetchAnalyticsData,setAnalyticsData,fetchAnalyticsDataError,setSelectedVisualTitleAndSubTitle,visualTitleAndSubTitle,visualSettings,setSelectedVisualSettings,setVisualsColorPalettes,selectedColorPalette,selectedDimensionItemType} = useAuthorities();
     const {data:singleSavedVisualData,isError,loading:isFetchSingleVisualLoading} = useFetchSingleVisualData(visualId)
     const { loading:orgUnitLoading, error:fetchOrgUnitError, data:orgUnitsData,fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData();
     const {  error:dataItemsFetchError, loading:isFetchCurrentInstanceDataItemsLoading,fetchCurrentInstanceData } = useDataItems();
@@ -55,6 +55,10 @@ function Visualizers() {
     const [subtitleOption, setSubtitleOption] = useState<'auto' | 'none' | 'custom'>('auto');
        const captureRef = useRef<HTMLDivElement>(null);
           const [isFullscreen, setIsFullscreen] = useState(false);
+
+          useEffect(()=>{
+            console.log("subDataItemsData",subDataItemsData)
+          },[subDataItemsData])
     //// data source options
     const dataSourceOptions = savedDataSource?.dataStore?.entries?.map((entry:any) => (
         <option key={entry?.key} value={entry?.key}>{entry?.value?.instanceName}</option>
@@ -389,7 +393,7 @@ useEffect(() => {
             </div>
             {/* Data, Organization Unit, and Period Modals */} 
             <GenericModal isOpen={isShowDataModal} setIsOpen={setIsShowDataModal}>
-                <DataModal  data={dataItemsData} loading={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} error={dataItemsFetchError}  setIsShowDataModal={setIsShowDataModal} />
+                <DataModal  data={dataItemsData} subDataItemsData={subDataItemsData} loading={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} error={dataItemsFetchError}  setIsShowDataModal={setIsShowDataModal} />
             </GenericModal>
             <GenericModal isOpen={isShowOrganizationUnit} setIsOpen={setIsShowOrganizationUnit}>
                 <OrganizationModal  data={currentUserInfoAndOrgUnitsData}  loading={orgUnitLoading} error={fetchOrgUnitError} setIsShowOrganizationUnit={setIsShowOrganizationUnit}  />
