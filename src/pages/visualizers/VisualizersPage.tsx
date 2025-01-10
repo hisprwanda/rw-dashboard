@@ -56,9 +56,7 @@ function Visualizers() {
        const captureRef = useRef<HTMLDivElement>(null);
           const [isFullscreen, setIsFullscreen] = useState(false);
 
-          useEffect(()=>{
-            console.log("subDataItemsData",subDataItemsData)
-          },[subDataItemsData])
+     
     //// data source options
     const dataSourceOptions = savedDataSource?.dataStore?.entries?.map((entry:any) => (
         <option key={entry?.key} value={entry?.key}>{entry?.value?.instanceName}</option>

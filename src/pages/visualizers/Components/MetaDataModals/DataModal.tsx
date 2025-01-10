@@ -211,10 +211,6 @@ const DataModal: React.FC<DataModalProps> = ({
   useEffect(() => {
     let transformedOptions: TransferOption[] = [];
     let transformedSubOptions: TransferOption[] = [];
-
-    console.log("before transform selectedDimensionItemType",selectedDimensionItemType)
-    console.log("before subDataItemsData 11111",subDataItemsData)
-    console.log("before subDataItemsData 22222",selectedDimensionItemType.value)
     if ( ["dataItems", "Event Data Item", "Program Indicator", "Calculation"].includes(selectedDimensionItemType.value)) {
       transformedOptions =
         data?.dataItems?.map((item: any) => ({
@@ -223,9 +219,8 @@ const DataModal: React.FC<DataModalProps> = ({
         })) || [];
 
         /// setting groups
-        if (selectedDimensionItemType.value === "Event Data Item") {
+        if (selectedDimensionItemType.value === "Event Data Item" || selectedDimensionItemType.value === "Program Indicator" ) {
           /// setting data sets (groups)
-          console.log("hey mama",subDataItemsData)
           transformedSubOptions =
           subDataItemsData?.programs?.map((item: any) => ({
             label: item.name,
@@ -272,23 +267,14 @@ const DataModal: React.FC<DataModalProps> = ({
           value: item.id,
         })) || [];
     }
-  
-
     setAvailableOptions((prev) =>
       dataItemsDataPage > 1 ? [...prev, ...transformedOptions] : transformedOptions
     );
       // setting sub options (sub options represents like groups of data items)
-      
       setAvailableSubOptions((prev) =>
       dataItemsDataPage > 1 ? [...prev, ...transformedSubOptions] : transformedSubOptions
     );
   }, [data,subDataItemsData, selectedDimensionItemType, dataItemsDataPage]);
-
-  useEffect(()=>{
-    console.log("availableSubOptions",availableSubOptions)
-  },[availableSubOptions])
-
-
 
   const handleDimensionItemTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedType = dimensionItemTypes.find((type) => type.value === event.target.value);
@@ -338,20 +324,37 @@ const DataModal: React.FC<DataModalProps> = ({
     }
   }, [selectedDimensionItemType, debouncedSearch, dataItemsDataPage]);
 
-  useEffect(()=>{
-
-    console.log("analyticsDimensions",analyticsDimensions.dx)
-  },[analyticsDimensions.dx])
 
    const [defaultGroupOrOtherData, setDefaultGroupOrOtherData] = useState<any>("")
 
        
-
+       //// setting groups name
         useEffect(()=>{
           console.log("selectedDimensionItemType",selectedDimensionItemType)
           setDefaultGroupOrOtherData(`All groups`)  
         },[selectedDimensionItemType])
 
+        function determineGroupsTitle(value:string) {
+          let label = "";
+          switch (value) {
+            case "dataElements":
+              label = "Data Element Group";
+              break;
+            case "dataSets":
+              label = "Data Set";
+              break;
+            case "Event Data Item":
+              label = "Program";
+              break;
+            case "Program Indicator":
+              label = "Program";
+              break;
+            default:
+              label = `${value} Group`;
+              break;
+          }
+          return label;
+        }
 
   if (error) return <div>Error loading data...</div>;
 
@@ -378,8 +381,8 @@ const DataModal: React.FC<DataModalProps> = ({
       {/* Data items group */}
       <div className="space-y-2 mb-3">
         <label htmlFor="dimensionItemType" className="block text-sm font-medium text-gray-700">
-          Group
-        </label>
+        {determineGroupsTitle(selectedDimensionItemType.value)}
+       </label>
         <select
           id="dimensionItemType"
          // value={selectedDimensionItemType?.value || ""}

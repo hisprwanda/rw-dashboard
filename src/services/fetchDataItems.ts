@@ -101,6 +101,10 @@ export const useDataItems = () => {
             resource: "dataItems",
             params: { ...commonParams, filter: filterParams },
           },
+          programs: {
+            resource: "programs",
+            params: { ...commonParams },
+          },
         };
       case "Calculation":
         filterParams.push("dimensionItemType:eq:EXPRESSION_DIMENSION_ITEM");
@@ -122,15 +126,17 @@ export const useDataItems = () => {
       searchItem?: string,
       dataItemsDataPage?: number
     ) => {
+        let subDataItemsDataKey = "";
       const { value } = selectedDimensionItemType;
       const query = buildQuery(value, searchItem, dataItemsDataPage);
 
       setLoading(true);
       setError(null);
+  
 
       try {
         const result = await engine.query(query);
-        console.log("hello hello result before", result);
+ 
         const dataKey = [
           "dataItems",
           "Event Data Item",
@@ -140,8 +146,6 @@ export const useDataItems = () => {
           ? "dataItems"
           : value;
 
-        let subDataItemsDataKey = "";
-        console.log("crazy 2",dataKey)
         // determine groups key from result results
         switch (dataKey) {
           case "indicators":
