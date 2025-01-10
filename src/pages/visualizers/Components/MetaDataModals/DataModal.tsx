@@ -213,18 +213,26 @@ const DataModal: React.FC<DataModalProps> = ({
     let transformedSubOptions: TransferOption[] = [];
 
     console.log("before transform selectedDimensionItemType",selectedDimensionItemType)
-    if (
-      ["dataItems", "Event Data Item", "Program Indicator", "Calculation"].includes(
-        selectedDimensionItemType.value
-      )
-    ) {
+    console.log("before subDataItemsData 11111",subDataItemsData)
+    console.log("before subDataItemsData 22222",selectedDimensionItemType.value)
+    if ( ["dataItems", "Event Data Item", "Program Indicator", "Calculation"].includes(selectedDimensionItemType.value)) {
       transformedOptions =
         data?.dataItems?.map((item: any) => ({
           label: item.name,
           value: item.id,
         })) || [];
-    } else if (selectedDimensionItemType.value === "indicators") {
 
+        /// setting groups
+        if (selectedDimensionItemType.value === "Event Data Item") {
+          /// setting data sets (groups)
+          console.log("hey mama",subDataItemsData)
+          transformedSubOptions =
+          subDataItemsData?.programs?.map((item: any) => ({
+            label: item.name,
+            value: item.id,
+          })) || [];
+      }
+    } else if (selectedDimensionItemType.value === "indicators") {
       transformedOptions =
         data?.indicators?.map((item: any) => ({
           label: item.name,
@@ -250,13 +258,21 @@ const DataModal: React.FC<DataModalProps> = ({
           label: item.name,
           value: item.id,
         })) || [];
-    } else if (selectedDimensionItemType.value === "dataSets") {
+    }  
+    else if (selectedDimensionItemType.value === "dataSets") {
       transformedOptions =
         data?.dataSets?.map((item: any) => ({
           label: item.name,
           value: item.id,
         })) || [];
+        /// setting data sets (groups)
+        transformedSubOptions =
+        data?.dataSets?.map((item: any) => ({
+          label: item.name,
+          value: item.id,
+        })) || [];
     }
+  
 
     setAvailableOptions((prev) =>
       dataItemsDataPage > 1 ? [...prev, ...transformedOptions] : transformedOptions

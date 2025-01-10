@@ -78,7 +78,7 @@ export const useDataItems = () => {
           dataSets: {
             resource: "dataSets.json",
             params: { ...commonParams, filter: filterParams },
-          },
+          }
         };
       case "Event Data Item":
         filterParams.push(
@@ -88,6 +88,10 @@ export const useDataItems = () => {
           dataItems: {
             resource: "dataItems",
             params: { ...commonParams, filter: filterParams },
+          },
+          programs: {
+            resource: "programs",
+            params: { ...commonParams },
           },
         };
       case "Program Indicator":
@@ -136,7 +140,8 @@ export const useDataItems = () => {
           ? "dataItems"
           : value;
 
-        let subDataItemsDataKey = "indicatorGroups";
+        let subDataItemsDataKey = "";
+        console.log("crazy 2",dataKey)
         // determine groups key from result results
         switch (dataKey) {
           case "indicators":
@@ -145,12 +150,16 @@ export const useDataItems = () => {
           case "dataElements":
             subDataItemsDataKey = "dataElementGroups";
             break;
+          case "dataItems":
+            subDataItemsDataKey = "programs";
+            break;
+     
           default:
             break;
         }
 
         const fetchedData = result[dataKey];
-
+        console.log("crazy",subDataItemsDataKey)
         const groupsAndOtherSubData = result[subDataItemsDataKey];
         console.log("groupsAndOtherSubData", groupsAndOtherSubData);
 
