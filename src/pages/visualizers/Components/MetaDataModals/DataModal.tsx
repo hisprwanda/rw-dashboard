@@ -379,7 +379,14 @@ const DataModal: React.FC<DataModalProps> = ({
   
       </div>
       {/* Data items group */}
-      <div className="space-y-2 mb-3">
+      {
+        [
+          "indicators",
+          "dataElements",
+          "dataSets",
+          "Event Data Item",
+          "Program Indicator"
+        ].includes(selectedDimensionItemType.value)  &&   <div className="space-y-2 mb-3">
         <label htmlFor="dimensionItemType" className="block text-sm font-medium text-gray-700">
         {determineGroupsTitle(selectedDimensionItemType.value)}
        </label>
@@ -400,6 +407,8 @@ const DataModal: React.FC<DataModalProps> = ({
         </select>
   
       </div>
+      }
+  
       <div className="space-y-2 mb-3">
         <label htmlFor="search" className="block text-sm font-medium text-gray-700">
           Search
