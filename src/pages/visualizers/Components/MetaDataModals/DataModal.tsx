@@ -434,9 +434,12 @@ const DataModal: React.FC<DataModalProps> = ({
   
       </div>
            {/* OTHER OPTIONS */}
-          <div className="space-y-2 mb-3">
+           {  [
+          "dataElements",
+          "dataSets"
+        ].includes(selectedDimensionItemType.value)  &&     <div className="space-y-2 mb-3">
         <label htmlFor="dimensionItemType" className="block text-sm font-medium text-gray-700">
-            Disaggregation
+          {selectedDimensionItemType.value === "dataElements" ? "Disaggregation" : "Metrics Type"}   
        </label>
         <select
           id="dimensionItemType"
@@ -452,7 +455,8 @@ const DataModal: React.FC<DataModalProps> = ({
           })}
         </select>
   
-      </div>
+      </div>  }
+      
         </div>
       }
   
