@@ -192,6 +192,7 @@ const DataModal: React.FC<DataModalProps> = ({
 
   const [availableOptions, setAvailableOptions] = useState<TransferOption[]>([]);
   const [availableSubOptions, setAvailableSubOptions] = useState<TransferOption[]>([]);
+  const [otherOptions, setOtherOptions] = useState<TransferOption[]>([]);
   const transferRef = useRef<HTMLDivElement>(null);
 
   const debouncedSearchHandler = useCallback(
@@ -211,6 +212,7 @@ const DataModal: React.FC<DataModalProps> = ({
   useEffect(() => {
     let transformedOptions: TransferOption[] = [];
     let transformedSubOptions: TransferOption[] = [];
+    let TransferOption: string[] = [];
     if ( ["dataItems", "Event Data Item", "Program Indicator", "Calculation"].includes(selectedDimensionItemType.value)) {
       transformedOptions =
         data?.dataItems?.map((item: any) => ({
@@ -227,6 +229,18 @@ const DataModal: React.FC<DataModalProps> = ({
             value: item.id,
           })) || [];
       }
+      /// Program Indicator
+      if (selectedDimensionItemType.value === "Program Indicator") {
+        console.log("Setting other options for Program Indicator");
+        setOtherOptions([
+          { label: "Totals Only", value: "jk" },
+          { label: "Details Only", value: "kl" },
+        ]);
+      } else {
+        console.log("Clearing other options");
+        setOtherOptions([]);
+      }
+       
     } else if (selectedDimensionItemType.value === "indicators") {
       transformedOptions =
         data?.indicators?.map((item: any) => ({
@@ -253,6 +267,11 @@ const DataModal: React.FC<DataModalProps> = ({
           label: item.name,
           value: item.id,
         })) || [];
+        // setting other options
+        setOtherOptions([
+          { label: "Totals Only", value: "" },
+          { label: "Details Only", value: "kl" },
+        ]);
     }  
     else if (selectedDimensionItemType.value === "dataSets") {
       transformedOptions =
@@ -266,6 +285,12 @@ const DataModal: React.FC<DataModalProps> = ({
           label: item.name,
           value: item.id,
         })) || [];
+        /// setting metrics
+          // setting other options
+          setOtherOptions([
+            { label: "All metrics", value: "jk" },
+            { label: "Metrics 2", value: "kl" },
+          ]);
     }
     setAvailableOptions((prev) =>
       dataItemsDataPage > 1 ? [...prev, ...transformedOptions] : transformedOptions
@@ -378,7 +403,7 @@ const DataModal: React.FC<DataModalProps> = ({
         </select>
   
       </div>
-      {/* Data items group */}
+      {/* Data items group  section*/}
       {
         [
           "indicators",
@@ -386,16 +411,17 @@ const DataModal: React.FC<DataModalProps> = ({
           "dataSets",
           "Event Data Item",
           "Program Indicator"
-        ].includes(selectedDimensionItemType.value)  &&   <div className="space-y-2 mb-3">
+        ].includes(selectedDimensionItemType.value)  &&  <div className="flex gap-2"  >
+           {/* Data items group */}
+          <div className="space-y-2 mb-3">
         <label htmlFor="dimensionItemType" className="block text-sm font-medium text-gray-700">
         {determineGroupsTitle(selectedDimensionItemType.value)}
        </label>
         <select
-          id="dimensionItemType"
+            id="dimensionItemType"
          // value={selectedDimensionItemType?.value || ""}
           //onChange={handleDimensionItemTypeChange}
-          className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-sm"
-        >
+          className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-sm" >
             <option>{defaultGroupOrOtherData}</option>
           {availableSubOptions.map((type) => {
          
@@ -407,6 +433,27 @@ const DataModal: React.FC<DataModalProps> = ({
         </select>
   
       </div>
+           {/* OTHER OPTIONS */}
+          <div className="space-y-2 mb-3">
+        <label htmlFor="dimensionItemType" className="block text-sm font-medium text-gray-700">
+            Disaggregation
+       </label>
+        <select
+          id="dimensionItemType"
+         // value={selectedDimensionItemType?.value || ""}
+          //onChange={handleDimensionItemTypeChange}
+          className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-sm"
+        >
+          {otherOptions.map((type) => {
+            // main
+            return (
+                  <option key={type.value} value={type.value}>{type.label}</option>
+            )
+          })}
+        </select>
+  
+      </div>
+        </div>
       }
   
       <div className="space-y-2 mb-3">
