@@ -212,7 +212,6 @@ const DataModal: React.FC<DataModalProps> = ({
   useEffect(() => {
     let transformedOptions: TransferOption[] = [];
     let transformedSubOptions: TransferOption[] = [];
-    let TransferOption: string[] = [];
     if ( ["dataItems", "Event Data Item", "Program Indicator", "Calculation"].includes(selectedDimensionItemType.value)) {
       transformedOptions =
         data?.dataItems?.map((item: any) => ({
@@ -228,17 +227,9 @@ const DataModal: React.FC<DataModalProps> = ({
             label: item.name,
             value: item.id,
           })) || [];
-      }
-      /// Program Indicator
-      if (selectedDimensionItemType.value === "Program Indicator") {
-        console.log("Setting other options for Program Indicator");
-        setOtherOptions([
-          { label: "Totals Only", value: "jk" },
-          { label: "Details Only", value: "kl" },
-        ]);
-      } else {
-        console.log("Clearing other options");
-        setOtherOptions([]);
+
+          // clear other options
+          setOtherOptions([])
       }
        
     } else if (selectedDimensionItemType.value === "indicators") {
@@ -253,6 +244,9 @@ const DataModal: React.FC<DataModalProps> = ({
           label: item.name,
           value: item.id,
         })) || [];
+
+      // clear other options
+      setOtherOptions([])
 
     } else if (selectedDimensionItemType.value === "dataElements") {
       transformedOptions =
@@ -285,12 +279,16 @@ const DataModal: React.FC<DataModalProps> = ({
           label: item.name,
           value: item.id,
         })) || [];
-        /// setting metrics
-          // setting other options
-          setOtherOptions([
-            { label: "All metrics", value: "jk" },
-            { label: "Metrics 2", value: "kl" },
-          ]);
+        /// setting all metrics
+        const allMetrics =
+        data?.dataSets?.map((item: any) => ({
+          label: item.dimensionItemType,
+          value: item.dimensionItemType,
+        })) || [];
+        // temporally
+        //setOtherOptions(allMetrics);
+        // clear other options
+        setOtherOptions([])
     }
     setAvailableOptions((prev) =>
       dataItemsDataPage > 1 ? [...prev, ...transformedOptions] : transformedOptions
@@ -385,6 +383,21 @@ const DataModal: React.FC<DataModalProps> = ({
 
   return (
     <div>
+      {/* Search */}
+        <div className="space-y-2 mb-3">
+        <label htmlFor="search" className="block text-sm font-medium text-gray-700">
+          Search
+        </label>
+        <input
+          id="search"
+          type="text"
+          value={searchDataItem}
+          onChange={handleSearchChange}
+          placeholder="Search data items..."
+          className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-sm"
+        />
+      </div>
+      {/* data types */}
       <div className="space-y-2 mb-3">
         <label htmlFor="dimensionItemType" className="block text-sm font-medium text-gray-700">
           DataType
@@ -436,7 +449,7 @@ const DataModal: React.FC<DataModalProps> = ({
            {/* OTHER OPTIONS */}
            {  [
           "dataElements",
-          "dataSets"
+          //"dataSets"
         ].includes(selectedDimensionItemType.value)  &&     <div className="space-y-2 mb-3">
         <label htmlFor="dimensionItemType" className="block text-sm font-medium text-gray-700">
           {selectedDimensionItemType.value === "dataElements" ? "Disaggregation" : "Metrics Type"}   
@@ -460,19 +473,7 @@ const DataModal: React.FC<DataModalProps> = ({
         </div>
       }
   
-      <div className="space-y-2 mb-3">
-        <label htmlFor="search" className="block text-sm font-medium text-gray-700">
-          Search
-        </label>
-        <input
-          id="search"
-          type="text"
-          value={searchDataItem}
-          onChange={handleSearchChange}
-          placeholder="Search data items..."
-          className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-sm"
-        />
-      </div>
+    
       <div ref={transferRef}>
         <CustomTransfer
           className="z-40 bg-white"

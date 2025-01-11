@@ -163,9 +163,9 @@ export const useDataItems = () => {
         }
 
         const fetchedData = result[dataKey];
-        console.log("crazy",subDataItemsDataKey)
+    
         const groupsAndOtherSubData = result[subDataItemsDataKey];
-        console.log("groupsAndOtherSubData", groupsAndOtherSubData);
+     
 
         setData(fetchedData);
         setDataItemsData(fetchedData);
