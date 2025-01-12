@@ -21,7 +21,8 @@ export const useDataItems = () => {
   const buildQuery = (
     dimensionType: string,
     searchItem?: string,
-    dataItemsDataPage?: number
+    dataItemsDataPage?: number,
+    groupsIdOrSubDataItemIds?:string,
   ) => {
     const commonParams = {
       fields: [
@@ -41,6 +42,11 @@ export const useDataItems = () => {
     if (searchItem) {
       filterParams.push(`displayName:ilike:${searchItem}`);
     }
+  
+
+    
+  
+  
 
     switch (dimensionType) {
       case "dataItems":
@@ -51,10 +57,12 @@ export const useDataItems = () => {
           },
         };
       case "indicators":
+       // filterParams.push(`indicatorGroups.id:eq:hHsLXRrRlqU`);
         return {
           indicators: {
             resource: "indicators.json",
-            params: { ...commonParams, filter: filterParams },
+            params: { ...commonParams, filter: [  ...filterParams,  ...(groupsIdOrSubDataItemIds ? [`indicatorGroups.id:eq:${groupsIdOrSubDataItemIds}`] : [])]
+             },
           },
           indicatorGroups: {
             resource: "indicatorGroups.json",
@@ -66,7 +74,7 @@ export const useDataItems = () => {
         return {
           dataElements: {
             resource: "dataElements.json",
-            params: { ...commonParams, filter: filterParams },
+            params: { ...commonParams, filter: [  ...filterParams,  ...(groupsIdOrSubDataItemIds ? [`dataElementGroups.id:eq:${groupsIdOrSubDataItemIds}`] : [])] },
           },
           dataElementGroups: {
             resource: "dataElementGroups.json",
@@ -87,7 +95,7 @@ export const useDataItems = () => {
         return {
           dataItems: {
             resource: "dataItems",
-            params: { ...commonParams, filter: filterParams },
+            params: { ...commonParams,filter: [  ...filterParams,  ...(groupsIdOrSubDataItemIds ? [`programId:eq:${groupsIdOrSubDataItemIds}`] : [])] },
           },
           programs: {
             resource: "programs",
@@ -99,7 +107,7 @@ export const useDataItems = () => {
         return {
           dataItems: {
             resource: "dataItems",
-            params: { ...commonParams, filter: filterParams },
+            params: { ...commonParams, filter:  [  ...filterParams,  ...(groupsIdOrSubDataItemIds ? [`programId:eq:${groupsIdOrSubDataItemIds}`] : [])] },
           },
           programs: {
             resource: "programs",
@@ -124,11 +132,12 @@ export const useDataItems = () => {
     async (
       selectedDimensionItemType: dimensionItemTypesTYPES,
       searchItem?: string,
-      dataItemsDataPage?: number
+      dataItemsDataPage?: number,
+      groupsIdOrSubDataItemIds?:string
     ) => {
         let subDataItemsDataKey = "";
       const { value } = selectedDimensionItemType;
-      const query = buildQuery(value, searchItem, dataItemsDataPage);
+      const query = buildQuery(value, searchItem, dataItemsDataPage,groupsIdOrSubDataItemIds);
 
       setLoading(true);
       setError(null);

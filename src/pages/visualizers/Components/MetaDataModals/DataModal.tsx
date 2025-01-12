@@ -8,6 +8,7 @@ import { dimensionItemTypes } from "../../../../constants/dimensionItemTypes";
 import { useExternalDataItems } from "../../../../services/useExternalDataItems";
 import { debounce } from "lodash";
 import { CiCircleRemove } from "react-icons/ci";
+import { CircularLoader } from '@dhis2/ui';
 
 // Types
 type TransferOption = {
@@ -164,7 +165,10 @@ const DataModal: React.FC<DataModalProps> = ({
 }) => {
   const [searchDataItem, setSearchDataItem] = useState<string>("");
   const [debouncedSearch, setDebouncedSearch] = useState<string>("");
+  const [groupsIdOrSubDataItemIds, setGroupsIdOrSubDataItemIds] = useState<string>("");
+  const [debouncedGroupId, setDebouncedGroupId] = useState<string>("");
   const [isSearching, setIsSearching] = useState(false);
+  const [isGroupChanging, setIsGroupChanging] = useState(false);
   const {
     error: dataItemsFetchError,
     loading: isFetchCurrentInstanceDataItemsLoading,
@@ -203,12 +207,23 @@ const DataModal: React.FC<DataModalProps> = ({
     }, 300),
     []
   );
-
+  const debouncedGroupHandler = useCallback(
+    debounce((value: string) => {
+      setIsGroupChanging(true);
+      setDebouncedGroupId(value);
+      setDataItemsDataPage(1);
+    }, 300),
+    []
+  );
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchDataItem(e.target.value);
     debouncedSearchHandler(e.target.value);
   };
-
+  const handleDimensionGroupChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const newValue = event.target.value;
+    setGroupsIdOrSubDataItemIds(newValue);
+    debouncedGroupHandler(newValue);
+  };
   useEffect(() => {
     let transformedOptions: TransferOption[] = [];
     let transformedSubOptions: TransferOption[] = [];
@@ -291,7 +306,7 @@ const DataModal: React.FC<DataModalProps> = ({
         setOtherOptions([])
     }
     setAvailableOptions((prev) =>
-      dataItemsDataPage > 1 ? [...prev, ...transformedOptions] : transformedOptions
+      dataItemsDataPage > 1 ? [ ...transformedOptions] : transformedOptions
     );
       // setting sub options (sub options represents like groups of data items)
       setAvailableSubOptions((prev) =>
@@ -304,8 +319,12 @@ const DataModal: React.FC<DataModalProps> = ({
     if (selectedType) {
       setSelectedDimensionItemType(selectedType);
       setDataItemsDataPage(1);
+      setGroupsIdOrSubDataItemIds("")
     }
   };
+
+
+
 
   const handleChange = (newSelected: string[]) => {
     setAnalyticsDimensions((prev: any) => ({
@@ -334,8 +353,15 @@ const DataModal: React.FC<DataModalProps> = ({
 
   useEffect(() => {
     if (selectedDataSourceDetails.isCurrentInstance) {
-      fetchCurrentInstanceData(selectedDimensionItemType, debouncedSearch, dataItemsDataPage)
-      .finally(() => setIsSearching(false));
+      fetchCurrentInstanceData(
+        selectedDimensionItemType, 
+        debouncedSearch, 
+        dataItemsDataPage,
+        debouncedGroupId
+      ).finally(() => {
+        setIsSearching(false);
+        setIsGroupChanging(false);
+      });
     } else {
       fetchExternalDataItems(
         selectedDataSourceDetails.url,
@@ -343,10 +369,18 @@ const DataModal: React.FC<DataModalProps> = ({
         selectedDimensionItemType,
         debouncedSearch,
         dataItemsDataPage
-      ).finally(() => setIsSearching(false));
+      ).finally(() => {
+        setIsSearching(false);
+        setIsGroupChanging(false);
+      });
     }
-  }, [selectedDimensionItemType, debouncedSearch, dataItemsDataPage]);
-
+  }, [
+    selectedDimensionItemType, 
+    debouncedSearch, 
+    dataItemsDataPage,
+    debouncedGroupId 
+  ]);
+  const isLoadingGroups = loading || isGroupChanging
 
    const [defaultGroupOrOtherData, setDefaultGroupOrOtherData] = useState<any>("")
 
@@ -421,29 +455,31 @@ const DataModal: React.FC<DataModalProps> = ({
         [
           "indicators",
           "dataElements",
-          "dataSets",
+         // "dataSets",
           "Event Data Item",
           "Program Indicator"
         ].includes(selectedDimensionItemType.value)  &&  <div className="flex gap-2"  >
            {/* Data items group */}
           <div className="space-y-2 mb-3">
-        <label htmlFor="dimensionItemType" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="dimensionGroupId" className="block text-sm font-medium text-gray-700">
         {determineGroupsTitle(selectedDimensionItemType.value)}
        </label>
-        <select
-            id="dimensionItemType"
-         // value={selectedDimensionItemType?.value || ""}
-          //onChange={handleDimensionItemTypeChange}
-          className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-sm" >
-            <option>{defaultGroupOrOtherData}</option>
-          {availableSubOptions.map((type) => {
-         
-            // main
-            return (
-                  <option key={type.value} value={type.value}>{type.label}</option>
-            )
-          })}
-        </select>
+       <select
+              id="dimensionGroupId"
+              value={groupsIdOrSubDataItemIds}
+              onChange={handleDimensionGroupChange}
+              className={`w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-sm ${
+                isLoadingGroups ? 'opacity-50' : ''
+              }`}
+              disabled={isLoadingGroups}
+            >
+              <option value="">{defaultGroupOrOtherData}</option>
+              {availableSubOptions.map((type) => (
+                <option key={type.value} value={type.value}>
+                  {type.label}
+                </option>
+              ))}
+            </select>
   
       </div>
            {/* OTHER OPTIONS */}
@@ -475,15 +511,21 @@ const DataModal: React.FC<DataModalProps> = ({
   
     
       <div ref={transferRef}>
-        <CustomTransfer
-          className="z-40 bg-white"
-          options={availableOptions}
-          availableSubOptions = {availableSubOptions}
-          selected={analyticsDimensions?.dx}
-          onChange={({ selected }) => handleChange(selected)}
-          loading={loading || isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading || isSearching}
-          onEndReached={handleEndReached}
-        />
+        {isLoadingGroups ?<p className="text-center text-gray-600 text-lg font-medium my-4 animate-pulse">
+    Loading...
+</p>
+ : 
+         <CustomTransfer
+         className="z-40 bg-white"
+         options={availableOptions}
+         availableSubOptions = {availableSubOptions}
+         selected={analyticsDimensions?.dx}
+         onChange={({ selected }) => handleChange(selected)}
+         loading={loading || isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading || isSearching }
+         onEndReached={handleEndReached}
+       />
+        }
+       
       </div>
       <div className="mt-4 flex justify-end">
         <Button
