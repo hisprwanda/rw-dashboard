@@ -315,11 +315,13 @@ const DataModal: React.FC<DataModalProps> = ({
   }, [data,subDataItemsData, selectedDimensionItemType, dataItemsDataPage]);
 
   const handleDimensionItemTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setGroupsIdOrSubDataItemIds("")
+    setDebouncedGroupId("")
     const selectedType = dimensionItemTypes.find((type) => type.value === event.target.value);
     if (selectedType) {
       setSelectedDimensionItemType(selectedType);
       setDataItemsDataPage(1);
-      setGroupsIdOrSubDataItemIds("")
+      
     }
   };
 
