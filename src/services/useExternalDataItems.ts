@@ -11,24 +11,47 @@ export const useExternalDataItems = () => {
 
     // Helper function to build API path and params
     const buildApiPathAndParams = useCallback(
-        (dimensionType: string, searchItem?: string, dataItemsDataPage: number = 1) => {
+        (dimensionType: string, searchItem?: string, dataItemsDataPage: number = 1, groupsIdOrSubDataItemIds?: string) => {
             const commonParams = {
                 fields: 'id,displayName~rename(name),dimensionItemType,expression',
                 order: 'displayName:asc',
                 pageSize: 50,
                 page: dataItemsDataPage,
-                filter: searchItem ? `displayName:ilike:${searchItem}` : undefined,
+                paging: true,
             };
+
+            // Add dynamic filter for searchItem
+            const filterParams = [];
+            if (searchItem) {
+                filterParams.push(`displayName:ilike:${searchItem}`);
+            }
 
             switch (dimensionType) {
                 case 'dataItems':
                     return {
-                        main: { path: 'dataItems.json', params: commonParams },
+                        main: { 
+                            path: 'dataItems.json',
+                            params: { 
+                                ...commonParams,
+                                ...(filterParams.length > 0 && { filter: filterParams[0] })
+                            }
+                        },
                     };
                 case 'indicators':
                     return {
-                        main: { path: 'indicators.json', params: { ...commonParams } },
-                        sub: { path: 'indicatorGroups.json', params: { ...commonParams } }
+                        main: {
+                            path: 'indicators.json',
+                            params: {
+                                ...commonParams,
+                                ...(groupsIdOrSubDataItemIds && { 
+                                    filter: `indicatorGroups.id:eq:${groupsIdOrSubDataItemIds}` 
+                                })
+                            }
+                        },
+                        sub: {
+                            path: 'indicatorGroups.json',
+                            params: { ...commonParams }
+                        }
                     };
                 case 'dataElements':
                     return {
@@ -36,11 +59,10 @@ export const useExternalDataItems = () => {
                             path: 'dataElements.json',
                             params: {
                                 ...commonParams,
-                                filter: [
-                                    `domainType:eq:AGGREGATE`,
-                                    searchItem && `displayName:ilike:${searchItem}`,
-                                ].filter(Boolean).join(','),
-                            },
+                                filter: groupsIdOrSubDataItemIds 
+                                    ? `dataElementGroups.id:eq:${groupsIdOrSubDataItemIds}`
+                                    : 'domainType:eq:AGGREGATE'
+                            }
                         },
                         sub: {
                             path: 'dataElementGroups.json',
@@ -49,7 +71,13 @@ export const useExternalDataItems = () => {
                     };
                 case 'dataSets':
                     return {
-                        main: { path: 'dataSets.json', params: commonParams }
+                        main: {
+                            path: 'dataSets.json',
+                            params: {
+                                ...commonParams,
+                                ...(filterParams.length > 0 && { filter: filterParams[0] })
+                            }
+                        }
                     };
                 case 'Event Data Item':
                     return {
@@ -57,11 +85,10 @@ export const useExternalDataItems = () => {
                             path: 'dataItems.json',
                             params: {
                                 ...commonParams,
-                                filter: [
-                                    `dimensionItemType:in:[PROGRAM_DATA_ELEMENT,PROGRAM_ATTRIBUTE]`,
-                                    searchItem && `displayName:ilike:${searchItem}`,
-                                ].filter(Boolean).join(','),
-                            },
+                                filter: groupsIdOrSubDataItemIds
+                                    ? `programId:eq:${groupsIdOrSubDataItemIds}`
+                                    : 'dimensionItemType:in:[PROGRAM_DATA_ELEMENT,PROGRAM_ATTRIBUTE]'
+                            }
                         },
                         sub: {
                             path: 'programs.json',
@@ -74,11 +101,10 @@ export const useExternalDataItems = () => {
                             path: 'dataItems.json',
                             params: {
                                 ...commonParams,
-                                filter: [
-                                    `dimensionItemType:eq:PROGRAM_INDICATOR`,
-                                    searchItem && `displayName:ilike:${searchItem}`,
-                                ].filter(Boolean).join(','),
-                            },
+                                filter: groupsIdOrSubDataItemIds
+                                    ? `programId:eq:${groupsIdOrSubDataItemIds}`
+                                    : 'dimensionItemType:eq:PROGRAM_INDICATOR'
+                            }
                         },
                         sub: {
                             path: 'programs.json',
@@ -91,11 +117,8 @@ export const useExternalDataItems = () => {
                             path: 'dataItems.json',
                             params: {
                                 ...commonParams,
-                                filter: [
-                                    `dimensionItemType:eq:EXPRESSION_DIMENSION_ITEM`,
-                                    searchItem && `displayName:ilike:${searchItem}`,
-                                ].filter(Boolean).join(','),
-                            },
+                                filter: 'dimensionItemType:eq:EXPRESSION_DIMENSION_ITEM'
+                            }
                         }
                     };
                 default:
@@ -112,10 +135,11 @@ export const useExternalDataItems = () => {
             token: string,
             selectedDimensionItemType: dimensionItemTypesTYPES,
             searchItem?: string,
-            dataItemsDataPage: number = 1
+            dataItemsDataPage: number = 1,
+            groupsIdOrSubDataItemIds?: string
         ) => {
             const { value } = selectedDimensionItemType;
-            const apiPaths = buildApiPathAndParams(value, searchItem, dataItemsDataPage);
+            const apiPaths = buildApiPathAndParams(value, searchItem, dataItemsDataPage, groupsIdOrSubDataItemIds);
 
             if (!apiPaths.main.path) {
                 setError('Invalid dimension item type selected.');
@@ -132,7 +156,7 @@ export const useExternalDataItems = () => {
                     headers: {
                         Authorization: `ApiToken ${token}`,
                     },
-                    params: apiPaths.main.params,
+                    params: apiPaths.main.params
                 });
 
                 let subResponse = null;
@@ -142,7 +166,7 @@ export const useExternalDataItems = () => {
                         headers: {
                             Authorization: `ApiToken ${token}`,
                         },
-                        params: apiPaths.sub.params,
+                        params: apiPaths.sub.params
                     });
                 }
 

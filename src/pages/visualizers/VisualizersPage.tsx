@@ -41,7 +41,7 @@ function Visualizers() {
     const {data:singleSavedVisualData,isError,loading:isFetchSingleVisualLoading} = useFetchSingleVisualData(visualId)
     const { loading:orgUnitLoading, error:fetchOrgUnitError, data:orgUnitsData,fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData();
     const {  error:dataItemsFetchError, loading:isFetchCurrentInstanceDataItemsLoading,fetchCurrentInstanceData } = useDataItems();
-    const {fetchExternalDataItems,response,error,loading:isFetchExternalInstanceDataItemsLoading} = useExternalDataItems()
+    const {fetchExternalDataItems,response,error:fetchExternalDataError,loading:isFetchExternalInstanceDataItemsLoading} = useExternalDataItems()
     const {fetchExternalUserInfoAndOrgUnitData} = useExternalOrgUnitData()
     const defaultUserOrgUnit = currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName
     const { data:savedDataSource,loading } = useDataSourceData();
@@ -290,6 +290,10 @@ useEffect(() => {
                };
            }, []);
 
+           useEffect(()=>{
+            console.log("fetchExternalDataError ---",fetchExternalDataError)
+           },[fetchExternalDataError])
+
     /// main return
     return (
         <div className="min-h-screen bg-gray-50 p-4">
@@ -332,9 +336,19 @@ useEffect(() => {
 
                                     {dataSourceOptions}
                                 </select>
+                                {/* data source error */}
+                                {selectedDataSourceOption !== currentInstanceId && fetchExternalDataError && (
+                                    <p className="text-red-600 bg-red-100 border border-red-400 rounded-md p-2 my-2 text-sm font-medium">
+    We're sorry, something went wrong while fetching the data. Please check the data source configuration, including the URL and token, and try again. If the issue persists, contact support.
+</p>
+
+)}
+
                             </div>
-                            {/* data items */}
-                            <div className="mb-4">
+                            {/* if external data source failed, hide  main dimensions picker */}
+                            {selectedDataSourceOption !== currentInstanceId && fetchExternalDataError ? "" : <>
+                               {/* data items */}
+                               <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Main Dimensions</label>
                                 <Button disabled={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source" text={`${(isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading ) ? "Loading.." : `Data ${analyticsDimensions?.dx?.length === 0 ? "" : `(${analyticsDimensions?.dx?.length})`}`} `} onClick={handleShowDataModal} />
                             </div>
@@ -348,6 +362,8 @@ useEffect(() => {
                                 {/* <label className="block text-sm font-medium text-gray-700 mb-1">Organisation Unit</label> */}
                                 <Button disabled={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source"  text={`${(isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading ) ? "Loading.." : `Organisation Unit`} `} onClick={handleShowOrganizationUnitModal} />
                             </div>
+                            </>}
+                         
                         </div>
                     </TabsContent>
                     <TabsContent value="SETTINGS" className="pt-4">

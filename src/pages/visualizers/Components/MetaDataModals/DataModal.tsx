@@ -368,7 +368,8 @@ const DataModal: React.FC<DataModalProps> = ({
         selectedDataSourceDetails.token,
         selectedDimensionItemType,
         debouncedSearch,
-        dataItemsDataPage
+        dataItemsDataPage,
+        debouncedGroupId
       ).finally(() => {
         setIsSearching(false);
         setIsGroupChanging(false);
