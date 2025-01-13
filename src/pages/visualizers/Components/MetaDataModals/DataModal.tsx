@@ -410,7 +410,7 @@ useEffect(() => {
         debouncedSearch,
         dataItemsDataPage,
         debouncedGroupId,
-       // debouncedOtherOptionsId
+        debouncedOtherOptionsId
       ).finally(() => {
         setIsSearching(false);
         setIsGroupChanging(false);

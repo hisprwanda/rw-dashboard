@@ -11,7 +11,7 @@ export const useExternalDataItems = () => {
 
     // Helper function to build API path and params
     const buildApiPathAndParams = useCallback(
-        (dimensionType: string, searchItem?: string, dataItemsDataPage: number = 1, groupsIdOrSubDataItemIds?: string) => {
+        (dimensionType: string, searchItem?: string, dataItemsDataPage: number = 1, groupsIdOrSubDataItemIds?: string,otherOptions?:string) => {
             const commonParams = {
                 fields: 'id,displayName~rename(name),dimensionItemType,expression',
                 order: 'displayName:asc',
@@ -53,22 +53,32 @@ export const useExternalDataItems = () => {
                             params: { ...commonParams }
                         }
                     };
-                case 'dataElements':
-                    return {
-                        main: {
-                            path: 'dataElements.json',
-                            params: {
-                                ...commonParams,
-                                filter: groupsIdOrSubDataItemIds 
-                                    ? `dataElementGroups.id:eq:${groupsIdOrSubDataItemIds}`
-                                    : 'domainType:eq:AGGREGATE'
-                            }
-                        },
-                        sub: {
-                            path: 'dataElementGroups.json',
-                            params: { ...commonParams }
-                        }
-                    };
+                    case "dataElements":
+                        return {
+                            ...(otherOptions === "dataElementOperands"
+                                ? {
+                                    main: {
+                                        path: "dataElementOperands.json",
+                                        params: { ...commonParams },
+                                    },
+                                }
+                                : {
+                                    main: {
+                                        path: "dataElements.json",
+                                        params: {
+                                            ...commonParams,
+                                            filter: groupsIdOrSubDataItemIds
+                                                ? `dataElementGroups.id:eq:${groupsIdOrSubDataItemIds}`
+                                                : "domainType:eq:AGGREGATE",
+                                        },
+                                    },
+                                }),
+                            sub: {
+                                path: "dataElementGroups.json",
+                                params: { ...commonParams },
+                            },
+                        };
+                    
                 case 'dataSets':
                     return {
                         main: {
@@ -136,10 +146,11 @@ export const useExternalDataItems = () => {
             selectedDimensionItemType: dimensionItemTypesTYPES,
             searchItem?: string,
             dataItemsDataPage: number = 1,
-            groupsIdOrSubDataItemIds?: string
+            groupsIdOrSubDataItemIds?: string,
+            otherOptions?:string
         ) => {
             const { value } = selectedDimensionItemType;
-            const apiPaths = buildApiPathAndParams(value, searchItem, dataItemsDataPage, groupsIdOrSubDataItemIds);
+            const apiPaths = buildApiPathAndParams(value, searchItem, dataItemsDataPage, groupsIdOrSubDataItemIds,otherOptions);
 
             if (!apiPaths.main.path) {
                 setError('Invalid dimension item type selected.');
