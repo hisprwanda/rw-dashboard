@@ -43,12 +43,6 @@ export const useDataItems = () => {
     if (searchItem) {
       filterParams.push(`displayName:ilike:${searchItem}`);
     }
-  
-
-    
-  
-  
-
     switch (dimensionType) {
       case "dataItems":
         return {
