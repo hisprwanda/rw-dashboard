@@ -166,9 +166,13 @@ const DataModal: React.FC<DataModalProps> = ({
   const [searchDataItem, setSearchDataItem] = useState<string>("");
   const [debouncedSearch, setDebouncedSearch] = useState<string>("");
   const [groupsIdOrSubDataItemIds, setGroupsIdOrSubDataItemIds] = useState<string>("");
+  const [otherOptionsId, setOtherOptionsId] = useState<string>("");
   const [debouncedGroupId, setDebouncedGroupId] = useState<string>("");
+  const [debouncedOtherOptionsId, setDebouncedOtherOptionsId] = useState<string>("");
   const [isSearching, setIsSearching] = useState(false);
   const [isGroupChanging, setIsGroupChanging] = useState(false);
+  const [isOtherOptionsChanging, setIsOtherOptionsChanging] = useState(false);
+
   const {
     error: dataItemsFetchError,
     loading: isFetchCurrentInstanceDataItemsLoading,
@@ -215,6 +219,15 @@ const DataModal: React.FC<DataModalProps> = ({
     }, 300),
     []
   );
+
+  const debouncedOtherOptionsHandler = useCallback(
+    debounce((value: string) => {
+      setIsOtherOptionsChanging(true);
+      setDebouncedOtherOptionsId(value);
+      setDataItemsDataPage(1);
+    }, 300),
+    []
+  );
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchDataItem(e.target.value);
     debouncedSearchHandler(e.target.value);
@@ -224,6 +237,16 @@ const DataModal: React.FC<DataModalProps> = ({
     setGroupsIdOrSubDataItemIds(newValue);
     debouncedGroupHandler(newValue);
   };
+
+  const handleOtherOptionsIdChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const newValue = event.target.value;
+    setOtherOptionsId(newValue);
+    debouncedOtherOptionsHandler(newValue);
+  };
+
+   useEffect(()=>{
+    console.log("hello other options xxxyyy",otherOptionsId)
+   },[otherOptionsId])
   useEffect(() => {
     let transformedOptions: TransferOption[] = [];
     let transformedSubOptions: TransferOption[] = [];
@@ -264,11 +287,22 @@ const DataModal: React.FC<DataModalProps> = ({
       setOtherOptions([])
 
     } else if (selectedDimensionItemType.value === "dataElements") {
-      transformedOptions =
+      console.log("hellos",data)
+      if(otherOptionsId === "dataElementOperands" )
+      {
+        transformedOptions =
+        data?.dataElementOperands?.map((item: any) => ({
+          label: item.name,
+          value: item.id,
+        })) || [];
+      }else{
+        transformedOptions =
         data?.dataElements?.map((item: any) => ({
           label: item.name,
           value: item.id,
         })) || [];
+      }
+    
 
         /// setting data elements group   dataElementGroups
         transformedSubOptions =
@@ -279,7 +313,7 @@ const DataModal: React.FC<DataModalProps> = ({
         // setting other options
         setOtherOptions([
           { label: "Totals Only", value: "" },
-          { label: "Details Only", value: "kl" },
+          { label: "Details Only", value: "dataElementOperands" },
         ]);
     }  
     else if (selectedDimensionItemType.value === "dataSets") {
@@ -312,7 +346,7 @@ const DataModal: React.FC<DataModalProps> = ({
       setAvailableSubOptions((prev) =>
       dataItemsDataPage > 1 ? [...prev, ...transformedSubOptions] : transformedSubOptions
     );
-  }, [data,subDataItemsData, selectedDimensionItemType, dataItemsDataPage]);
+  }, [data,subDataItemsData, selectedDimensionItemType, dataItemsDataPage,otherOptionsId]);
 
   const handleDimensionItemTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setGroupsIdOrSubDataItemIds("")
@@ -353,16 +387,18 @@ const DataModal: React.FC<DataModalProps> = ({
     [loading]
   );
 
-  useEffect(() => {
+useEffect(() => {
     if (selectedDataSourceDetails.isCurrentInstance) {
       fetchCurrentInstanceData(
         selectedDimensionItemType, 
         debouncedSearch, 
         dataItemsDataPage,
-        debouncedGroupId
+        debouncedGroupId,
+        debouncedOtherOptionsId
       ).finally(() => {
         setIsSearching(false);
         setIsGroupChanging(false);
+        setIsOtherOptionsChanging(false);
       });
     } else {
       fetchExternalDataItems(
@@ -371,19 +407,23 @@ const DataModal: React.FC<DataModalProps> = ({
         selectedDimensionItemType,
         debouncedSearch,
         dataItemsDataPage,
-        debouncedGroupId
+        debouncedGroupId,
+       // debouncedOtherOptionsId
       ).finally(() => {
         setIsSearching(false);
         setIsGroupChanging(false);
+        setIsOtherOptionsChanging(false);
       });
     }
   }, [
     selectedDimensionItemType, 
     debouncedSearch, 
     dataItemsDataPage,
-    debouncedGroupId 
+    debouncedGroupId,
+    debouncedOtherOptionsId
   ]);
-  const isLoadingGroups = loading || isGroupChanging
+
+  const isLoadingGroups = loading || isGroupChanging || isOtherOptionsChanging;
 
    const [defaultGroupOrOtherData, setDefaultGroupOrOtherData] = useState<any>("")
 
@@ -490,15 +530,18 @@ const DataModal: React.FC<DataModalProps> = ({
           "dataElements",
           //"dataSets"
         ].includes(selectedDimensionItemType.value)  &&     <div className="space-y-2 mb-3">
-        <label htmlFor="dimensionItemType" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="otherOptionsId" className="block text-sm font-medium text-gray-700">
           {selectedDimensionItemType.value === "dataElements" ? "Disaggregation" : "Metrics Type"}   
        </label>
-        <select
-          id="dimensionItemType"
-         // value={selectedDimensionItemType?.value || ""}
-          //onChange={handleDimensionItemTypeChange}
-          className="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-sm"
-        >
+          <select
+                id="otherOptionsId"
+                value={otherOptionsId}
+                onChange={handleOtherOptionsIdChange}
+                className={`w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-sm ${
+                  isLoadingGroups ? 'opacity-50' : ''
+                }`}
+                disabled={isLoadingGroups}
+              >
           {otherOptions.map((type) => {
             // main
             return (

@@ -23,6 +23,7 @@ export const useDataItems = () => {
     searchItem?: string,
     dataItemsDataPage?: number,
     groupsIdOrSubDataItemIds?:string,
+    otherOptions?:string
   ) => {
     const commonParams = {
       fields: [
@@ -69,18 +70,37 @@ export const useDataItems = () => {
             params: { ...commonParams, filter: filterParams },
           },
         };
-      case "dataElements":
-        filterParams.push("domainType:eq:AGGREGATE");
-        return {
-          dataElements: {
-            resource: "dataElements.json",
-            params: { ...commonParams, filter: [  ...filterParams,  ...(groupsIdOrSubDataItemIds ? [`dataElementGroups.id:eq:${groupsIdOrSubDataItemIds}`] : [])] },
-          },
-          dataElementGroups: {
-            resource: "dataElementGroups.json",
-            params: { ...commonParams },
-          },
-        };
+        case "dataElements":
+          filterParams.push("domainType:eq:AGGREGATE");
+          return {
+              ...(otherOptions === "dataElementOperands"
+                  ?{
+                    dataElementOperands: {
+                        resource: "dataElementOperands.json",
+                        params: { ...commonParams },
+                    },
+                }
+                  :  {
+                    dataElements: {
+                        resource: "dataElements.json",
+                        params: {
+                            ...commonParams,
+                            filter: [
+                                ...filterParams,
+                                ...(groupsIdOrSubDataItemIds
+                                    ? [`dataElementGroups.id:eq:${groupsIdOrSubDataItemIds}`]
+                                    : []),
+                            ],
+                        },
+                    },
+                }
+                  ),
+              dataElementGroups: {
+                  resource: "dataElementGroups.json",
+                  params: { ...commonParams },
+              },
+          };
+      
       case "dataSets":
         return {
           dataSets: {
@@ -133,11 +153,13 @@ export const useDataItems = () => {
       selectedDimensionItemType: dimensionItemTypesTYPES,
       searchItem?: string,
       dataItemsDataPage?: number,
-      groupsIdOrSubDataItemIds?:string
+      groupsIdOrSubDataItemIds?:string,
+      otherOptions?:string
     ) => {
+     
         let subDataItemsDataKey = "";
       const { value } = selectedDimensionItemType;
-      const query = buildQuery(value, searchItem, dataItemsDataPage,groupsIdOrSubDataItemIds);
+      const query = buildQuery(value, searchItem, dataItemsDataPage,groupsIdOrSubDataItemIds,otherOptions);
 
       setLoading(true);
       setError(null);
@@ -145,8 +167,8 @@ export const useDataItems = () => {
 
       try {
         const result = await engine.query(query);
- 
-        const dataKey = [
+        console.log("hello 123",result)
+        let dataKey = [
           "dataItems",
           "Event Data Item",
           "Program Indicator",
@@ -154,12 +176,18 @@ export const useDataItems = () => {
         ].includes(value)
           ? "dataItems"
           : value;
-
+      
+             /// if disaggregation
+             if(dataKey === "dataElements" &&  otherOptions === "dataElementOperands")
+             {
+              dataKey = "dataElementOperands"
+             }
         // determine groups key from result results
         switch (dataKey) {
           case "indicators":
             subDataItemsDataKey = "indicatorGroups";
             break;
+          case "dataElementOperands":
           case "dataElements":
             subDataItemsDataKey = "dataElementGroups";
             break;
@@ -170,9 +198,11 @@ export const useDataItems = () => {
           default:
             break;
         }
-
+        console.log("dataKey",dataKey)
+        console.log("result",result)
+           
         const fetchedData = result[dataKey];
-    
+       console.log("fetchedData",fetchedData)
         const groupsAndOtherSubData = result[subDataItemsDataKey];
      
 
