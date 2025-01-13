@@ -287,7 +287,7 @@ const DataModal: React.FC<DataModalProps> = ({
       setOtherOptions([])
 
     } else if (selectedDimensionItemType.value === "dataElements") {
-      console.log("hellos",data)
+  
       if(otherOptionsId === "dataElementOperands" )
       {
         transformedOptions =
@@ -349,8 +349,13 @@ const DataModal: React.FC<DataModalProps> = ({
   }, [data,subDataItemsData, selectedDimensionItemType, dataItemsDataPage,otherOptionsId]);
 
   const handleDimensionItemTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    /// clear existing filtering ids before changing dimensionType
     setGroupsIdOrSubDataItemIds("")
     setDebouncedGroupId("")
+    setOtherOptionsId("")
+    setDebouncedOtherOptionsId("")
+    setOtherOptions([])
+    
     const selectedType = dimensionItemTypes.find((type) => type.value === event.target.value);
     if (selectedType) {
       setSelectedDimensionItemType(selectedType);
@@ -358,9 +363,6 @@ const DataModal: React.FC<DataModalProps> = ({
       
     }
   };
-
-
-
 
   const handleChange = (newSelected: string[]) => {
     setAnalyticsDimensions((prev: any) => ({

@@ -167,7 +167,7 @@ export const useDataItems = () => {
 
       try {
         const result = await engine.query(query);
-        console.log("hello 123",result)
+  
         let dataKey = [
           "dataItems",
           "Event Data Item",
