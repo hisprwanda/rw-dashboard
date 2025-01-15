@@ -209,7 +209,7 @@ const handleNodeSelectExternalInstance = (node) => {
       <div className=" p-4 rounded-lg mb-6 ">
           <div>
             
-               {/* {selectedDataSourceDetails.isCurrentInstance  ? */}
+               { selectedDataSourceDetails.isCurrentInstance  ? 
               <OrganisationUnitTree
               disableSelection={isUseCurrentUserOrgUnits}
               roots={[currentUserOrgUnit.id]}
@@ -220,15 +220,15 @@ const handleNodeSelectExternalInstance = (node) => {
                 <span className="text-blue-600 font-medium">{node.displayName}</span>
               )}
               filter={filteredOrgUnitPaths?.length ? filteredOrgUnitPaths : undefined}
-            /> 
-      {/* //     <CustomOrganisationUnitTree
-      //      apiUrl={selectedDataSourceDetails.url}
-      //      token={selectedDataSourceDetails.token}
-      //      rootOrgUnitId={currentUserOrgUnit.id} 
-      //      onNodeSelect={handleNodeSelectExternalInstance}
-      //      parentName={currentUserOrgUnit?.displayName}
+            />  :
+           <CustomOrganisationUnitTree
+           apiUrl={selectedDataSourceDetails.url}
+           token={selectedDataSourceDetails.token}
+           rootOrgUnitId={currentUserOrgUnit.id} 
+           onNodeSelect={handleNodeSelectExternalInstance}
+           parentName={currentUserOrgUnit?.displayName}
     
-      //  />  */}
+       /> }
        
           </div>
       </div>

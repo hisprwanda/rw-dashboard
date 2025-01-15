@@ -1,9 +1,9 @@
- ## Release Notes for Visualizer Studio 1.0.0
+ ## Release Notes for Data Analytics Lab 1.0.0
  ## Release Date: January 1, 2025
 
-# Visualizer Studio  
+# Data Analytics Lab  
 
-Visualizer Studio is a powerful data visualization tool developed by **HISP Rwanda**. It offers an interactive dashboard experience, enabling users to create dynamic slides with highly customizable visualizations. The application integrates seamlessly with multiple DHIS2 instances and provides an intuitive interface for analyzing and presenting data effectively.  
+Data Analytics Lab is a powerful data visualization tool developed by **HISP Rwanda**. It offers an interactive dashboard experience, enabling users to create dynamic slides with highly customizable visualizations. The application integrates seamlessly with multiple DHIS2 instances and provides an intuitive interface for analyzing and presenting data effectively.  
 
 ---
 
@@ -11,7 +11,7 @@ Visualizer Studio is a powerful data visualization tool developed by **HISP Rwan
 
 ### 1. Data Source Management  
 
-Visualizer Studio allows secure and efficient integration with multiple DHIS2 instances.  
+Data Analytics Lab allows secure and efficient integration with multiple DHIS2 instances.  
 
 **Requirements**: To add a data source, the following details are required:  
 - **Instance Name**  
@@ -20,9 +20,9 @@ Visualizer Studio allows secure and efficient integration with multiple DHIS2 in
 - Expired tokens can be updated anytime with valid ones.  
 
 ATTENTION: Whitelist Configuration:  
-- Add the Visualizer Studio URL to the DHIS2 instance whitelist to avoid CORS (Cross-Origin Resource Sharing) errors.  
+- Add the Data Analytics Lab URL to the DHIS2 instance whitelist to avoid CORS (Cross-Origin Resource Sharing) errors.  
 
-Once added, Visualizer Studio can securely fetch and analyze data from these data sources.  
+Once added, Data Analytics Lab can securely fetch and analyze data from these data sources.  
 
 ---
 
@@ -84,7 +84,7 @@ Transform dashboards into dynamic slide presentations:
 
 ## What's Next?  
 
-Visualizer Studio is evolving! Here are the planned features for future releases:  
+Data Analytics Lab is evolving! Here are the planned features for future releases:  
 
 1. **Calculated Indicators**: Integration for advanced analytics.  
 2. **Dashboard Grouping**: Organize dashboards into folders or groups.  
@@ -99,7 +99,7 @@ Visualizer Studio is evolving! Here are the planned features for future releases
 
 ## Key Technologies  
 
-Visualizer Studio is built using the following technologies:  
+Data Analytics Lab is built using the following technologies:  
 
 - **React with TypeScript**: For building the user interface.  
 - **Tailwind CSS**: For designing responsive and modern UI components.  
@@ -124,7 +124,7 @@ We extend our heartfelt gratitude to the following developers who contributed to
 
 ## Getting Started  
 
-To get started with Visualizer Studio, run the following commands:  
+To get started with Data Analytics Lab, run the following commands:  
 
  yarn install
  yarn build:css && yarn start

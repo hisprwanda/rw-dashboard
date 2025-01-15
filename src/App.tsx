@@ -23,6 +23,7 @@ import { TestChart } from "./components/charts/TestChart";
 import TokenTest from "./pages/TokenTest";
 import UserCredentials from "./pages/UserCredentials";
 import { Toaster } from "./components/ui/toaster";
+import { TestCustomOrgUnitTree } from "./pages/visualizers/Components/MetaDataModals/TestCustomOrgUnitTree";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -45,6 +46,7 @@ const App: React.FC = () => {
               <Route path="alerts" element={<AlertsPage />} />
               <Route path="test" element={<TestChart />} />
               <Route path="token-test" element={<TokenTest />} />
+              <Route path="test-tree" element={<TestCustomOrgUnitTree />} />
               <Route path="credentials" element={<UserCredentials />} />
               <Route path="datasource" element={<DataSourcePage />} />
               {/* <Route path="data-source" element={<DataSourcePage />} /> */}
