@@ -1,127 +1,168 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { CircularLoader } from '@dhis2/ui';
+import { CircularLoader } from '@dhis2/ui'
+import React, { useState, useEffect, useCallback } from 'react';
 
 const CustomOrganisationUnitTree = ({ apiUrl, token, rootOrgUnitId, onNodeSelect }) => {
-    const [treeNodes, setTreeNodes] = useState([]);
-    const [checked, setChecked] = useState([]);
-    const [expanded, setExpanded] = useState([]);
-    const [loadingNodes, setLoadingNodes] = useState({}); // Track loading for each node
+  const [treeData, setTreeData] = useState({});
+  const [checked, setChecked] = useState([]);
+  const [expanded, setExpanded] = useState([]);
+  const [loading, setLoading] = useState({});
+  const [error, setError] = useState(null);
 
-    // Function to map organisation units to tree nodes
-    const mapOrgUnitsToTreeNodes = (orgUnits) => {
-        return orgUnits.map((orgUnit) => ({
-            id: orgUnit.id,
-            displayName: orgUnit.displayName,
-            children: orgUnit.hasChildren ? [] : null,
-            hasChildren: orgUnit.hasChildren,
-        }));
-    };
+  // Fetch organization units with correct query parameters
+  const fetchOrgUnits = useCallback(async (parentId) => {
+    try {
+      setLoading(prev => ({ ...prev, [parentId]: true }));
 
-    // Fetch organisation units
-    const fetchOrgUnits = async (parentId) => {
-        try {
-            const response = await axios.get(`${apiUrl}/api/organisationUnits/${parentId}`, {
-                params: {
-                    fields: 'id,displayName,hasChildren,children[id,displayName,hasChildren]',
-                    paging: false,
-                },
-                headers: {
-                    Authorization: `ApiToken ${token}`,
-                },
-            });
-            return response.data.children;
-        } catch (error) {
-            console.error('Error fetching organisation units:', error);
-            return [];
+      const params = {
+        fields: 'children[id,path,displayName]',
+      };
+      
+      const queryString = new URLSearchParams(params).toString();
+
+      const response = await fetch(`${apiUrl}/api/organisationUnits/${parentId}?${queryString}`, {
+        headers: {
+          'Authorization': `ApiToken ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      // Update tree data with new children
+      setTreeData(prev => ({
+        ...prev,
+        [parentId]: data.children || []
+      }));
+
+      return data.children || [];
+    } catch (err) {
+      setError(`Failed to fetch organization units: ${err.message}`);
+      return [];
+    } finally {
+      setLoading(prev => {
+        const newLoading = { ...prev };
+        delete newLoading[parentId];
+        return newLoading;
+      });
+    }
+  }, [apiUrl, token]);
+
+  // Initialize tree with root node
+  useEffect(() => {
+    fetchOrgUnits(rootOrgUnitId);
+  }, [fetchOrgUnits, rootOrgUnitId]);
+
+  // Handle node expansion
+  const handleExpand = async (nodeId) => {
+    if (expanded.includes(nodeId)) {
+      setExpanded(prev => prev.filter(id => id !== nodeId));
+    } else {
+      setExpanded(prev => [...prev, nodeId]);
+      if (!treeData[nodeId]) {
+        await fetchOrgUnits(nodeId);
+      }
+    }
+  };
+
+  // Handle checkbox selection
+  const handleCheck = (nodeId) => {
+    setChecked(prev => {
+      const newChecked = prev.includes(nodeId)
+        ? prev.filter(id => id !== nodeId)
+        : [...prev, nodeId];
+      
+      // Call the callback with selected nodes
+      const selectedNodes = newChecked.map(id => {
+        // Find the node data in our tree
+        for (const children of Object.values(treeData)) {
+          const node = children.find(child => child.id === id);
+          if (node) return node;
         }
-    };
+        return { id };
+      });
+      
+      onNodeSelect(selectedNodes);
+      return newChecked;
+    });
+  };
 
-    // Handle expanding nodes
-    const handleExpand = async (nodeId) => {
-        if (expanded.includes(nodeId)) {
-            setExpanded((prev) => prev.filter((id) => id !== nodeId));
-        } else {
-            setExpanded((prev) => [...prev, nodeId]);
-
-            if (treeNodes.find((node) => node.id === nodeId)?.children?.length === 0) {
-                setLoadingNodes((prev) => ({ ...prev, [nodeId]: true }));
-                const children = await fetchOrgUnits(nodeId);
-                const mappedChildren = mapOrgUnitsToTreeNodes(children);
-
-                setTreeNodes((prev) =>
-                    prev.map((node) =>
-                        node.id === nodeId ? { ...node, children: mappedChildren } : node
-                    )
-                );
-                setLoadingNodes((prev) => ({ ...prev, [nodeId]: false }));
-            }
-        }
-    };
-
-    // Handle checkbox changes
-    const handleCheck = (nodeId) => {
-        console.log("hello node Id",nodeId)
-        setChecked((prev) =>
-            prev.includes(nodeId) ? prev.filter((id) => id !== nodeId) : [...prev, nodeId]
-        );
-        const selectedNodes = treeNodes.filter((node) => checked.includes(node.id));
-        onNodeSelect(selectedNodes);
-    };
-
-    // Initialize tree with root org unit
-    useEffect(() => {
-        const initializeTree = async () => {
-            const rootChildren = await fetchOrgUnits(rootOrgUnitId);
-            setTreeNodes(mapOrgUnitsToTreeNodes(rootChildren));
-        };
-
-        initializeTree();
-    }, [rootOrgUnitId]);
-
-    // Render tree nodes
-    const renderTreeNodes = (nodes) => {
-        return nodes.map((node) => (
-            <div key={node.id} style={{ marginLeft: 20 }}>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    {node.hasChildren && (
-                        <button
-                            onClick={() => handleExpand(node.id)}
-                            style={{
-                                marginRight: 8,
-                                background: 'none',
-                                border: 'none',
-                                cursor: 'pointer',
-                                fontSize: '16px',
-                            }}
-                        >
-                            {expanded.includes(node.id) ? '-' : '+'}
-                        </button>
-                    )}
-                   
-                    <input
-                        type="checkbox"
-                        checked={checked.includes(node.id)}
-                        onChange={() => handleCheck(node.id)}
-                    />
-                    <span style={{ marginLeft: 8 }}>{node.displayName}</span>
-                </div>
-                {loadingNodes[node.id] && <CircularLoader />}
-                {expanded.includes(node.id) && node.children && renderTreeNodes(node.children)}
-            </div>
-        ));
-    };
+  // Render a single node
+  const renderNode = (node) => {
+    const isExpanded = expanded.includes(node.id);
+    const isChecked = checked.includes(node.id);
+    const isLoading = loading[node.id];
+    const children = treeData[node.id] || [];
+    const hasChildren = children.length > 0 || !treeData[node.id]; // Assume it has children if we haven't loaded them yet
 
     return (
-        <div>
-            <h3>Organisation Units</h3>
-            {treeNodes.length === 0 ? (
-                <CircularLoader />
+      <div key={node.id} className="ml-6">
+        <div className="flex items-center py-1">
+          {/* Expansion button */}
+          <button
+            onClick={() => handleExpand(node.id)}
+            className="w-4 h-4 mr-1 flex items-center justify-center border rounded hover:bg-gray-100"
+          >
+            {isLoading ? (
+              <span>Loading..</span>
             ) : (
-                <div>{renderTreeNodes(treeNodes)}</div>
+              <span>{isExpanded ? '−' : '+'}</span>
             )}
+          </button>
+
+          {/* Checkbox */}
+          <input
+            type="checkbox"
+            checked={isChecked}
+            onChange={() => handleCheck(node.id)}
+            className="mr-2"
+          />
+
+          {/* Node name */}
+          <span className="text-sm">{node.displayName}</span>
         </div>
+
+        {/* Children */}
+        {isExpanded && (
+          <div className="ml-2 border-l border-gray-200">
+            {children.map(child => renderNode(child))}
+          </div>
+        )}
+      </div>
     );
+  };
+
+  // Render root level
+  const renderTree = () => {
+    const rootNodes = treeData[rootOrgUnitId] || [];
+    
+    if (error) {
+      return (
+        <div className="text-red-500 p-4">
+          {error}
+        </div>
+      );
+    }
+
+    if (!rootNodes.length && loading[rootOrgUnitId]) {
+      return (
+        <div className="flex justify-center p-4">
+         <p>Loading..</p>
+        </div>
+      );
+    }
+
+    return rootNodes.map(node => renderNode(node));
+  };
+
+  return (
+    <div className="w-full max-w-xl border rounded-lg p-4">
+      <h3 className="font-medium mb-4">Organisation Units</h3>
+      {renderTree()}
+    </div>
+  );
 };
 
 export default CustomOrganisationUnitTree;
