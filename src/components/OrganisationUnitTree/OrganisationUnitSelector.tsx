@@ -34,6 +34,7 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
     setSelectedOrgUnitGroups,
     isSetPredifinedUserOrgUnits,setIsSetPredifinedUserOrgUnits,
     selectedOrgUnits,
+    setSelectedOrgUnits,
     fetchSingleOrgUnitName,
     visualTitleAndSubTitle,
     setSelectedVisualTitleAndSubTitle,  
@@ -44,7 +45,7 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
   const orgUnits = data?.orgUnits?.organisationUnits || [];
   const orgUnitLevels = data?.orgUnitLevels?.organisationUnitLevels || [];
   const currentUserOrgUnit = data?.currentUser?.organisationUnits?.[0];
-
+    console.log(" data?.currentUser", data?.currentUser)
   const {
     searchTerm,
     selectedLevel,
@@ -124,9 +125,9 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
   // test
   useEffect(()=>{
     updateDefaultSubTitle();
-   console.log("xxx",selectedOrganizationUnits)
+   console.log("xxx ++ selectedOrganizationUnits",selectedOrganizationUnits)
     // fetchSingleOrgUnitName
-   console.log("yyy",selectedOrgUnits)
+   console.log("yyy selectedOrgUnits",selectedOrgUnits)
   },[selectedOrganizationUnits,selectedOrgUnits])
 
   useEffect(()=>{
@@ -151,8 +152,20 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
   /// handle 
   
 const handleNodeSelectExternalInstance = (node) => {
+  // setSelectedOrgUnits((prevSelected) => {
+  //   if (prevSelected.includes(path)) {
+  //     return prevSelected.filter((selectedPath) => selectedPath !== path);
+  //   } else {
+  //     return [...prevSelected, path];
+  //   }
+  // });
+  //selectedOrganizationUnits()
   console.log('external selected node:', node);
 };
+
+useEffect(()=>{
+  console.log("final selected units external",selectedOrgUnits)
+},[selectedOrgUnits])
 
   // handle loading
   if (loading) {
@@ -227,6 +240,7 @@ const handleNodeSelectExternalInstance = (node) => {
            rootOrgUnitId={currentUserOrgUnit.id} 
            onNodeSelect={handleNodeSelectExternalInstance}
            parentName={currentUserOrgUnit?.displayName}
+           realParentId={currentUserOrgUnit?.id}
     
        /> }
        

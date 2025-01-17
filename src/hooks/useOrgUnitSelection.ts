@@ -13,7 +13,7 @@ export const useOrgUnitSelection = (orgUnits: OrgUnit[]) => {
 
   // test
   useEffect(()=>{
-    console.log("get selected org units",selectedOrgUnits)
+    console.log("final selected units current",selectedOrgUnits)
   },[selectedOrgUnits])
 
   const filteredOrgUnitPaths = useMemo(
@@ -22,6 +22,7 @@ export const useOrgUnitSelection = (orgUnits: OrgUnit[]) => {
   );
 
   const handleOrgUnitClick = (path: string) => {
+    console.log("current org path",path)
     setSelectedOrgUnits((prevSelected) => {
       if (prevSelected.includes(path)) {
         return prevSelected.filter((selectedPath) => selectedPath !== path);

@@ -124,7 +124,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [analyticsData, setAnalyticsData] = useState<any>(null);
   const [fetchAnalyticsDataError, setFetchAnalyticsDataError] = useState<any>(false);
   const [analyticsDimensions, setAnalyticsDimensions] = useState<any>({ dx: [], pe: ['LAST_12_MONTHS'] });
-  const [selectedOrganizationUnits, setSelectedOrganizationUnits] = useState<any>([]);
+  const [selectedOrganizationUnits, setSelectedOrganizationUnits] = useState<any>(['XxBlJkEmJGQ', 'QMTKhz1j2mA', 'PnnZRLwoD66', 'jUMVwrUlNqG', 'qICVQ5VD0Y7']);
   const [selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels] = useState<any>([]);
   const [isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits] = useState<boolean>(true);
   const [selectedOrgUnitGroups, setSelectedOrgUnitGroups] = useState<any>([]);

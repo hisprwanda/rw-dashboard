@@ -1,13 +1,18 @@
+import { useAuthorities } from '../../../../context/AuthContext';
 import { CircularLoader } from '@dhis2/ui'
 import React, { useState, useEffect, useCallback } from 'react';
 
-const CustomOrganisationUnitTree = ({ apiUrl, token, rootOrgUnitId, onNodeSelect }) => {
+const CustomOrganisationUnitTree = ({ apiUrl, token, rootOrgUnitId, onNodeSelect,parentName,realParentId }) => {
+  const {isUseCurrentUserOrgUnits,setSelectedOrganizationUnits,
+    selectedOrganizationUnits} = useAuthorities()
   const [treeData, setTreeData] = useState({});
-  const [checked, setChecked] = useState([]);
+ // const [checked, setChecked] = useState(['XxBlJkEmJGQ', 'QMTKhz1j2mA', 'PnnZRLwoD66', 'jUMVwrUlNqG', 'qICVQ5VD0Y7']);
   const [expanded, setExpanded] = useState([]);
   const [loading, setLoading] = useState({});
   const [error, setError] = useState(null);
+  const [isOpenRealParent,setIsOpenRealParent] = useState(false)
 
+   
   // Fetch organization units with correct query parameters
   const fetchOrgUnits = useCallback(async (parentId) => {
     try {
@@ -69,7 +74,7 @@ const CustomOrganisationUnitTree = ({ apiUrl, token, rootOrgUnitId, onNodeSelect
 
   // Handle checkbox selection
   const handleCheck = (nodeId) => {
-    setChecked(prev => {
+    setSelectedOrganizationUnits(prev => {
       const newChecked = prev.includes(nodeId)
         ? prev.filter(id => id !== nodeId)
         : [...prev, nodeId];
@@ -92,7 +97,7 @@ const CustomOrganisationUnitTree = ({ apiUrl, token, rootOrgUnitId, onNodeSelect
   // Render a single node
   const renderNode = (node) => {
     const isExpanded = expanded.includes(node.id);
-    const isChecked = checked.includes(node.id);
+    const isChecked = selectedOrganizationUnits?.includes(node.id);
     const isLoading = loading[node.id];
     const children = treeData[node.id] || [];
     const hasChildren = children.length > 0 || !treeData[node.id]; // Assume it has children if we haven't loaded them yet
@@ -116,7 +121,7 @@ const CustomOrganisationUnitTree = ({ apiUrl, token, rootOrgUnitId, onNodeSelect
             checked={isChecked}
             onChange={() => handleCheck(node.id)}
             className="mr-2"
-            disabled={true}
+           disabled={isUseCurrentUserOrgUnits}
           />
 
           {/* Node name */}
@@ -159,8 +164,29 @@ const CustomOrganisationUnitTree = ({ apiUrl, token, rootOrgUnitId, onNodeSelect
 
   return (
     <div className="w-full max-w-xl border rounded-lg p-4">
-      <h3 className="font-medium mb-4">Organisation Units</h3>
-      {renderTree()}
+        <div className="flex items-center ">
+          {/* Expansion button */}
+          <button
+            onClick={()=>setIsOpenRealParent(prev => !prev)}
+            className="w-4 h-4 mr-1 flex items-center justify-center border rounded hover:bg-gray-100"
+          >
+         
+              <span className="text-lg" >{isOpenRealParent ? '−' : '+'}</span>
+  
+          </button>
+
+          {/* Checkbox */}
+          <input
+            type="checkbox"
+           // checked={isChecked}
+           // onChange={() => handleCheck(node.id)}
+            className="mr-2"
+            disabled={isUseCurrentUserOrgUnits}
+          />
+      <p className="text-lg"  >{parentName}</p>
+      </div>
+     {isOpenRealParent && renderTree() }
+
     </div>
   );
 };
