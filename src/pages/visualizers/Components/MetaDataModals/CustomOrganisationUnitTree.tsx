@@ -120,7 +120,7 @@ const CustomOrganisationUnitTree = ({ apiUrl, token, rootOrgUnitId, onNodeSelect
           />
 
           {/* Node name */}
-          {isLoading ?  <span className="text-lg">Loading..</span> :  <span className="text-lg">{node.displayName}</span> }
+          {isLoading ?  <span className="text-lg"><CircularLoader small /></span> :  <span className="text-lg">{node.displayName}</span> }
          
         </div>
 
@@ -149,7 +149,7 @@ const CustomOrganisationUnitTree = ({ apiUrl, token, rootOrgUnitId, onNodeSelect
     if (!rootNodes.length && loading[rootOrgUnitId]) {
       return (
         <div className="flex justify-center p-4">
-         <p>Loading..</p>
+        <CircularLoader small />
         </div>
       );
     }
