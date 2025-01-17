@@ -99,17 +99,15 @@ const CustomOrganisationUnitTree = ({ apiUrl, token, rootOrgUnitId, onNodeSelect
 
     return (
       <div key={node.id} className="ml-6">
-        <div className="flex items-center py-1">
+        <div className="flex items-center ">
           {/* Expansion button */}
           <button
             onClick={() => handleExpand(node.id)}
             className="w-4 h-4 mr-1 flex items-center justify-center border rounded hover:bg-gray-100"
           >
-            {isLoading ? (
-              <span>Loading..</span>
-            ) : (
-              <span>{isExpanded ? '−' : '+'}</span>
-            )}
+         
+              <span className="text-lg" >{isExpanded ? '−' : '+'}</span>
+           
           </button>
 
           {/* Checkbox */}
@@ -118,10 +116,12 @@ const CustomOrganisationUnitTree = ({ apiUrl, token, rootOrgUnitId, onNodeSelect
             checked={isChecked}
             onChange={() => handleCheck(node.id)}
             className="mr-2"
+            disabled={true}
           />
 
           {/* Node name */}
-          <span className="text-sm">{node.displayName}</span>
+          {isLoading ?  <span className="text-lg">Loading..</span> :  <span className="text-lg">{node.displayName}</span> }
+         
         </div>
 
         {/* Children */}
