@@ -77,14 +77,18 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
 
   // Update selectedOrgUnit
   useEffect(() => {
-    const updatedOrganizationUnits = selectedOrgUnits.map((path) => {
-      // Extract the last segment of the path
-      const parts = path.split('/');
-      return parts[parts.length - 1]; // Get the last segment (org unit ID)
-    });
+     if(selectedDataSourceDetails.isCurrentInstance)
+    {
+      const updatedOrganizationUnits = selectedOrgUnits.map((path) => {
+        // Extract the last segment of the path
+        const parts = path.split('/');
+        return parts[parts.length - 1]; // Get the last segment (org unit ID)
+      });
+    
+      setSelectedOrganizationUnits(updatedOrganizationUnits);
+    }
 
-    setSelectedOrganizationUnits(updatedOrganizationUnits);
-  }, [selectedOrgUnits, setSelectedOrganizationUnits]);
+  }, [selectedOrgUnits]);
 
   useEffect(() => {
     if (selectedLevel && selectedLevel.length > 0) {

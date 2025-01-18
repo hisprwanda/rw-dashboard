@@ -99,6 +99,7 @@ function Visualizers() {
      }
      ///
      function resetOtherValuesToDefaultExceptDataSource() {
+
         setSelectedDimensionItemType(dimensionItemTypes[0])
          setAnalyticsData(null)
         setSelectedChartType(chartComponents[0]?.type)
