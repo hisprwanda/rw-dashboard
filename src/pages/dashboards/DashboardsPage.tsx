@@ -123,7 +123,7 @@ const DashboardsPage: React.FC = () => {
                 <TabsTrigger value="otherdashboards">Other Dashboards</TabsTrigger>
               </TabsList>
               <Button
-                text="Add Dashboard"
+                text="New Dashboard"
                 icon={<IoIosAddCircle />}
                 onClick={handleGoToCreateDashboardPage}
               />

@@ -54,7 +54,7 @@ const VisualSettings: React.FC<VisualSettingsTypes> = ({ setIsShowStyles }) => {
   }, [selectedColorPalette]);
 
   return (
-    <ul className="space-y-2 p-0 list-none ">
+    <ul className="space-y-2 p-0 list-none max-h-[600px] overflow-y-auto ">
       <li
         onClick={handleShowStyles}
         className="px-4 py-2 text-gray-700 hover:text-primary hover:bg-gray-100 rounded-md cursor-pointer transition-all duration-200"

@@ -16,6 +16,7 @@ import { useSystemInfo } from "../services/fetchSystemInfo";
 import axios from "axios";
 import { dimensionItemTypesTYPES } from "../types/dimensionDataItemTypes";
 import { dimensionItemTypes } from "../constants/dimensionItemTypes";
+import { BackedSelectedItem, visualTypes } from "../types/visualType";
 
 
 
@@ -44,7 +45,7 @@ interface AuthContextProps {
   selectedOrgUnits: any;
   setSelectedOrgUnits: any;
   analyticsQuery:any;
-  selectedChartType:string,
+  selectedChartType:visualTypes,
    setSelectedChartType:any,
    setAnalyticsQuery:any;
    selectedVisualsForDashboard:string[];
@@ -69,7 +70,11 @@ interface AuthContextProps {
       selectedDimensionItemType:dimensionItemTypesTYPES;
        setSelectedDimensionItemType:any;
        dataItemsDataPage:number;
-        setDataItemsDataPage:any
+        setDataItemsDataPage:any;
+        subDataItemsData:any;
+        setSubDataItemsData:any;
+        backedSelectedItems:BackedSelectedItem[] ;
+         setBackedSelectedItems:any
  
 }
 
@@ -105,11 +110,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [selectedDimensionItemType, setSelectedDimensionItemType] = useState<dimensionItemTypesTYPES>(dimensionItemTypes[0])
 
   // metadata states
+  // 
   const [dataItemsData,setDataItemsData] = useState<any>()
+  const [subDataItemsData,setSubDataItemsData] = useState<any>()
   const [dataItemsDataPage, setDataItemsDataPage] = useState<number>(1);
  const [currentUserInfoAndOrgUnitsData, setCurrentUserInfoAndOrgUnitsData] = useState<any>()
  // const currentUserOrgUnitId = userDatails?.me?.organisationUnits?.[0]?.id || "Hjw70Lodtf2";
-
+  const [backedSelectedItems, setBackedSelectedItems] = useState<BackedSelectedItem[]>([]);
+  
 
   const defaultUserOrgUnit = currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName
   const [isFetchAnalyticsDataLoading, setIsFetchAnalyticsDataLoading] = useState(false);
@@ -123,7 +131,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [selectedLevel, setSelectedLevel] = useState<any>();
   const [selectedOrgUnits, setSelectedOrgUnits] = useState<string[]>([]);
   const [analyticsQuery, setAnalyticsQuery] = useState<any>(null)
-  const [selectedChartType, setSelectedChartType] = useState<any>(""); 
+  const [selectedChartType, setSelectedChartType] = useState<visualTypes>("Column"); 
   const [selectedVisualsForDashboard, setSelectedVisualsForDashboard] = useState<string[]>([]);
   const [visualTitleAndSubTitle, setSelectedVisualTitleAndSubTitle] = useState<VisualTitleAndSubtitleType>({
     visualTitle: "",
@@ -312,7 +320,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
 
   return (
-    <AuthContext.Provider value={{dataItemsDataPage,setDataItemsDataPage,selectedDimensionItemType,setSelectedDimensionItemType,selectedDataSourceOption,setSelectedDataSourceOption,currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData,selectedDataSourceDetails,setSelectedDataSourceDetails,dataItemsData,setDataItemsData,setVisualsColorPalettes,visualsColorPalettes, selectedColorPalette,setSelectedColorPalette ,visualSettings,setSelectedVisualSettings,fetchSingleOrgUnitName,visualTitleAndSubTitle,setSelectedVisualTitleAndSubTitle,  selectedVisualsForDashboard, setSelectedVisualsForDashboard,setAnalyticsData,setAnalyticsQuery,selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery,selectedChartType,setSelectedChartType}}>
+    <AuthContext.Provider value={{setSubDataItemsData,subDataItemsData,backedSelectedItems,setBackedSelectedItems,dataItemsDataPage,setDataItemsDataPage,selectedDimensionItemType,setSelectedDimensionItemType,selectedDataSourceOption,setSelectedDataSourceOption,currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData,selectedDataSourceDetails,setSelectedDataSourceDetails,dataItemsData,setDataItemsData,setVisualsColorPalettes,visualsColorPalettes, selectedColorPalette,setSelectedColorPalette ,visualSettings,setSelectedVisualSettings,fetchSingleOrgUnitName,visualTitleAndSubTitle,setSelectedVisualTitleAndSubTitle,  selectedVisualsForDashboard, setSelectedVisualsForDashboard,setAnalyticsData,setAnalyticsQuery,selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery,selectedChartType,setSelectedChartType}}>
       {children}
     </AuthContext.Provider>
   );

@@ -7,10 +7,11 @@ import { AlertBar } from '@dhis2/ui';
 import Button from "../../../../components/Button";
 import { DataSourceFormFields, DataSourceSchema } from '../../../../types/DataSource';
 import { IoSaveOutline } from "react-icons/io5";
+import { useToast } from "../../../../components/ui/use-toast";
 
 const dataSourceOptions = [
     { name: 'DHIS2', value: 'DHIS2' },
-    { name: 'API', value: 'API' },
+    // { name: 'API', value: 'API' },
 ];
 
 type DataSourceFormProps = {
@@ -46,7 +47,7 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({
 
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
+ const { toast } = useToast();
     const engine = useDataEngine();
 
     // Populate form fields when updating
@@ -67,9 +68,14 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({
                 type: action === 'update' ? 'update' : 'create',
                 data: formData,
             });
+            toast({
+                title: "Success",
+                description: "saved successfully",
+                variant: "default",
+              });
 
             refetch && refetch();
-            setSuccessMessage('Data source saved successfully!');
+           // setSuccessMessage('Data source saved successfully!');
 
             // Hide form after success
             if (action === 'update') {
@@ -88,7 +94,12 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({
             }
         } catch (error) {
             console.error('Error saving data source:', error);
-            setErrorMessage('Failed to save data source. Please try again.');
+            //setErrorMessage('Failed to save data source. Please try again.');
+            toast({
+                title: "Error",
+                description: "Something went wrong",
+                variant: "destructive",
+              });
         }
     };
 

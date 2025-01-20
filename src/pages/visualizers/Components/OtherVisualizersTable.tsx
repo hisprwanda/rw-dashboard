@@ -17,7 +17,7 @@ import { FaEye } from 'react-icons/fa';
 
 
 
-const VisualizerTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
+const OtherVisualizersTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
   const {setAnalyticsData} = useAuthorities();
     const navigate = useNavigate();
     const {refetch}  = useFetchVisualsData()
@@ -39,10 +39,10 @@ const VisualizerTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
         accessorKey: 'value.visualType',
         header: 'Type',
       },
-      // {
-      //   accessorKey: 'value.createdBy.name',
-      //   header: 'Created By',
-      // },
+      {
+        accessorKey: 'value.createdBy.name',
+        header: 'Created By',
+      },
       {
         accessorKey: 'value.createdAt',
         header: 'Created At',
@@ -98,7 +98,7 @@ const VisualizerTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
     renderRowActions: ({ row }) => (
       <div className="flex gap-2  "> 
       <FaEye className='text-xl hover:cursor-pointer  hover:text-primary '   onClick={() => handleView(row?.original)} />
-      <RiDeleteBin5Line className='text-xl  hover:cursor-pointer text-red-600  hover:text-red-900 '    onClick={() => handleDelete(row?.original)} />
+      {/* <RiDeleteBin5Line className='text-xl  hover:cursor-pointer  hover:text-red-600 '    onClick={() => handleDelete(row?.original)} /> */}
        </div>
     ),
    
@@ -124,4 +124,4 @@ const VisualizerTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
   );
 };
 
-export default VisualizerTable;
+export default OtherVisualizersTable;

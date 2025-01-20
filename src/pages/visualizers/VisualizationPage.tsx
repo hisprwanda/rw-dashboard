@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { Loading } from '../../components';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
 import { useAuthorities } from '../../context/AuthContext';
+import OtherVisualizersTable from './Components/OtherVisualizersTable';
 
 function filterSavedChartsByCreatorId(data: any, creatorId: string) {
   return data?.filter(item => item.value.createdBy.id === creatorId);
@@ -64,7 +65,7 @@ const VisualizationPage = () => {
             <VisualizerTable savedVisualData={filterSavedChartsByCreatorId(data?.dataStore?.entries, userDatails?.me?.id)} />
           </TabsContent>
           <TabsContent value="Other-Charts" className="pt-4">
-            <VisualizerTable savedVisualData={filterOtherCharts(data?.dataStore?.entries, userDatails?.me?.id)} />
+            <OtherVisualizersTable savedVisualData={filterOtherCharts(data?.dataStore?.entries, userDatails?.me?.id)} />
 
 
           </TabsContent>
