@@ -110,7 +110,7 @@ function Visualizers() {
             is_USER_ORGUNIT_CHILDREN: false,
             is_USER_ORGUNIT_GRANDCHILDREN: false
           })
-          setIsUseCurrentUserOrgUnits(true)
+          //setIsUseCurrentUserOrgUnits(true)
         setSelectedOrganizationUnits([])
         setSelectedOrgUnits([])
         setSelectedOrgUnitGroups([])
@@ -152,7 +152,7 @@ function Visualizers() {
                 selectedDataSourceDetails
             );
         }
-    }, 500), [analyticsDimensions, singleSavedVisualData, visualId]);
+    }, 500), [analyticsDimensions, singleSavedVisualData, visualId,isUseCurrentUserOrgUnits]);
     
     useEffect(() => {
         debounceRunAnalytics();
@@ -169,11 +169,17 @@ function Visualizers() {
     useEffect(() =>{
      if(singleSavedVisualData)
      {
+        console.log(singleSavedVisualData?.dataStore?.query?.myData?.params?.filter,"is machanged")
         const isAnyTrue = Object.values(isSetPredifinedUserOrgUnits).some(value => value === true);
         setIsUseCurrentUserOrgUnits(isAnyTrue);
      }
 
     },[isSetPredifinedUserOrgUnits])
+
+    /// test isUseCurrentUserOrgUnits
+    useEffect(()=>{
+        console.log({isUseCurrentUserOrgUnits})
+    },[isUseCurrentUserOrgUnits])
 
     const handleShowSaveVisualTypeForm = ()=>{
         setIsShowSaveVisualTypeForm(true)
