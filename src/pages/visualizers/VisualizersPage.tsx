@@ -158,6 +158,9 @@ function Visualizers() {
         debounceRunAnalytics();
         return debounceRunAnalytics.cancel; // Cleanup debounce on unmount
     }, [debounceRunAnalytics]);
+
+
+
     
 
 
