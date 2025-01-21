@@ -139,7 +139,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     customSubTitle:""
   })
 
-
+  useEffect(()=>{
+    console.log("track selectedOrganizationUnits",selectedOrganizationUnits)
+  },[selectedOrganizationUnits])
  const [selectedColorPalette, setSelectedColorPalette] = useState<visualColorPaletteTypes>(systemDefaultColorPalettes[0] || []);
 
  const [visualsColorPalettes,setVisualsColorPalettes] =useState<ColorPaletteTypes >(systemDefaultColorPalettes)

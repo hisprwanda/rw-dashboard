@@ -28,7 +28,7 @@ export default function Header() {
             </div>
           </a>
           <Link to={'/'} className='text-[14px] font-[500] border-r-[1px] border-dhisGrey50 p-[12px] min-w-[30vw]'>
-            <p>{data?.title?.applicationTitle} - Visualizer Studio</p>
+            <p>{data?.title?.applicationTitle} - Data Analytics Lab</p>
           </Link>
         </div>
         <menu>
