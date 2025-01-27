@@ -360,17 +360,17 @@ useEffect(() => {
                                {/* data items */}
                                <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Main Dimensions</label>
-                                <Button disabled={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source" text={`${(isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading ) ? "Loading.." : `Data ${analyticsDimensions?.dx?.length === 0 ? "" : `(${analyticsDimensions?.dx?.length})`}`} `} onClick={handleShowDataModal} />
+                                <Button disabled={ orgUnitLoading || isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source" text={`${( orgUnitLoading ||  isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading ) ? "Loading.." : `Data ${analyticsDimensions?.dx?.length === 0 ? "" : `(${analyticsDimensions?.dx?.length})`}`} `} onClick={handleShowDataModal} />
                             </div>
                             {/* Period */}
                             <div className="mb-4">
                                 {/* <label className="block text-sm font-medium text-gray-700 mb-1">Period</label> */}
-                              <Button disabled={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source"  text={`${(isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading ) ? "Loading.." : `Period ${analyticsDimensions?.pe?.length === 0 ? "" : `(${analyticsDimensions?.pe?.length})`} `} `} onClick={handleShowPeriodModal} /> 
+                              <Button disabled={orgUnitLoading || isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source"  text={`${( orgUnitLoading ||  isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading ) ? "Loading.." : `Period ${analyticsDimensions?.pe?.length === 0 ? "" : `(${analyticsDimensions?.pe?.length})`} `} `} onClick={handleShowPeriodModal} /> 
                             </div>
                             {/* Organization Unit */}
                             <div className="mb-4">
                                 {/* <label className="block text-sm font-medium text-gray-700 mb-1">Organisation Unit</label> */}
-                                <Button disabled={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source"  text={`${(isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading ) ? "Loading.." : `Organisation Unit`} `} onClick={handleShowOrganizationUnitModal} />
+                                <Button disabled={orgUnitLoading || isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source"  text={`${( orgUnitLoading ||  isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading ) ? "Loading.." : `Organisation Unit`} `} onClick={handleShowOrganizationUnitModal} />
                             </div>
                             </>}
                          
