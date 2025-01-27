@@ -171,11 +171,6 @@ useEffect(()=>{
   console.log("final selected units external",selectedOrgUnits)
 },[selectedOrgUnits])
 
-  // handle loading
-  if (loading) {
-    return <CircularLoader />;
-  }
-
   // handle error
   if (error) {
     return <p className="text-red-500">Error: {error.message}</p>;
@@ -229,24 +224,24 @@ useEffect(()=>{
                { selectedDataSourceDetails.isCurrentInstance  ? 
               <OrganisationUnitTree
               disableSelection={isUseCurrentUserOrgUnits}
-              roots={[currentUserOrgUnit.id]}
+              roots={[currentUserOrgUnit?.id]}
               selected={selectedOrgUnits}
               onChange={({ path }) => handleOrgUnitClick(path)}
               singleSelection={false}
               renderNodeLabel={({ node }) => (
-                <span className="text-blue-600 font-medium">{node.displayName}</span>
+                <span className="text-blue-600 font-medium">{node?.displayName}</span>
               )}
               filter={filteredOrgUnitPaths?.length ? filteredOrgUnitPaths : undefined}
             />  :
            <CustomOrganisationUnitTree
            apiUrl={selectedDataSourceDetails.url}
            token={selectedDataSourceDetails.token}
-           rootOrgUnitId={currentUserOrgUnit.id} 
+           rootOrgUnitId={currentUserOrgUnit?.id} 
            onNodeSelect={handleNodeSelectExternalInstance}
-           parentName={currentUserOrgUnit?.displayName}
+           parentName={currentUserOrgUnit?.displayName }
            realParentId={currentUserOrgUnit?.id}
-    
-       /> }
+       /> 
+       }
        
           </div>
       </div>

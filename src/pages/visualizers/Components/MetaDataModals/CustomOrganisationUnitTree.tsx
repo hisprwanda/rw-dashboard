@@ -185,7 +185,7 @@ const CustomOrganisationUnitTree = ({ apiUrl, token, rootOrgUnitId, onNodeSelect
             className="mr-2"
             disabled={isUseCurrentUserOrgUnits}
           />
-      <p className="text-lg"  >{parentName}</p>
+      <p className="text-lg"  >{parentName }</p>
       </div>
      {isOpenRealParent && renderTree() }
 
