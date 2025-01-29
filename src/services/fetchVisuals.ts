@@ -92,8 +92,12 @@ export const useFetchSingleVisualData = (visualId: string) => {
           isCurrentInstance: true,
         };
         setSelectedDataSourceDetails(currentInstanceDetails);
+        fetchCurrentInstanceData(selectedDimensionItemType);
+        fetchCurrentUserAndOrgUnitData();
       } else {
         setSelectedDataSourceDetails(selectedDataSourceDetails );
+        fetchExternalDataItems(selectedDataSourceDetails.url, selectedDataSourceDetails.token,selectedDimensionItemType);
+        fetchExternalUserInfoAndOrgUnitData(selectedDataSourceDetails.url, selectedDataSourceDetails.token);
       }
     },
     [savedDataSource, systemInfo, setSelectedDataSourceOption, setSelectedDataSourceDetails]
@@ -150,7 +154,7 @@ export const useFetchSingleVisualData = (visualId: string) => {
   };
   
 // keepUp with selected data source
-function keepUpWithSelectedDataSource() {
+function keepUpWithSelectedDataSource(selectedDataSourceDetails) {
 const details = selectedDataSourceDetails.current;
 
 if (!details) return;
@@ -174,7 +178,7 @@ if (details.isCurrentInstance) {
         const dimensions = unFormatAnalyticsDimensions(data?.dataStore?.query?.myData?.params?.dimension);
          // clear existing analytics data    
         setAnalyticsData([]); 
-        keepUpWithSelectedDataSource()
+
               fetchAnalyticsData(
                   formatAnalyticsDimensions(dimensions),
                   selectedDataSourceDetails
