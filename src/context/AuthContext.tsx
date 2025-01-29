@@ -188,19 +188,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const fetchAnalyticsData = async (dimension: any,instance:DataSourceFormFields ) => {
     console.log("here is the selected instance",instance)
     console.log("here is the selected dimension",dimension)
+    const orgUnitIds = selectedOrganizationUnits?.map((unit: any) => unit).join(';');
+    const orgUnitLevelIds = selectedOrganizationUnitsLevels?.map((unit: any) => `LEVEL-${unit}`).join(';');
+    const orgUnitGroupIds = selectedOrgUnitGroups?.map((item: any) => `OU_GROUP-${item}`).join(';');
 
+    const filter = `ou:${isUseCurrentUserOrgUnits
+      ? `${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT ? 'USER_ORGUNIT;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_CHILDREN ? 'USER_ORGUNIT_CHILDREN;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_GRANDCHILDREN ? 'USER_ORGUNIT_GRANDCHILDREN;' : ''}`.slice(0, -1)
+      : `${orgUnitIds};${orgUnitLevelIds};${orgUnitGroupIds}`}`;
+
+    if (
+      dimension.some(item => item.startsWith("dx:") && item.split(":")[1].trim()) &&
+      dimension.some(item => item.startsWith("pe:") && item.split(":")[1].trim()) &&
+      filter.startsWith("ou:") && filter.split(":")[1].trim()
+  ){
     try {
       setIsFetchAnalyticsDataLoading(true);
       setFetchAnalyticsDataError(null);
 
-      const orgUnitIds = selectedOrganizationUnits?.map((unit: any) => unit).join(';');
-      const orgUnitLevelIds = selectedOrganizationUnitsLevels?.map((unit: any) => `LEVEL-${unit}`).join(';');
-      const orgUnitGroupIds = selectedOrgUnitGroups?.map((item: any) => `OU_GROUP-${item}`).join(';');
-
-      const filter = `ou:${isUseCurrentUserOrgUnits
-        ? `${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT ? 'USER_ORGUNIT;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_CHILDREN ? 'USER_ORGUNIT_CHILDREN;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_GRANDCHILDREN ? 'USER_ORGUNIT_GRANDCHILDREN;' : ''}`.slice(0, -1)
-        : `${orgUnitIds};${orgUnitLevelIds};${orgUnitGroupIds}`}`;
-
+ 
       const queryParams = {
         dimension,
         filter,
@@ -242,6 +247,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } finally {
       setIsFetchAnalyticsDataLoading(false);
     }
+  }
+
 
 
 
