@@ -11,6 +11,11 @@ import {
 } from '../lib/formatCurrentUserOrgUnit';
 import { currentInstanceId } from '../constants/currentInstanceInfo';
 import { useSystemInfo } from './fetchSystemInfo';
+import debounce from 'lodash/debounce';
+import { useDataItems } from './fetchDataItems';
+import { useExternalDataItems } from './useExternalDataItems';
+import { useExternalOrgUnitData } from './fetchExternalOrgUnit';
+import { useOrgUnitData } from './fetchOrgunitData';
 
 interface VisualData {
   // Define the structure of your `data` object here for better TypeScript support.
@@ -25,7 +30,11 @@ interface VisualData {
 }
 
 export const useFetchSingleVisualData = (visualId: string) => {
-  const { data: systemInfo } = useSystemInfo();
+     const {  error:dataItemsFetchError, loading:isFetchCurrentInstanceDataItemsLoading,fetchCurrentInstanceData } = useDataItems();
+     const {fetchExternalDataItems,response,error:fetchExternalDataError,loading:isFetchExternalInstanceDataItemsLoading} = useExternalDataItems()
+     const {fetchExternalUserInfoAndOrgUnitData} = useExternalOrgUnitData()
+      const { fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData();
+     const { data: systemInfo } = useSystemInfo();
   const { data: savedDataSource } = useDataSourceData();
 
   const {
@@ -44,7 +53,11 @@ export const useFetchSingleVisualData = (visualId: string) => {
     setSelectedVisualTitleAndSubTitle,
     setSelectedVisualSettings,
     setSelectedColorPalette,
-    setBackedSelectedItems
+    setBackedSelectedItems,
+    fetchAnalyticsData,
+    selectedDataSourceDetails,
+    selectedDimensionItemType,
+    setCurrentUserInfoAndOrgUnitsData
   } = useAuthorities();
 
   // Return default values if no visualId is provided
@@ -128,6 +141,52 @@ export const useFetchSingleVisualData = (visualId: string) => {
     setBackedSelectedItems
   ]);
 
+
+    /// start utils functions
+  /// fetch current user and Organization unit
+  const fetchCurrentUserAndOrgUnitData = async () => {
+    const result = await fetchCurrentUserInfoAndOrgUnitData(); 
+    setCurrentUserInfoAndOrgUnitsData(result); 
+  };
+  
+// keepUp with selected data source
+function keepUpWithSelectedDataSource() {
+const details = selectedDataSourceDetails.current;
+
+if (!details) return;
+// Proceed with using the latest `details`
+if (details.isCurrentInstance) {
+    fetchCurrentInstanceData(selectedDimensionItemType);
+    fetchCurrentUserAndOrgUnitData();
+} else if (details.url && details.token) {
+    fetchExternalDataItems(details.url, details.token,selectedDimensionItemType);
+    fetchExternalUserInfoAndOrgUnitData(details.url, details.token);
+} else {
+    console.error("Invalid data source details: Missing URL or token.");
+}
+}
+
+    // end util functions
+
+  
+      //// run analytics API
+      const debounceRunAnalytics = useCallback(debounce(() => {
+        const dimensions = unFormatAnalyticsDimensions(data?.dataStore?.query?.myData?.params?.dimension);
+         // clear existing analytics data    
+        setAnalyticsData([]); 
+        keepUpWithSelectedDataSource()
+              fetchAnalyticsData(
+                  formatAnalyticsDimensions(dimensions),
+                  selectedDataSourceDetails
+              );
+
+      }, 500), [ data]);
+      
+      useEffect(() => {
+          debounceRunAnalytics();
+          return debounceRunAnalytics.cancel; // Cleanup debounce on unmount
+      }, [debounceRunAnalytics]);
+
   // Return the query result and metadata
   return {
     data,
@@ -139,7 +198,6 @@ export const useFetchSingleVisualData = (visualId: string) => {
 };
 
 export const useFetchVisualsData = ()=>{
-
     const query = {
         dataStore: {  
             resource: `dataStore/${process.env.REACT_APP_VISUALS_STORE}`,

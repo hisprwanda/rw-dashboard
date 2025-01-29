@@ -42,7 +42,7 @@ function Visualizers() {
     const { loading:orgUnitLoading, error:fetchOrgUnitError, data:orgUnitsData,fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData();
     const {  error:dataItemsFetchError, loading:isFetchCurrentInstanceDataItemsLoading,fetchCurrentInstanceData } = useDataItems();
     const {fetchExternalDataItems,response,error:fetchExternalDataError,loading:isFetchExternalInstanceDataItemsLoading} = useExternalDataItems()
-    const {fetchExternalUserInfoAndOrgUnitData} = useExternalOrgUnitData()
+    const {fetchExternalUserInfoAndOrgUnitData,loading:isFetchExternalUserInfoAndOrgUnitDataLoading} = useExternalOrgUnitData()
     const defaultUserOrgUnit = currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName
     const { data:savedDataSource,loading } = useDataSourceData();
       const [isShowDataModal, setIsShowDataModal] = useState<boolean>(false);
@@ -143,21 +143,22 @@ function Visualizers() {
     },[visualId])
 
     //// run analytics API
-    const debounceRunAnalytics = useCallback(debounce(() => {
-        if (singleSavedVisualData && visualId) {
-            keepUpWithSelectedDataSource();
-            setAnalyticsData([]); 
-            fetchAnalyticsData(
-                formatAnalyticsDimensions(analyticsDimensions),
-                selectedDataSourceDetails
-            );
-        }
-    }, 500), [analyticsDimensions, singleSavedVisualData, visualId,isUseCurrentUserOrgUnits]);
+//     const debounceRunAnalytics = useCallback(debounce(() => {
+//         if (singleSavedVisualData && visualId) {
+//             keepUpWithSelectedDataSource();
+//             // setAnalyticsData([]); 
+//             // fetchAnalyticsData(
+//             //     formatAnalyticsDimensions(analyticsDimensions),
+//             //     selectedDataSourceDetails
+//             // );
+//         }
+//   //  }, 500), [analyticsDimensions, singleSavedVisualData, visualId,isUseCurrentUserOrgUnits]);
+//     }, 500), [ singleSavedVisualData, visualId]);
     
-    useEffect(() => {
-        debounceRunAnalytics();
-        return debounceRunAnalytics.cancel; // Cleanup debounce on unmount
-    }, [debounceRunAnalytics]);
+    // useEffect(() => {
+    //     debounceRunAnalytics();
+    //     return debounceRunAnalytics.cancel; // Cleanup debounce on unmount
+    // }, [debounceRunAnalytics]);
 
 
 
@@ -246,7 +247,6 @@ function keepUpWithSelectedDataSource() {
     const details = selectedDataSourceDetailsRef.current;
 
     if (!details) return;
-
     // Proceed with using the latest `details`
     if (details.isCurrentInstance) {
         fetchCurrentInstanceData(selectedDimensionItemType);
@@ -370,7 +370,7 @@ useEffect(() => {
                             {/* Organization Unit */}
                             <div className="mb-4">
                                 {/* <label className="block text-sm font-medium text-gray-700 mb-1">Organisation Unit</label> */}
-                                <Button disabled={orgUnitLoading || isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source"  text={`${( orgUnitLoading ||  isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading ) ? "Loading.." : `Organisation Unit`} `} onClick={handleShowOrganizationUnitModal} />
+                                <Button disabled={orgUnitLoading || isFetchExternalUserInfoAndOrgUnitDataLoading || isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source"  text={`${( orgUnitLoading || isFetchExternalUserInfoAndOrgUnitDataLoading || isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading ) ? "Loading.." : `Organisation Unit`} `} onClick={handleShowOrganizationUnitModal} />
                             </div>
                             </>}
                          

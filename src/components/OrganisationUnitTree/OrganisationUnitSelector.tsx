@@ -238,7 +238,7 @@ useEffect(()=>{
            token={selectedDataSourceDetails.token}
            rootOrgUnitId={currentUserOrgUnit?.id} 
            onNodeSelect={handleNodeSelectExternalInstance}
-           parentName={currentUserOrgUnit?.displayName }
+           parentName={currentUserOrgUnit?.displayName || "." }
            realParentId={currentUserOrgUnit?.id}
        /> 
        }
