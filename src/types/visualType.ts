@@ -1,5 +1,5 @@
 import { XAxis } from "recharts";
-import { z } from "zod";
+import { nullable, z } from "zod";
 
 // Schema definition using zod
 export const VisualDataSchema = z.object({
@@ -23,7 +23,7 @@ export const VisualDataSchema = z.object({
   visualTitleAndSubTitle: z.object({
     visualTitle: z.string().optional(),
     customSubTitle: z.string()?.optional(),
-    DefaultSubTitle: z.array(z.string())?.optional(),
+    DefaultSubTitle: z.array(z.string()?.nullable()?.optional())?.optional(),
   }),
   backedSelectedItems:z.array(z.object({
     label: z.string(),

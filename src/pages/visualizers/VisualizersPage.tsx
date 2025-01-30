@@ -241,23 +241,7 @@ function Visualizers() {
         const result = await fetchCurrentUserInfoAndOrgUnitData(); 
         setCurrentUserInfoAndOrgUnitsData(result); 
       };
-      
-// keepUp with selected data source
-function keepUpWithSelectedDataSource() {
-    const details = selectedDataSourceDetailsRef.current;
 
-    if (!details) return;
-    // Proceed with using the latest `details`
-    if (details.isCurrentInstance) {
-        fetchCurrentInstanceData(selectedDimensionItemType);
-        fetchCurrentUserAndOrgUnitData();
-    } else if (details.url && details.token) {
-        fetchExternalDataItems(details.url, details.token,selectedDimensionItemType);
-        fetchExternalUserInfoAndOrgUnitData(details.url, details.token);
-    } else {
-        console.error("Invalid data source details: Missing URL or token.");
-    }
-}
 useEffect(() => { 
     selectedDataSourceDetailsRef.current = selectedDataSourceDetails;
        // reset to page one
@@ -360,12 +344,12 @@ useEffect(() => {
                                {/* data items */}
                                <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Main Dimensions</label>
-                                <Button disabled={ orgUnitLoading || isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source" text={`${( orgUnitLoading ||  isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading ) ? "Loading.." : `Data ${analyticsDimensions?.dx?.length === 0 ? "" : `(${analyticsDimensions?.dx?.length})`}`} `} onClick={handleShowDataModal} />
+                                <Button disabled={  isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source" text={`${(   isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading ) ? "Loading.." : `Data ${analyticsDimensions?.dx?.length === 0 ? "" : `(${analyticsDimensions?.dx?.length})`}`} `} onClick={handleShowDataModal} />
                             </div>
                             {/* Period */}
                             <div className="mb-4">
                                 {/* <label className="block text-sm font-medium text-gray-700 mb-1">Period</label> */}
-                              <Button disabled={orgUnitLoading || isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source"  text={`${( orgUnitLoading ||  isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading ) ? "Loading.." : `Period ${analyticsDimensions?.pe?.length === 0 ? "" : `(${analyticsDimensions?.pe?.length})`} `} `} onClick={handleShowPeriodModal} /> 
+                              <Button disabled={ isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source"  text={`${(  isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading ) ? "Loading.." : `Period ${analyticsDimensions?.pe?.length === 0 ? "" : `(${analyticsDimensions?.pe?.length})`} `} `} onClick={handleShowPeriodModal} /> 
                             </div>
                             {/* Organization Unit */}
                             <div className="mb-4">

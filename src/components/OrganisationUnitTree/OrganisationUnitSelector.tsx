@@ -110,7 +110,7 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
       if (selectedOrganizationUnits.length > 0) {
         // Fetch organization names in parallel
         const orgNames = await Promise.all(
-          selectedOrganizationUnits.map((orgUnitId) => fetchSingleOrgUnitName(orgUnitId))
+          selectedOrganizationUnits.map((orgUnitId) => fetchSingleOrgUnitName(orgUnitId,selectedDataSourceDetails))
         );
   
         // Update DefaultSubTitle with fetched organization names
