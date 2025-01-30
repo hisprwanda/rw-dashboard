@@ -55,7 +55,7 @@ export const useFetchSingleVisualData = (visualId: string) => {
     setSelectedColorPalette,
     setBackedSelectedItems,
     fetchAnalyticsData,
-    selectedDataSourceDetails,
+   // selectedDataSourceDetails,
     selectedDimensionItemType,
     setCurrentUserInfoAndOrgUnitsData
   } = useAuthorities();
@@ -100,11 +100,32 @@ export const useFetchSingleVisualData = (visualId: string) => {
         setSelectedDataSourceDetails(currentInstanceDetails);
         fetchCurrentInstanceData(selectedDimensionItemType);
         fetchCurrentUserAndOrgUnitData();
+
+        // run analytics
+        const dimensions = unFormatAnalyticsDimensions(singleSavedVisualData?.dataStore?.query?.myData?.params?.dimension);
+        // clear existing analytics data    
+       setAnalyticsData([]); 
+
+             fetchAnalyticsData(
+                 formatAnalyticsDimensions(dimensions),
+                 currentInstanceDetails
+             );
+        
       } else {
         console.log("other selectedDataSourceDetails",selectedDataSourceDetails)
         setSelectedDataSourceDetails(selectedDataSourceDetails );
         fetchExternalDataItems(selectedDataSourceDetails.url, selectedDataSourceDetails.token,selectedDimensionItemType);
         fetchExternalUserInfoAndOrgUnitData(selectedDataSourceDetails.url, selectedDataSourceDetails.token);
+        // run analytics
+        const dimensions = unFormatAnalyticsDimensions(singleSavedVisualData?.dataStore?.query?.myData?.params?.dimension);
+        // clear existing analytics data    
+       setAnalyticsData([]); 
+
+             fetchAnalyticsData(
+                 formatAnalyticsDimensions(dimensions),
+                 selectedDataSourceDetails
+             );
+     
       }
     },
     [savedDataSource, systemInfo, setSelectedDataSourceOption, setSelectedDataSourceDetails]
@@ -152,27 +173,6 @@ export const useFetchSingleVisualData = (visualId: string) => {
     setBackedSelectedItems
   ]);
 
-
-
-
-
-      //// run analytics API
-      const debounceRunAnalytics = useCallback(debounce(() => {
-        const dimensions = unFormatAnalyticsDimensions(data?.dataStore?.query?.myData?.params?.dimension);
-         // clear existing analytics data    
-        setAnalyticsData([]); 
-
-              fetchAnalyticsData(
-                  formatAnalyticsDimensions(dimensions),
-                  selectedDataSourceDetails
-              );
-
-      }, 500), [ data]);
-      
-      useEffect(() => {
-          debounceRunAnalytics();
-          return debounceRunAnalytics.cancel; // Cleanup debounce on unmount
-      }, [debounceRunAnalytics]);
 
   // Return the query result and metadata
   return {
