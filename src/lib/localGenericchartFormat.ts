@@ -4,6 +4,7 @@ import {visualColorPaletteTypes} from "../types/visualSettingsTypes"
 
 
 
+
 export interface InputData {
     headers: any[];
     metaData: any;
@@ -44,9 +45,7 @@ function combineDataByMonth(data:TransformedDataPoint[]):TransformedDataPoint[] 
     );
   }
 
-  // temporarily colors
-//  const colors = [`hsl(var(--chart-1))`, `hsl(var(--chart-2))`,`hsl(var(--chart-3))`,`hsl(var(--chart-4))`,`hsl(var(--chart-5))`];
-  
+
 export function transformDataForGenericChart(inputData: InputData,chartType?:"pie" | "radial" | "single" | "tree",selectedColorPalette?:visualColorPaletteTypes): TransformedDataPoint[] | any {
     if (!isValidInputData(inputData)) {
         throw new Error("Invalid input data structure");
@@ -59,17 +58,12 @@ export function transformDataForGenericChart(inputData: InputData,chartType?:"pi
     const transformedData = rows.map(row => {
         // example of period data: 202311
         const period = row[1];
+       console.log({period});
+        const givenPeriod = inputData.metaData.items[period].name
 
-        const monthAndYear = inputData.metaData.items[period].name
-        // shortening monthAndYear ex: January 2023 => Jan 2023
-        // Split the string into month and year parts
-         const [month, year] = monthAndYear.split(" ");
-          // Abbreviate the month to the first three letters and capitalize the first letter
-           const abbreviatedMonth = month.slice(0, 3);
-        // Concatenate the abbreviated month and year
-         const formattedDate = `${abbreviatedMonth} ${year}`;
         const dataPoint: TransformedDataPoint = {
-            month: formattedDate,
+          // key "month" is not correct naming, it should actually be named something like finalPeriod but bcz I have used it in many places, I keep it temporary. but later I will change it to
+            month: givenPeriod,
         };
         // Add the data value with the name from metaData (below is the how to get the name of selected data element)
         const dataName = inputData.metaData.items[row[0]].name;
