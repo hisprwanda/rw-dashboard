@@ -113,11 +113,14 @@ export const useFetchSingleVisualData = (visualId: string) => {
         instanceName: systemInfo?.title?.applicationTitle || '',
         isCurrentInstance: true,
       };
+      // clear existing analytics data
       setAnalyticsData([]);
+      // run analytics with saved data
       fetchAnalyticsData(
         formatAnalyticsDimensions(dimensions),
         currentInstanceDetails
       );
+      // fetch necessary data for selected instance
       setSelectedDataSourceDetails(currentInstanceDetails);
       await fetchCurrentInstanceData(selectedDimensionItemType);
       const result = await fetchCurrentUserInfoAndOrgUnitData();
@@ -125,11 +128,14 @@ export const useFetchSingleVisualData = (visualId: string) => {
       
     
     } else if (dataSourceDetails) {
+        // clear existing analytics data
       setAnalyticsData([]);
+           // run analytics with saved data
       fetchAnalyticsData(
         formatAnalyticsDimensions(dimensions),
         dataSourceDetails
       );
+            // fetch necessary data for selected instance
       setSelectedDataSourceDetails(dataSourceDetails);
       await fetchExternalDataItems(
         dataSourceDetails.url,
@@ -180,7 +186,7 @@ export const useFetchSingleVisualData = (visualId: string) => {
       (item: any) => item.key === savedDataSourceId
     )?.value;
 
-    // Update visual settings
+    // Update all visual related states (like settings)
     setSelectedChartType(data.dataStore?.visualType);
     setAnalyticsQuery(data.dataStore?.query);
     setSelectedOrganizationUnits(
