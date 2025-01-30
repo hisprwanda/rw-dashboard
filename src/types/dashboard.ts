@@ -26,7 +26,7 @@ export const DashboardSchema = z.object({
           visualType: z.string(),
           dataSourceId: z.string().nonempty({ message: "Data source ID is required" }),
           visualTitleAndSubTitle: z.object({
-            visualTitle: z.string()?.optional(),
+            visualTitle: z.string().optional(),
             customSubTitle: z.string()?.optional(),
             DefaultSubTitle: z.array(z.string())?.optional(),
           }),
