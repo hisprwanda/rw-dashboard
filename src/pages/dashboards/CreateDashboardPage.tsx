@@ -69,6 +69,12 @@ const CreateDashboardPage: React.FC = () => {
     
         },
     });
+
+    useEffect(() => {
+      if (Object.keys(errors).length > 0) {
+        console.error('dashboard Validation Errors:', errors);
+      }
+    }, [errors]);
     ////// automatically set width of grid layout
     useEffect(() => {
         const handleResize = () => setContainerWidth(window.innerWidth);

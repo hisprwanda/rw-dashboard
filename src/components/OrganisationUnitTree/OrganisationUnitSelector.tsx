@@ -45,7 +45,7 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
   const orgUnits = data?.orgUnits?.organisationUnits || [];
   const orgUnitLevels = data?.orgUnitLevels?.organisationUnitLevels || [];
   const currentUserOrgUnit = data?.currentUser?.organisationUnits?.[0];
-    console.log(" data?.currentUser", data?.currentUser)
+    console.log(" data?.currentUser changed", data)
   const {
     searchTerm,
     selectedLevel,
@@ -238,7 +238,7 @@ useEffect(()=>{
            token={selectedDataSourceDetails.token}
            rootOrgUnitId={currentUserOrgUnit?.id} 
            onNodeSelect={handleNodeSelectExternalInstance}
-           parentName={currentUserOrgUnit?.displayName }
+           parentName={currentUserOrgUnit?.displayName || "temp" }
            realParentId={currentUserOrgUnit?.id}
        /> 
        }
