@@ -254,75 +254,40 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   };
 
-  /// current instance stable fetch, temporally commented out
-  // const fetchAnalyticsData = async (dimension: any,{isCurrentInstance,url,token}:{isCurrentInstance?:boolean,url?:string,token?:string} ) => {
-  //   try {
-  //     setIsFetchAnalyticsDataLoading(true);
-  //     setFetchAnalyticsDataError(false);
-  //     const orgUnitIds = selectedOrganizationUnits?.map((unit: any) => unit).join(';');
-  //     const orgUnitLevelIds = selectedOrganizationUnitsLevels?.map((unit: any) => `LEVEL-${unit}`).join(';');
-  //     const orgUnitGroupIds = selectedOrgUnitGroups?.map((item: any) => `OU_GROUP-${item}`).join(';');
-
-  //     console.log({ orgUnitGroupIds, orgUnitIds, orgUnitLevelIds });
-
-  //     const analyticsQuery = {
-  //       myData: {
-  //         resource: 'analytics',
-  //         params: {
-  //           dimension,
-  //           // if current org unit is checked use keyword, if not use other org units
-  //           filter: `ou:${isUseCurrentUserOrgUnits
-  //             ? `${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT ? 'USER_ORGUNIT;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_CHILDREN ? 'USER_ORGUNIT_CHILDREN;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_GRANDCHILDREN ? 'USER_ORGUNIT_GRANDCHILDREN;' : ''}`.slice(0, -1)
-  //             : `${orgUnitIds};${orgUnitLevelIds};${orgUnitGroupIds}`
-  //             }`,
-  //           displayProperty: 'NAME',
-  //           includeNumDen: true,
-  //         }
-  //       },
-  //     }
-
-  //     const result = await engine.query(analyticsQuery);
-  //     setAnalyticsData(result?.myData);
-  //     // set analytics query
-  //     setAnalyticsQuery(analyticsQuery)
-  //   } catch (error) {
-  //     // temporally commented
-  //    // setFetchAnalyticsDataError(error);
-  //     console.log("Error fetching analytics data:", error);
-    
-  //   } finally {
-  //     setIsFetchAnalyticsDataLoading(false);
-  //   }
-
-
-
-  // };
-
-
-
-  const fetchSingleOrgUnitName = async(orgUnitId:string)=>{
+  const fetchSingleOrgUnitName = async (orgUnitId: string, instance: DataSourceFormFields) => {
     try {
-      const query = {
-        organisationUnit: {
-          resource: `organisationUnits/${orgUnitId}`,
-          params: {
-            fields: 'displayName',
+      if (instance.isCurrentInstance) {
+        // Internal request via engine.query
+        const query = {
+          organisationUnit: {
+            resource: `organisationUnits/${orgUnitId}`,
+            params: {
+              fields: 'displayName',
+            },
           },
-        
-        },
-      };
-
-      const result = await engine.query(query);
-     // console.log("single org unit name", result)
-      return result.organisationUnit.displayName
-      // update state here with result
-
-
-    
+        };
+        const result = await engine.query(query);
+        return result.organisationUnit.displayName;
+      } else {
+        // External request via axios
+        const response = await axios.get(
+          `${instance.url}/api/40/organisationUnits/${orgUnitId}`,
+          {
+            headers: {
+              Authorization: `ApiToken ${instance.token}`,
+            },
+            params: {
+              fields: 'displayName',
+            },
+          }
+        );
+        return response.data.displayName;
+      }
     } catch (error) {
-      console.log("fetch single org err",error)
+      console.log("fetch single org err", error);
+      throw error; // Re-throwing error to handle it in the calling function
     }
-  }
+  };
 
 
 
