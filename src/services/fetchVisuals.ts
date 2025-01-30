@@ -74,7 +74,11 @@ export const useFetchSingleVisualData = (visualId: string) => {
 
   // Fetch data using `useDataQuery`
   const { data, loading, error, refetch } = useDataQuery<VisualData>(query);
-
+  const fetchCurrentUserAndOrgUnitData = async () => {
+    const result = await fetchCurrentUserInfoAndOrgUnitData(); 
+    setCurrentUserInfoAndOrgUnitsData(result); 
+  };
+  
   // Determine data source details
   const determineDataSource = useCallback(
     (singleSavedVisualData: VisualData) => {
@@ -91,10 +95,13 @@ export const useFetchSingleVisualData = (visualId: string) => {
           instanceName: systemInfo?.title?.applicationTitle || '',
           isCurrentInstance: true,
         };
+        console.log("currentInstanceDetails",currentInstanceDetails)
+        console.log("currentInstanceDetails 2",selectedDataSourceDetails)
         setSelectedDataSourceDetails(currentInstanceDetails);
         fetchCurrentInstanceData(selectedDimensionItemType);
         fetchCurrentUserAndOrgUnitData();
       } else {
+        console.log("other selectedDataSourceDetails",selectedDataSourceDetails)
         setSelectedDataSourceDetails(selectedDataSourceDetails );
         fetchExternalDataItems(selectedDataSourceDetails.url, selectedDataSourceDetails.token,selectedDimensionItemType);
         fetchExternalUserInfoAndOrgUnitData(selectedDataSourceDetails.url, selectedDataSourceDetails.token);
@@ -146,33 +153,9 @@ export const useFetchSingleVisualData = (visualId: string) => {
   ]);
 
 
-    /// start utils functions
-  /// fetch current user and Organization unit
-  const fetchCurrentUserAndOrgUnitData = async () => {
-    const result = await fetchCurrentUserInfoAndOrgUnitData(); 
-    setCurrentUserInfoAndOrgUnitsData(result); 
-  };
-  
-// keepUp with selected data source
-function keepUpWithSelectedDataSource(selectedDataSourceDetails) {
-const details = selectedDataSourceDetails.current;
 
-if (!details) return;
-// Proceed with using the latest `details`
-if (details.isCurrentInstance) {
-    fetchCurrentInstanceData(selectedDimensionItemType);
-    fetchCurrentUserAndOrgUnitData();
-} else if (details.url && details.token) {
-    fetchExternalDataItems(details.url, details.token,selectedDimensionItemType);
-    fetchExternalUserInfoAndOrgUnitData(details.url, details.token);
-} else {
-    console.error("Invalid data source details: Missing URL or token.");
-}
-}
 
-    // end util functions
 
-  
       //// run analytics API
       const debounceRunAnalytics = useCallback(debounce(() => {
         const dimensions = unFormatAnalyticsDimensions(data?.dataStore?.query?.myData?.params?.dimension);
