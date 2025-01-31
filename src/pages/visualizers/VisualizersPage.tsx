@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Button from "../../components/Button";
-import { IoSaveOutline } from 'react-icons/io5';
+import { IoCloseOutline, IoMenuOutline, IoSaveOutline } from 'react-icons/io5';
 import { useDataSourceData } from '../../services/DataSourceHooks';
 import { GenericModal, Loading } from "../../components";
 import { DataModal, OrganizationModal, PeriodModal } from './Components/MetaDataModals';
@@ -55,6 +55,7 @@ function Visualizers() {
     const [subtitleOption, setSubtitleOption] = useState<'auto' | 'none' | 'custom'>('auto');
        const captureRef = useRef<HTMLDivElement>(null);
           const [isFullscreen, setIsFullscreen] = useState(false);
+          const [isShowSidebar, setIsShowSidebar] = useState<boolean>(false)
 
      
     //// data source options
@@ -142,32 +143,6 @@ function Visualizers() {
        
     },[visualId])
 
-    //// run analytics API
-//     const debounceRunAnalytics = useCallback(debounce(() => {
-//         if (singleSavedVisualData && visualId) {
-//             keepUpWithSelectedDataSource();
-//             // setAnalyticsData([]); 
-//             // fetchAnalyticsData(
-//             //     formatAnalyticsDimensions(analyticsDimensions),
-//             //     selectedDataSourceDetails
-//             // );
-//         }
-//   //  }, 500), [analyticsDimensions, singleSavedVisualData, visualId,isUseCurrentUserOrgUnits]);
-//     }, 500), [ singleSavedVisualData, visualId]);
-    
-    // useEffect(() => {
-    //     debounceRunAnalytics();
-    //     return debounceRunAnalytics.cancel; // Cleanup debounce on unmount
-    // }, [debounceRunAnalytics]);
-
-
-
-    
-
-
-    
-
-    
 
     // update if current user organization is selected
     useEffect(() =>{
@@ -299,7 +274,15 @@ useEffect(() => {
             { (isFetchSingleVisualLoading || loading) ? <Loading/> : 
             <>
                     <div className="flex justify-between items-start">
-                <Tabs defaultValue="DATA" className="w-1/4 bg-white shadow-md rounded-lg p-4">
+                        {/* toggle sidebar */}
+                        <button
+  onClick={() => setIsShowSidebar((prev) => !prev)}
+  className="p-2 bg-gray-200 rounded-md shadow hover:bg-gray-300 transition-all"
+>
+  {isShowSidebar ? <IoCloseOutline size={24} /> : <IoMenuOutline size={24} />}
+</button>
+
+                {isShowSidebar &&     <Tabs defaultValue="DATA" className="w-1/4 bg-white shadow-md rounded-lg p-4">
                     <TabsList className="flex items-center justify-center ">
                         <TabsTrigger
                             value="DATA"
@@ -363,7 +346,8 @@ useEffect(() => {
                     <TabsContent value="SETTINGS" className="pt-4">
                    <VisualSettings setIsShowStyles={setIsShowStyles} />
                     </TabsContent>
-                </Tabs>
+                </Tabs>}  
+            
 
                 {/* Visualization Area */}
                 <div className="flex-grow bg-white shadow-md p-4 rounded-lg mx-4">

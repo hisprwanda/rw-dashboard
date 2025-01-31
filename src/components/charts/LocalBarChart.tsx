@@ -1,4 +1,4 @@
-    import React, { useMemo } from "react";
+    import React, { useEffect, useMemo } from "react";
 import { useAuthorities } from '../../context/AuthContext';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Legend, Tooltip,LabelList } from "recharts";
 import {
@@ -28,6 +28,10 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleA
             return { chartData: [], chartConfig: {}, error: (err as Error).message };
         }
     }, [data,visualSettings]);
+
+    useEffect(()=>{
+        console.log("chartData",chartData)
+    },[chartData])
 
     if (error || chartData.length === 0) {
         return (

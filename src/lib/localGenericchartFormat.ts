@@ -62,7 +62,7 @@ export function transformDataForGenericChart(inputData: InputData,chartType?:"pi
         const givenPeriod = inputData.metaData.items[period].name
 
         const dataPoint: TransformedDataPoint = {
-          // key "month" is not correct naming, it should actually be named something like finalPeriod but bcz I have used it in many places, I keep it temporary. but later I will change it to
+          // key "month" is not correct naming, it should actually be named something like finalPeriod but bcz I have used it in many places, I kept it temporary. but later I will change it to
             month: givenPeriod,
         };
         // Add the data value with the name from metaData (below is the how to get the name of selected data element)
