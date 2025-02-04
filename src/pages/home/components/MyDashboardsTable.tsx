@@ -10,88 +10,13 @@ import { useNavigate } from "react-router-dom";
 import { useAuthorities } from "../../../context/AuthContext";
 import { useUpdateDashboardFavorite } from "../../../hooks/useUpdateDashFavorite";
 import { useDashboardsData } from "../../../services/fetchDashboard";
-import { FaEye, FaRegPlayCircle, FaRegTrashAlt } from "react-icons/fa";
+import { FaEye, FaRegPlayCircle, FaRegTrashAlt, FaShareAlt } from "react-icons/fa";
 import { useToast } from "../../../components/ui/use-toast";
+import { DeleteDashboardModal } from "./DeleteDashboardModal";
+import { SharingDashboardModal } from "./SharingDashboardModal";
 
-import { Button } from "../../../components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "../../../components/ui/dialog";
-import { Input } from "../../../components/ui/input";
-import { Label } from "../../../components/ui/label";
 
-interface DeleteDashboardModalProps {
-  dashboardId: string;
-  dashboardName: string;
-  onClose: () => void;
-  onDelete: (dashboardId: string) => void;
-}
 
-function DeleteDashboardModal({
-  dashboardId,
-  dashboardName,
-  onClose,
-  onDelete,
-}: DeleteDashboardModalProps) {
-  const [inputValue, setInputValue] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleConfirmDelete = async () => {
-    setIsLoading(true);
-    await onDelete(dashboardId); // Wait for the API call to complete
-    setIsLoading(false);
-    onClose(); // Close modal only after successful API completion
-  };
-
-  return (
-    <Dialog open onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px] bg-white">
-        <DialogHeader>
-          <DialogTitle>Delete Dashboard</DialogTitle>
-          <DialogDescription>
-            Are you sure you want to delete the dashboard? Please type the name
-            of the dashboard <strong>{dashboardName}</strong> to confirm.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="dashboardName" className="text-right">
-              Dashboard Name
-            </Label>
-            <Input
-              id="dashboardName"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              className="col-span-3"
-            />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={onClose}
-            className="mr-2"
-            disabled={isLoading} // Disable Cancel button while loading
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="destructive"
-            disabled={inputValue !== dashboardName || isLoading} // Disable if name mismatch or loading
-            onClick={handleConfirmDelete}
-          >
-            {isLoading ? "Loading..." : "Confirm Delete"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-}
 
 interface User {
   id: string;
@@ -145,6 +70,10 @@ interface MyDashboardsTableProps {
 const MyDashboardsTable: React.FC<MyDashboardsTableProps> = ({ dashboards }) => {
   const { toast } = useToast();
   const [deleteModalData, setDeleteModalData] = useState<{
+    dashboardId: string;
+    dashboardName: string;
+  } | null>(null);
+  const [sharingModalData, setSharingModalData] = useState<{
     dashboardId: string;
     dashboardName: string;
   } | null>(null);
@@ -222,9 +151,19 @@ const MyDashboardsTable: React.FC<MyDashboardsTableProps> = ({ dashboards }) => 
               className="text-gray-500 text-2xl hover:text-blue-500 cursor-pointer transition-colors"
               onClick={() => navigate(`/dashboard/${row.original.key}`)}
             />
+             
             <FaRegPlayCircle
               className="text-gray-500 text-2xl hover:text-blue-500 cursor-pointer transition-colors"
               onClick={() => navigate(`/dashboard/${row.original.key}/present`)}
+            />
+               <FaShareAlt
+              className="text-gray-500 text-2xl hover:text-blue-500  cursor-pointer transition-colors"
+              onClick={() =>
+                setSharingModalData({
+                  dashboardId: row.original.key,
+                  dashboardName: row.original.value.dashboardName,
+                })
+              }
             />
             <span
               onClick={() => toggleFavorite(row.original.key, row.original.value)}
@@ -242,6 +181,7 @@ const MyDashboardsTable: React.FC<MyDashboardsTableProps> = ({ dashboards }) => 
               )}
             </span>
 
+        
             <FaRegTrashAlt
               className="text-red-500 text-2xl hover:text-red-900 cursor-pointer transition-colors"
               onClick={() =>
@@ -270,6 +210,14 @@ const MyDashboardsTable: React.FC<MyDashboardsTableProps> = ({ dashboards }) => 
           dashboardName={deleteModalData.dashboardName}
           onClose={() => setDeleteModalData(null)}
           onDelete={handleDeleteDashboard}
+        />
+      )}
+      {sharingModalData && (
+        <SharingDashboardModal
+          dashboardId={sharingModalData.dashboardId}
+          dashboardName={sharingModalData.dashboardName}
+          onClose={() => setSharingModalData(null)}
+          onSharing={handleDeleteDashboard}
         />
       )}
       <MantineReactTable table={table} />;
