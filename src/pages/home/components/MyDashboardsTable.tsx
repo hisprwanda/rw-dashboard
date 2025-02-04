@@ -1,4 +1,5 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { useDataEngine } from '@dhis2/app-runtime';
 import {
   MantineReactTable,
   useMantineReactTable,
@@ -9,7 +10,13 @@ import { useNavigate } from "react-router-dom";
 import { useAuthorities } from "../../../context/AuthContext";
 import { useUpdateDashboardFavorite } from "../../../hooks/useUpdateDashFavorite";
 import { useDashboardsData } from "../../../services/fetchDashboard";
-import { FaEye, FaRegPlayCircle } from "react-icons/fa";
+import { FaEye, FaRegPlayCircle, FaRegTrashAlt, FaShareAlt } from "react-icons/fa";
+import { useToast } from "../../../components/ui/use-toast";
+import { DeleteDashboardModal } from "./DeleteDashboardModal";
+import { SharingDashboardModal } from "./SharingDashboardModal";
+
+
+
 
 interface User {
   id: string;
@@ -61,24 +68,50 @@ interface MyDashboardsTableProps {
 }
 
 const MyDashboardsTable: React.FC<MyDashboardsTableProps> = ({ dashboards }) => {
+  const { toast } = useToast();
+  const [deleteModalData, setDeleteModalData] = useState<{
+    dashboardId: string;
+    dashboardName: string;
+  } | null>(null);
+  const [sharingModalData, setSharingModalData] = useState<{
+    dashboardId: string;
+    dashboardName: string;
+  } | null>(null);
+
   const navigate = useNavigate();
   const { userDatails } = useAuthorities();
   const userId = userDatails?.me?.id;
-  const { refetch, loading } = useDashboardsData();
+  const { refetch } = useDashboardsData();
   const { isUpdatingDashboard, toggleFavorite } = useUpdateDashboardFavorite({
     userId,
     refetch,
   });
 
-  const handleViewMore = (dashboardId: string) => {
-    navigate(`/dashboard/${dashboardId}`);
+  const engine = useDataEngine();
+
+  const handleDeleteDashboard = async (dashboardId: string) => {
+    try {
+      await engine.mutate({
+        resource: `dataStore/${process.env.REACT_APP_DASHBOARD_STORE}/${dashboardId}`,
+        type: "delete",
+      });
+
+      toast({
+        title: "Success",
+        description: "Dashboard deleted successfully",
+        variant: "default",
+      });
+      refetch();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
+      console.error("Failed to delete dashboard:", error);
+    }
   };
 
-  const handlePresentDashboard = (dashboardId: string) => {
-    navigate(`/dashboard/${dashboardId}/present`);
-  };
-
-  // Sort dashboards by favorite status
   const sortedDashboards = useMemo(() => {
     if (!dashboards || !userId) return [];
 
@@ -89,7 +122,6 @@ const MyDashboardsTable: React.FC<MyDashboardsTableProps> = ({ dashboards }) => 
       if (aIsFavorite && !bIsFavorite) return -1;
       if (!aIsFavorite && bIsFavorite) return 1;
 
-      // If both have same favorite status, sort by name
       return a.value.dashboardName.localeCompare(b.value.dashboardName);
     });
   }, [dashboards, userId]);
@@ -104,6 +136,10 @@ const MyDashboardsTable: React.FC<MyDashboardsTableProps> = ({ dashboards }) => 
       header: "Created At",
     },
     {
+      accessorFn: (row) => new Date(row.value.updatedAt).toLocaleDateString(),
+      header: "Updated At",
+    },
+    {
       accessorKey: "isFavorite",
       header: "Actions",
       Cell: ({ row }) => {
@@ -113,11 +149,21 @@ const MyDashboardsTable: React.FC<MyDashboardsTableProps> = ({ dashboards }) => 
           <div className="flex items-center gap-3">
             <FaEye
               className="text-gray-500 text-2xl hover:text-blue-500 cursor-pointer transition-colors"
-              onClick={() => handleViewMore(row.original.key)}
+              onClick={() => navigate(`/dashboard/${row.original.key}`)}
             />
+             
             <FaRegPlayCircle
               className="text-gray-500 text-2xl hover:text-blue-500 cursor-pointer transition-colors"
-              onClick={() => handlePresentDashboard(row.original.key)}
+              onClick={() => navigate(`/dashboard/${row.original.key}/present`)}
+            />
+               <FaShareAlt
+              className="text-gray-500 text-2xl hover:text-blue-500  cursor-pointer transition-colors"
+              onClick={() =>
+                setSharingModalData({
+                  dashboardId: row.original.key,
+                  dashboardName: row.original.value.dashboardName,
+                })
+              }
             />
             <span
               onClick={() => toggleFavorite(row.original.key, row.original.value)}
@@ -134,6 +180,17 @@ const MyDashboardsTable: React.FC<MyDashboardsTableProps> = ({ dashboards }) => 
                 <IconStar24 color="gray" className="text-2xl" />
               )}
             </span>
+
+        
+            <FaRegTrashAlt
+              className="text-red-500 text-2xl hover:text-red-900 cursor-pointer transition-colors"
+              onClick={() =>
+                setDeleteModalData({
+                  dashboardId: row.original.key,
+                  dashboardName: row.original.value.dashboardName,
+                })
+              }
+            />
           </div>
         );
       },
@@ -142,10 +199,30 @@ const MyDashboardsTable: React.FC<MyDashboardsTableProps> = ({ dashboards }) => 
 
   const table = useMantineReactTable({
     columns,
-    data: sortedDashboards, // Use the sorted dashboards instead of the original
+    data: sortedDashboards,
   });
 
-  return <MantineReactTable table={table} />;
+  return (
+    <div>
+      {deleteModalData && (
+        <DeleteDashboardModal
+          dashboardId={deleteModalData.dashboardId}
+          dashboardName={deleteModalData.dashboardName}
+          onClose={() => setDeleteModalData(null)}
+          onDelete={handleDeleteDashboard}
+        />
+      )}
+      {sharingModalData && (
+        <SharingDashboardModal
+          dashboardId={sharingModalData.dashboardId}
+          dashboardName={sharingModalData.dashboardName}
+          onClose={() => setSharingModalData(null)}
+          onSharing={handleDeleteDashboard}
+        />
+      )}
+      <MantineReactTable table={table} />;
+    </div>
+  );
 };
 
 export default MyDashboardsTable;

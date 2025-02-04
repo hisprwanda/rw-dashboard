@@ -11,6 +11,7 @@ import { useAuthorities } from '../../../context/AuthContext';
 import { useFetchVisualsData } from '../../../services/fetchVisuals';
 import { useNavigate } from 'react-router-dom';
 import { currentInstanceId } from '../../../constants/currentInstanceInfo';
+import { useToast } from "../../../components/ui/use-toast";
 
 interface SaveVisualTypeFormProps {
   setIsShowSaveVisualTypeForm: any;
@@ -20,10 +21,10 @@ interface SaveVisualTypeFormProps {
 }
 
 const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleSavedVisualData,setIsShowSaveVisualTypeForm ,selectedDataSourceId}) => {
-  const {selectedDataSourceOption,setSelectedDataSourceOption,visualSettings, analyticsQuery,userDatails,selectedChartType,selectedOrgUnits,selectedLevel, visualTitleAndSubTitle } = useAuthorities();
+  const {selectedDataSourceOption,setSelectedDataSourceOption,visualSettings, analyticsQuery,userDatails,selectedChartType,selectedOrgUnits,selectedLevel, visualTitleAndSubTitle ,backedSelectedItems} = useAuthorities();
   const {data:allSavedVisuals,loading,isError}  = useFetchVisualsData()
   const navigate = useNavigate();
-
+   const { toast } = useToast();
    console.log("current Visual",generateUid())
   const engine = useDataEngine();
 
@@ -35,9 +36,11 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
       visualName:  "",
       description:   "",
       visualType: selectedChartType,
+      backedSelectedItems:backedSelectedItems,
       visualTitleAndSubTitle:visualTitleAndSubTitle,  
       visualSettings:visualSettings,
       query: analyticsQuery,
+      
       dataSourceId: selectedDataSourceOption, 
       createdBy:{
         name:userDatails?.me?.displayName,
@@ -70,6 +73,7 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
             ...prevValues,
             id: singleSavedVisualData?.dataStore?.id,
             visualName: singleSavedVisualData?.dataStore?.visualName || prevValues.visualName,
+            backedSelectedItems: singleSavedVisualData?.dataStore?.backedSelectedItems || prevValues.backedSelectedItems,
             description: singleSavedVisualData?.dataStore?.description || prevValues.description,
             createdAt: singleSavedVisualData?.dataStore?.createdAt || prevValues.createdAt,
         }));
@@ -110,10 +114,15 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
             type:visualId ? "update" : 'create',
             data: formData,
         });
+        toast({
+          title: "Success",
+          description: "saved successfully",
+          variant: "default",
+        });
 
-        setSuccessMessage('Visual saved successfully!');
+       // setSuccessMessage('Visual saved successfully!');
         // Delay a bit to show success message
-        await new Promise((resolve) => setTimeout(() => resolve(), 2000));
+       // await new Promise((resolve) => setTimeout(() => resolve(), 2000));
         // Close modal
         setIsShowSaveVisualTypeForm(false);
         // go in edit mode after saving first visual
@@ -125,6 +134,11 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
     
     } catch (error) {
         console.error('Error saving visual:', error);
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+          variant: "destructive",
+        });
         setErrorMessage('Failed to save visual. Please try again.');
     }
 };

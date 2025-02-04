@@ -22,6 +22,7 @@ import { CreateDashboardPage } from "./pages/dashboards";
 import { TestChart } from "./components/charts/TestChart";
 import TokenTest from "./pages/TokenTest";
 import UserCredentials from "./pages/UserCredentials";
+import { Toaster } from "./components/ui/toaster";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -45,8 +46,8 @@ const App: React.FC = () => {
               <Route path="test" element={<TestChart />} />
               <Route path="token-test" element={<TokenTest />} />
               <Route path="credentials" element={<UserCredentials />} />
-              <Route path="settings" element={<DataSourcePage />} />
-              <Route path="data-source" element={<DataSourcePage />} />
+              <Route path="datasource" element={<DataSourcePage />} />
+              {/* <Route path="data-source" element={<DataSourcePage />} /> */}
               <Route path="unauthorized" element={<UnauthorizedPage />} />
               <Route path="visualizers/:id?" element={<VisualizersPage />} />
               <Route path="dashboard/:id?/:present?" element={<CreateDashboardPage />} />
@@ -65,6 +66,7 @@ const App: React.FC = () => {
             } />
           </Routes>
         </Router>
+        <Toaster />
       </AuthProvider>
     </QueryClientProvider>
   );

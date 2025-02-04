@@ -30,7 +30,8 @@ import { currentInstanceId } from '../../constants/currentInstanceInfo';
 import debounce from 'lodash/debounce';
 import { dimensionItemTypes } from '../../constants/dimensionItemTypes';
 import ExportModal from './Components/ExportModal';
-
+import { useToast } from "../../components/ui/use-toast";
+import { Maximize2 } from 'lucide-react';
 
 function Visualizers() {
     const { id: visualId } = useParams();
@@ -40,7 +41,7 @@ function Visualizers() {
     const { loading: orgUnitLoading, error: fetchOrgUnitError, data: orgUnitsData, fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData();
     const { error: dataItemsFetchError, loading: isFetchCurrentInstanceDataItemsLoading, fetchCurrentInstanceData } = useDataItems();
     const { fetchExternalDataItems, response, error, loading: isFetchExternalInstanceDataItemsLoading } = useExternalDataItems();
-    const { fetchExternalUserInfoAndOrgUnitData } = useExternalOrgUnitData();
+    const { fetchExternalUserInfoAndOrgUnitData, loading: isFetchExternalUserInfoAndOrgUnitDataLoading } = useExternalOrgUnitData();
     const defaultUserOrgUnit = currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName;
     const { data: savedDataSource, loading } = useDataSourceData();
     const [isShowDataModal, setIsShowDataModal] = useState<boolean>(false);
@@ -53,11 +54,13 @@ function Visualizers() {
     const [titleOption, setTitleOption] = useState<'none' | 'custom'>('none');
     const [subtitleOption, setSubtitleOption] = useState<'auto' | 'none' | 'custom'>('auto');
     const visualizationRef = useRef<HTMLDivElement>(null);
+    const captureRef = useRef<HTMLDivElement>(null);
+    const [isFullscreen, setIsFullscreen] = useState(false);
+
     //// data source options
     const dataSourceOptions = savedDataSource?.dataStore?.entries?.map((entry: any) => (
         <option key={entry?.key} value={entry?.key}>{entry?.value?.instanceName}</option>
     ));
-
 
     /// function to clear reset to default values
     function resetToDefaultValues() {
@@ -124,7 +127,6 @@ function Visualizers() {
 
     }
 
-
     // if visualId is false then set all chart related states to default
     useEffect(() => {
         if (!visualId) {
@@ -135,29 +137,6 @@ function Visualizers() {
         }
 
     }, [visualId]);
-
-    //// run analytics API
-    const debounceRunAnalytics = useCallback(debounce(() => {
-        if (singleSavedVisualData && visualId) {
-            keepUpWithSelectedDataSource();
-            setAnalyticsData([]);
-            fetchAnalyticsData(
-                formatAnalyticsDimensions(analyticsDimensions),
-                selectedDataSourceDetails
-            );
-        }
-    }, 500), [analyticsDimensions, singleSavedVisualData, visualId]);
-
-    useEffect(() => {
-        debounceRunAnalytics();
-        return debounceRunAnalytics.cancel; // Cleanup debounce on unmount
-    }, [debounceRunAnalytics]);
-
-
-
-
-
-
 
     // update if current user organization is selected
     useEffect(() => {
@@ -180,7 +159,6 @@ function Visualizers() {
     const handleShowDataModal = () => setIsShowDataModal(true);
     const handleShowOrganizationUnitModal = () => setIsShowOrganizationUnit(true);
     const handleShowPeriodModal = () => setIsShowPeriod(true);
-
 
     // Function to render the selected chart
     const renderChart = () => {
@@ -227,33 +205,11 @@ function Visualizers() {
         setCurrentUserInfoAndOrgUnitsData(result);
     };
 
-    // keepUp with selected data source
-    function keepUpWithSelectedDataSource() {
-        const details = selectedDataSourceDetailsRef.current;
-
-        if (!details) return;
-
-        // Proceed with using the latest `details`
-        if (details.isCurrentInstance) {
-            fetchCurrentInstanceData(selectedDimensionItemType);
-            fetchCurrentUserAndOrgUnitData();
-        } else if (details.url && details.token) {
-            fetchExternalDataItems(details.url, details.token, selectedDimensionItemType);
-            fetchExternalUserInfoAndOrgUnitData(details.url, details.token);
-        } else {
-            console.error("Invalid data source details: Missing URL or token.");
-        }
-    }
     useEffect(() => {
         selectedDataSourceDetailsRef.current = selectedDataSourceDetails;
         // reset to page one
         setDataItemsDataPage(1);
     }, [selectedDataSourceDetails]);
-
-    //// testing data items
-    useEffect(() => {
-        console.log("here is updated data items", dataItemsData);
-    }, [dataItemsData]);
 
     /// main return
     return (
@@ -348,6 +304,7 @@ function Visualizers() {
                                     </div>
                                 )}
                             </div>
+
                         </div>
                     </div>
                     {/* Data, Organization Unit, and Period Modals */}

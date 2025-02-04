@@ -4,75 +4,135 @@ import { useAuthorities } from '../context/AuthContext';
 import { dimensionItemTypesTYPES } from '../types/dimensionDataItemTypes';
 
 export const useExternalDataItems = () => {
-    const { setDataItemsData } = useAuthorities();
+    const { setDataItemsData, setSubDataItemsData } = useAuthorities();
     const [response, setResponse] = useState(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
     // Helper function to build API path and params
     const buildApiPathAndParams = useCallback(
-        (dimensionType: string, searchItem?: string, dataItemsDataPage: number = 1) => {
+        (dimensionType: string, searchItem?: string, dataItemsDataPage: number = 1, groupsIdOrSubDataItemIds?: string,otherOptions?:string) => {
             const commonParams = {
                 fields: 'id,displayName~rename(name),dimensionItemType,expression',
                 order: 'displayName:asc',
                 pageSize: 50,
                 page: dataItemsDataPage,
-                filter: searchItem ? `displayName:ilike:${searchItem}` : undefined,
+                paging: true,
             };
+
+            // Add dynamic filter for searchItem
+            const filterParams = [];
+            if (searchItem) {
+                filterParams.push(`displayName:ilike:${searchItem}`);
+            }
 
             switch (dimensionType) {
                 case 'dataItems':
-                    return { path: 'dataItems.json', params: commonParams };
-                case 'indicators':
-                    return { path: 'indicators.json', params: { ...commonParams } };
-                case 'dataElements':
                     return {
-                        path: 'dataElements.json',
-                        params: {
-                            ...commonParams,
-                            filter: [
-                                `domainType:eq:AGGREGATE`,
-                                searchItem && `displayName:ilike:${searchItem}`,
-                            ].filter(Boolean).join(','),
+                        main: { 
+                            path: 'dataItems.json',
+                            params: { 
+                                ...commonParams,
+                                ...(filterParams.length > 0 && { filter: filterParams[0] })
+                            }
                         },
                     };
+                case 'indicators':
+                    return {
+                        main: {
+                            path: 'indicators.json',
+                            params: {
+                                ...commonParams,
+                                ...(groupsIdOrSubDataItemIds && { 
+                                    filter: `indicatorGroups.id:eq:${groupsIdOrSubDataItemIds}` 
+                                })
+                            }
+                        },
+                        sub: {
+                            path: 'indicatorGroups.json',
+                            params: { ...commonParams }
+                        }
+                    };
+                    case "dataElements":
+                        return {
+                            ...(otherOptions === "dataElementOperands"
+                                ? {
+                                    main: {
+                                        path: "dataElementOperands.json",
+                                        params: { ...commonParams },
+                                    },
+                                }
+                                : {
+                                    main: {
+                                        path: "dataElements.json",
+                                        params: {
+                                            ...commonParams,
+                                            filter: groupsIdOrSubDataItemIds
+                                                ? `dataElementGroups.id:eq:${groupsIdOrSubDataItemIds}`
+                                                : "domainType:eq:AGGREGATE",
+                                        },
+                                    },
+                                }),
+                            sub: {
+                                path: "dataElementGroups.json",
+                                params: { ...commonParams },
+                            },
+                        };
+                    
                 case 'dataSets':
-                    return { path: 'dataSets.json', params: commonParams };
+                    return {
+                        main: {
+                            path: 'dataSets.json',
+                            params: {
+                                ...commonParams,
+                                ...(filterParams.length > 0 && { filter: filterParams[0] })
+                            }
+                        }
+                    };
                 case 'Event Data Item':
                     return {
-                        path: 'dataItems.json',
-                        params: {
-                            ...commonParams,
-                            filter: [
-                                `dimensionItemType:in:[PROGRAM_DATA_ELEMENT,PROGRAM_ATTRIBUTE]`,
-                                searchItem && `displayName:ilike:${searchItem}`,
-                            ].filter(Boolean).join(','),
+                        main: {
+                            path: 'dataItems.json',
+                            params: {
+                                ...commonParams,
+                                filter: groupsIdOrSubDataItemIds
+                                    ? `programId:eq:${groupsIdOrSubDataItemIds}`
+                                    : 'dimensionItemType:in:[PROGRAM_DATA_ELEMENT,PROGRAM_ATTRIBUTE]'
+                            }
                         },
+                        sub: {
+                            path: 'programs.json',
+                            params: { ...commonParams }
+                        }
                     };
                 case 'Program Indicator':
                     return {
-                        path: 'dataItems.json',
-                        params: {
-                            ...commonParams,
-                            filter: [
-                                `dimensionItemType:eq:PROGRAM_INDICATOR`,
-                                searchItem && `displayName:ilike:${searchItem}`,
-                            ].filter(Boolean).join(','),
+                        main: {
+                            path: 'dataItems.json',
+                            params: {
+                                ...commonParams,
+                                filter: groupsIdOrSubDataItemIds
+                                    ? `programId:eq:${groupsIdOrSubDataItemIds}`
+                                    : 'dimensionItemType:eq:PROGRAM_INDICATOR'
+                            }
                         },
+                        sub: {
+                            path: 'programs.json',
+                            params: { ...commonParams }
+                        }
                     };
                 case 'Calculation':
                     return {
-                        path: 'dataItems.json',
-                        params: {
-                            ...commonParams,
-                            filter: [
-                                `dimensionItemType:eq:EXPRESSION_DIMENSION_ITEM`,
-                                searchItem && `displayName:ilike:${searchItem}`,
-                            ].filter(Boolean).join(','),
-                        },
+                        main: {
+                            path: 'dataItems.json',
+                            params: {
+                                ...commonParams,
+                                filter: 'dimensionItemType:eq:EXPRESSION_DIMENSION_ITEM'
+                            }
+                        }
                     };
                 default:
-                    return { path: '', params: {} };
+                    return { main: { path: '', params: {} } };
             }
         },
         []
@@ -85,12 +145,14 @@ export const useExternalDataItems = () => {
             token: string,
             selectedDimensionItemType: dimensionItemTypesTYPES,
             searchItem?: string,
-            dataItemsDataPage: number = 1
+            dataItemsDataPage: number = 1,
+            groupsIdOrSubDataItemIds?: string,
+            otherOptions?:string
         ) => {
             const { value } = selectedDimensionItemType;
-            const { path, params } = buildApiPathAndParams(value, searchItem, dataItemsDataPage);
+            const apiPaths = buildApiPathAndParams(value, searchItem, dataItemsDataPage, groupsIdOrSubDataItemIds,otherOptions);
 
-            if (!path) {
+            if (!apiPaths.main.path) {
                 setError('Invalid dimension item type selected.');
                 return;
             }
@@ -100,22 +162,37 @@ export const useExternalDataItems = () => {
             setResponse(null);
 
             try {
-                const res = await axios.get(`${url}/api/40/${path}`, {
+                // Fetch main data
+                const mainResponse = await axios.get(`${url}/api/40/${apiPaths.main.path}`, {
                     headers: {
                         Authorization: `ApiToken ${token}`,
                     },
-                    params,
+                    params: apiPaths.main.params
                 });
 
-                setResponse(res.data);
-                setDataItemsData(res.data); // Update context state
+                let subResponse = null;
+                // Fetch sub data if path exists
+                if (apiPaths.sub) {
+                    subResponse = await axios.get(`${url}/api/40/${apiPaths.sub.path}`, {
+                        headers: {
+                            Authorization: `ApiToken ${token}`,
+                        },
+                        params: apiPaths.sub.params
+                    });
+                }
+
+                setResponse(mainResponse.data);
+                setDataItemsData(mainResponse.data);
+                if (subResponse) {
+                    setSubDataItemsData(subResponse.data);
+                }
             } catch (err: any) {
                 setError(err.response?.statusText || err.message || 'An error occurred');
             } finally {
                 setLoading(false);
             }
         },
-        [buildApiPathAndParams, setDataItemsData]
+        [buildApiPathAndParams, setDataItemsData, setSubDataItemsData]
     );
 
     return { response, error, loading, fetchExternalDataItems };

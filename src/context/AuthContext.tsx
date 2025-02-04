@@ -16,6 +16,7 @@ import { useSystemInfo } from "../services/fetchSystemInfo";
 import axios from "axios";
 import { dimensionItemTypesTYPES } from "../types/dimensionDataItemTypes";
 import { dimensionItemTypes } from "../constants/dimensionItemTypes";
+import { BackedSelectedItem, visualTypes } from "../types/visualType";
 
 
 
@@ -44,7 +45,7 @@ interface AuthContextProps {
   selectedOrgUnits: any;
   setSelectedOrgUnits: any;
   analyticsQuery:any;
-  selectedChartType:string,
+  selectedChartType:visualTypes,
    setSelectedChartType:any,
    setAnalyticsQuery:any;
    selectedVisualsForDashboard:string[];
@@ -69,7 +70,11 @@ interface AuthContextProps {
       selectedDimensionItemType:dimensionItemTypesTYPES;
        setSelectedDimensionItemType:any;
        dataItemsDataPage:number;
-        setDataItemsDataPage:any
+        setDataItemsDataPage:any;
+        subDataItemsData:any;
+        setSubDataItemsData:any;
+        backedSelectedItems:BackedSelectedItem[] ;
+         setBackedSelectedItems:any
  
 }
 
@@ -105,11 +110,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [selectedDimensionItemType, setSelectedDimensionItemType] = useState<dimensionItemTypesTYPES>(dimensionItemTypes[0])
 
   // metadata states
+  // 
   const [dataItemsData,setDataItemsData] = useState<any>()
+  const [subDataItemsData,setSubDataItemsData] = useState<any>()
   const [dataItemsDataPage, setDataItemsDataPage] = useState<number>(1);
  const [currentUserInfoAndOrgUnitsData, setCurrentUserInfoAndOrgUnitsData] = useState<any>()
  // const currentUserOrgUnitId = userDatails?.me?.organisationUnits?.[0]?.id || "Hjw70Lodtf2";
-
+  const [backedSelectedItems, setBackedSelectedItems] = useState<BackedSelectedItem[]>([]);
+  
 
   const defaultUserOrgUnit = currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName
   const [isFetchAnalyticsDataLoading, setIsFetchAnalyticsDataLoading] = useState(false);
@@ -123,7 +131,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [selectedLevel, setSelectedLevel] = useState<any>();
   const [selectedOrgUnits, setSelectedOrgUnits] = useState<string[]>([]);
   const [analyticsQuery, setAnalyticsQuery] = useState<any>(null)
-  const [selectedChartType, setSelectedChartType] = useState<any>(""); 
+  const [selectedChartType, setSelectedChartType] = useState<visualTypes>("Column"); 
   const [selectedVisualsForDashboard, setSelectedVisualsForDashboard] = useState<string[]>([]);
   const [visualTitleAndSubTitle, setSelectedVisualTitleAndSubTitle] = useState<VisualTitleAndSubtitleType>({
     visualTitle: "",
@@ -131,7 +139,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     customSubTitle:""
   })
 
-
+  useEffect(()=>{
+    console.log("track selectedOrganizationUnits",selectedOrganizationUnits)
+  },[selectedOrganizationUnits])
  const [selectedColorPalette, setSelectedColorPalette] = useState<visualColorPaletteTypes>(systemDefaultColorPalettes[0] || []);
 
  const [visualsColorPalettes,setVisualsColorPalettes] =useState<ColorPaletteTypes >(systemDefaultColorPalettes)
@@ -178,19 +188,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const fetchAnalyticsData = async (dimension: any,instance:DataSourceFormFields ) => {
     console.log("here is the selected instance",instance)
     console.log("here is the selected dimension",dimension)
+    const orgUnitIds = selectedOrganizationUnits?.map((unit: any) => unit).join(';');
+    const orgUnitLevelIds = selectedOrganizationUnitsLevels?.map((unit: any) => `LEVEL-${unit}`).join(';');
+    const orgUnitGroupIds = selectedOrgUnitGroups?.map((item: any) => `OU_GROUP-${item}`).join(';');
 
+    const filter = `ou:${isUseCurrentUserOrgUnits
+      ? `${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT ? 'USER_ORGUNIT;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_CHILDREN ? 'USER_ORGUNIT_CHILDREN;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_GRANDCHILDREN ? 'USER_ORGUNIT_GRANDCHILDREN;' : ''}`.slice(0, -1)
+      : `${orgUnitIds};${orgUnitLevelIds};${orgUnitGroupIds}`}`;
+
+    if (
+      dimension.some(item => item.startsWith("dx:") && item.split(":")[1].trim()) &&
+      dimension.some(item => item.startsWith("pe:") && item.split(":")[1].trim()) &&
+      filter.startsWith("ou:") && filter.split(":")[1].trim()
+  ){
     try {
       setIsFetchAnalyticsDataLoading(true);
       setFetchAnalyticsDataError(null);
 
-      const orgUnitIds = selectedOrganizationUnits?.map((unit: any) => unit).join(';');
-      const orgUnitLevelIds = selectedOrganizationUnitsLevels?.map((unit: any) => `LEVEL-${unit}`).join(';');
-      const orgUnitGroupIds = selectedOrgUnitGroups?.map((item: any) => `OU_GROUP-${item}`).join(';');
-
-      const filter = `ou:${isUseCurrentUserOrgUnits
-        ? `${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT ? 'USER_ORGUNIT;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_CHILDREN ? 'USER_ORGUNIT_CHILDREN;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_GRANDCHILDREN ? 'USER_ORGUNIT_GRANDCHILDREN;' : ''}`.slice(0, -1)
-        : `${orgUnitIds};${orgUnitLevelIds};${orgUnitGroupIds}`}`;
-
+ 
       const queryParams = {
         dimension,
         filter,
@@ -232,87 +247,54 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } finally {
       setIsFetchAnalyticsDataLoading(false);
     }
+  }
+
 
 
 
   };
 
-  /// current instance stable fetch, temporally commented out
-  // const fetchAnalyticsData = async (dimension: any,{isCurrentInstance,url,token}:{isCurrentInstance?:boolean,url?:string,token?:string} ) => {
-  //   try {
-  //     setIsFetchAnalyticsDataLoading(true);
-  //     setFetchAnalyticsDataError(false);
-  //     const orgUnitIds = selectedOrganizationUnits?.map((unit: any) => unit).join(';');
-  //     const orgUnitLevelIds = selectedOrganizationUnitsLevels?.map((unit: any) => `LEVEL-${unit}`).join(';');
-  //     const orgUnitGroupIds = selectedOrgUnitGroups?.map((item: any) => `OU_GROUP-${item}`).join(';');
-
-  //     console.log({ orgUnitGroupIds, orgUnitIds, orgUnitLevelIds });
-
-  //     const analyticsQuery = {
-  //       myData: {
-  //         resource: 'analytics',
-  //         params: {
-  //           dimension,
-  //           // if current org unit is checked use keyword, if not use other org units
-  //           filter: `ou:${isUseCurrentUserOrgUnits
-  //             ? `${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT ? 'USER_ORGUNIT;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_CHILDREN ? 'USER_ORGUNIT_CHILDREN;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_GRANDCHILDREN ? 'USER_ORGUNIT_GRANDCHILDREN;' : ''}`.slice(0, -1)
-  //             : `${orgUnitIds};${orgUnitLevelIds};${orgUnitGroupIds}`
-  //             }`,
-  //           displayProperty: 'NAME',
-  //           includeNumDen: true,
-  //         }
-  //       },
-  //     }
-
-  //     const result = await engine.query(analyticsQuery);
-  //     setAnalyticsData(result?.myData);
-  //     // set analytics query
-  //     setAnalyticsQuery(analyticsQuery)
-  //   } catch (error) {
-  //     // temporally commented
-  //    // setFetchAnalyticsDataError(error);
-  //     console.log("Error fetching analytics data:", error);
-    
-  //   } finally {
-  //     setIsFetchAnalyticsDataLoading(false);
-  //   }
-
-
-
-  // };
-
-
-
-  const fetchSingleOrgUnitName = async(orgUnitId:string)=>{
+  const fetchSingleOrgUnitName = async (orgUnitId: string, instance: DataSourceFormFields) => {
     try {
-      const query = {
-        organisationUnit: {
-          resource: `organisationUnits/${orgUnitId}`,
-          params: {
-            fields: 'displayName',
+      if (instance.isCurrentInstance) {
+        // Internal request via engine.query
+        const query = {
+          organisationUnit: {
+            resource: `organisationUnits/${orgUnitId}`,
+            params: {
+              fields: 'displayName',
+            },
           },
-        
-        },
-      };
-
-      const result = await engine.query(query);
-     // console.log("single org unit name", result)
-      return result.organisationUnit.displayName
-      // update state here with result
-
-
-    
+        };
+        const result = await engine.query(query);
+        return result.organisationUnit.displayName;
+      } else {
+        // External request via axios
+        const response = await axios.get(
+          `${instance.url}/api/40/organisationUnits/${orgUnitId}`,
+          {
+            headers: {
+              Authorization: `ApiToken ${instance.token}`,
+            },
+            params: {
+              fields: 'displayName',
+            },
+          }
+        );
+        return response.data.displayName;
+      }
     } catch (error) {
-      console.log("fetch single org err",error)
+      console.log("fetch single org err", error);
+      throw error; // Re-throwing error to handle it in the calling function
     }
-  }
+  };
 
 
 
 
 
   return (
-    <AuthContext.Provider value={{dataItemsDataPage,setDataItemsDataPage,selectedDimensionItemType,setSelectedDimensionItemType,selectedDataSourceOption,setSelectedDataSourceOption,currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData,selectedDataSourceDetails,setSelectedDataSourceDetails,dataItemsData,setDataItemsData,setVisualsColorPalettes,visualsColorPalettes, selectedColorPalette,setSelectedColorPalette ,visualSettings,setSelectedVisualSettings,fetchSingleOrgUnitName,visualTitleAndSubTitle,setSelectedVisualTitleAndSubTitle,  selectedVisualsForDashboard, setSelectedVisualsForDashboard,setAnalyticsData,setAnalyticsQuery,selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery,selectedChartType,setSelectedChartType}}>
+    <AuthContext.Provider value={{setSubDataItemsData,subDataItemsData,backedSelectedItems,setBackedSelectedItems,dataItemsDataPage,setDataItemsDataPage,selectedDimensionItemType,setSelectedDimensionItemType,selectedDataSourceOption,setSelectedDataSourceOption,currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData,selectedDataSourceDetails,setSelectedDataSourceDetails,dataItemsData,setDataItemsData,setVisualsColorPalettes,visualsColorPalettes, selectedColorPalette,setSelectedColorPalette ,visualSettings,setSelectedVisualSettings,fetchSingleOrgUnitName,visualTitleAndSubTitle,setSelectedVisualTitleAndSubTitle,  selectedVisualsForDashboard, setSelectedVisualsForDashboard,setAnalyticsData,setAnalyticsQuery,selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery,selectedChartType,setSelectedChartType}}>
       {children}
     </AuthContext.Provider>
   );

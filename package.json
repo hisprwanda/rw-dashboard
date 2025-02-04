@@ -1,7 +1,7 @@
 {
-  "name": "Visualizer-Studio",
+  "name": "Data-Analytics-Lab",
   "version": "1.0.0",
-  "description": "A Visualizer Studio, developed by HISP Rwanda, featuring an interactive dashboard that can be presented as dynamic slides, with a wide range of customizable visualization types for enhanced data representation.",
+  "description": "A Visualizer Data Analytics Lab, developed by HISP Rwanda, featuring an interactive dashboard that can be presented as dynamic slides, with a wide range of customizable visualization types for enhanced data representation.",
   "license": "BSD-3-Clause",
   "private": true,
   "scripts": {

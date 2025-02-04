@@ -12,7 +12,7 @@ export const menuItems = [
     //     link: "alerts"
     // },
     {
-        name: "Settings",
-        link: "settings"
+        name: "Data Source",
+        link: "datasource"
     }
 ];
