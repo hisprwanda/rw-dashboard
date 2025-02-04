@@ -36,6 +36,48 @@ export const LocalPieChart: React.FC<genericChartsProps> = ({
     );
   }
 
+  // Calculate total for percentage calculation
+  const total = chartData.reduce((sum, entry) => sum + entry.total, 0);
+
+  // Custom label formatter to show name, number and percentage in two lines
+  const renderCustomLabel = (props: any) => {
+    const { cx, cy, midAngle, innerRadius, outerRadius, value, index, name } = props;
+    const RADIAN = Math.PI / 180;
+    const radius = outerRadius * 1.1;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+    const percentage = ((value / total) * 100).toFixed(1);
+    const textAnchor = x > cx ? 'start' : 'end';
+    const lineHeight = 20; // Adjust this value to control spacing between lines
+
+    return (
+      <g>
+        <text
+          x={x}
+          y={y - lineHeight/2}
+          textAnchor={textAnchor}
+          style={{ 
+            fontSize: visualSettings.XAxisSettings.fontSize, 
+            fontWeight: 'bold' 
+          }}
+        >
+          {name}
+        </text>
+        <text
+          x={x}
+          y={y + lineHeight/2}
+          textAnchor={textAnchor}
+          style={{ 
+            fontSize: visualSettings.XAxisSettings.fontSize, 
+            fontWeight: 'bold' 
+          }}
+        >
+          {`${value} (${percentage}%)`}
+        </text>
+      </g>
+    );
+  };
+
   console.log("mockup pie data", chartData);
   console.log("mockup config", chartConfig);
 
@@ -76,13 +118,14 @@ export const LocalPieChart: React.FC<genericChartsProps> = ({
         <Pie
           data={chartData}
           dataKey="total"
-          nameKey="name" 
-          label
+          nameKey="name"
+          cx="50%"
+          cy="50%"
+          outerRadius={130}
+          label={renderCustomLabel}
+          labelLine={true}
           fill={visualSettings.fillColor}
           style={{ fontSize: visualSettings.XAxisSettings.fontSize, fontWeight: 'bold' }}
-        //   outerRadius={150}
-        //   innerRadius={50}
-        //   paddingAngle={5}
         >
           {chartData.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={chartConfig[entry.name]?.color} />
