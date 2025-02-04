@@ -13,6 +13,7 @@ import { useDashboardsData } from "../../../services/fetchDashboard";
 import { FaEye, FaRegPlayCircle, FaRegTrashAlt, FaShareAlt } from "react-icons/fa";
 import { useToast } from "../../../components/ui/use-toast";
 import { DeleteDashboardModal } from "./DeleteDashboardModal";
+import { SharingDashboardModal } from "./SharingDashboardModal";
 
 
 
@@ -69,6 +70,10 @@ interface MyDashboardsTableProps {
 const MyDashboardsTable: React.FC<MyDashboardsTableProps> = ({ dashboards }) => {
   const { toast } = useToast();
   const [deleteModalData, setDeleteModalData] = useState<{
+    dashboardId: string;
+    dashboardName: string;
+  } | null>(null);
+  const [sharingModalData, setSharingModalData] = useState<{
     dashboardId: string;
     dashboardName: string;
   } | null>(null);
@@ -154,7 +159,7 @@ const MyDashboardsTable: React.FC<MyDashboardsTableProps> = ({ dashboards }) => 
                <FaShareAlt
               className="text-gray-500 text-2xl hover:text-blue-500  cursor-pointer transition-colors"
               onClick={() =>
-                setDeleteModalData({
+                setSharingModalData({
                   dashboardId: row.original.key,
                   dashboardName: row.original.value.dashboardName,
                 })
@@ -205,6 +210,14 @@ const MyDashboardsTable: React.FC<MyDashboardsTableProps> = ({ dashboards }) => 
           dashboardName={deleteModalData.dashboardName}
           onClose={() => setDeleteModalData(null)}
           onDelete={handleDeleteDashboard}
+        />
+      )}
+      {sharingModalData && (
+        <SharingDashboardModal
+          dashboardId={sharingModalData.dashboardId}
+          dashboardName={sharingModalData.dashboardName}
+          onClose={() => setSharingModalData(null)}
+          onSharing={handleDeleteDashboard}
         />
       )}
       <MantineReactTable table={table} />;
