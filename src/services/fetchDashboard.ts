@@ -71,20 +71,20 @@ export const useUpdateDashboardSharing= async ({data,uuid}:{data:any,uuid:string
 
 
 export const useUpdatingDashboardSharing = () => {
-  
+
   const engine = useDataEngine();
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
-  const updatingDashboardSharing = async ({dashboardData,uuid}:{dashboardData:any,uuid:string}) => {
+  const updatingDashboardSharing = async ({uuid,dashboardData}:{uuid:string,dashboardData:any}) => {
     setIsLoading(true);
     setIsError(false);
     try {
       const { dataStore } =     await engine.mutate({
         resource: `dataStore/${process.env.REACT_APP_DASHBOARD_STORE}/${uuid}`,
         type:"update",
-        dashboardData,
+        data:dashboardData,
     });
       setData(dataStore);
       return dataStore;
@@ -99,3 +99,4 @@ export const useUpdatingDashboardSharing = () => {
 
   return { isLoading, data, isError, updatingDashboardSharing };
 };
+

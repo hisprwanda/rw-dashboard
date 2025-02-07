@@ -22,13 +22,13 @@ import {
 } from "../../../components/ui/select";
 import { useFetchUsersAndUserGroups } from "../../../services/fetchusers";
 import SharedUsersAndGroups from "./SharedUsersAndGroups";
+import { useUpdatingDashboardSharing } from "../../../services/fetchDashboard";
 
 interface SharingDashboardModalProps {
   dashboardId: string;
   dashboardName: string;
-  savedDashboardData:any;
+  savedDashboardData: any;
   onClose: () => void;
-  onSharing: (dashboardId: string) => void;
 }
 
 export function SharingDashboardModal({
@@ -36,7 +36,6 @@ export function SharingDashboardModal({
   dashboardName,
   savedDashboardData,
   onClose,
-  onSharing,
 }: SharingDashboardModalProps) {
   const [inputValue, setInputValue] = useState({
     name: "",
@@ -46,13 +45,9 @@ export function SharingDashboardModal({
   });
   const [isLoading, setIsLoading] = useState(false);
   const { data: usersAndUserGroupsData, fetchUsersAndUserGroups, isLoading: isFetchingUserAndUserGroupLoading } = useFetchUsersAndUserGroups();
-  
-
-     useEffect(()=>{
-      console.log("savedDashboardData",savedDashboardData)
-     },[savedDashboardData])
+  const { updatingDashboardSharing } = useUpdatingDashboardSharing();
   const [combinedResults, setCombinedResults] = useState([]);
-  
+
   useEffect(() => {
     if (usersAndUserGroupsData) {
       const users = usersAndUserGroupsData.users?.map(user => ({
@@ -60,7 +55,7 @@ export function SharingDashboardModal({
         name: user.displayName,
         type: "User",
       })) || [];
-      
+
       const userGroups = usersAndUserGroupsData.userGroups?.map(group => ({
         id: group.id,
         name: group.displayName,
@@ -71,7 +66,6 @@ export function SharingDashboardModal({
     }
   }, [usersAndUserGroupsData]);
 
-  // Debounced function to fetch users/groups
   const debouncedFetchUsers = useCallback(
     debounce((searchTerm) => {
       if (searchTerm.trim().length > 0) {
@@ -80,10 +74,6 @@ export function SharingDashboardModal({
     }, 500),
     [fetchUsersAndUserGroups]
   );
-
-  useEffect(() => {
-    console.log({ inputValue });
-  }, [inputValue]);
 
   const handleInputChange = (e) => {
     const value = e.target.value;
@@ -105,11 +95,29 @@ export function SharingDashboardModal({
     setInputValue((prev) => ({ ...prev, accessLevel }));
   };
 
+  // Function to update sharing list
+  const updateSharingList = () => {
+    if (!inputValue.id) return savedDashboardData;
+
+    const existingSharing = savedDashboardData.sharing || [];
+    const isAlreadyShared = existingSharing.some((share) => share.id === inputValue.id);
+
+    if (!isAlreadyShared) {
+      return {
+        ...savedDashboardData,
+        sharing: [...existingSharing, inputValue],
+      };
+    }
+
+    return savedDashboardData;
+  };
+
   const handleConfirmSharing = async () => {
+    const updatedData = updateSharingList();
     setIsLoading(true);
-    await onSharing(dashboardId);
+    console.log("hello here is updated data",updatedData)
+   await updatingDashboardSharing({uuid:dashboardId, dashboardData:updatedData});
     setIsLoading(false);
-    onClose();
   };
 
   return (
@@ -148,7 +156,7 @@ export function SharingDashboardModal({
               )}
             </div>
           </div>
-          
+
           <div className="flex items-center gap-4">
             <Label className="text-right whitespace-nowrap">Access Level</Label>
             <Select onValueChange={handleAccessLevelChange}>
@@ -165,13 +173,19 @@ export function SharingDashboardModal({
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={onClose} className="mr-2" disabled={isLoading}>Cancel</Button>
-          <Button variant="destructive" disabled={!inputValue.name || isLoading} onClick={handleConfirmSharing}>
+          <Button variant="outline" onClick={onClose} className="mr-2" disabled={isLoading}>
+            Cancel
+          </Button>
+          <Button
+            variant="destructive"
+            disabled={!inputValue.id || isLoading}
+            onClick={handleConfirmSharing}
+          >
             {isLoading ? "Loading..." : "Confirm Sharing"}
           </Button>
         </DialogFooter>
         <DialogFooter>
-          <SharedUsersAndGroups/>
+          <SharedUsersAndGroups />
         </DialogFooter>
       </DialogContent>
     </Dialog>
