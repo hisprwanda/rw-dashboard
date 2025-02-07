@@ -392,7 +392,7 @@ const MemoizedGridLayout = React.memo(({
         resizeHandles={['se', 'sw', 'ne', 'nw', 'e', 'w', 's', 'n']}
     >
         {layout.map((widget) => (
-            <div key={widget.i} className="widget bg-white " style={{ position: "relative", padding: "10px" }}>
+            <div key={widget.i} className="widget bg-white " style={{ position: "relative", padding: "10px", overflow:"auto" }}>
                 <div className="drag-handle  text-center " style={{ cursor: "move" }}>
                     {widget.visualName}
                 </div>
