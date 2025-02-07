@@ -50,6 +50,7 @@ export const DashboardSchema = z.object({
   ),
   /// sharing will keep ids of allowed users to access , like I want it to be array of objects where each 
   sharing: z.array(z.unknown()).optional(),
+  generalDashboardAccess: z.enum(["No access", "View only", "View and edit"]).default("View and edit"),
   previewImg: z.string().optional(),
   isOfficialDashboard: z.boolean(),
   favorites: z.array(z.string()).optional(),
