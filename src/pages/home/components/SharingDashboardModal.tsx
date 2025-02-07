@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import debounce from "lodash/debounce";
+import { CircularLoader } from '@dhis2/ui'
 import { Button } from "../../../components/ui/button";
 import {
   Dialog,
@@ -36,8 +37,7 @@ export function SharingDashboardModal({
 }: SharingDashboardModalProps) {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { data, fetchUsersAndUserGroups, isError, isLoading: isFetchingUserAndUserGroupLoading } =
-    useFetchUsersAndUserGroups();
+  const { data, fetchUsersAndUserGroups, isError, isLoading: isFetchingUserAndUserGroupLoading } = useFetchUsersAndUserGroups();
 
   // Debounced function to fetch users/groups
   const debouncedFetchUsers = useCallback(
@@ -73,16 +73,22 @@ export function SharingDashboardModal({
           <DialogDescription>Give access to a user or group</DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
+          <div className="flex items-center gap-4">
+          
             <Label htmlFor="dashboardName" className="text-right whitespace-nowrap">
               User or Group
             </Label>
-            <Input
-              id="dashboardName"
-              value={inputValue}
-              onChange={handleInputChange}
-              className="col-span-3"
-            />
+            <div className="flex items-center gap-2w-full ">
+  <Input
+    id="dashboardName"
+    value={inputValue}
+    onChange={handleInputChange}
+    className="flex-1 "
+  />
+  {isFetchingUserAndUserGroupLoading && <CircularLoader small />}
+</div>
+
+      
           </div>
 
           {/* Access level */}
