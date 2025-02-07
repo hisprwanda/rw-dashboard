@@ -26,6 +26,7 @@ import SharedUsersAndGroups from "./SharedUsersAndGroups";
 interface SharingDashboardModalProps {
   dashboardId: string;
   dashboardName: string;
+  savedDashboardData:any;
   onClose: () => void;
   onSharing: (dashboardId: string) => void;
 }
@@ -33,6 +34,7 @@ interface SharingDashboardModalProps {
 export function SharingDashboardModal({
   dashboardId,
   dashboardName,
+  savedDashboardData,
   onClose,
   onSharing,
 }: SharingDashboardModalProps) {
@@ -45,6 +47,10 @@ export function SharingDashboardModal({
   const [isLoading, setIsLoading] = useState(false);
   const { data: usersAndUserGroupsData, fetchUsersAndUserGroups, isLoading: isFetchingUserAndUserGroupLoading } = useFetchUsersAndUserGroups();
   
+
+     useEffect(()=>{
+      console.log("savedDashboardData",savedDashboardData)
+     },[savedDashboardData])
   const [combinedResults, setCombinedResults] = useState([]);
   
   useEffect(() => {
