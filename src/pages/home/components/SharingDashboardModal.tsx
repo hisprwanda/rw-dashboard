@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import debounce from "lodash/debounce";
-import { CircularLoader } from '@dhis2/ui'
+import { CircularLoader } from "@dhis2/ui";
 import { Button } from "../../../components/ui/button";
 import {
   Dialog,
@@ -37,7 +37,27 @@ export function SharingDashboardModal({
 }: SharingDashboardModalProps) {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { data, fetchUsersAndUserGroups, isError, isLoading: isFetchingUserAndUserGroupLoading } = useFetchUsersAndUserGroups();
+  const { data: usersAndUserGroupsData, fetchUsersAndUserGroups, isError, isLoading: isFetchingUserAndUserGroupLoading } = useFetchUsersAndUserGroups();
+  
+  const [combinedResults, setCombinedResults] = useState<{ id: string; name: string; type: "User" | "Group" }[]>([]);
+  
+  useEffect(() => {
+    if (usersAndUserGroupsData) {
+      const users = usersAndUserGroupsData.users?.map(user => ({
+        id: user.id,
+        name: user.displayName,
+        type: "User",
+      })) || [];
+      
+      const userGroups = usersAndUserGroupsData.userGroups?.map(group => ({
+        id: group.id,
+        name: group.displayName,
+        type: "Group",
+      })) || [];
+
+      setCombinedResults([...users, ...userGroups]);
+    }
+  }, [usersAndUserGroupsData]);
 
   // Debounced function to fetch users/groups
   const debouncedFetchUsers = useCallback(
@@ -49,18 +69,22 @@ export function SharingDashboardModal({
     [fetchUsersAndUserGroups]
   );
 
-  // Handle input change and trigger debounced API call
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setInputValue(value);
     debouncedFetchUsers(value);
   };
 
+  const handleSelectItem = (selectedItem: { name: string; type: "User" | "Group" }) => {
+    setInputValue(selectedItem.name);
+    setCombinedResults([]); // Clear results after selection
+  };
+
   const handleConfirmSharing = async () => {
     setIsLoading(true);
-    await onSharing(dashboardId); // Wait for the API call to complete
+    await onSharing(dashboardId);
     setIsLoading(false);
-    onClose(); // Close modal only after successful API completion
+    onClose();
   };
 
   return (
@@ -74,21 +98,34 @@ export function SharingDashboardModal({
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="flex items-center gap-4">
-          
             <Label htmlFor="dashboardName" className="text-right whitespace-nowrap">
               User or Group
             </Label>
-            <div className="flex items-center gap-2w-full ">
-  <Input
-    id="dashboardName"
-    value={inputValue}
-    onChange={handleInputChange}
-    className="flex-1 "
-  />
-  {isFetchingUserAndUserGroupLoading && <CircularLoader small />}
-</div>
-
-      
+            <div className="relative flex items-center gap-2 w-full">
+              <Input
+                id="dashboardName"
+                value={inputValue}
+                onChange={handleInputChange}
+                className="flex-1"
+                placeholder="Search users or groups..."
+              />
+              {isFetchingUserAndUserGroupLoading && <CircularLoader small />}
+              
+              {combinedResults.length > 0 && (
+                <div className="absolute top-full left-0 mt-1 w-full bg-white shadow-lg border border-gray-300 rounded-md max-h-48 overflow-auto z-10">
+                  {combinedResults.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex justify-between p-2 hover:bg-gray-100 cursor-pointer"
+                      onClick={() => handleSelectItem(item)}
+                    >
+                      <span>{item.name}</span>
+                      <span className="text-sm text-gray-500">{item.type}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Access level */}
@@ -96,7 +133,6 @@ export function SharingDashboardModal({
             <Label htmlFor="accessLevel" className="text-right whitespace-nowrap">
               Access Level
             </Label>
-
             <Select>
               <SelectTrigger className="bg-white">
                 <SelectValue placeholder="Select access" />
