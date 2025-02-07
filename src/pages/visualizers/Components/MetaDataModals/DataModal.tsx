@@ -348,6 +348,12 @@ const DataModal: React.FC<DataModalProps> = ({
     );
   }, [data,subDataItemsData, selectedDimensionItemType, dataItemsDataPage,otherOptionsId]);
 
+
+  useEffect(()=>{
+    console.log("locationss",{availableSubOptions})
+    console.log("locationss 2",{data})
+  },[availableSubOptions,data])
+
   const handleDimensionItemTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     /// clear existing filtering ids before changing dimensionType
     setGroupsIdOrSubDataItemIds("")
@@ -518,9 +524,11 @@ useEffect(() => {
               }`}
               disabled={isLoadingGroups}
             >
+          
               <option value="">{defaultGroupOrOtherData}</option>
               {availableSubOptions.map((type) => (
                 <option key={type.value} value={type.value}>
+
                   {type.label}
                 </option>
               ))}
