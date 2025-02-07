@@ -21,6 +21,7 @@ import {
   SelectValue,
 } from "../../../components/ui/select";
 import { useFetchUsersAndUserGroups } from "../../../services/fetchusers";
+import SharedUsersAndGroups from "./SharedUsersAndGroups";
 
 interface SharingDashboardModalProps {
   dashboardId: string;
@@ -89,7 +90,7 @@ export function SharingDashboardModal({
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px] bg-white">
+      <DialogContent className="sm:max-w-[725px] bg-white">
         <DialogHeader>
           <DialogTitle>
             Sharing and access: <strong>{dashboardName}</strong>
@@ -129,7 +130,7 @@ export function SharingDashboardModal({
           </div>
 
           {/* Access level */}
-          <div className="grid grid-cols-4 items-center gap-4">
+          <div className="flex items-center gap-4">
             <Label htmlFor="accessLevel" className="text-right whitespace-nowrap">
               Access Level
             </Label>
@@ -154,6 +155,10 @@ export function SharingDashboardModal({
           <Button variant="destructive" disabled={inputValue !== dashboardName || isLoading} onClick={handleConfirmSharing}>
             {isLoading ? "Loading..." : "Confirm Sharing"}
           </Button>
+        </DialogFooter>
+        {/* saved shared users and groups list */}
+        <DialogFooter>
+          <SharedUsersAndGroups/>
         </DialogFooter>
       </DialogContent>
     </Dialog>
