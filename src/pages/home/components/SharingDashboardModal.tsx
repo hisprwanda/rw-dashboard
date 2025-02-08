@@ -22,26 +22,32 @@ import {
 } from "../../../components/ui/select";
 import { useFetchUsersAndUserGroups } from "../../../services/fetchusers";
 import SharedUsersAndGroups from "./SharedUsersAndGroups";
+import { useUpdatingDashboardSharing } from "../../../services/fetchDashboard";
 
 interface SharingDashboardModalProps {
   dashboardId: string;
   dashboardName: string;
+  savedDashboardData: any;
   onClose: () => void;
-  onSharing: (dashboardId: string) => void;
 }
 
 export function SharingDashboardModal({
   dashboardId,
   dashboardName,
+  savedDashboardData,
   onClose,
-  onSharing,
 }: SharingDashboardModalProps) {
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState({
+    name: "",
+    id: "",
+    type: "User",
+    accessLevel: "View only",
+  });
   const [isLoading, setIsLoading] = useState(false);
-  const { data: usersAndUserGroupsData, fetchUsersAndUserGroups, isError, isLoading: isFetchingUserAndUserGroupLoading } = useFetchUsersAndUserGroups();
-  
-  const [combinedResults, setCombinedResults] = useState<{ id: string; name: string; type: "User" | "Group" }[]>([]);
-  
+  const { data: usersAndUserGroupsData, fetchUsersAndUserGroups, isLoading: isFetchingUserAndUserGroupLoading } = useFetchUsersAndUserGroups();
+  const { updatingDashboardSharing } = useUpdatingDashboardSharing();
+  const [combinedResults, setCombinedResults] = useState([]);
+
   useEffect(() => {
     if (usersAndUserGroupsData) {
       const users = usersAndUserGroupsData.users?.map(user => ({
@@ -49,7 +55,7 @@ export function SharingDashboardModal({
         name: user.displayName,
         type: "User",
       })) || [];
-      
+
       const userGroups = usersAndUserGroupsData.userGroups?.map(group => ({
         id: group.id,
         name: group.displayName,
@@ -60,9 +66,8 @@ export function SharingDashboardModal({
     }
   }, [usersAndUserGroupsData]);
 
-  // Debounced function to fetch users/groups
   const debouncedFetchUsers = useCallback(
-    debounce((searchTerm: string) => {
+    debounce((searchTerm) => {
       if (searchTerm.trim().length > 0) {
         fetchUsersAndUserGroups(searchTerm);
       }
@@ -70,22 +75,49 @@ export function SharingDashboardModal({
     [fetchUsersAndUserGroups]
   );
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e) => {
     const value = e.target.value;
-    setInputValue(value);
+    setInputValue((prev) => ({ ...prev, name: value }));
     debouncedFetchUsers(value);
   };
 
-  const handleSelectItem = (selectedItem: { name: string; type: "User" | "Group" }) => {
-    setInputValue(selectedItem.name);
-    setCombinedResults([]); // Clear results after selection
+  const handleSelectItem = (selectedItem) => {
+    setInputValue({
+      name: selectedItem.name,
+      id: selectedItem.id,
+      type: selectedItem.type,
+      accessLevel: "View only",
+    });
+    setCombinedResults([]);
+  };
+
+  const handleAccessLevelChange = (accessLevel) => {
+    setInputValue((prev) => ({ ...prev, accessLevel }));
+  };
+
+  // Function to update sharing list
+  const updateSharingList = () => {
+    if (!inputValue.id) return savedDashboardData;
+
+    const existingSharing = savedDashboardData.sharing || [];
+    const isAlreadyShared = existingSharing.some((share) => share.id === inputValue.id);
+
+    if (!isAlreadyShared) {
+      return {
+        ...savedDashboardData,
+        sharing: [...existingSharing, inputValue],
+      };
+    }
+
+    return savedDashboardData;
   };
 
   const handleConfirmSharing = async () => {
+    const updatedData = updateSharingList();
     setIsLoading(true);
-    await onSharing(dashboardId);
+    console.log("hello here is updated data",updatedData)
+   await updatingDashboardSharing({uuid:dashboardId, dashboardData:updatedData});
     setIsLoading(false);
-    onClose();
   };
 
   return (
@@ -99,19 +131,15 @@ export function SharingDashboardModal({
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="flex items-center gap-4">
-            <Label htmlFor="dashboardName" className="text-right whitespace-nowrap">
-              User or Group
-            </Label>
+            <Label className="text-right whitespace-nowrap">User or Group</Label>
             <div className="relative flex items-center gap-2 w-full">
               <Input
-                id="dashboardName"
-                value={inputValue}
+                value={inputValue.name}
                 onChange={handleInputChange}
                 className="flex-1"
                 placeholder="Search users or groups..."
               />
               {isFetchingUserAndUserGroupLoading && <CircularLoader small />}
-              
               {combinedResults.length > 0 && (
                 <div className="absolute top-full left-0 mt-1 w-full bg-white shadow-lg border border-gray-300 rounded-md max-h-48 overflow-auto z-10">
                   {combinedResults.map((item) => (
@@ -129,14 +157,11 @@ export function SharingDashboardModal({
             </div>
           </div>
 
-          {/* Access level */}
           <div className="flex items-center gap-4">
-            <Label htmlFor="accessLevel" className="text-right whitespace-nowrap">
-              Access Level
-            </Label>
-            <Select>
+            <Label className="text-right whitespace-nowrap">Access Level</Label>
+            <Select onValueChange={handleAccessLevelChange}>
               <SelectTrigger className="bg-white">
-                <SelectValue placeholder="Select access" />
+                <SelectValue placeholder={inputValue.accessLevel} />
               </SelectTrigger>
               <SelectContent className="bg-white">
                 <SelectGroup>
@@ -147,18 +172,20 @@ export function SharingDashboardModal({
             </Select>
           </div>
         </div>
-
         <DialogFooter>
           <Button variant="outline" onClick={onClose} className="mr-2" disabled={isLoading}>
             Cancel
           </Button>
-          <Button variant="destructive" disabled={inputValue !== dashboardName || isLoading} onClick={handleConfirmSharing}>
+          <Button
+            variant="destructive"
+            disabled={!inputValue.id || isLoading}
+            onClick={handleConfirmSharing}
+          >
             {isLoading ? "Loading..." : "Confirm Sharing"}
           </Button>
         </DialogFooter>
-        {/* saved shared users and groups list */}
         <DialogFooter>
-          <SharedUsersAndGroups/>
+          <SharedUsersAndGroups />
         </DialogFooter>
       </DialogContent>
     </Dialog>

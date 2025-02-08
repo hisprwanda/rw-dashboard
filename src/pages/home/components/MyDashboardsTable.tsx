@@ -76,6 +76,7 @@ const MyDashboardsTable: React.FC<MyDashboardsTableProps> = ({ dashboards }) => 
   const [sharingModalData, setSharingModalData] = useState<{
     dashboardId: string;
     dashboardName: string;
+    savedDashboardData:any
   } | null>(null);
 
   const navigate = useNavigate();
@@ -162,6 +163,7 @@ const MyDashboardsTable: React.FC<MyDashboardsTableProps> = ({ dashboards }) => 
                 setSharingModalData({
                   dashboardId: row.original.key,
                   dashboardName: row.original.value.dashboardName,
+                  savedDashboardData:row.original.value
                 })
               }
             />
@@ -216,6 +218,7 @@ const MyDashboardsTable: React.FC<MyDashboardsTableProps> = ({ dashboards }) => 
         <SharingDashboardModal
           dashboardId={sharingModalData.dashboardId}
           dashboardName={sharingModalData.dashboardName}
+          savedDashboardData={sharingModalData.savedDashboardData}
           onClose={() => setSharingModalData(null)}
           onSharing={handleDeleteDashboard}
         />
