@@ -134,9 +134,14 @@ const SharedUsersAndGroups = ({ dashboardId }: { dashboardId: string }) => {
                   disabled={isUpdating}
                 >
                   {accessOptionsForSavedUserOrGroup.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
+                  <option
+                  className={`${option === "Remove access" ? "text-red-500" : ""}`}
+                  key={option}
+                  value={option}
+                >
+                  {option}
+                </option>
+                
                   ))}
                 </select>
               </div>
