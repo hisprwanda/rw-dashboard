@@ -51,7 +51,7 @@ export function SharingDashboardModal({
 
   const [isLoading, setIsLoading] = useState(false);
   const { data: usersAndUserGroupsData, fetchUsersAndUserGroups, isLoading: isFetchingUserAndUserGroupLoading } = useFetchUsersAndUserGroups();
-  const { updatingDashboardSharing, data, isError, isLoading: isUpdatingDashboardSharingLoading } = useUpdatingDashboardSharing({ uuid: dashboardId });
+  const { updatingDashboardSharing, data, isError, isLoading: isUpdatingDashboardSharingLoading } = useUpdatingDashboardSharing();
   const [combinedResults, setCombinedResults] = useState<any[]>([]);
 
   useEffect(() => {
@@ -196,7 +196,7 @@ export function SharingDashboardModal({
           </Button>
         </DialogFooter>
         <DialogFooter>
-        {isFetchSingleDashboardDataLoading ? <div>Loading...</div> :   <SharedUsersAndGroups savedDashboardData={savedDashboardData} /> }
+          <SharedUsersAndGroups dashboardId={dashboardId} /> 
         </DialogFooter>
       </DialogContent>
      

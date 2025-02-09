@@ -56,7 +56,7 @@ export const DashboardSchema = z.object({
       accessLevel: z.string(),
     })
   ).optional(),  
-  generalDashboardAccess: z.enum(["No access", "View only", "View and edit"]).default("View and edit"),
+  generalDashboardAccess: z.enum(["No access", "View only", "View and edit"]).default("No access"),
   previewImg: z.string().optional(),
   isOfficialDashboard: z.boolean(),
   favorites: z.array(z.string()).optional(),

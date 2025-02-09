@@ -53,7 +53,7 @@ export const useDashboardsData = () => {
   return { data: { ...data, dataStore: { ...data?.dataStore, entries: sortedData } }, loading, error, isError, refetch };
 };
 
-export const useUpdatingDashboardSharing = ({uuid}:{uuid:string}) => {
+export const useUpdatingDashboardSharing = () => {
 
   const { toast } = useToast();
   const engine = useDataEngine();
