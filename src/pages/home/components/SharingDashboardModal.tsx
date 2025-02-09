@@ -23,6 +23,7 @@ import {
 import { useFetchUsersAndUserGroups } from "../../../services/fetchusers";
 import SharedUsersAndGroups from "./SharedUsersAndGroups";
 import { useUpdatingDashboardSharing } from "../../../services/fetchDashboard";
+import { useToast } from "../../../components/ui/use-toast";
 
 interface SharingDashboardModalProps {
   dashboardId: string;
@@ -37,6 +38,7 @@ export function SharingDashboardModal({
   savedDashboardData,
   onClose,
 }: SharingDashboardModalProps) {
+    const { toast } = useToast();
   const [inputValue, setInputValue] = useState({
     name: "",
     id: "",
@@ -45,9 +47,10 @@ export function SharingDashboardModal({
   });
   const [isLoading, setIsLoading] = useState(false);
   const { data: usersAndUserGroupsData, fetchUsersAndUserGroups, isLoading: isFetchingUserAndUserGroupLoading } = useFetchUsersAndUserGroups();
-  const { updatingDashboardSharing } = useUpdatingDashboardSharing();
-  const [combinedResults, setCombinedResults] = useState([]);
-
+  const { updatingDashboardSharing,data,isError,isLoading:isUpdatingDashboardSharingLoading } = useUpdatingDashboardSharing({uuid:dashboardId});
+  const [combinedResults, setCombinedResults] = useState<any[]>([]);
+   
+  
   useEffect(() => {
     if (usersAndUserGroupsData) {
       const users = usersAndUserGroupsData.users?.map(user => ({
@@ -115,10 +118,11 @@ export function SharingDashboardModal({
   const handleConfirmSharing = async () => {
     const updatedData = updateSharingList();
     setIsLoading(true);
-    console.log("hello here is updated data",updatedData)
-   await updatingDashboardSharing({uuid:dashboardId, dashboardData:updatedData});
+    console.log({updatedData});
+   //await updatingDashboardSharing({uuid:dashboardId, dashboardData:updatedData});
     setIsLoading(false);
   };
+  const isAlreadyShared = savedDashboardData.sharing?.some((share) => share.id === inputValue.id);
 
   return (
     <Dialog open onOpenChange={onClose}>
@@ -177,15 +181,15 @@ export function SharingDashboardModal({
             Cancel
           </Button>
           <Button
-            variant="destructive"
-            disabled={!inputValue.id || isLoading}
+            variant="default"
+            disabled={!inputValue.id || isLoading || isAlreadyShared}
             onClick={handleConfirmSharing}
           >
-            {isLoading ? "Loading..." : "Confirm Sharing"}
+            {isLoading ? "Loading..." : "Give Access"}
           </Button>
         </DialogFooter>
         <DialogFooter>
-          <SharedUsersAndGroups />
+          <SharedUsersAndGroups savedDashboardData={savedDashboardData} />
         </DialogFooter>
       </DialogContent>
     </Dialog>
