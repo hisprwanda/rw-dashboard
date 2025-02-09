@@ -218,9 +218,7 @@ const MyDashboardsTable: React.FC<MyDashboardsTableProps> = ({ dashboards }) => 
         <SharingDashboardModal
           dashboardId={sharingModalData.dashboardId}
           dashboardName={sharingModalData.dashboardName}
-          savedDashboardData={sharingModalData.savedDashboardData}
           onClose={() => setSharingModalData(null)}
-          onSharing={handleDeleteDashboard}
         />
       )}
       <MantineReactTable table={table} />;

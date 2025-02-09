@@ -5,7 +5,7 @@ const SharedUsersAndGroups = ({savedDashboardData}:{savedDashboardData:any}) => 
   const [accessLevel, setAccessLevel] = useState("View and edit");
   const accessOptions = ["No access", "View only", "View and edit"];
   useEffect(()=>{
-     console.log("dua lipa",savedDashboardData?.sharing
+     console.log("savedDashboardData?.sharing",savedDashboardData?.sharing
      )
   },[savedDashboardData])
   return (

@@ -54,8 +54,7 @@ export const useDashboardsData = () => {
 };
 
 export const useUpdatingDashboardSharing = ({uuid}:{uuid:string}) => {
- 
-  const {refetch} = useFetchSingleDashboardData(uuid)
+
   const { toast } = useToast();
   const engine = useDataEngine();
   const [data, setData] = useState(null);
@@ -76,10 +75,7 @@ export const useUpdatingDashboardSharing = ({uuid}:{uuid:string}) => {
       description: "saved successfully",
       variant: "default",
     });
-    // get updated dashboard data
-    const updatedDashboardData: { dataStore: any } | undefined = (await refetch());
-    console.log("updatedDashboardData.dataStore", updatedDashboardData?.dataStore);
-      setData(updatedDashboardData?.dataStore);
+      setData(dataStore);
       return dataStore;
     } catch (error) {
       setIsError(true);
