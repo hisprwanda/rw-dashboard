@@ -36,6 +36,7 @@ const SharedUsersAndGroups = ({savedDashboardData}:{savedDashboardData:any}) => 
           </div>
         </div>
         {/* other saved access */}
+        <div className='max-h-[200px]  overflow-auto'  >
         {savedDashboardData?.sharing?.map((userOrGroup)=>{
             console.log({userOrGroup})
             return   <div className="flex items-center justify-between">
@@ -61,6 +62,8 @@ const SharedUsersAndGroups = ({savedDashboardData}:{savedDashboardData:any}) => 
           </div>
           </div>
         })}
+        </div>
+    
       </div>
     </div>
   );
