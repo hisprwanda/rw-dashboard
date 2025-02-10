@@ -85,7 +85,8 @@ const filterSavedChartsByCreatorId = (
 
 const filterPinnedDashboard = (
   data: DashboardData[] | undefined,
-  creatorId: string | undefined
+  creatorId: string | undefined,
+  userGroupIds: {id:string}[] | undefined
 ): DashboardData[] => {
   if (!data || !creatorId) return [];
 
@@ -107,10 +108,15 @@ const filterPinnedDashboard = (
       item.value.generalDashboardAccess
     );
 
-    // Check if user is in sharing array
-    const isUserInSharingList = item.value.sharing.some(
-      (share) => share.id === creatorId
-    );
+    // Check if user is directly in sharing array or through a group
+    const isUserInSharingList = item.value.sharing.some((share) => {
+      if (share?.type === "User") {
+        return share.id === creatorId;
+      } else if (share?.type === "Group" && userGroupIds) {
+        return userGroupIds.some(group => group.id === share.id);
+      }
+      return false;
+    });
 
     // Allow access if either condition is true
     return hasGeneralAccess || isUserInSharingList;
@@ -135,7 +141,7 @@ export default function HomePage() {
     userDatails?.me?.userGroups
   );
   
-  const pinnedDashboards = filterPinnedDashboard(data?.dataStore?.entries ,userDatails?.me?.id )
+  const pinnedDashboards = filterPinnedDashboard(data?.dataStore?.entries ,userDatails?.me?.id,  userDatails?.me?.userGroups )
 
   const handleViewMore = (dashboardId:string)=>{
     navigate(`/dashboard/${dashboardId}`)
