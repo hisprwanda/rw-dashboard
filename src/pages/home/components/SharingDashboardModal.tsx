@@ -22,31 +22,37 @@ import {
 } from "../../../components/ui/select";
 import { useFetchUsersAndUserGroups } from "../../../services/fetchusers";
 import SharedUsersAndGroups from "./SharedUsersAndGroups";
-import { useUpdatingDashboardSharing } from "../../../services/fetchDashboard";
+import { useFetchSingleDashboardData, useUpdatingDashboardSharing } from "../../../services/fetchDashboard";
+import { useToast } from "../../../components/ui/use-toast";
 
 interface SharingDashboardModalProps {
   dashboardId: string;
   dashboardName: string;
-  savedDashboardData: any;
   onClose: () => void;
 }
 
 export function SharingDashboardModal({
   dashboardId,
   dashboardName,
-  savedDashboardData,
   onClose,
 }: SharingDashboardModalProps) {
+  const { toast } = useToast();
+  const { data: allsavedDashboardData, error, isError: isErrorFetchSingleDashboardData, loading: isFetchSingleDashboardDataLoading, refetch } = useFetchSingleDashboardData(dashboardId);
+  
+  // ✅ Ensure savedDashboardData is always an object (prevents "Cannot read properties of undefined")
+  const savedDashboardData = allsavedDashboardData?.dataStore || {};
+
   const [inputValue, setInputValue] = useState({
     name: "",
     id: "",
     type: "User",
     accessLevel: "View only",
   });
+
   const [isLoading, setIsLoading] = useState(false);
   const { data: usersAndUserGroupsData, fetchUsersAndUserGroups, isLoading: isFetchingUserAndUserGroupLoading } = useFetchUsersAndUserGroups();
-  const { updatingDashboardSharing } = useUpdatingDashboardSharing();
-  const [combinedResults, setCombinedResults] = useState([]);
+  const { updatingDashboardSharing, data, isError, isLoading: isUpdatingDashboardSharingLoading } = useUpdatingDashboardSharing();
+  const [combinedResults, setCombinedResults] = useState<any[]>([]);
 
   useEffect(() => {
     if (usersAndUserGroupsData) {
@@ -95,10 +101,11 @@ export function SharingDashboardModal({
     setInputValue((prev) => ({ ...prev, accessLevel }));
   };
 
-  // Function to update sharing list
+  // ✅ Function to update sharing list safely
   const updateSharingList = () => {
     if (!inputValue.id) return savedDashboardData;
 
+    // ✅ Ensure sharing is an array (prevents "Cannot read properties of undefined")
     const existingSharing = savedDashboardData.sharing || [];
     const isAlreadyShared = existingSharing.some((share) => share.id === inputValue.id);
 
@@ -115,14 +122,18 @@ export function SharingDashboardModal({
   const handleConfirmSharing = async () => {
     const updatedData = updateSharingList();
     setIsLoading(true);
-    console.log("hello here is updated data",updatedData)
-   await updatingDashboardSharing({uuid:dashboardId, dashboardData:updatedData});
+    console.log({ updatedData });
+     await updatingDashboardSharing({uuid:dashboardId, dashboardData:updatedData});
+     await refetch()
     setIsLoading(false);
   };
 
+  // ✅ Safe check before using `savedDashboardData.sharing`
+  const isAlreadyShared = savedDashboardData?.sharing?.some((share) => share.id === inputValue.id) || false;
+
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[725px] bg-white">
+ <DialogContent className="sm:max-w-[725px] bg-white">
         <DialogHeader>
           <DialogTitle>
             Sharing and access: <strong>{dashboardName}</strong>
@@ -177,17 +188,18 @@ export function SharingDashboardModal({
             Cancel
           </Button>
           <Button
-            variant="destructive"
-            disabled={!inputValue.id || isLoading}
+            variant="default"
+            disabled={!inputValue.id || isLoading || isAlreadyShared}
             onClick={handleConfirmSharing}
           >
-            {isLoading ? "Loading..." : "Confirm Sharing"}
+            {isLoading ? "Loading..." : "Give Access"}
           </Button>
         </DialogFooter>
         <DialogFooter>
-          <SharedUsersAndGroups />
+          <SharedUsersAndGroups dashboardId={dashboardId} /> 
         </DialogFooter>
       </DialogContent>
+     
     </Dialog>
   );
 }

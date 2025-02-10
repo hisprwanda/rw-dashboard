@@ -1,9 +1,19 @@
 import { useState } from "react";
 import { useDataEngine } from "@dhis2/app-runtime";
 
+ type eachUserOrGroupType = {
+    id:string;  
+    displayName: string;
+ }
+ type usersAndUserGroupsTypes = {
+    userGroups: eachUserOrGroupType[];
+    users: eachUserOrGroupType[];
+ }
+
+
 export const useFetchUsersAndUserGroups = () => {
   const engine = useDataEngine();
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<usersAndUserGroupsTypes | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 

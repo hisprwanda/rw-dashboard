@@ -12,6 +12,7 @@ import { useAuthorities } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Loading } from "../../components";
 import { FaEye, FaRegPlayCircle } from "react-icons/fa";
+import { filterOtherCharts } from "../../lib/filterOtherDashboards";
 
 
 
@@ -21,6 +22,12 @@ interface User {
   name: string;
 }
 
+interface SharingAccess {
+  accessLevel: string;
+  id: string;
+  name: string;
+  type: string;
+}
 interface VisualQuery {
   myData: {
     params: {
@@ -45,7 +52,8 @@ interface SelectedVisual {
 }
 
 interface DashboardValue {
-  sharing: any[];
+  generalDashboardAccess: "No access" | "View only" | "View and edit";
+  sharing: SharingAccess[];
   createdAt: number;
   createdBy: User;
   updatedAt: number;
@@ -63,17 +71,6 @@ interface DashboardData {
   value: DashboardValue;
 }
 
-interface DataStoreResponse {
-  dataStore?: {
-    entries: DashboardData[];
-  };
-}
-interface UserDetails {
-  me?: {
-    id: string;
-    // ....
-  };
-}
 
 const filterSavedChartsByCreatorId = (
   data: DashboardData[] | undefined,
@@ -83,27 +80,56 @@ const filterSavedChartsByCreatorId = (
   return data.filter((item) => item.value.createdBy.id === creatorId);
 };
 
-const filterOtherCharts = (
-  data: DashboardData[] | undefined,
-  creatorId: string | undefined
-): DashboardData[] => {
-  if (!data || !creatorId) return [];
-  return data.filter((item) => item.value.createdBy.id !== creatorId);
-};
+
 
 
 const filterPinnedDashboard = (
-  data: DashboardData[] | undefined
+  data: DashboardData[] | undefined,
+  creatorId: string | undefined,
+  userGroupIds: {id:string}[] | undefined
 ): DashboardData[] => {
-  if (!data ) return [];
-  return data.filter((item) => item.value.isOfficialDashboard === true);
+  if (!data || !creatorId) return [];
+
+  return data.filter((item) => {
+    // First check if it's an official dashboard
+    if (!item.value.isOfficialDashboard) {
+      return false;
+    }
+
+    // If user is the creator of an official dashboard, they can always see it
+    if (item.value.createdBy.id === creatorId) {
+      return true;
+    }
+
+    // For official dashboards created by others, check access conditions:
+    
+    // Check if generalDashboardAccess is "View only" or "View and edit"
+    const hasGeneralAccess = ["View only", "View and edit"].includes(
+      item.value.generalDashboardAccess
+    );
+
+    // Check if user is directly in sharing array or through a group
+    const isUserInSharingList = item.value.sharing.some((share) => {
+      if (share?.type === "User") {
+        return share.id === creatorId;
+      } else if (share?.type === "Group" && userGroupIds) {
+        return userGroupIds.some(group => group.id === share.id);
+      }
+      return false;
+    });
+
+    // Allow access if either condition is true
+    return hasGeneralAccess || isUserInSharingList;
+  });
 };
+
  
 export default function HomePage() {
   const navigate = useNavigate();
   const { data, loading, isError } = useDashboardsData();
   const { userDatails } = useAuthorities();
 
+     
   const myDashboards = filterSavedChartsByCreatorId(
     data?.dataStore?.entries,
     userDatails?.me?.id
@@ -111,10 +137,11 @@ export default function HomePage() {
 
   const otherDashboards = filterOtherCharts(
     data?.dataStore?.entries,
-    userDatails?.me?.id
+    userDatails?.me?.id,
+    userDatails?.me?.userGroups
   );
   
-  const pinnedDashboards = filterPinnedDashboard(data?.dataStore?.entries)
+  const pinnedDashboards = filterPinnedDashboard(data?.dataStore?.entries ,userDatails?.me?.id,  userDatails?.me?.userGroups )
 
   const handleViewMore = (dashboardId:string)=>{
     navigate(`/dashboard/${dashboardId}`)
