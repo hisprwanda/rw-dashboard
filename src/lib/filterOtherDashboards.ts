@@ -54,13 +54,14 @@ interface User {
   
 export const filterOtherCharts = (
   data: DashboardData[] | undefined,
-  creatorId: string | undefined
+  userId: string | undefined,
+  userGroupIds: {id:string}[] | undefined
 ): DashboardData[] => {
-  if (!data || !creatorId) return [];
+  if (!data || !userId) return [];
 
   return data.filter((item) => {
     // First condition: Skip if user is the creator
-    if (item.value.createdBy.id === creatorId) {
+    if (item.value.createdBy.id === userId) {
       return false;
     }
 
@@ -69,10 +70,15 @@ export const filterOtherCharts = (
       item.value.generalDashboardAccess
     );
 
-    // Check if user is in sharing array
-    const isUserInSharingList = item.value.sharing.some(
-      (share) => share.id === creatorId
-    );
+    // Check if user is directly in sharing array or through a group
+    const isUserInSharingList = item.value.sharing?.some((share) => {
+      if (share?.type === "User") {
+        return share?.id === userId;
+      } else if (share?.type === "Group" && userGroupIds) {
+        return userGroupIds.some(group => group.id === share?.id);
+      }
+      return false;
+    });
 
     // Logic combinations:
     // 1. If generalDashboardAccess is "View only" or "View and edit" -> Allow access

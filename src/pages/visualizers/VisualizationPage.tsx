@@ -8,13 +8,12 @@ import { Loading } from '../../components';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
 import { useAuthorities } from '../../context/AuthContext';
 import OtherVisualizersTable from './Components/OtherVisualizersTable';
+import { filterOtherCharts } from '../../lib/filterOtherDashboards';
 
 function filterSavedChartsByCreatorId(data: any, creatorId: string) {
   return data?.filter(item => item.value.createdBy.id === creatorId);
 }
-function filterOtherCharts(data: any, creatorId: string) {
-  return data?.filter(item => item.value.createdBy.id !== creatorId);
-}
+
 
 const VisualizationPage = () => {
   const { data, loading, isError } = useFetchVisualsData();
@@ -25,7 +24,7 @@ const VisualizationPage = () => {
 
 
   console.log("data?.dataStore?.entries", data?.dataStore?.entries);
-  console.log("userDatails?.me?.id", userDatails?.me?.id);
+  console.log("userDatailsuserGroups", userDatails?.me?.userGroups);
   console.log("final", filterSavedChartsByCreatorId(data?.dataStore?.entries, userDatails?.me?.id));
   const navigate = useNavigate();
 
@@ -65,7 +64,7 @@ const VisualizationPage = () => {
             <VisualizerTable savedVisualData={filterSavedChartsByCreatorId(data?.dataStore?.entries, userDatails?.me?.id)} />
           </TabsContent>
           <TabsContent value="Other-Charts" className="pt-4">
-            <OtherVisualizersTable savedVisualData={filterOtherCharts(data?.dataStore?.entries, userDatails?.me?.id)} />
+            <OtherVisualizersTable savedVisualData={filterOtherCharts(data?.dataStore?.entries, userDatails?.me?.id, userDatails?.me?.userGroups)} />
 
 
           </TabsContent>

@@ -123,6 +123,7 @@ export default function HomePage() {
   const { data, loading, isError } = useDashboardsData();
   const { userDatails } = useAuthorities();
 
+     
   const myDashboards = filterSavedChartsByCreatorId(
     data?.dataStore?.entries,
     userDatails?.me?.id
@@ -130,7 +131,8 @@ export default function HomePage() {
 
   const otherDashboards = filterOtherCharts(
     data?.dataStore?.entries,
-    userDatails?.me?.id
+    userDatails?.me?.id,
+    userDatails?.me?.userGroups
   );
   
   const pinnedDashboards = filterPinnedDashboard(data?.dataStore?.entries ,userDatails?.me?.id )

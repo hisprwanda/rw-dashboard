@@ -101,7 +101,8 @@ const DashboardsPage: React.FC = () => {
 
   const otherDashboards = filterOtherCharts(
     data?.dataStore?.entries,
-    userDatails?.me?.id
+    userDatails?.me?.id,
+    userDatails?.me?.userGroups
   );
 
   return (
