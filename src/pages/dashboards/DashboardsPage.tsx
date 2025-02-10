@@ -13,7 +13,7 @@ import {
 import MyDashboardsPageView from "./components/MyDashboardsPageView";
 import OtherDashboardsPageView from "./components/OtherDashboardsPageView";
 import Loading from "../../components/Loading";
-
+import { filterOtherCharts } from "../../lib/filterOtherDashboards";
 
 interface User {
   id: string;
@@ -80,13 +80,7 @@ const filterSavedChartsByCreatorId = (
   return data.filter((item) => item.value.createdBy.id === creatorId);
 };
 
-const filterOtherCharts = (
-  data: DashboardData[] | undefined,
-  creatorId: string | undefined
-): DashboardData[] => {
-  if (!data || !creatorId) return [];
-  return data.filter((item) => item.value.createdBy.id !== creatorId);
-};
+
 
 const DashboardsPage: React.FC = () => {
   const { data, loading, } = useDashboardsData();

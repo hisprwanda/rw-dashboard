@@ -12,6 +12,7 @@ import { useAuthorities } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Loading } from "../../components";
 import { FaEye, FaRegPlayCircle } from "react-icons/fa";
+import { filterOtherCharts } from "../../lib/filterOtherDashboards";
 
 
 
@@ -70,17 +71,6 @@ interface DashboardData {
   value: DashboardValue;
 }
 
-interface DataStoreResponse {
-  dataStore?: {
-    entries: DashboardData[];
-  };
-}
-interface UserDetails {
-  me?: {
-    id: string;
-    // ....
-  };
-}
 
 const filterSavedChartsByCreatorId = (
   data: DashboardData[] | undefined,
@@ -90,35 +80,7 @@ const filterSavedChartsByCreatorId = (
   return data.filter((item) => item.value.createdBy.id === creatorId);
 };
 
-const filterOtherCharts = (
-  data: DashboardData[] | undefined,
-  creatorId: string | undefined
-): DashboardData[] => {
-  if (!data || !creatorId) return [];
 
-  return data.filter((item) => {
-    // First condition: Skip if user is the creator
-    if (item.value.createdBy.id === creatorId) {
-      return false;
-    }
-
-    // Check if generalDashboardAccess is "View only" or "View and edit"
-    const hasGeneralAccess = ["View only", "View and edit"].includes(
-      item.value.generalDashboardAccess
-    );
-
-    // Check if user is in sharing array
-    const isUserInSharingList = item.value.sharing.some(
-      (share) => share.id === creatorId
-    );
-
-    // Logic combinations:
-    // 1. If generalDashboardAccess is "View only" or "View and edit" -> Allow access
-    // 2. If generalDashboardAccess is "No access" but user is in sharing list -> Allow access
-    // 3. If generalDashboardAccess is "No access" and user is not in sharing list -> Deny access
-    return hasGeneralAccess || isUserInSharingList;
-  });
-};
 
 
 const filterPinnedDashboard = (
