@@ -318,27 +318,35 @@ const DataModal: React.FC<DataModalProps> = ({
         ]);
     }  
     else if (selectedDimensionItemType.value === "dataSets") {
-      transformedOptions =
+          /// setting all metrics
+          const allMetrics = [
+            {label: "Reporting Rate", value: "REPORTING_RATE"},
+            {label: "Reporting Rate on Time", value: "REPORTING_RATE_ON_TIME"},
+            {label: "Actual Reports", value: "ACTUAL_REPORTS"},
+            {label: "Expected Reports", value: "EXPECTED_REPORTS"}
+          ]
+     let regularDataSet =
         data?.dataSets?.map((item: any) => ({
           label: item.name,
           value: item.id,
         })) || [];
-        /// setting data sets (groups)
+
+         transformedOptions = regularDataSet.flatMap(option =>
+          allMetrics.map(metric => ({
+            label: `${option.label} - ${metric.label}`,
+            value: `${option.value}.${metric.value}`,
+          }))
+        );
+        
+        console.log("current data set group",transformedOptions)
+        /// setting data sets groups
         transformedSubOptions =
         data?.dataSets?.map((item: any) => ({
           label: item.name,
           value: item.id,
         })) || [];
-        /// setting all metrics
-        const allMetrics =
-        data?.dataSets?.map((item: any) => ({
-          label: item.dimensionItemType,
-          value: item.dimensionItemType,
-        })) || [];
-        // temporally
-        //setOtherOptions(allMetrics);
-        // clear other options
-        setOtherOptions([])
+
+        setOtherOptions(allMetrics);
     }
     setAvailableOptions((prev) =>
       dataItemsDataPage > 1 ? [ ...transformedOptions] : transformedOptions
@@ -465,6 +473,9 @@ useEffect(() => {
           return label;
         }
 
+        useEffect(()=>{
+          console.log("selectedDimensionItemType is changed",selectedDimensionItemType)
+        },[selectedDimensionItemType])
   if (error) return <div>Error loading data...</div>;
 
   return (
@@ -507,7 +518,7 @@ useEffect(() => {
         [
           "indicators",
           "dataElements",
-         // "dataSets",
+         "dataSets",
           "Event Data Item",
           "Program Indicator"
         ].includes(selectedDimensionItemType.value)  &&  <div className="flex gap-2"  >
@@ -539,7 +550,7 @@ useEffect(() => {
            {/* OTHER OPTIONS */}
            {  [
           "dataElements",
-          //"dataSets"
+          "dataSets"
         ].includes(selectedDimensionItemType.value)  &&     <div className="space-y-2 mb-3">
         <label htmlFor="otherOptionsId" className="block text-sm font-medium text-gray-700">
           {selectedDimensionItemType.value === "dataElements" ? "Disaggregation" : "Metrics Type"}   
