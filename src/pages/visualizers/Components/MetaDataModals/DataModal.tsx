@@ -444,13 +444,23 @@ useEffect(() => {
   const isLoadingGroups = loading || isGroupChanging || isOtherOptionsChanging;
 
    const [defaultGroupOrOtherData, setDefaultGroupOrOtherData] = useState<any>("")
-
-       
-       //// setting groups name
-        useEffect(()=>{
-          console.log("selectedDimensionItemType",selectedDimensionItemType)
-          setDefaultGroupOrOtherData(`All groups`)  
-        },[selectedDimensionItemType])
+       //// determining DefaultGroupOrOtherData title
+       useEffect(() => {
+        console.log("selectedDimensionItemType", selectedDimensionItemType);
+      
+        const { value } = selectedDimensionItemType || {};
+      
+        const groupMapping = {
+          indicators: "All groups",
+          dataElements: "All groups",
+          dataSets: "All Data Sets",
+          "Event Data Item": "All Programs",
+          "Program Indicator": "All Programs",
+        };
+      
+        setDefaultGroupOrOtherData(groupMapping[value]);
+      }, [selectedDimensionItemType]);
+      
 
         function determineGroupsTitle(value:string) {
           let label = "";
