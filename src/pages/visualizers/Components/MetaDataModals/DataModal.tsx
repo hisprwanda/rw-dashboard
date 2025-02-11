@@ -320,6 +320,7 @@ const DataModal: React.FC<DataModalProps> = ({
     else if (selectedDimensionItemType.value === "dataSets") {
           /// setting all metrics
           const allMetrics = [
+            {label: "All Metrics", value: "All Metrics"},
             {label: "Reporting Rate", value: "REPORTING_RATE"},
             {label: "Reporting Rate on Time", value: "REPORTING_RATE_ON_TIME"},
             {label: "Actual Reports", value: "ACTUAL_REPORTS"},
@@ -332,13 +333,13 @@ const DataModal: React.FC<DataModalProps> = ({
         })) || [];
 
          transformedOptions = regularDataSet.flatMap(option =>
-          allMetrics.map(metric => ({
-            label: `${option.label} - ${metric.label}`,
-            value: `${option.value}.${metric.value}`,
-          }))
+          allMetrics
+            .filter(metric => metric.value !== "All Metrics") // Exclude "All Metrics"
+            .map(metric => ({
+              label: `${option.label} - ${metric.label}`,
+              value: `${option.value}.${metric.value}`,
+            }))
         );
-        
-        console.log("current data set group",transformedOptions)
         /// setting data sets groups
         transformedSubOptions =
         data?.dataSets?.map((item: any) => ({
