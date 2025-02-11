@@ -244,119 +244,106 @@ const DataModal: React.FC<DataModalProps> = ({
     debouncedOtherOptionsHandler(newValue);
   };
 
-   useEffect(()=>{
-    console.log("hello other options xxxyyy",otherOptionsId)
-   },[otherOptionsId])
   useEffect(() => {
     let transformedOptions: TransferOption[] = [];
     let transformedSubOptions: TransferOption[] = [];
-    if ( ["dataItems", "Event Data Item", "Program Indicator", "Calculation"].includes(selectedDimensionItemType.value)) {
-      
-      transformedOptions =
-        data?.dataItems?.map((item: any) => ({
-          label: item.name,
-          value: item.id,
-        })) || [];
-
-        /// setting groups
-        if (selectedDimensionItemType.value === "Event Data Item" || selectedDimensionItemType.value === "Program Indicator" ) {
-          /// setting data sets (groups)
-          transformedSubOptions =
-          subDataItemsData?.programs?.map((item: any) => ({
-            label: item.name,
-            value: item.id,
-          })) || [];
-
-          // clear other options
-          setOtherOptions([])
-      }
-       
-    } else if (selectedDimensionItemType.value === "indicators") {
-      transformedOptions =
-        data?.indicators?.map((item: any) => ({
-          label: item.name,
-          value: item.id,
-        })) || [];
-        /// setting indicators group
-        transformedSubOptions  =
-        subDataItemsData?.indicatorGroups?.map((item: any) => ({
-          label: item.name,
-          value: item.id,
-        })) || [];
-
-      // clear other options
-      setOtherOptions([])
-
-    } else if (selectedDimensionItemType.value === "dataElements") {
-  
-      if(otherOptionsId === "dataElementOperands" )
-      {
-        transformedOptions =
-        data?.dataElementOperands?.map((item: any) => ({
-          label: item.name,
-          value: item.id,
-        })) || [];
-      }else{
-        transformedOptions =
-        data?.dataElements?.map((item: any) => ({
-          label: item.name,
-          value: item.id,
-        })) || [];
-      }
     
-
-        /// setting data elements group   dataElementGroups
-        transformedSubOptions =
-        subDataItemsData?.dataElementGroups?.map((item: any) => ({
+    // Memoized options to avoid unnecessary recomputation
+    const filterTransformedOptions = (options: TransferOption[], otherOptionsId, groupsIdOrSubDataItemIds) => {
+      // If 'otherOptionsId' is REPORTING_RATE, filter based on that metric
+      if (otherOptionsId === "REPORTING_RATE") {
+        return options.filter(option => option.value.includes("REPORTING_RATE"));
+      }
+  
+      // If 'groupsIdOrSubDataItemIds' is provided, filter based on the group
+      if (groupsIdOrSubDataItemIds) {
+        return options.filter(option => option.value.includes(groupsIdOrSubDataItemIds));
+      }
+  
+      return options;
+    };
+  
+    if (["dataItems", "Event Data Item", "Program Indicator", "Calculation"].includes(selectedDimensionItemType.value)) {
+      transformedOptions = data?.dataItems?.map((item: any) => ({
+        label: item.name,
+        value: item.id,
+      })) || [];
+  
+      if (selectedDimensionItemType.value === "Event Data Item" || selectedDimensionItemType.value === "Program Indicator") {
+        transformedSubOptions = subDataItemsData?.programs?.map((item: any) => ({
           label: item.name,
           value: item.id,
         })) || [];
-        // setting other options
-        setOtherOptions([
-          { label: "Totals Only", value: "" },
-          { label: "Details Only", value: "dataElementOperands" },
-        ]);
-    }  
-    else if (selectedDimensionItemType.value === "dataSets") {
-          /// setting all metrics
-          const allMetrics = [
-            {label: "All Metrics", value: "All Metrics"},
-            {label: "Reporting Rate", value: "REPORTING_RATE"},
-            {label: "Reporting Rate on Time", value: "REPORTING_RATE_ON_TIME"},
-            {label: "Actual Reports", value: "ACTUAL_REPORTS"},
-            {label: "Expected Reports", value: "EXPECTED_REPORTS"}
-          ]
-     let regularDataSet =
-        data?.dataSets?.map((item: any) => ({
+        setOtherOptions([]);
+      }
+    } else if (selectedDimensionItemType.value === "indicators") {
+      transformedOptions = data?.indicators?.map((item: any) => ({
+        label: item.name,
+        value: item.id,
+      })) || [];
+      transformedSubOptions = subDataItemsData?.indicatorGroups?.map((item: any) => ({
+        label: item.name,
+        value: item.id,
+      })) || [];
+      setOtherOptions([]);
+    } else if (selectedDimensionItemType.value === "dataElements") {
+      if (otherOptionsId === "dataElementOperands") {
+        transformedOptions = data?.dataElementOperands?.map((item: any) => ({
           label: item.name,
           value: item.id,
         })) || [];
-
-         transformedOptions = regularDataSet.flatMap(option =>
-          allMetrics
-            .filter(metric => metric.value !== "All Metrics") // Exclude "All Metrics"
-            .map(metric => ({
-              label: `${option.label} - ${metric.label}`,
-              value: `${option.value}.${metric.value}`,
-            }))
-        );
-        /// setting data sets groups
-        transformedSubOptions =
-        data?.dataSets?.map((item: any) => ({
+      } else {
+        transformedOptions = data?.dataElements?.map((item: any) => ({
           label: item.name,
           value: item.id,
         })) || [];
-
-        setOtherOptions(allMetrics);
+      }
+  
+      transformedSubOptions = subDataItemsData?.dataElementGroups?.map((item: any) => ({
+        label: item.name,
+        value: item.id,
+      })) || [];
+      setOtherOptions([
+        { label: "Totals Only", value: "" },
+        { label: "Details Only", value: "dataElementOperands" },
+      ]);
+    } else if (selectedDimensionItemType.value === "dataSets") {
+      const allMetrics = [
+        { label: "All Metrics", value: "All Metrics" },
+        { label: "Reporting Rate", value: "REPORTING_RATE" },
+        { label: "Reporting Rate on Time", value: "REPORTING_RATE_ON_TIME" },
+        { label: "Actual Reports", value: "ACTUAL_REPORTS" },
+        { label: "Expected Reports", value: "EXPECTED_REPORTS" },
+      ];
+      let regularDataSet = data?.dataSets?.map((item: any) => ({
+        label: item.name,
+        value: item.id,
+      })) || [];
+  
+      transformedOptions = regularDataSet.flatMap(option =>
+        allMetrics
+          .filter(metric => metric.value !== "All Metrics") // Exclude "All Metrics"
+          .map(metric => ({
+            label: `${option.label} - ${metric.label}`,
+            value: `${option.value}.${metric.value}`,
+          }))
+      );
+      transformedSubOptions = data?.dataSets?.map((item: any) => ({
+        label: item.name,
+        value: item.id,
+      })) || [];
+      setOtherOptions(allMetrics);
     }
-    setAvailableOptions((prev) =>
-      dataItemsDataPage > 1 ? [ ...transformedOptions] : transformedOptions
-    );
-      // setting sub options (sub options represents like groups of data items)
-      setAvailableSubOptions((prev) =>
-      dataItemsDataPage > 1 ? [...prev, ...transformedSubOptions] : transformedSubOptions
-    );
-  }, [data,subDataItemsData, selectedDimensionItemType, dataItemsDataPage,otherOptionsId]);
+  
+    // Filter transformedOptions based on the selected filters
+    const filteredTransformedOptions = filterTransformedOptions(transformedOptions, otherOptionsId, groupsIdOrSubDataItemIds);
+  
+    // Set the available options without making additional API requests
+    setAvailableOptions(prev => dataItemsDataPage > 1 ? [...filteredTransformedOptions] : filteredTransformedOptions);
+    setAvailableSubOptions(prev => dataItemsDataPage > 1 ? [...prev, ...transformedSubOptions] : transformedSubOptions);
+  
+  }, [data, subDataItemsData, selectedDimensionItemType, dataItemsDataPage, otherOptionsId, groupsIdOrSubDataItemIds]);
+  
 
 
   useEffect(()=>{
@@ -484,9 +471,6 @@ useEffect(() => {
           return label;
         }
 
-        useEffect(()=>{
-          console.log("selectedDimensionItemType is changed",selectedDimensionItemType)
-        },[selectedDimensionItemType])
   if (error) return <div>Error loading data...</div>;
 
   return (
