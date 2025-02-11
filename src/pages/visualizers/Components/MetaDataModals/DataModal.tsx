@@ -251,6 +251,7 @@ const DataModal: React.FC<DataModalProps> = ({
     let transformedOptions: TransferOption[] = [];
     let transformedSubOptions: TransferOption[] = [];
     if ( ["dataItems", "Event Data Item", "Program Indicator", "Calculation"].includes(selectedDimensionItemType.value)) {
+      
       transformedOptions =
         data?.dataItems?.map((item: any) => ({
           label: item.name,
@@ -350,8 +351,8 @@ const DataModal: React.FC<DataModalProps> = ({
 
 
   useEffect(()=>{
-    console.log("locationss",{availableSubOptions})
-    console.log("locationss 2",{data})
+    console.log("subDataItemsData",{subDataItemsData})
+    console.log(" all data",{data})
   },[availableSubOptions,data])
 
   const handleDimensionItemTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
