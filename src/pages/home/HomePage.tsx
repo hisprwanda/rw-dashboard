@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { Loading } from "../../components";
 import { FaEye, FaRegPlayCircle } from "react-icons/fa";
 import { filterOtherCharts } from "../../lib/filterOtherDashboards";
+import i18n from '../../locales/index.js'
 
 
 
@@ -157,7 +158,7 @@ export default function HomePage() {
 
   return (
     <section className="px-14 py-9">
-      <h1 className="text-primary font-semibold">Pinned Dashboards</h1>
+      <h1 className="text-primary font-semibold">{i18n.t('Pinned Dashboards')}</h1>
 
       <div className="mt-7 flex gap-8 overflow-auto  ">
         {pinnedDashboards.map((dashboard, index) => (
@@ -203,8 +204,8 @@ export default function HomePage() {
       <div className="mt-14">
         <Tabs defaultValue="mydashboards">
           <TabsList className=" flex justify-start gap-9 text-primary font-semibold w-[400px] mb-8">
-            <TabsTrigger value="mydashboards">My Dashboards</TabsTrigger>
-            <TabsTrigger value="otherdasboards">Other Dasboards</TabsTrigger>
+            <TabsTrigger value="mydashboards">{i18n.t('My Dashboards')}</TabsTrigger>
+            <TabsTrigger value="otherdasboards">{i18n.t('Other Dashboards')}</TabsTrigger>
           </TabsList>
           <TabsContent value="mydashboards">
             <MyDashboardsTable dashboards={myDashboards} />
