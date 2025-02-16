@@ -1,0 +1,21 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"POT-Creation-Date: 2025-02-16T10:26:30.600Z\n"
+"PO-Revision-Date: 2025-02-16T10:26:30.600Z\n"
+
+msgid "Hello world!"
+msgstr "Bonjour le monde !"
+
+msgid "My Dashboards"
+msgstr "Mes tableaux de bord"
+
+msgid "Other Dashboards"
+msgstr "Autres tableaux de bord"
+
+msgid "Pinned Dashboards"
+msgstr "Tableaux de bord épinglés"
