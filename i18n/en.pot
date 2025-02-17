@@ -5,14 +5,80 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-02-16T10:50:33.466Z\n"
-"PO-Revision-Date: 2025-02-16T10:50:33.467Z\n"
+"POT-Creation-Date: 2025-02-17T08:16:01.436Z\n"
+"PO-Revision-Date: 2025-02-17T08:16:01.436Z\n"
 
-msgid "Pinned Dashboards"
-msgstr "Pinned Dashboards"
+msgid "Dashboards"
+msgstr "Dashboards"
+
+msgid "Visualizers"
+msgstr "Visualizers"
+
+msgid "Data Source"
+msgstr "Data Source"
+
+msgid "Modified"
+msgstr "Modified"
 
 msgid "My Dashboards"
 msgstr "My Dashboards"
 
 msgid "Other Dashboards"
 msgstr "Other Dashboards"
+
+msgid "New Dashboard"
+msgstr "New Dashboard"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Created At"
+msgstr "Created At"
+
+msgid "Updated At"
+msgstr "Updated At"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Created By"
+msgstr "Created By"
+
+msgid "Pinned Dashboards"
+msgstr "Pinned Dashboards"
+
+msgid "Are you sure you want to delete this visual?"
+msgstr "Are you sure you want to delete this visual?"
+
+msgid "Please wait..."
+msgstr "Please wait..."
+
+msgid "Confirm"
+msgstr "Confirm"
+
+msgid "Visual Name"
+msgstr "Visual Name"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "My Charts"
+msgstr "My Charts"
+
+msgid "Other Charts"
+msgstr "Other Charts"
+
+msgid "New Visualizer"
+msgstr "New Visualizer"
+
+msgid "SETTINGS"
+msgstr "SETTINGS"
+
+msgid "Data"
+msgstr "Data"
+
+msgid "Period"
+msgstr "Period"
+
+msgid "Organization Unit"
+msgstr "Organization Unit"

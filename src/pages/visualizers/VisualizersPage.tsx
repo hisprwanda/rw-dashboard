@@ -32,6 +32,7 @@ import { dimensionItemTypes } from '../../constants/dimensionItemTypes';
 import ExportModal from './Components/ExportModal';
 import { useToast } from "../../components/ui/use-toast";
 import { Maximize2 } from 'lucide-react';
+import i18n from '../../locales/index.js'
 
 function Visualizers() {
     const { id: visualId } = useParams();
@@ -228,20 +229,20 @@ function Visualizers() {
                                     value="DATA"
                                     className="text-lg font-semibold py-2 w-full text-left"
                                 >
-                                    DIMENSIONS
+                                    DIMENSIONS 
                                 </TabsTrigger>
                                 <TabsTrigger
                                     value="SETTINGS"
                                     className="text-lg font-semibold py-2 w-full text-left hover:border-gray-300"
                                 >
-                                    SETTINGS
+                                     {i18n.t('SETTINGS')}
                                 </TabsTrigger>
                             </TabsList>
                             <TabsContent value="DATA" className="pt-4">
                                 <div>
                                     {/* Select Data Source Dropdown */}
                                     <div className="mb-4">
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Data source</label>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1"> {i18n.t('Data Source')}</label>
                                         <select value={selectedDataSourceOption} onChange={handleDataSourceOnChange}
                                             className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                             <option value={currentInstanceId}  >{systemInfo?.title?.applicationTitle}</option>
@@ -250,18 +251,18 @@ function Visualizers() {
                                     </div>
                                     {/* data items */}
                                     <div className="mb-4">
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Main Dimensions</label>
-                                        <Button disabled={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source" text={`${(isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading) ? "Loading.." : `Data ${analyticsDimensions?.dx?.length === 0 ? "" : `(${analyticsDimensions?.dx?.length})`}`} `} onClick={handleShowDataModal} />
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">{i18n.t('Main Dimensions')}</label>
+                                        <Button disabled={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source" text={`${(isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading) ? "Loading.." : `${i18n.t('Data')} ${analyticsDimensions?.dx?.length === 0 ? "" : `(${analyticsDimensions?.dx?.length})`}`} `} onClick={handleShowDataModal} />
                                     </div>
                                     {/* Period */}
                                     <div className="mb-4">
                                         {/* <label className="block text-sm font-medium text-gray-700 mb-1">Period</label> */}
-                                        <Button disabled={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source" text={`${(isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading) ? "Loading.." : `Period ${analyticsDimensions?.pe?.length === 0 ? "" : `(${analyticsDimensions?.pe?.length})`} `} `} onClick={handleShowPeriodModal} />
+                                        <Button disabled={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source" text={`${(isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading) ? "Loading.." : `${i18n.t('Data')} ${analyticsDimensions?.pe?.length === 0 ? "" : `(${analyticsDimensions?.pe?.length})`} `} `} onClick={handleShowPeriodModal} />
                                     </div>
                                     {/* Organization Unit */}
                                     <div className="mb-4">
                                         {/* <label className="block text-sm font-medium text-gray-700 mb-1">Organisation Unit</label> */}
-                                        <Button disabled={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source" text={`${(isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading) ? "Loading.." : `Organisation Unit`} `} onClick={handleShowOrganizationUnitModal} />
+                                        <Button disabled={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source" text={`${(isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading) ? "Loading.." : `${i18n.t('Organization Unit')} `} `} onClick={handleShowOrganizationUnitModal} />
                                     </div>
                                 </div>
                             </TabsContent>

@@ -14,6 +14,7 @@ import MyDashboardsPageView from "./components/MyDashboardsPageView";
 import OtherDashboardsPageView from "./components/OtherDashboardsPageView";
 import Loading from "../../components/Loading";
 import { filterOtherCharts } from "../../lib/filterOtherDashboards";
+import i18n from '../../locales/index.js'
 
 interface User {
   id: string;
@@ -114,11 +115,11 @@ const DashboardsPage: React.FC = () => {
           <Tabs defaultValue="mydashboards">
             <div className="flex items-center justify-between mb-24">
               <TabsList className="flex justify-start gap-9 text-primary font-semibold w-[400px] text-xl">
-                <TabsTrigger value="mydashboards">My Dashboards</TabsTrigger>
-                <TabsTrigger value="otherdashboards">Other Dashboards</TabsTrigger>
+                <TabsTrigger value="mydashboards">{i18n.t('My Dashboards')}</TabsTrigger>
+                <TabsTrigger value="otherdashboards">{i18n.t('Other Dashboards')}</TabsTrigger>
               </TabsList>
               <Button
-                text="New Dashboard"
+                text={`${i18n.t('New Dashboard')}`}
                 icon={<IoIosAddCircle />}
                 onClick={handleGoToCreateDashboardPage}
               />

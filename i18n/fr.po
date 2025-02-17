@@ -19,3 +19,88 @@ msgstr "Autres tableaux de bord"
 
 msgid "Pinned Dashboards"
 msgstr "Tableaux de bord épinglés"
+
+msgid "Dashboards"
+msgstr "Tableaux de bord"
+
+msgid "Visualizers"
+msgstr "Visualiseurs"
+
+msgid "Data Source"
+msgstr "Source de données"
+
+msgid "Name"
+msgstr "Nom"
+
+msgid "Name"
+msgstr "Nom"
+
+msgid "Created At"
+msgstr "Créé à"
+
+msgid "Updated At"
+msgstr "Mis à jour à"
+
+msgid "Actions"
+msgstr "Actes"
+
+msgid "Created By"
+msgstr "Créé par"
+
+msgid "New Dashboard"
+msgstr "Nouveau tableau de bord"
+
+msgid "New Dashboard"
+msgstr "Nouveau tableau de bord"
+
+msgid "Modified"
+msgstr "Modifié"
+
+msgid "My Charts"
+msgstr "Mes graphiques"
+
+msgid "Other Charts"
+msgstr "Autres graphiques"
+
+msgid "New Visualizer"
+msgstr "Nouveau visualiseur"
+
+msgid "Visual Name"
+msgstr "Nom visuel"
+
+msgid "Visual Name"
+msgstr "Nom visuel"
+
+msgid "Type"
+msgstr "Taper"
+
+msgid "Are you sure you want to delete this visual?"
+msgstr "Êtes-vous sûr de vouloir supprimer ce visuel ?"
+
+msgid "Confirm"
+msgstr "Confirmer"
+
+msgid "'Please wait...'"
+msgstr "S'il vous plaît, attendez..."
+
+msgid "SETTINGS"
+msgstr "PARAMÈTRES"
+
+msgid "SETTINGS"
+msgstr "PARAMÈTRES"
+
+msgid "Main Dimensions"
+msgstr "Dimensions principales"
+
+msgid "Data"
+msgstr "Donnés"
+
+msgid "Period"
+msgstr "Période"
+
+msgid "Organization Unit"
+msgstr "Unité organisationnelle"
+
+msgid "Organization Unit"
+msgstr "Unité organisationnelle"
+
