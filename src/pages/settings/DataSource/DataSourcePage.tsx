@@ -8,7 +8,7 @@ import { DataSourceForm } from "./Components"
 import { IoIosAddCircle } from "react-icons/io"
 import Button from "../../../components/Button"
 import { FaCheck } from "react-icons/fa"
-
+import i18n from '../../../locales/index.js'
 
 
 const DataSourcePage = () => {
@@ -35,9 +35,9 @@ const DataSourcePage = () => {
   return (<div className="container w-full m-auto  p-2" >
       {/* data source header */}
       <div className=" container flex justify-between py-5" >
-        <h3 className="text-[#2C6693] text-xl font-bold " >Data source</h3>
+        <h3 className="text-[#2C6693] text-xl font-bold " >{i18n.t('Data Source')}</h3>
 
-<Button variant="primary" text="New data source"     type="button"
+<Button variant="primary" text={i18n.t('New data source')}   type="button"
       onClick={handleShowDataSourceForm}  icon={<IoIosAddCircle />} />
 
 
@@ -49,7 +49,7 @@ const DataSourcePage = () => {
             isOpen={isShowDataSourceForm}
             setIsOpen={setIsShowDataSourceForm}
          >
-      <DataSourceForm title="Add Data Source"  action="create" refetch={refetch}  setIsShowDataSourceForm={setIsShowDataSourceForm}  />
+      <DataSourceForm title={i18n.t('Data Source Details')} action="create"  refetch={refetch}  setIsShowDataSourceForm={setIsShowDataSourceForm}  />
           </GenericModal>
       {/* tables of saved data source */}
 < DataSourceTable savedDataSourceData={data?.dataStore?.entries} />

@@ -19,3 +19,164 @@ msgstr "Autres tableaux de bord"
 
 msgid "Pinned Dashboards"
 msgstr "Tableaux de bord épinglés"
+
+msgid "Dashboards"
+msgstr "Tableaux de bord"
+
+msgid "Visualizers"
+msgstr "Visualiseurs"
+
+msgid "Data Source"
+msgstr "Source de données"
+
+msgid "Name"
+msgstr "Nom"
+
+msgid "Name"
+msgstr "Nom"
+
+msgid "Created At"
+msgstr "Créé à"
+
+msgid "Updated At"
+msgstr "Mis à jour à"
+
+msgid "Actions"
+msgstr "Actes"
+
+msgid "Created By"
+msgstr "Créé par"
+
+msgid "New Dashboard"
+msgstr "Nouveau tableau de bord"
+
+msgid "Modified"
+msgstr "Modifié"
+
+msgid "My Charts"
+msgstr "Mes graphiques"
+
+msgid "Other Charts"
+msgstr "Autres graphiques"
+
+msgid "New Visualizer"
+msgstr "Nouveau visualiseur"
+
+msgid "Visual Name"
+msgstr "Nom visuel"
+
+msgid "Visual Name"
+msgstr "Nom visuel"
+
+msgid "Type"
+msgstr "Taper"
+
+msgid "Are you sure you want to delete this visual?"
+msgstr "Êtes-vous sûr de vouloir supprimer ce visuel ?"
+
+msgid "Confirm"
+msgstr "Confirmer"
+
+msgid "'Please wait...'"
+msgstr "S'il vous plaît, attendez..."
+
+msgid "SETTINGS"
+msgstr "PARAMÈTRES"
+
+msgid "SETTINGS"
+msgstr "PARAMÈTRES"
+
+msgid "Main Dimensions"
+msgstr "Dimensions principales"
+
+msgid "Data"
+msgstr "Donnés"
+
+msgid "Period"
+msgstr "Période"
+
+msgid "Organization Unit"
+msgstr "Unité organisationnelle"
+
+msgid "Organization Unit"
+msgstr "Unité organisationnelle"
+
+msgid "New data source"
+msgstr "Nouvelle source de données"
+
+msgid "Data Source Details"
+msgstr "Détails de la source de données"
+
+msgid "Data Source Details"
+msgstr "Détails de la source de données"
+
+msgid "Instance Name"
+msgstr "Nom de l'instance"
+
+msgid "Data Source Type"
+msgstr "Type de source de données"
+
+msgid "Token"
+msgstr "Jeton"
+
+msgid "Save"
+msgstr "registre"
+
+msgid "Update"
+msgstr "Mise à jour"
+
+msgid "Is Official Dashboard"
+msgstr "Est le tableau de bord officiel"
+
+msgid "Dashboard Name"
+msgstr "Nom du tableau de bord"
+
+msgid "Dashboard Description"
+msgstr "Description du tableau de bord"
+
+msgid "FullScreen"
+msgstr "Plein écran"
+
+msgid "Present"
+msgstr "Présent"
+
+msgid "Save changes"
+msgstr "Enregistrer les modifications"
+
+msgid "Background Color"
+msgstr "Couleur d'arrière-plan"
+
+msgid "Select a visual"
+msgstr "Sélectionnez un visuel"
+
+msgid "Slide"
+msgstr "diapositive"
+
+msgid "of"
+msgstr "sur"
+
+msgid "Slides"
+msgstr "Diapositives"
+
+msgid "Delay"
+msgstr "Retard"
+
+msgid "Background Music"
+msgstr "Musique de fond"
+
+msgid "Stop"
+msgstr "Arrêt"
+
+msgid "Play slideshow"
+msgstr "Lire le diaporama"
+
+msgid "Pause slideshow"
+msgstr "Suspendre le diaporama"
+
+msgid "Exit Fullscreen"
+msgstr "Quitter le plein écran"
+
+msgid "Exit"
+msgstr "Sortie"
+
+

@@ -8,6 +8,7 @@ import Button from "../../../../components/Button";
 import { DataSourceFormFields, DataSourceSchema } from '../../../../types/DataSource';
 import { IoSaveOutline } from "react-icons/io5";
 import { useToast } from "../../../../components/ui/use-toast";
+import i18n from '../../../../locales/index.js'
 
 const dataSourceOptions = [
     { name: 'DHIS2', value: 'DHIS2' },
@@ -122,7 +123,7 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({
 
                 {/* Instance Name */}
                 <div className="flex flex-col">
-                    <label className="text-gray-700">Instance Name</label>
+                    <label className="text-gray-700">{i18n.t('Instance Name')}</label>
                     <input
                         type="text"
                         className="p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-500"
@@ -148,7 +149,7 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({
 
             {/* Token */}
       <div className="flex flex-col">
-    <label className="text-gray-700">Token</label>
+    <label className="text-gray-700">{i18n.t('Token')}</label>
     <input
         type="text"
         className={`p-2 border rounded-md focus:ring ${
@@ -165,7 +166,7 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({
 
                 {/* Data Source Type */}
                 <div className="flex flex-col">
-                    <label className="text-gray-700">Data Source Type</label>
+                    <label className="text-gray-700">{i18n.t('Data Source Type')}</label>
                     <select
                         className="p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-500"
                         {...register('type')}
@@ -204,7 +205,7 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({
                 <div className="flex justify-end mt-4">
                     <Button
                         variant="primary"
-                        text={isSubmitting ? 'Loading...' : action === 'update' ? 'Update' : 'Save'}
+                        text={isSubmitting ? 'Loading...' : action === 'update' ? `${i18n.t('Update')}` : `${i18n.t('Save')}`}
                         type="submit"
                         icon={<IoSaveOutline />}
                     />

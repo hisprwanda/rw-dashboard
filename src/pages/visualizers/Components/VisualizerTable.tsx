@@ -14,6 +14,7 @@ import { useFetchVisualsData } from '../../../services/fetchVisuals';
 import { useNavigate } from 'react-router-dom';
 import { useAuthorities } from '../../../context/AuthContext';
 import { FaEye } from 'react-icons/fa';
+import i18n from '../../../locales/index.js'
 
 
 
@@ -33,11 +34,11 @@ const VisualizerTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
     () => [
       {
         accessorKey: 'value.visualName', 
-        header: 'Visual Name',
+        header: `${i18n.t('Visual Name')}`,   
       },
       {
         accessorKey: 'value.visualType',
-        header: 'Type',
+        header: `${i18n.t('Type')}`, 
       },
       // {
       //   accessorKey: 'value.createdBy.name',
@@ -45,7 +46,7 @@ const VisualizerTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
       // },
       {
         accessorKey: 'value.createdAt',
-        header: 'Created At',
+        header: `${i18n.t('Created At')}`,
         Cell: ({ cell }) => {
           const timestamp = cell.getValue<number>(); 
           const formattedDate = new Date(timestamp).toLocaleString(); 
@@ -53,8 +54,8 @@ const VisualizerTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
         },
       },
       {
-        accessorKey: 'value.updatedAt',
-        header: 'Updated At',
+        accessorKey: 'value.updatedAt', 
+        header: `${i18n.t('Updated At')}`,
         Cell: ({ cell }) => {
           const timestamp = cell.getValue<number>(); 
           const formattedDate = new Date(timestamp).toLocaleString(); 
@@ -71,12 +72,9 @@ const VisualizerTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
     // clear existing analytics data
     setAnalyticsData([])
   navigate(`/visualizers/${data?.key}`)
-  console.log("hello view",data)
-
   };
 
   const handleDelete = (data:any) => {
-    console.log("hello delete",data)
     setSelectedVisual(data)
     setIsShowDeleteVisual(true);
 
@@ -89,7 +87,7 @@ const VisualizerTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
     positionActionsColumn: 'last',
     displayColumnDefOptions: {
       'mrt-row-actions': {
-        header: 'Actions ',
+        header: `${i18n.t('Actions')}`, 
         size: 55, 
         
       },

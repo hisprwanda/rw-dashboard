@@ -14,7 +14,7 @@ import { FaEye, FaRegPlayCircle, FaRegTrashAlt, FaShareAlt } from "react-icons/f
 import { useToast } from "../../../components/ui/use-toast";
 import { DeleteDashboardModal } from "./DeleteDashboardModal";
 import { SharingDashboardModal } from "./SharingDashboardModal";
-
+import i18n from '../../../locales/index.js'
 
 
 
@@ -130,19 +130,19 @@ const MyDashboardsTable: React.FC<MyDashboardsTableProps> = ({ dashboards }) => 
   const columns = useMemo<MRT_ColumnDef<DashboardData>[]>(() => [
     {
       accessorFn: (row) => row.value.dashboardName,
-      header: "Name",
+      header:`${i18n.t('Name')}`,  
     },
     {
       accessorFn: (row) => new Date(row.value.createdAt).toLocaleDateString(),
-      header: "Created At",
+      header:`${i18n.t('Created At')}`, 
     },
     {
       accessorFn: (row) => new Date(row.value.updatedAt).toLocaleDateString(),
-      header: "Updated At",
+      header: `${i18n.t('Updated At')}`,
     },
     {
       accessorKey: "isFavorite",
-      header: "Actions",
+      header: `${i18n.t('Actions')}`,
       Cell: ({ row }) => {
         const isFavorited = (row.original.value.favorites || []).includes(userId);
 

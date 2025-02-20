@@ -7,6 +7,7 @@ import { useDashboardsData } from "../../../services/fetchDashboard";
 import { useUpdateDashboardFavorite } from "../../../hooks/useUpdateDashFavorite";
 import { Loading } from "../../../components";
 import { FaEye, FaRegPlayCircle } from "react-icons/fa";
+import i18n from '../../../locales/index.js'
 
 interface User {
   id: string;
@@ -160,7 +161,7 @@ const BoxView: React.FC<BoxViewProps> = ({ dashboards }) => {
 
             {/* Modified Date */}
             <p className="text-sm text-gray-400 mt-2">
-              Modified: {new Date(dashboard.value.updatedAt).toLocaleDateString()}
+            {i18n.t('Modified')}: {new Date(dashboard.value.updatedAt).toLocaleDateString()}
             </p>
           </div>
         );

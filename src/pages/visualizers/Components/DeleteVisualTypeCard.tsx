@@ -3,6 +3,7 @@ import { useDataEngine } from '@dhis2/app-runtime';
 import { AlertBar } from '@dhis2/ui';
 import Button from "../../../components/Button" 
 import { MdDelete } from "react-icons/md";
+import i18n from '../../../locales/index.js'
 
 type DeleteProps = {
     id: string;
@@ -24,7 +25,6 @@ const DeleteVisualTypeCard: React.FC<DeleteProps> = ({ id, refetch,setIsShowDele
                 resource: `dataStore/${process.env.REACT_APP_VISUALS_STORE}/${id}`,
                 type: "delete",
             });
-            console.log('Delete response:', resp);
             if(resp?.httpStatus)
             {
                 setIsSuccess(true)
@@ -43,8 +43,7 @@ const DeleteVisualTypeCard: React.FC<DeleteProps> = ({ id, refetch,setIsShowDele
          
         
         } catch (error) {
-            console.error('Error deleting data visual:', error);
-            setIsSuccess(false)
+         setIsSuccess(false)
         }
         finally{
             setIsLoading(false)
@@ -66,11 +65,11 @@ const DeleteVisualTypeCard: React.FC<DeleteProps> = ({ id, refetch,setIsShowDele
 
 {!isSuccess && <>
     <h2 className="text-xl font-semibold mb-4 text-gray-800">
-                Are you sure you want to delete this visual?
+    `${i18n.t('Are you sure you want to delete this visual?')}`   
             </h2>
             <div className="flex justify-end space-x-4 ">
-
-      <Button variant="danger" text={isLoading ? "Loading..." : "Confirm" }     type="button"
+            
+      <Button variant="danger" text={isLoading ? `${i18n.t('Please wait...')}` : `${i18n.t('Confirm')}`  }     type="button"
       onClick={deleteVisual}  icon={<MdDelete />} />
 
             </div>

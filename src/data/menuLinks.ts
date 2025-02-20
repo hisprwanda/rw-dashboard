@@ -1,10 +1,12 @@
+import i18n from '../locales/index.js'
+
 export const menuItems = [
     {
-        name: "Dashboards",
+        name: `${i18n.t('Dashboards')}`,
         link: "dashboards"
     },
     {
-        name: "Visualizers",
+        name: `${i18n.t('Visualizers')}` ,   
         link: "visualization"
     },
     // {
@@ -12,7 +14,7 @@ export const menuItems = [
     //     link: "alerts"
     // },
     {
-        name: "Data Source",
+        name: `${i18n.t('Data Source')}`, 
         link: "datasource"
     }
 ];

@@ -7,6 +7,7 @@ import {
 import { IconStar24, IconStarFilled24 } from "@dhis2/ui";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaRegPlayCircle } from "react-icons/fa";
+import i18n from '../../../locales/index.js'
 interface User {
   id: string;
   name: string;
@@ -66,23 +67,23 @@ const OtherDashboardsTable: React.FC<OtherDashboardsTableProps> = ({ dashboards 
     () => [
       {
         accessorFn: (row) => row.value.dashboardName,
-        header: "Name",
+        header:`${i18n.t('Name')}`,
       },
       {
         accessorFn: (row) => new Date(row.value.createdAt).toLocaleDateString(),
-        header: "Created At",
+        header:`${i18n.t('Created At')}`,
       },
       {
         accessorFn: (row) => new Date(row.value.updatedAt).toLocaleDateString(),
-        header: "Updated At",
+        header: `${i18n.t('Updated At')}`,
       },
       {
         accessorFn: (row) => row.value.createdBy.name,
-        header: "Created By",
+        header:`${i18n.t('Created By')}`, 
       },
        {
 
-           header: "Actions",
+           header: `${i18n.t('Actions')}`, 
            Cell: ({ row }) => {
      
              return (

@@ -23,6 +23,7 @@ import { FaPlay} from "react-icons/fa"
 import { IoSaveOutline } from "react-icons/io5";
 import { useToast } from "../../components/ui/use-toast";
 import {  Maximize2, Minimize2 } from "lucide-react";
+import i18n from '../../locales/index.js'
 
 const CreateDashboardPage: React.FC = () => {
     const { toast } = useToast();
@@ -114,15 +115,9 @@ const CreateDashboardPage: React.FC = () => {
 
 
          // Watch form values
-     const watchedValues = watch();
-
-  // Log form data when it changes
-  useEffect(() => {
-    console.log('dashboard data Form data changed:', watchedValues);
-  }, [watchedValues]);
+     const watchedValues = watch()
 
   useEffect(() => {
-    console.log("Background color changed:", backgroundColor);
     setTempDashboardSettings((prev) => ({ ...prev, backgroundColor }));
   }, [backgroundColor]);
   
@@ -272,7 +267,7 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
                 <input
                     {...register("dashboardName")}
                     type="text"
-                    placeholder="Dashboard Name"
+                    placeholder={i18n.t('Dashboard Name')}
                     className="block w-full min-w-[400px] px-3 py-2 border rounded-md shadow-sm mt-3"
                 />
                 {errors.dashboardName && <p className="text-red-500">{errors.dashboardName.message}</p>}
@@ -280,13 +275,13 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
              {/* dashboard description */}
                 <textarea
                     {...register("dashboardDescription")}
-                    placeholder="Dashboard Description"
+                    placeholder={i18n.t('Dashboard Description')}
                     className="block w-full px-3 py-2 border rounded-md shadow-sm mt-3"
                 />
                   {/* is dashboard official */}
              <div className="flex items-center gap-1 justify-between  text-gray-700 hover:text-primary hover:bg-gray-100 rounded-md cursor-pointer transition-colors duration-200" >
                 <label htmlFor="officialDashboard" className="text-gray-700 font-medium whitespace-nowrap ">
-        Is Official Dashboard
+        {i18n.t('Is Official Dashboard')}
     </label>
     <input
         type="checkbox"
@@ -300,9 +295,9 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
 
              {/* action btns container */}
              <div  className="flex items-center  gap-2" >
-             <Button onClick={toggleFullscreen} icon={<Maximize2/>}  text= "FullScreen"  disabled={isSubmitting} />
-             <Button onClick={()=>setIsPresentMode(true)} icon={<FaPlay/>}  text= "Present"  disabled={isSubmitting} />
-                <Button type="submit" text= {isSubmitting ? "Loading" : dashboardId ? "UPDATE" :  "Save changes" } disabled={isSubmitting} icon={<IoSaveOutline/>}  />
+             <Button onClick={toggleFullscreen} icon={<Maximize2/>}  text={i18n.t('FullScreen')}  disabled={isSubmitting} />
+             <Button onClick={()=>setIsPresentMode(true)} icon={<FaPlay/>}  text={i18n.t('Present')}  disabled={isSubmitting} />
+                <Button type="submit" text= {isSubmitting ? "Loading" : `${i18n.t('Save changes')}` } disabled={isSubmitting} icon={<IoSaveOutline/>}  />
           
              </div>
          
@@ -315,7 +310,7 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
              <div className="flex items-center gap-2 mt-4">
         <div className="flex items-center gap-2">
   <label htmlFor="backgroundColor" className="text-sm font-medium">
-    Background Color:
+  {i18n.t('Background Color')}:
   </label>
   <input
     id="backgroundColor"
@@ -334,7 +329,7 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
         onChange={handleSelectChange}
         className="block w-full px-3 py-2 border rounded-md shadow-sm mt-3"
     >
-        <option value="">{loading ? "Loading" : "Select a visual..."}</option>
+        <option value="">{loading ? "Loading" : `${i18n.t('Select a visual')}` }</option>
         {visualOptions}
     </select>
 </div>

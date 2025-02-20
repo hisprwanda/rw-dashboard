@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/ta
 import { useAuthorities } from '../../context/AuthContext';
 import OtherVisualizersTable from './Components/OtherVisualizersTable';
 import { filterOtherCharts } from '../../lib/filterOtherDashboards';
+import i18n from '../../locales/index.js'
 
 function filterSavedChartsByCreatorId(data: any, creatorId: string) {
   return data?.filter(item => item.value.createdBy.id === creatorId);
@@ -47,16 +48,16 @@ const VisualizationPage = () => {
                 value="my-charts"
                 className="text-[#2C6693] text-xl font-bold"
               >
-                My Charts
+                 {i18n.t('My Charts')}
               </TabsTrigger>
               <TabsTrigger
                 value="Other-Charts"
                 className="text-[#2C6693] text-xl font-bold"
               >
-                Other Charts
+                   {i18n.t('Other Charts')}
               </TabsTrigger>
             </TabsList>
-            <Button variant="primary" text="New Visualizer" type="button" onClick={handleGoToCreateVisualizerPage}
+            <Button variant="primary" text={i18n.t('New Visualizer')} type="button" onClick={handleGoToCreateVisualizerPage}
               icon={<IoIosAddCircle />} />
           </div>
 
