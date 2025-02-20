@@ -177,37 +177,67 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
     const onSubmit: SubmitHandler<DashboardFormFields> = async (data) => {
         const uuid = dashboardId || generateUid()
         setIsSuccess(false);
-             // Capture the current GridLayout as an image
-             if (captureRef.current) {
-                const canvas = await html2canvas(captureRef.current);
-                const imgData = canvas.toDataURL("image/png");
-                data.previewImg = imgData; // Set the previewImg in the data
-            }
+        
         try {
+            // First exit fullscreen if active
+            if (document.fullscreenElement) {
+                await document.exitFullscreen();
+                setIsFullscreen(false);
+            }
+            
+            // Wait for layout to stabilize after exiting fullscreen
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            // Capture the current GridLayout as an image
+            if (captureRef.current) {
+                // Temporarily remove overflow to capture full content
+                const widgets = captureRef.current.getElementsByClassName('widget');
+                const originalOverflows = Array.from(widgets).map(widget => (widget as HTMLElement).style.overflow);
+                Array.from(widgets).forEach(widget => (widget as HTMLElement).style.overflow = 'visible');
+                
+                const canvas = await html2canvas(captureRef.current, {
+                    allowTaint: true,
+                    useCORS: true,
+                    logging: false,
+                    scale: 1,
+                    windowWidth: containerWidth - 20,
+                    windowHeight: captureRef.current.scrollHeight
+                });
+                
+                // Restore original overflow settings
+                Array.from(widgets).forEach((widget, index) => 
+                    (widget as HTMLElement).style.overflow = originalOverflows[index]
+                );
+                
+                const imgData = canvas.toDataURL("image/png");
+                data.previewImg = imgData;
+            }
+    
+            // Save the dashboard
             await engine.mutate({
                 resource: `dataStore/${process.env.REACT_APP_DASHBOARD_STORE}/${uuid}`,
                 type: dashboardId ? "update" : 'create',
                 data,
             });
-            //temporally success message
+    
             toast({
                 title: "Success",
                 description: "saved successfully",
                 variant: "default",
-              });
+            });
+            
             setIsSuccess(true);
-            if(!dashboardId){
-                // temporary fix to navigate to edit mode after saving new dashboard
-                navigate(`/dashboards`)  
-                     navigate(`/dashboard/${uuid}`)    
-                     }
-            console.log("Dashboard saved successfully");
+            
+            if(!dashboardId) {
+                navigate(`/dashboards`);
+                navigate(`/dashboard/${uuid}`);
+            }
         } catch (error) {
             toast({
                 title: "Error",
                 description: "Something went wrong",
                 variant: "destructive",
-              });
+            });
             console.error("Error saving dashboard:", error);
         }
     };
@@ -337,7 +367,7 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
 
 
           
-            <div ref={captureRef} className='overflow-y-auto' >
+            <div ref={captureRef}  >
             <MemoizedGridLayout
                 layout={selectedVisuals}
                 onLayoutChange={handleLayoutChange}
