@@ -13,6 +13,7 @@ import DashboardVisualItem from "./DashboardVisualItem";
 import song1 from "../../../songs/song1.mp3";
 import song2 from "../../../songs/song2.mp3";
 import song3 from "../../../songs/song3.mp3";
+import i18n from '../../../locales/index.js'
 
 
 import { ChevronLeft, ChevronRight, Music2, Pause, Play, RotateCcw, ZoomIn, ZoomOut, Maximize2, Minimize2 } from "lucide-react";
@@ -254,7 +255,7 @@ const stopAudio = () => {
             {dashboardName}
           </h3>
           <span className={`text-sm text-muted-foreground font-semibold ${isFullscreen ? 'text-white' : 'text-primary'}`}>
-     (Slide {currentSlide} of {dashboardData.length}) 
+     ({i18n.t('Slide')} {currentSlide} {i18n.t('of')} {dashboardData.length}) 
 </span>
 
             </div>
@@ -271,7 +272,7 @@ const stopAudio = () => {
                 {/* Slides and Delay Controls */}
                 <div className="flex gap-4 min-w-[200px]">
                   <div className="flex-1">
-                    <Label htmlFor="slidesToShow" className="text-sm">Slides</Label>
+                    <Label htmlFor="slidesToShow" className="text-sm">{i18n.t('Slides')}</Label>
                     <Input
                       id="slidesToShow"
                       type="number"
@@ -284,7 +285,7 @@ const stopAudio = () => {
                     />
                   </div>
                   <div className="flex-1">
-                    <Label htmlFor="delay" className="text-sm">Delay (ms)</Label>
+                    <Label htmlFor="delay" className="text-sm"> {i18n.t('Delay')}(ms)</Label>
                     <Input
                       id="delay"
                       type="number"
@@ -301,7 +302,7 @@ const stopAudio = () => {
                 {/* Music Controls */}
                 <div className="min-w-[220px]">
                   <Label className="text-sm flex items-center gap-2">
-                    <Music2 className="" /> Background Music
+                    <Music2 className="" />{i18n.t('Background Music')}
                   </Label>
                   <div className="flex gap-2">
                     <Select value={currentTrack || ''} onValueChange={handleTrackChange}>
@@ -328,7 +329,7 @@ const stopAudio = () => {
                   />
                     <Button
                     onClick={stopAudio}
-                    text="Stop"
+                    text={i18n.t('Stop')}
                     variant="danger"
                   />
                   </div>
@@ -341,20 +342,20 @@ const stopAudio = () => {
                   <div className="flex gap-2 items-end">
                 <Button
                     onClick={togglePause}
-                    text="Slides"
+                    text={i18n.t('Slides')}
                     icon={isPaused ? <FaPlay className="w-4 h-4" /> : <FaPause className="w-4 h-4" />}
-                    aria-label={isPaused ? "Play slideshow" : "Pause slideshow"}
+                    aria-label={isPaused ? `${i18n.t('Play slideshow')}` : `${i18n.t('Pause slideshow')}`}
                   />
                   <Button
                     onClick={toggleFullscreen}
-                    text={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+                    text={isFullscreen ? `${i18n.t('Exit Fullscreen')}`: `${i18n.t('FullScreen')}`}
                     icon={isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
                     aria-label={isFullscreen ? "Exit fullscreen mode" : "Enter fullscreen mode"}
                   />
 
                   <Button
                     onClick={() => setIsPresentMode(false)}
-                    text="Exit"
+                    text={i18n.t('Exit')} 
                     icon={<IoMdExit className="w-4 h-4" />}
                     aria-label="Exit presentation mode"
                   />
@@ -423,12 +424,12 @@ const stopAudio = () => {
           <div className="fixed bottom-4 left-1/2 -translate-x-1/2 flex gap-2 bg-background/80 p-2 rounded-lg backdrop-blur-sm">
             <Button
               onClick={togglePause}
-              text={isPaused ? "Play" : "Pause"}
+              text={isPaused ? `${i18n.t('Play')}` : `${i18n.t('Pause')}`} 
               icon={isPaused ? <FaPlay className="w-4 h-4" /> : <FaPause className="w-4 h-4" />}
             />
             <Button
               onClick={toggleFullscreen}
-              text="Exit Fullscreen"
+              text={i18n.t('Exit Fullscreen')}
               icon={<Minimize2 className="w-4 h-4" />}
             />
           </div>

@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-02-17T08:16:01.436Z\n"
-"PO-Revision-Date: 2025-02-17T08:16:01.436Z\n"
+"POT-Creation-Date: 2025-02-17T10:13:20.013Z\n"
+"PO-Revision-Date: 2025-02-17T10:13:20.013Z\n"
 
 msgid "Dashboards"
 msgstr "Dashboards"
@@ -19,6 +19,66 @@ msgstr "Data Source"
 
 msgid "Modified"
 msgstr "Modified"
+
+msgid "Slide"
+msgstr "Slide"
+
+msgid "of"
+msgstr "of"
+
+msgid "Slides"
+msgstr "Slides"
+
+msgid "Delay"
+msgstr "Delay"
+
+msgid "Background Music"
+msgstr "Background Music"
+
+msgid "Stop"
+msgstr "Stop"
+
+msgid "Play slideshow"
+msgstr "Play slideshow"
+
+msgid "Pause slideshow"
+msgstr "Pause slideshow"
+
+msgid "Exit Fullscreen"
+msgstr "Exit Fullscreen"
+
+msgid "FullScreen"
+msgstr "FullScreen"
+
+msgid "Exit"
+msgstr "Exit"
+
+msgid "Play"
+msgstr "Play"
+
+msgid "Pause"
+msgstr "Pause"
+
+msgid "Dashboard Name"
+msgstr "Dashboard Name"
+
+msgid "Dashboard Description"
+msgstr "Dashboard Description"
+
+msgid "Is Official Dashboard"
+msgstr "Is Official Dashboard"
+
+msgid "Present"
+msgstr "Present"
+
+msgid "Save changes"
+msgstr "Save changes"
+
+msgid "Background Color"
+msgstr "Background Color"
+
+msgid "Select a visual"
+msgstr "Select a visual"
 
 msgid "My Dashboards"
 msgstr "My Dashboards"
@@ -47,6 +107,30 @@ msgstr "Created By"
 msgid "Pinned Dashboards"
 msgstr "Pinned Dashboards"
 
+msgid "Instance Name"
+msgstr "Instance Name"
+
+msgid "Token"
+msgstr "Token"
+
+msgid "Data Source Type"
+msgstr "Data Source Type"
+
+msgid "Update"
+msgstr "Update"
+
+msgid "Save"
+msgstr "Save"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "New data source"
+msgstr "New data source"
+
+msgid "Data Source Details"
+msgstr "Data Source Details"
+
 msgid "Are you sure you want to delete this visual?"
 msgstr "Are you sure you want to delete this visual?"
 
@@ -58,9 +142,6 @@ msgstr "Confirm"
 
 msgid "Visual Name"
 msgstr "Visual Name"
-
-msgid "Type"
-msgstr "Type"
 
 msgid "My Charts"
 msgstr "My Charts"
@@ -74,11 +155,11 @@ msgstr "New Visualizer"
 msgid "SETTINGS"
 msgstr "SETTINGS"
 
+msgid "Main Dimensions"
+msgstr "Main Dimensions"
+
 msgid "Data"
 msgstr "Data"
-
-msgid "Period"
-msgstr "Period"
 
 msgid "Organization Unit"
 msgstr "Organization Unit"

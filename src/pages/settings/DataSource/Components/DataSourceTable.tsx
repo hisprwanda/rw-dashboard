@@ -13,15 +13,12 @@ import { Button } from '@mantine/core';
 import { GenericModal } from '../../../../components';
 import { DataSourceForm, DeleteDataSourceCard, SavedDataSourceCard } from '.';
 import { useDataSourceData } from '../../../../services/DataSourceHooks';
-
+import i18n from '../../../../locales/index.js'
 const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }) => {
 
   const  { refetch }= useDataSourceData()
   // Ensure savedDataSourceData is an array
   const data = Array.isArray(savedDataSourceData) ? savedDataSourceData : [];
-
-  console.log("dto",data)
-
   const [isShowViewDataSource,setIsShowViewDataSource] = useState(false)
   const [isShowDataSourceFormEdit,setIsShowDataSourceFormEdit] = useState(false)
   const [isShowDeleteDataSource,setIsShowDeleteDataSource] = useState(false)
@@ -33,12 +30,12 @@ const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }
     () => [
       {
         accessorKey: 'value.instanceName', 
-        header: 'Instance Name',
+        header:`${i18n.t('Instance Name')}`
       },
 
       {
         accessorKey: 'value.type',
-        header: 'Type',
+        header: `${i18n.t('Type')}`
       },
       {
         accessorKey: 'value.url',
@@ -79,7 +76,7 @@ const DataSourceTable = ({ savedDataSourceData }: { savedDataSourceData: any[] }
     positionActionsColumn: 'last',
     displayColumnDefOptions: {
       'mrt-row-actions': {
-        header: 'Actions ',
+        header:`${i18n.t('Actions')}`,
         size: 55, 
         
       },

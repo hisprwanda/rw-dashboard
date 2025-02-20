@@ -50,9 +50,6 @@ msgstr "Créé par"
 msgid "New Dashboard"
 msgstr "Nouveau tableau de bord"
 
-msgid "New Dashboard"
-msgstr "Nouveau tableau de bord"
-
 msgid "Modified"
 msgstr "Modifié"
 
@@ -103,4 +100,83 @@ msgstr "Unité organisationnelle"
 
 msgid "Organization Unit"
 msgstr "Unité organisationnelle"
+
+msgid "New data source"
+msgstr "Nouvelle source de données"
+
+msgid "Data Source Details"
+msgstr "Détails de la source de données"
+
+msgid "Data Source Details"
+msgstr "Détails de la source de données"
+
+msgid "Instance Name"
+msgstr "Nom de l'instance"
+
+msgid "Data Source Type"
+msgstr "Type de source de données"
+
+msgid "Token"
+msgstr "Jeton"
+
+msgid "Save"
+msgstr "registre"
+
+msgid "Update"
+msgstr "Mise à jour"
+
+msgid "Is Official Dashboard"
+msgstr "Est le tableau de bord officiel"
+
+msgid "Dashboard Name"
+msgstr "Nom du tableau de bord"
+
+msgid "Dashboard Description"
+msgstr "Description du tableau de bord"
+
+msgid "FullScreen"
+msgstr "Plein écran"
+
+msgid "Present"
+msgstr "Présent"
+
+msgid "Save changes"
+msgstr "Enregistrer les modifications"
+
+msgid "Background Color"
+msgstr "Couleur d'arrière-plan"
+
+msgid "Select a visual"
+msgstr "Sélectionnez un visuel"
+
+msgid "Slide"
+msgstr "diapositive"
+
+msgid "of"
+msgstr "sur"
+
+msgid "Slides"
+msgstr "Diapositives"
+
+msgid "Delay"
+msgstr "Retard"
+
+msgid "Background Music"
+msgstr "Musique de fond"
+
+msgid "Stop"
+msgstr "Arrêt"
+
+msgid "Play slideshow"
+msgstr "Lire le diaporama"
+
+msgid "Pause slideshow"
+msgstr "Suspendre le diaporama"
+
+msgid "Exit Fullscreen"
+msgstr "Quitter le plein écran"
+
+msgid "Exit"
+msgstr "Sortie"
+
 
