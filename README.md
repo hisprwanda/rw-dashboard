@@ -132,5 +132,5 @@ To get started with Data Analytics Lab, run the following commands:
  ## Contact Us
 For support or feedback, reach out to us at:
 HISP Rwanda
-Email: [rogerndutiye@gmail.com]
+Email: [mouricej@hisprwanda.org]
 Website:[www.hisprwanda.org]
