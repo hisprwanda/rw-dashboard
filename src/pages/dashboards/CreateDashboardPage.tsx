@@ -22,13 +22,15 @@ import  PresentDashboard from './components/PresentDashboard';
 import { FaPlay} from "react-icons/fa"
 import { IoSaveOutline } from "react-icons/io5";
 import { useToast } from "../../components/ui/use-toast";
-import {  Maximize2, Minimize2 } from "lucide-react";
+import {  Loader, Loader2, Maximize2, Minimize2 } from "lucide-react";
 import i18n from '../../locales/index.js'
 import { exportToPPTX } from '../../lib/exportToPPTX'; 
 import { FileText } from 'lucide-react';
+import { usePPTXExport } from '../../hooks/useExportDashboard';
 
 const CreateDashboardPage: React.FC = () => {
     const { toast } = useToast();
+    const { exportToPPTX, isExporting } = usePPTXExport();
     const { id: dashboardId ,present:isPresentModeFromView} = useParams();
     const navigate = useNavigate();
     const { data: allSavedVisuals ,error,isError,loading} = useFetchVisualsData();
@@ -46,7 +48,14 @@ const CreateDashboardPage: React.FC = () => {
     const [isSuccess, setIsSuccess] = useState(false);
     const engine = useDataEngine();
 
-    
+    const handleExportClick = () => {
+        exportToPPTX({
+          dashboardName: watch("dashboardName"),
+          selectedVisuals: selectedVisuals,
+          backgroundColor: tempDashboardSettings.backgroundColor,
+          author: userDatails?.me?.displayName || 'Dashboard User'
+        });
+      };
 
     const { register, handleSubmit, setValue, watch, reset, formState: { errors,isSubmitting } } = useForm<DashboardFormFields>({
         resolver: zodResolver(DashboardSchema),
@@ -330,16 +339,12 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
 
              {/* action btns container */}
              <div  className="flex items-center  gap-2" >
-             <Button 
-    onClick={() => exportToPPTX({
-      dashboardName: watch("dashboardName"),
-      selectedVisuals: selectedVisuals,
-      backgroundColor: tempDashboardSettings.backgroundColor
-    })}
-    icon={<FileText />}
-    text={i18n.t('Export to PPT')}
-    disabled={isSubmitting || selectedVisuals.length === 0}
-  />
+    <Button 
+        onClick={handleExportClick}
+        icon={isExporting ? <Loader2 className="animate-spin" /> : <FileText />}
+        text={isExporting ? i18n.t('Exporting...') : i18n.t('Export to PPT')}
+        disabled={isSubmitting || selectedVisuals.length === 0 || isExporting}
+      />
              <Button onClick={toggleFullscreen} icon={<Maximize2/>}  text={i18n.t('FullScreen')}  disabled={isSubmitting} />
              <Button onClick={()=>setIsPresentMode(true)} icon={<FaPlay/>}  text={i18n.t('Present')}  disabled={isSubmitting} />
                 <Button type="submit" text= {isSubmitting ? "Loading" : `${i18n.t('Save changes')}` } disabled={isSubmitting} icon={<IoSaveOutline/>}  />

@@ -1,12 +1,39 @@
+import React, { useState } from 'react';
 import pptxgen from 'pptxgenjs';
 import html2canvas from 'html2canvas';
-
+import { Loader2 } from 'lucide-react';
+import { useToast } from "../components/ui/use-toast";
+import { useAuthorities } from '../context/AuthContext';
 interface ExportToPPTXProps {
   dashboardName: string;
   selectedVisuals: any[];
   backgroundColor: string;
 }
 
+  const { toast } = useToast();
+const handleExport = async () => {
+  setIsExportingDashboardAsPPTX(true);
+  try {
+    await exportToPPTX({
+      dashboardName: watch("dashboardName"),
+      selectedVisuals: selectedVisuals,
+      backgroundColor: tempDashboardSettings.backgroundColor
+    });
+  } catch (error) {
+    console.error("Export failed:", error);
+    toast({
+      title: "Export Failed",
+      description: "There was an error exporting to PowerPoint",
+      variant: "destructive",
+    });
+  } finally {
+    setIsExportingDashboardAsPPTX(false);
+  }
+};
+
+// Replace your existing button with this:
+
+// The actual export function
 export const exportToPPTX = async ({ dashboardName, selectedVisuals, backgroundColor }: ExportToPPTXProps) => {
   // Create a new PowerPoint presentation
   const pres = new pptxgen();
@@ -138,15 +165,6 @@ export const exportToPPTX = async ({ dashboardName, selectedVisuals, backgroundC
         h: imgH,
       });
 
-      // Add original grid dimensions as a footnote (optional)
-      slide.addText(`Original dimensions: ${visual.w}x${visual.h} grid units`, {
-        x: '5%',
-        y: '95%',
-        fontSize: 8,
-        color: '#666666',
-        align: 'left'
-      });
-
     } catch (error) {
       console.error(`Error processing visual ${visual.visualName}:`, error);
     }
@@ -156,3 +174,10 @@ export const exportToPPTX = async ({ dashboardName, selectedVisuals, backgroundC
   const fileName = `${dashboardName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_export.pptx`;
   await pres.writeFile({ fileName });
 };
+
+<Button 
+  onClick={handleExport}
+  icon={isExportingDashboardAsPPTX ? <Loader2 className="animate-spin" /> : <FileText />}
+  text={isExportingDashboardAsPPTX ? i18n.t('Exporting...') : i18n.t('Export to PPT')}
+  disabled={isSubmitting || selectedVisuals.length === 0 || isExportingDashboardAsPPTX}
+/>
