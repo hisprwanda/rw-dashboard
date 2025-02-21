@@ -432,16 +432,30 @@ const MemoizedGridLayout = React.memo(({
         resizeHandles={['se', 'sw', 'ne', 'nw', 'e', 'w', 's', 'n']}
     >
         {layout.map((widget) => (
-            <div key={widget.i} data-visual-id={widget.i}  className="widget bg-white " style={{ position: "relative", padding: "10px", overflow:"auto" }}>
-                <div className="drag-handle  text-center " style={{ cursor: "move" }}>
-                    {widget.visualName}
-                </div>
-                <DashboardVisualItem  query={widget.visualQuery} visualType={widget.visualType} visualSettings={widget.visualSettings}  dataSourceId={widget.dataSourceId} visualTitleAndSubTitle={widget.visualTitleAndSubTitle} />
-             {!isFullscreen && <FaTrash
-                    style={{ position: "absolute", top: "10px", right: "10px", cursor: "pointer" ,color:"#7d0000"}}
-                    onClick={() => onDeleteWidget(widget.i)}
-                /> }   
-            </div>
+         <div 
+         key={widget.i} 
+         className="widget bg-white" 
+         data-visual-id={widget.i}
+         style={{ position: "relative", padding: "10px", overflow: "visible" }}
+       >
+         <div className="drag-handle text-center" style={{ cursor: "move" }}>
+           {widget.visualName}
+         </div>
+         <DashboardVisualItem 
+           query={widget.visualQuery} 
+           visualType={widget.visualType} 
+           visualSettings={widget.visualSettings} 
+           dataSourceId={widget.dataSourceId} 
+           visualTitleAndSubTitle={widget.visualTitleAndSubTitle} 
+         />
+         {!isFullscreen && (
+           <FaTrash
+             className="delete-button"  // Added class for easier removal during export
+             style={{ position: "absolute", top: "10px", right: "10px", cursor: "pointer", color: "#7d0000" }}
+             onClick={() => onDeleteWidget(widget.i)}
+           />
+         )}
+       </div>
         ))}
     </GridLayout>
  
