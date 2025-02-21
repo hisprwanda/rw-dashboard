@@ -24,6 +24,8 @@ import { IoSaveOutline } from "react-icons/io5";
 import { useToast } from "../../components/ui/use-toast";
 import {  Maximize2, Minimize2 } from "lucide-react";
 import i18n from '../../locales/index.js'
+import { exportToPPTX } from '../../lib/exportToPPTX'; 
+import { FileText } from 'lucide-react';
 
 const CreateDashboardPage: React.FC = () => {
     const { toast } = useToast();
@@ -113,6 +115,9 @@ const CreateDashboardPage: React.FC = () => {
     const selectedVisuals = watch("selectedVisuals");
     const backgroundColor = watch("dashboardSettings.backgroundColor", tempDashboardSettings.backgroundColor);
 
+    useEffect(()=>{
+        console.log("hello selectedVisuals",selectedVisuals)
+    },[selectedVisuals])
 
          // Watch form values
      const watchedValues = watch()
@@ -294,6 +299,16 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
              <div className='flex gap-2' >
     {/* dashboard name */}
     <div>
+    <Button 
+    onClick={() => exportToPPTX({
+      dashboardName: watch("dashboardName"),
+      selectedVisuals: selectedVisuals,
+      backgroundColor: tempDashboardSettings.backgroundColor
+    })}
+    icon={<FileText />}
+    text={i18n.t('Export to PPT')}
+    disabled={isSubmitting || selectedVisuals.length === 0}
+  />
                 <input
                     {...register("dashboardName")}
                     type="text"
@@ -417,7 +432,7 @@ const MemoizedGridLayout = React.memo(({
         resizeHandles={['se', 'sw', 'ne', 'nw', 'e', 'w', 's', 'n']}
     >
         {layout.map((widget) => (
-            <div key={widget.i} className="widget bg-white " style={{ position: "relative", padding: "10px", overflow:"auto" }}>
+            <div key={widget.i} data-visual-id={widget.i}  className="widget bg-white " style={{ position: "relative", padding: "10px", overflow:"auto" }}>
                 <div className="drag-handle  text-center " style={{ cursor: "move" }}>
                     {widget.visualName}
                 </div>
