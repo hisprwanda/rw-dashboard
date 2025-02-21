@@ -299,16 +299,6 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
              <div className='flex gap-2' >
     {/* dashboard name */}
     <div>
-    <Button 
-    onClick={() => exportToPPTX({
-      dashboardName: watch("dashboardName"),
-      selectedVisuals: selectedVisuals,
-      backgroundColor: tempDashboardSettings.backgroundColor
-    })}
-    icon={<FileText />}
-    text={i18n.t('Export to PPT')}
-    disabled={isSubmitting || selectedVisuals.length === 0}
-  />
                 <input
                     {...register("dashboardName")}
                     type="text"
@@ -340,6 +330,16 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
 
              {/* action btns container */}
              <div  className="flex items-center  gap-2" >
+             <Button 
+    onClick={() => exportToPPTX({
+      dashboardName: watch("dashboardName"),
+      selectedVisuals: selectedVisuals,
+      backgroundColor: tempDashboardSettings.backgroundColor
+    })}
+    icon={<FileText />}
+    text={i18n.t('Export to PPT')}
+    disabled={isSubmitting || selectedVisuals.length === 0}
+  />
              <Button onClick={toggleFullscreen} icon={<Maximize2/>}  text={i18n.t('FullScreen')}  disabled={isSubmitting} />
              <Button onClick={()=>setIsPresentMode(true)} icon={<FaPlay/>}  text={i18n.t('Present')}  disabled={isSubmitting} />
                 <Button type="submit" text= {isSubmitting ? "Loading" : `${i18n.t('Save changes')}` } disabled={isSubmitting} icon={<IoSaveOutline/>}  />
