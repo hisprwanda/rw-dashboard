@@ -16,5 +16,13 @@ export const menuItems = [
     {
         name: `${i18n.t('Data Source')}`, 
         link: "datasource"
+    },
+    {
+        name: `${i18n.t('settings')}`, 
+        link: "settings"
+    },
+    {
+        name: `${i18n.t('report')}`, 
+        link: "report"
     }
 ];
