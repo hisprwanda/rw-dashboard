@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-02-17T10:13:20.013Z\n"
-"PO-Revision-Date: 2025-02-17T10:13:20.013Z\n"
+"POT-Creation-Date: 2025-02-28T07:45:00.957Z\n"
+"PO-Revision-Date: 2025-02-28T07:45:00.958Z\n"
 
 msgid "Dashboards"
 msgstr "Dashboards"
@@ -16,6 +16,18 @@ msgstr "Visualizers"
 
 msgid "Data Source"
 msgstr "Data Source"
+
+msgid "bulletin-settings"
+msgstr "bulletin-settings"
+
+msgid "report"
+msgstr "report"
+
+msgid "Organization Unit"
+msgstr "Organization Unit"
+
+msgid "Data"
+msgstr "Data"
 
 msgid "Modified"
 msgstr "Modified"
@@ -107,6 +119,12 @@ msgstr "Created By"
 msgid "Pinned Dashboards"
 msgstr "Pinned Dashboards"
 
+msgid "ERROR"
+msgstr "ERROR"
+
+msgid "Loading..."
+msgstr "Loading..."
+
 msgid "Instance Name"
 msgstr "Instance Name"
 
@@ -157,9 +175,3 @@ msgstr "SETTINGS"
 
 msgid "Main Dimensions"
 msgstr "Main Dimensions"
-
-msgid "Data"
-msgstr "Data"
-
-msgid "Organization Unit"
-msgstr "Organization Unit"
