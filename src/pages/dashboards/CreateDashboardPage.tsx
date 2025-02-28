@@ -352,9 +352,6 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
              </div>
          
             </div>
-  
-
-
             <div className="mt-4 grid grid-cols-2 gap-2">
                
              <div className="flex items-center gap-2 mt-4">
