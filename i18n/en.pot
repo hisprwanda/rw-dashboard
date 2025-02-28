@@ -80,6 +80,12 @@ msgstr "Dashboard Description"
 msgid "Is Official Dashboard"
 msgstr "Is Official Dashboard"
 
+msgid "Exporting..."
+msgstr "Exporting..."
+
+msgid "Export to PPT"
+msgstr "Export to PPT"
+
 msgid "Present"
 msgstr "Present"
 

@@ -175,9 +175,4 @@ export const exportToPPTX = async ({ dashboardName, selectedVisuals, backgroundC
   await pres.writeFile({ fileName });
 };
 
-<Button 
-  onClick={handleExport}
-  icon={isExportingDashboardAsPPTX ? <Loader2 className="animate-spin" /> : <FileText />}
-  text={isExportingDashboardAsPPTX ? i18n.t('Exporting...') : i18n.t('Export to PPT')}
-  disabled={isSubmitting || selectedVisuals.length === 0 || isExportingDashboardAsPPTX}
-/>
+
