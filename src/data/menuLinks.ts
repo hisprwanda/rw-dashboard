@@ -18,8 +18,8 @@ export const menuItems = [
         link: "datasource"
     },
     {
-        name: `${i18n.t('settings')}`, 
-        link: "settings"
+        name: `${i18n.t('bulletin-settings')}`, 
+        link: "bulletin-settings"
     },
     {
         name: `${i18n.t('report')}`, 

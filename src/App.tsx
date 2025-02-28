@@ -16,7 +16,9 @@ import {
   AlertsPage,
   SettingsPage,
   DashboardsPage,
-  DataSourcePage
+  DataSourcePage,
+  ReportPage,
+  BulletinSettingsPage
 } from './pages';
 import { CreateDashboardPage } from "./pages/dashboards";
 import { TestChart } from "./components/charts/TestChart";
@@ -52,6 +54,8 @@ const App: React.FC = () => {
               <Route path="visualizers/:id?" element={<VisualizersPage />} />
               <Route path="dashboard/:id?/:present?" element={<CreateDashboardPage />} />
               <Route path="*" element={<NotFoundPage />} />
+              <Route path="report" element={<ReportPage />} />
+              <Route path="bulletin-settings" element={< BulletinSettingsPage/>}/>
             </Route>
 
             <Route path="admin" element={
