@@ -25,6 +25,7 @@ import { TestChart } from "./components/charts/TestChart";
 import TokenTest from "./pages/TokenTest";
 import UserCredentials from "./pages/UserCredentials";
 import { Toaster } from "./components/ui/toaster";
+import MapHomepage from "./pages/Map/MapHomepage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -44,6 +45,8 @@ const App: React.FC = () => {
               <Route index element={<HomePage />} />
               <Route path="dashboards" element={<DashboardsPage />} />
               <Route path="visualization" element={<VisualizationPage />} />
+              <Route path="map" element={<MapHomepage />} />
+              <Route path="settings" element={<SettingsPage />} />
               <Route path="alerts" element={<AlertsPage />} />
               <Route path="test" element={<TestChart />} />
               <Route path="token-test" element={<TokenTest />} />
