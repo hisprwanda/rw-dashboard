@@ -1,8 +1,10 @@
 import { useMapData } from '../../services/maps'
 const MapViewer = ({ mapId }:{mapId:string}) => {
 
-  const dhis2BaseUrl = "http://localhost:3000"
+  //const dhis2BaseUrl = "http://localhost:3000"
+  const dhis2BaseUrl = "http://localhost:8080"
   const iframeUrl = `${dhis2BaseUrl}/dhis-web-maps/index.html?id=${mapId}&embedded=true`;
+ // const iframeUrl = `http://localhost:8080/dhis-web-maps/#/Vy3jcyMRQZJ`;
   return (
     <iframe
       src={iframeUrl}
@@ -19,7 +21,7 @@ const MapHomepage = () => {
   return (
     <div>MapHomepage
 
-   <MapViewer mapId='CT6oCXbpScK'  />
+   <MapViewer mapId='Vy3jcyMRQZJ'  />
     </div>
   )
 }
