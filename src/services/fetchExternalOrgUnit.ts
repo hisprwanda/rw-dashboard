@@ -20,10 +20,10 @@ export const useExternalOrgUnitData = () => {
 
     // Define the queries and their parameters
     const endpoints = {
-        currentUser: `${url}/api/${apiVersion}/me`,
-        orgUnits: `${url}/api/${apiVersion}/organisationUnits`,
-        orgUnitLevels: `${url}/api/${apiVersion}/organisationUnitLevels`,
-        orgUnitGroups: `${url}/api/${apiVersion}/organisationUnitGroups`, // Added endpoint for orgUnitGroups
+        currentUser: `${url}/api/me`,
+        orgUnits: `${url}/api/organisationUnits`,
+        orgUnitLevels: `${url}/api/organisationUnitLevels`,
+        orgUnitGroups: `${url}/api/organisationUnitGroups`, // Added endpoint for orgUnitGroups
     };
 
     const params = {

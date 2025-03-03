@@ -166,7 +166,7 @@ export const useExternalDataItems = () => {
 
             try {
                 // Fetch main data
-                const mainResponse = await axios.get(`${url}/api/${apiVersion}/${apiPaths.main.path}`, {
+                const mainResponse = await axios.get(`${url}/api/${apiPaths.main.path}`, {
                     headers: {
                         Authorization: `ApiToken ${token}`,
                     },
@@ -176,7 +176,7 @@ export const useExternalDataItems = () => {
                 let subResponse = null;
                 // Fetch sub data if path exists
                 if (apiPaths.sub) {
-                    subResponse = await axios.get(`${url}/api/${apiVersion}/${apiPaths.sub.path}`, {
+                    subResponse = await axios.get(`${url}/api/${apiPaths.sub.path}`, {
                         headers: {
                             Authorization: `ApiToken ${token}`,
                         },

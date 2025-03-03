@@ -236,7 +236,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // External request via axios
 
         console.log("beta query",queryParams)
-        const response = await axios.get(`${instance.url}/api/${apiVersion}/analytics`, {
+        const response = await axios.get(`${instance.url}/api/analytics`, {
           headers: {
             Authorization: `ApiToken ${instance.token}`,
           },
@@ -276,7 +276,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       } else {
         // External request via axios
         const response = await axios.get(
-          `${instance.url}/api/${apiVersion}/organisationUnits/${orgUnitId}`,
+          `${instance.url}/api/organisationUnits/${orgUnitId}`,
           {
             headers: {
               Authorization: `ApiToken ${instance.token}`,
