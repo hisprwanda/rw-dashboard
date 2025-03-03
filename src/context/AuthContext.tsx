@@ -6,7 +6,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { useDataQuery } from "@dhis2/app-runtime";
+import { useConfig, useDataQuery } from "@dhis2/app-runtime";
 import { useDataEngine } from '@dhis2/app-runtime';
 import {  useOrgUnitData} from "../services/fetchOrgunitData";
 import {VisualSettingsTypes,VisualTitleAndSubtitleType,ColorPaletteTypes,visualColorPaletteTypes, AxisSettingsTypes} from "../types/visualSettingsTypes"
@@ -96,6 +96,8 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const {apiVersion } = useConfig()
+
   const { data, loading, error } = useDataQuery(query);
   const [isExportingDashboardAsPPTX, setIsExportingDashboardAsPPTX] = useState<boolean>(false);
   const {  data:systemInfo } = useSystemInfo();
@@ -234,7 +236,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // External request via axios
 
         console.log("beta query",queryParams)
-        const response = await axios.get(`${instance.url}/api/40/analytics`, {
+        const response = await axios.get(`${instance.url}/api/${apiVersion}/analytics`, {
           headers: {
             Authorization: `ApiToken ${instance.token}`,
           },
@@ -274,7 +276,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       } else {
         // External request via axios
         const response = await axios.get(
-          `${instance.url}/api/40/organisationUnits/${orgUnitId}`,
+          `${instance.url}/api/${apiVersion}/organisationUnits/${orgUnitId}`,
           {
             headers: {
               Authorization: `ApiToken ${instance.token}`,
