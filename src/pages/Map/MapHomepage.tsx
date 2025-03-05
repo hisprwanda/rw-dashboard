@@ -3,8 +3,7 @@ import MapComponent from './MapComponent'
 
 const MapHomepage: React.FC = () => {
   return (
-    <div>
-      <h1>Map Homepage</h1>
+    <div className="h-screen">
       <MapComponent />
     </div>
   )
