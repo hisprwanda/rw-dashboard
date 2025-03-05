@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import osm from "../../assets/osm.png"
+import osmlight from "../../assets/osmlight.png"
 
 // Fix for default marker icon
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -22,11 +24,13 @@ type BasemapType = 'osm-light' | 'osm-detailed';
 // Basemap Configuration
 const BASEMAPS = {
   'osm-light': {
+    imgUrl: osm,
     url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
     name: 'OSM Light',
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
   },
   'osm-detailed': {
+    imgUrl: osmlight,
     url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     name: 'OSM Detailed',
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -96,24 +100,33 @@ const MapComponent: React.FC = () => {
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
-      <div className="w-64 bg-gray-100 p-4 border-r">
-        <h2 className="text-lg font-bold mb-4">Add Layer</h2>
-        
-        {/* Basemap Selection */}
-        <div className="space-y-2">
-          <h3 className="font-semibold">Basemap</h3>
-          {(Object.keys(BASEMAPS) as BasemapType[]).map((basemap) => (
-            <div 
-              key={basemap}
-              className={`
-                p-2 cursor-pointer border rounded 
-                ${currentBasemap === basemap ? 'bg-blue-100 border-blue-500' : 'hover:bg-gray-200'}
-              `}
-              onClick={() => setCurrentBasemap(basemap)}
-            >
-              {BASEMAPS[basemap].name}
-            </div>
-          ))}
+      <div className="w-64 bg-white border-r shadow-md overflow-y-auto">
+        <div className="p-4">
+          <h2 className="text-lg font-bold mb-4">Add layer</h2>
+          
+          {/* Basemap Selection */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-500 mb-2">Basemap</h3>
+            {(Object.keys(BASEMAPS) as BasemapType[]).map((basemap) => (
+              <div 
+                key={basemap}
+                className={`
+                  flex items-center justify-between p-2 mb-2 cursor-pointer border rounded-lg
+                  ${currentBasemap === basemap 
+                    ? 'bg-blue-50 border-blue-500 shadow-sm' 
+                    : 'hover:bg-gray-100'}
+                `}
+                onClick={() => setCurrentBasemap(basemap)}
+              >
+                <span className="text-sm">{BASEMAPS[basemap].name}</span>
+                <img 
+                  className="h-8 w-8 object-cover rounded" 
+                  src={BASEMAPS[basemap].imgUrl} 
+                  alt={BASEMAPS[basemap].name} 
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
