@@ -1,0 +1,1 @@
+export type BasemapType = 'osm-light' | 'osm-detailed';

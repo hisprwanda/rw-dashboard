@@ -1730,9 +1730,9 @@ video {
   border-color: var(--color-border);
 }
 
-.border-blue-500 {
+.border-blue-400 {
   --tw-border-opacity: 1;
-  border-color: rgb(59 130 246 / var(--tw-border-opacity));
+  border-color: rgb(96 165 250 / var(--tw-border-opacity));
 }
 
 .border-destructive {
