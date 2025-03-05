@@ -1,4 +1,6 @@
+import Button from '../../../components/Button';
 import React from 'react';
+import { MapMetaDataConfigModal } from './MapMetaDataConfigModal';
 
 // Basemap Type
 type BasemapType = 'osm-light' | 'osm-detailed';
@@ -25,8 +27,7 @@ const MapSidebar: React.FC<MapSidebarProps> = ({
 }) => {
   return (
     <div className="w-64 bg-white border-r border-gray-200 p-2">
-      <h2 className="text-sm font-bold mb-2 px-2">Add layer</h2>
-      
+      <button className="text-sm font-bold mb-2 px-2">+ Add layer</button>   
       {/* Basemap Selection */}
       <div className="space-y-1">
         <h3 className="text-xs text-gray-500 px-2 mb-1">Basemap</h3>
@@ -50,6 +51,7 @@ const MapSidebar: React.FC<MapSidebarProps> = ({
           </div>
         ))}
       </div>
+      <MapMetaDataConfigModal/>
     </div>
   );
 };
