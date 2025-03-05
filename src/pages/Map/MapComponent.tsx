@@ -22,12 +22,14 @@ type BasemapType = 'osm-light' | 'osm-detailed';
 // Basemap Configuration
 const BASEMAPS = {
   'osm-light': {
-    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    name: 'OSM Light'
+    url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+    name: 'OSM Light',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
   },
   'osm-detailed': {
-    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', // You might want to use a different URL for detailed map
-    name: 'OSM Detailed'
+    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    name: 'OSM Detailed',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }
 };
 
@@ -36,7 +38,7 @@ const MapComponent: React.FC = () => {
   // State for current basemap
   const [currentBasemap, setCurrentBasemap] = useState<BasemapType>('osm-light');
 
-  // Sample data (moved inside the component)
+  // Sample data of Rwanda health facilities
   const mapData = [
     { 
       id: '1', 
@@ -89,7 +91,7 @@ const MapComponent: React.FC = () => {
     }
   ];
 
-  const centerPosition: [number, number] = [-1.9403, 30.0578]; 
+  const centerPosition: [number, number] = [-1.9403, 30.0578]; // Centered on Kigali
 
   return (
     <div className="flex h-screen">
@@ -119,12 +121,12 @@ const MapComponent: React.FC = () => {
       <div className="flex-grow h-full">
         <MapContainer 
           center={centerPosition} 
-          zoom={10} 
+          zoom={7} 
           className="h-full w-full"
         >
           <TileLayer
             url={BASEMAPS[currentBasemap].url}
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            attribution={BASEMAPS[currentBasemap].attribution}
           />
           
           {mapData.map((location) => (
