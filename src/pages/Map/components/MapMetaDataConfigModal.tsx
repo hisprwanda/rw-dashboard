@@ -18,6 +18,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../components/ui/select";
+import { DataModal } from "../../../pages/visualizers/Components/MetaDataModals";
+import { useAuthorities } from "../../../context/AuthContext";
+import { useDataItems } from "../../../services/fetchDataItems";
+import { useExternalDataItems } from "../../../services/useExternalDataItems";
+
 
 type MapMetaDataConfigModalProps = {
   themeLayerType: "Thematic Layer" | any;
@@ -30,6 +35,10 @@ export function MapMetaDataConfigModal({
   isOpen, 
   onOpenChange 
 }: MapMetaDataConfigModalProps) {
+  const [isShowDataModal, setIsShowDataModal] = useState<boolean>(false);
+  const { subDataItemsData, setDataItemsDataPage, dataItemsDataPage, selectedDataSourceOption, setSelectedDataSourceOption, currentUserInfoAndOrgUnitsData, setCurrentUserInfoAndOrgUnitsData, dataItemsData, selectedDataSourceDetails, setSelectedDataSourceDetails, setSelectedDimensionItemType, analyticsData, isFetchAnalyticsDataLoading, selectedChartType, setSelectedChartType, setAnalyticsQuery, isUseCurrentUserOrgUnits, analyticsQuery, analyticsDimensions, setAnalyticsDimensions, setIsSetPredifinedUserOrgUnits, isSetPredifinedUserOrgUnits, selectedOrganizationUnits, setSelectedOrganizationUnits, setIsUseCurrentUserOrgUnits, selectedOrgUnits, setSelectedOrgUnits, selectedOrgUnitGroups, setSelectedOrgUnitGroups, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedLevel, setSelectedLevel, fetchAnalyticsData, setAnalyticsData, fetchAnalyticsDataError, setSelectedVisualTitleAndSubTitle, visualTitleAndSubTitle, visualSettings, setSelectedVisualSettings, setVisualsColorPalettes, selectedColorPalette, selectedDimensionItemType } = useAuthorities();
+  const { error: dataItemsFetchError, loading: isFetchCurrentInstanceDataItemsLoading, fetchCurrentInstanceData } = useDataItems();
+  const { fetchExternalDataItems, response, error, loading: isFetchExternalInstanceDataItemsLoading } = useExternalDataItems();
   const [activeTab, setActiveTab] = useState("data");
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -81,66 +90,7 @@ export function MapMetaDataConfigModal({
       case "data":
         return (
           <div className="space-y-6 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="itemType">Item type</Label>
-              <Select 
-                value={formData.itemType} 
-                onValueChange={(value) => handleInputChange('itemType', value)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select item type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Indicator">Indicator</SelectItem>
-                  <SelectItem value="DataElement">Data Element</SelectItem>
-                  <SelectItem value="DataSet">Data Set</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="indicatorGroup">Indicator group</Label>
-              <Select 
-                value={formData.indicatorGroup} 
-                onValueChange={(value) => handleInputChange('indicatorGroup', value)}
-              >
-                <SelectTrigger className={`w-full ${hasError ? 'border-red-500 ring-red-500' : ''}`}>
-                  <SelectValue placeholder="Select indicator group" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="group1">Group 1</SelectItem>
-                  <SelectItem value="group2">Group 2</SelectItem>
-                  <SelectItem value="group3">Group 3</SelectItem>
-                </SelectContent>
-              </Select>
-              {hasError && <p className="text-red-500 text-sm">Unauthorized</p>}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="aggregationType">Aggregation type</Label>
-              <Select 
-                value={formData.aggregationType} 
-                onValueChange={(value) => handleInputChange('aggregationType', value)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select aggregation type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="By data element">By data element</SelectItem>
-                  <SelectItem value="By category">By category</SelectItem>
-                  <SelectItem value="By period">By period</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="showCompletedEvents" 
-                checked={formData.showCompletedEvents}
-                onCheckedChange={(checked) => handleInputChange('showCompletedEvents', checked)}
-              />
-              <Label htmlFor="showCompletedEvents">Only show completed events</Label>
-            </div>
+              <DataModal data={dataItemsData} loading={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} error={dataItemsFetchError} setIsShowDataModal={setIsShowDataModal} subDataItemsData={subDataItemsData}  />
           </div>
         );
       case "period":
