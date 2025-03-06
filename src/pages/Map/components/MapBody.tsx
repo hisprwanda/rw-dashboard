@@ -21,7 +21,7 @@ L.Marker.prototype.options.icon = DefaultIcon;
 
 
 // Main Map Component
-const MapComponent: React.FC = () => {
+const MapBody: React.FC = () => {
   // State for current basemap
   const [currentBasemap, setCurrentBasemap] = useState<BasemapType>('osm-light');
 
@@ -120,4 +120,4 @@ const MapComponent: React.FC = () => {
   );
 };
 
-export default MapComponent;
+export default MapBody;

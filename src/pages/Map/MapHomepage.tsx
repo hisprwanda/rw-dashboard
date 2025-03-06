@@ -1,10 +1,10 @@
 import React from 'react'
-import MapComponent from './components/MapComponent'
+import MapBody from './components/MapBody'
 
 const MapHomepage: React.FC = () => {
   return (
     <div className="h-screen">
-      <MapComponent />
+      <MapBody />
     </div>
   )
 }

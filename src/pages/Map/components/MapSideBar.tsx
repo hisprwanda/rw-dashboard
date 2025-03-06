@@ -2,17 +2,10 @@ import Button from '../../../components/Button';
 import React from 'react';
 import { MapMetaDataConfigModal } from './MapMetaDataConfigModal';
 import SelectOtherMapLayer from './SelectOtherMapLayer';
+import { BasemapConfig, BasemapType } from '../../../types/maps';
 
-// Basemap Type
-type BasemapType = 'osm-light' | 'osm-detailed';
 
-// Basemap Configuration Type
-type BasemapConfig = {
-  imgUrl: string;
-  url: string;
-  name: string;
-  attribution: string;
-};
+
 
 // MapSidebar Props Type
 type MapSidebarProps = {
@@ -53,7 +46,7 @@ const MapSidebar: React.FC<MapSidebarProps> = ({
           </div>
         ))}
       </div>
-      {/* <MapMetaDataConfigModal/> */}
+     
     </div>
   );
 };
