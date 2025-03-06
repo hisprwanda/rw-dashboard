@@ -86,13 +86,14 @@ const TransferList = ({ availableOptions, selectedOptions, onSelect, onDeselect 
 };
 
 interface PeriodPickerProps {
-    setIsShowPeriod: any;
-    onUpdate:any
+    setIsShowPeriod?: any;
+    onUpdate?:any;
+    isDataModalBeingUsedInMap?:boolean
 }
 
 // const [analyticsDimensions?.pe?, setSelectedPeriods] = useState([])
 
-const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod }) => {
+const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod,isDataModalBeingUsedInMap }) => {
  const { analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, isFetchAnalyticsDataLoading, selectedDataSourceDetails } = useAuthorities();
     const [selectedTab, setSelectedTab] = useState('relative');
     const [selectedPeriodGroup, setSelectedPeriodGroup] = useState('days');
@@ -348,12 +349,14 @@ const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod 
                 >
                     Relative periods
                 </TabButton>
-                <TabButton 
+               <TabButton 
                     selected={selectedTab === 'fixed'} 
                     onClick={() => handleTabChange('fixed')}
                 >
                     Fixed periods
                 </TabButton>
+                
+               
             </div>
 
             {selectedTab === 'relative' && (

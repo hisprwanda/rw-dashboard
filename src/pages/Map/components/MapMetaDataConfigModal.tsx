@@ -37,9 +37,6 @@ export function MapMetaDataConfigModal({
   onOpenChange 
 }: MapMetaDataConfigModalProps) {
   const { loading: orgUnitLoading, error: fetchOrgUnitError, data: orgUnitsData, fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData();
-  const [isShowOrganizationUnit, setIsShowOrganizationUnit] = useState<boolean>(false);
-  const [isShowDataModal, setIsShowDataModal] = useState<boolean>(false);
-  const [isShowPeriod, setIsShowPeriod] = useState<boolean>(false);
   const { subDataItemsData, setDataItemsDataPage, dataItemsDataPage, selectedDataSourceOption, setSelectedDataSourceOption, currentUserInfoAndOrgUnitsData, setCurrentUserInfoAndOrgUnitsData, dataItemsData, selectedDataSourceDetails, setSelectedDataSourceDetails, setSelectedDimensionItemType, analyticsData, isFetchAnalyticsDataLoading, selectedChartType, setSelectedChartType, setAnalyticsQuery, isUseCurrentUserOrgUnits, analyticsQuery, analyticsDimensions, setAnalyticsDimensions, setIsSetPredifinedUserOrgUnits, isSetPredifinedUserOrgUnits, selectedOrganizationUnits, setSelectedOrganizationUnits, setIsUseCurrentUserOrgUnits, selectedOrgUnits, setSelectedOrgUnits, selectedOrgUnitGroups, setSelectedOrgUnitGroups, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedLevel, setSelectedLevel, fetchAnalyticsData, setAnalyticsData, fetchAnalyticsDataError, setSelectedVisualTitleAndSubTitle, visualTitleAndSubTitle, visualSettings, setSelectedVisualSettings, setVisualsColorPalettes, selectedColorPalette, selectedDimensionItemType } = useAuthorities();
   const { error: dataItemsFetchError, loading: isFetchCurrentInstanceDataItemsLoading, fetchCurrentInstanceData } = useDataItems();
   const { fetchExternalDataItems, response, error, loading: isFetchExternalInstanceDataItemsLoading } = useExternalDataItems();
@@ -105,19 +102,19 @@ export function MapMetaDataConfigModal({
       case "data":
         return (
           <div className="space-y-6 py-4">
-              <DataModal data={dataItemsData} loading={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} error={dataItemsFetchError} setIsShowDataModal={setIsShowDataModal} subDataItemsData={subDataItemsData}  />
+              <DataModal data={dataItemsData} isDataModalBeingUsedInMap={true} loading={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} error={dataItemsFetchError}  subDataItemsData={subDataItemsData}  />
           </div>
         );
       case "period":
         return (
           <div className="py-4">
-           <PeriodModal setIsShowPeriod={setIsShowPeriod} />
+           <PeriodModal isDataModalBeingUsedInMap={true} />
           </div>
         );
       case "orgUnits":
         return (
           <div className="py-4">
-          <OrganizationModal data={currentUserInfoAndOrgUnitsData} loading={orgUnitLoading} error={fetchOrgUnitError} setIsShowOrganizationUnit={setIsShowOrganizationUnit} />
+          <OrganizationModal data={currentUserInfoAndOrgUnitsData} loading={orgUnitLoading} error={fetchOrgUnitError}  />
              
             </div>
         );

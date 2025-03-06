@@ -10,7 +10,7 @@ import OrganizationUnitLevels from '../../pages/visualizers/Components/MetaDataM
 import CustomOrganisationUnitTree from '../../pages/visualizers/Components/MetaDataModals/CustomOrganisationUnitTree';
 
 interface OrganisationUnitSelectProps {
-  setIsShowOrganizationUnit:any;
+  setIsShowOrganizationUnit?:any;
   data:any;
   loading:boolean;
   error:any

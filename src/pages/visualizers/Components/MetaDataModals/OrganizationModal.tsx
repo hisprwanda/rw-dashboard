@@ -3,7 +3,7 @@ import OrganizationUnitSelector from "../../../../components/OrganisationUnitTre
 
 
 interface OrganizationUnitModalProps {
-  setIsShowOrganizationUnit:any;
+  setIsShowOrganizationUnit?:any;
   data:any;
   loading:boolean;
   error:any
