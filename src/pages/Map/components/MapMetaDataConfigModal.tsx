@@ -23,6 +23,7 @@ import { useAuthorities } from "../../../context/AuthContext";
 import { useDataItems } from "../../../services/fetchDataItems";
 import { useExternalDataItems } from "../../../services/useExternalDataItems";
 import { useOrgUnitData } from "../../../services/fetchOrgunitData";
+import { formatAnalyticsDimensions } from "../../../lib/formatAnalyticsDimensions";
 
 
 type MapMetaDataConfigModalProps = {
@@ -96,8 +97,13 @@ export function MapMetaDataConfigModal({
     { id: "style", label: "Style" }
   ];
 
-  const handleAddLayer = () => {
-    onOpenChange(false);
+  const handleAddLayer = async(e) => {
+     // Stop event propagation
+     e.stopPropagation();
+     e.preventDefault();
+
+    await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions), selectedDataSourceDetails);
+   // onOpenChange(false);
   };
 
   // Different content based on active tab
