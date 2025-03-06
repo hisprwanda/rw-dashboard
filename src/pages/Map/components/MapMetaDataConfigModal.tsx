@@ -104,10 +104,11 @@ export function MapMetaDataConfigModal({
      // Stop event propagation
      e.stopPropagation();
      e.preventDefault();
+     
+     const GeoFeaturesResult = await fetchGeoFeatures()
+   const analyticsResult= await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions), selectedDataSourceDetails);
 
-    //await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions), selectedDataSourceDetails);
-    const geoResult = await fetchGeoFeatures()
-    console.log("hello geogr featre",geoResult)
+    console.log("hello analyticsResult",analyticsResult)
    // onOpenChange(false);
   };
 
