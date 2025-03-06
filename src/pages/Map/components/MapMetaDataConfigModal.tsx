@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "../../../components/ui/button";
 import {
@@ -18,10 +18,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../components/ui/select";
-import { DataModal } from "../../../pages/visualizers/Components/MetaDataModals";
+import { DataModal, OrganizationModal, PeriodModal } from "../../../pages/visualizers/Components/MetaDataModals";
 import { useAuthorities } from "../../../context/AuthContext";
 import { useDataItems } from "../../../services/fetchDataItems";
 import { useExternalDataItems } from "../../../services/useExternalDataItems";
+import { useOrgUnitData } from "../../../services/fetchOrgunitData";
 
 
 type MapMetaDataConfigModalProps = {
@@ -35,7 +36,10 @@ export function MapMetaDataConfigModal({
   isOpen, 
   onOpenChange 
 }: MapMetaDataConfigModalProps) {
+  const { loading: orgUnitLoading, error: fetchOrgUnitError, data: orgUnitsData, fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData();
+  const [isShowOrganizationUnit, setIsShowOrganizationUnit] = useState<boolean>(false);
   const [isShowDataModal, setIsShowDataModal] = useState<boolean>(false);
+  const [isShowPeriod, setIsShowPeriod] = useState<boolean>(false);
   const { subDataItemsData, setDataItemsDataPage, dataItemsDataPage, selectedDataSourceOption, setSelectedDataSourceOption, currentUserInfoAndOrgUnitsData, setCurrentUserInfoAndOrgUnitsData, dataItemsData, selectedDataSourceDetails, setSelectedDataSourceDetails, setSelectedDimensionItemType, analyticsData, isFetchAnalyticsDataLoading, selectedChartType, setSelectedChartType, setAnalyticsQuery, isUseCurrentUserOrgUnits, analyticsQuery, analyticsDimensions, setAnalyticsDimensions, setIsSetPredifinedUserOrgUnits, isSetPredifinedUserOrgUnits, selectedOrganizationUnits, setSelectedOrganizationUnits, setIsUseCurrentUserOrgUnits, selectedOrgUnits, setSelectedOrgUnits, selectedOrgUnitGroups, setSelectedOrgUnitGroups, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedLevel, setSelectedLevel, fetchAnalyticsData, setAnalyticsData, fetchAnalyticsDataError, setSelectedVisualTitleAndSubTitle, visualTitleAndSubTitle, visualSettings, setSelectedVisualSettings, setVisualsColorPalettes, selectedColorPalette, selectedDimensionItemType } = useAuthorities();
   const { error: dataItemsFetchError, loading: isFetchCurrentInstanceDataItemsLoading, fetchCurrentInstanceData } = useDataItems();
   const { fetchExternalDataItems, response, error, loading: isFetchExternalInstanceDataItemsLoading } = useExternalDataItems();
@@ -47,8 +51,19 @@ export function MapMetaDataConfigModal({
     aggregationType: "By data element",
     showCompletedEvents: false
   });
-  
+  console.log("currentUserInfoAndOrgUnitsData",currentUserInfoAndOrgUnitsData)
   const [hasError, setHasError] = useState(true);
+
+      /// fetch current user and Organization unit
+      const fetchCurrentUserAndOrgUnitData = async () => {
+        const result = await fetchCurrentUserInfoAndOrgUnitData();
+        console.log("hello results",result)
+        setCurrentUserInfoAndOrgUnitsData(result);
+    };
+
+    useEffect(()=>{
+      fetchCurrentUserAndOrgUnitData()
+    },[])
 
   // Handle form submission
   const handleSubmit = (e) => {
@@ -96,14 +111,15 @@ export function MapMetaDataConfigModal({
       case "period":
         return (
           <div className="py-4">
-            <p className="text-gray-500">Period configuration options will appear here.</p>
+           <PeriodModal setIsShowPeriod={setIsShowPeriod} />
           </div>
         );
       case "orgUnits":
         return (
           <div className="py-4">
-            <p className="text-gray-500">Organization units configuration will appear here.</p>
-          </div>
+          <OrganizationModal data={currentUserInfoAndOrgUnitsData} loading={orgUnitLoading} error={fetchOrgUnitError} setIsShowOrganizationUnit={setIsShowOrganizationUnit} />
+             
+            </div>
         );
       case "filter":
         return (

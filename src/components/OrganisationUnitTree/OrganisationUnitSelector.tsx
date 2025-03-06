@@ -44,7 +44,9 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
   //const { loading, error, data } = useOrgUnitData();
   const orgUnits = data?.orgUnits?.organisationUnits || [];
   const orgUnitLevels = data?.orgUnitLevels?.organisationUnitLevels || [];
-  const currentUserOrgUnit = data?.currentUser?.organisationUnits?.[0];
+  const currentUserOrgUnit = data?.currentUser?.organisationUnits?.[0] || "."
+
+  console.log("currentUserOrgUnit",currentUserOrgUnit)
     console.log(" data?.currentUser changed", data)
   const {
     searchTerm,
@@ -229,16 +231,16 @@ useEffect(()=>{
               onChange={({ path }) => handleOrgUnitClick(path)}
               singleSelection={false}
               renderNodeLabel={({ node }) => (
-                <span className="text-blue-600 font-medium">{node?.displayName}</span>
+                <span className="text-blue-600 font-medium">{node?.displayName || "undefined"}</span>
               )}
-              filter={filteredOrgUnitPaths?.length ? filteredOrgUnitPaths : undefined}
+              filter={filteredOrgUnitPaths?.length && filteredOrgUnitPaths.every(path => path?.displayName) ? filteredOrgUnitPaths : undefined}
             />  :
            <CustomOrganisationUnitTree
            apiUrl={selectedDataSourceDetails.url}
            token={selectedDataSourceDetails.token}
            rootOrgUnitId={currentUserOrgUnit?.id} 
            onNodeSelect={handleNodeSelectExternalInstance}
-           parentName={currentUserOrgUnit?.displayName || "temp" }
+           parentName={currentUserOrgUnit?.displayName || "undefined" }
            realParentId={currentUserOrgUnit?.id}
        /> 
        }
