@@ -81,7 +81,7 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
   useEffect(() => {
      if(selectedDataSourceDetails.isCurrentInstance)
     {
-      const updatedOrganizationUnits = selectedOrgUnits.map((path) => {
+      const updatedOrganizationUnits = selectedOrgUnits?.map((path) => {
         // Extract the last segment of the path
         const parts = path.split('/');
         return parts[parts.length - 1]; // Get the last segment (org unit ID)
@@ -95,8 +95,8 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
   useEffect(() => {
     if (selectedLevel && selectedLevel.length > 0) {
       const newSelectedLevelIds = orgUnitLevels
-        .filter(level => selectedLevel.includes(level.level))
-        .map(level => level.id);
+        ?.filter(level => selectedLevel.includes(level.level))
+        ?.map(level => level.id);
   
       // Merge existing levels with new ones and avoid duplicates
       setSelectedOrganizationUnitsLevels((prevLevels: string[]) => {
@@ -112,7 +112,7 @@ const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsSho
       if (selectedOrganizationUnits.length > 0) {
         // Fetch organization names in parallel
         const orgNames = await Promise.all(
-          selectedOrganizationUnits.map((orgUnitId) => fetchSingleOrgUnitName(orgUnitId,selectedDataSourceDetails))
+          selectedOrganizationUnits?.map((orgUnitId) => fetchSingleOrgUnitName(orgUnitId,selectedDataSourceDetails))
         );
   
         // Update DefaultSubTitle with fetched organization names
