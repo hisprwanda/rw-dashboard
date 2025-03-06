@@ -96,6 +96,10 @@ export function MapMetaDataConfigModal({
     { id: "style", label: "Style" }
   ];
 
+  const handleAddLayer = () => {
+    onOpenChange(false);
+  };
+
   // Different content based on active tab
   const getTabContent = () => {
     switch (activeTab) {
@@ -177,8 +181,10 @@ export function MapMetaDataConfigModal({
             </Button>
             <Button 
               type="submit" 
-              disabled={isLoading || hasError}
-              className={`mt-4 ${hasError ? 'opacity-50 cursor-not-allowed' : ''}`}
+             // disabled={isLoading || hasError}
+             // className={`mt-4 ${hasError ? 'opacity-50 cursor-not-allowed' : ''}`}
+              className={`mt-4`}
+              onClick={handleAddLayer}
             >
               {isLoading ? "Adding..." : "Add layer"}
             </Button>
