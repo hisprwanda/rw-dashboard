@@ -454,8 +454,7 @@ const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod,
                 onSelect={handlePeriodSelect}
                 onDeselect={handlePeriodDeselect}
             />
-
-            <div className="flex justify-end mt-6">
+{!isDataModalBeingUsedInMap &&   <div className="flex justify-end mt-6">
                 <Button
                     text={isFetchAnalyticsDataLoading ? 'Loading' : 'Update'}
                     onClick={handleUpdate}
@@ -463,7 +462,8 @@ const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod,
                     type="button"
                     icon={<IoSaveOutline />}
                 />
-            </div>
+            </div>}
+          
         </div>
     );
 };

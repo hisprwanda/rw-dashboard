@@ -592,7 +592,10 @@ useEffect(() => {
         }
        
       </div>
-      <div className="mt-4 flex justify-end">
+      {
+        !isDataModalBeingUsedInMap 
+        &&
+        <div className="mt-4 flex justify-end">
         <Button
           variant="primary"
           text={isFetchAnalyticsDataLoading ? "Loading..." : "Update"}
@@ -601,6 +604,8 @@ useEffect(() => {
           onClick={handleUpdate}
         />
       </div>
+      }
+     
     </div>
   );
 };

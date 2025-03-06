@@ -114,7 +114,7 @@ export function MapMetaDataConfigModal({
       case "orgUnits":
         return (
           <div className="py-4">
-          <OrganizationModal data={currentUserInfoAndOrgUnitsData} loading={orgUnitLoading} error={fetchOrgUnitError}  />
+          <OrganizationModal isDataModalBeingUsedInMap={true} data={currentUserInfoAndOrgUnitsData} loading={orgUnitLoading} error={fetchOrgUnitError}  />
              
             </div>
         );

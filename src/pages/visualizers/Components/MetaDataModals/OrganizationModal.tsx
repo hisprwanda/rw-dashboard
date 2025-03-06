@@ -6,13 +6,14 @@ interface OrganizationUnitModalProps {
   setIsShowOrganizationUnit?:any;
   data:any;
   loading:boolean;
-  error:any
+  error:any;
+  isDataModalBeingUsedInMap?:boolean
   
 }
-const OrganizationModal:React.FC<OrganizationUnitModalProps> = ({setIsShowOrganizationUnit,data,loading,error}) => {
+const OrganizationModal:React.FC<OrganizationUnitModalProps> = ({setIsShowOrganizationUnit,data,loading,error,isDataModalBeingUsedInMap}) => {
   return (
     <div>
-      <OrganizationUnitSelector  data={data} loading={loading}  error={error} setIsShowOrganizationUnit={setIsShowOrganizationUnit} />
+      <OrganizationUnitSelector isDataModalBeingUsedInMap={isDataModalBeingUsedInMap}  data={data} loading={loading}  error={error} setIsShowOrganizationUnit={setIsShowOrganizationUnit} />
     </div>
   )
 }

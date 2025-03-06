@@ -13,11 +13,12 @@ interface OrganisationUnitSelectProps {
   setIsShowOrganizationUnit?:any;
   data:any;
   loading:boolean;
-  error:any
+  error:any;
+  isDataModalBeingUsedInMap?:boolean
   
 }
 
-const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsShowOrganizationUnit,data,loading,error}) => {
+const OrganisationUnitSelect:React.FC<OrganisationUnitSelectProps>  = ({setIsShowOrganizationUnit,data,loading,error,isDataModalBeingUsedInMap}) => {
 
   const {
     analyticsDimensions,
@@ -269,8 +270,8 @@ useEffect(()=>{
 
       </div>
 
-      {/* Buttons */}
-      <div className="flex justify-end items-center">
+    
+      { !isDataModalBeingUsedInMap &&  <div className="flex justify-end items-center">
         <div>
         <Button
           variant='primary'
@@ -282,6 +283,8 @@ useEffect(()=>{
         </div>
       
       </div>
+      }
+     
     </div>
   );
 };
