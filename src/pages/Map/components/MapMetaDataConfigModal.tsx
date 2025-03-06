@@ -24,6 +24,7 @@ import { useDataItems } from "../../../services/fetchDataItems";
 import { useExternalDataItems } from "../../../services/useExternalDataItems";
 import { useOrgUnitData } from "../../../services/fetchOrgunitData";
 import { formatAnalyticsDimensions } from "../../../lib/formatAnalyticsDimensions";
+import { useRunGeoFeatures } from "../../../services/maps";
 
 
 type MapMetaDataConfigModalProps = {
@@ -37,6 +38,7 @@ export function MapMetaDataConfigModal({
   isOpen, 
   onOpenChange 
 }: MapMetaDataConfigModalProps) {
+  const {fetchGeoFeatures} = useRunGeoFeatures()
   const { loading: orgUnitLoading, error: fetchOrgUnitError, data: orgUnitsData, fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData();
   const { subDataItemsData, setDataItemsDataPage, dataItemsDataPage, selectedDataSourceOption, setSelectedDataSourceOption, currentUserInfoAndOrgUnitsData, setCurrentUserInfoAndOrgUnitsData, dataItemsData, selectedDataSourceDetails, setSelectedDataSourceDetails, setSelectedDimensionItemType, analyticsData, isFetchAnalyticsDataLoading, selectedChartType, setSelectedChartType, setAnalyticsQuery, isUseCurrentUserOrgUnits, analyticsQuery, analyticsDimensions, setAnalyticsDimensions, setIsSetPredifinedUserOrgUnits, isSetPredifinedUserOrgUnits, selectedOrganizationUnits, setSelectedOrganizationUnits, setIsUseCurrentUserOrgUnits, selectedOrgUnits, setSelectedOrgUnits, selectedOrgUnitGroups, setSelectedOrgUnitGroups, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedLevel, setSelectedLevel, fetchAnalyticsData, setAnalyticsData, fetchAnalyticsDataError, setSelectedVisualTitleAndSubTitle, visualTitleAndSubTitle, visualSettings, setSelectedVisualSettings, setVisualsColorPalettes, selectedColorPalette, selectedDimensionItemType } = useAuthorities();
   const { error: dataItemsFetchError, loading: isFetchCurrentInstanceDataItemsLoading, fetchCurrentInstanceData } = useDataItems();
@@ -55,6 +57,7 @@ export function MapMetaDataConfigModal({
       /// fetch current user and Organization unit
       const fetchCurrentUserAndOrgUnitData = async () => {
         const result = await fetchCurrentUserInfoAndOrgUnitData();
+        
         console.log("hello results",result)
         setCurrentUserInfoAndOrgUnitsData(result);
     };
@@ -102,7 +105,9 @@ export function MapMetaDataConfigModal({
      e.stopPropagation();
      e.preventDefault();
 
-    await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions), selectedDataSourceDetails);
+    //await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions), selectedDataSourceDetails);
+    const geoResult = await fetchGeoFeatures()
+    console.log("hello geogr featre",geoResult)
    // onOpenChange(false);
   };
 
