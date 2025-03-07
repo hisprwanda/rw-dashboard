@@ -190,7 +190,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // testing
   const engine = useDataEngine();
-  const fetchAnalyticsData = async (dimension: any,instance:DataSourceFormFields,isBeingAnalyticsApiUsedInMap?:boolean ) => {
+  const fetchAnalyticsData = async (dimension: any,instance:DataSourceFormFields,isAnalyticsApiUsedInMap?:boolean ) => {
     console.log("here is the selected instance",instance)
     console.log("here is the selected dimension",dimension)
     const orgUnitIds = selectedOrganizationUnits?.map((unit: any) => unit).join(';');
@@ -211,7 +211,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setFetchAnalyticsDataError(null);
 
  
-      const queryParams = isBeingAnalyticsApiUsedInMap ?{
+      const queryParams = isAnalyticsApiUsedInMap ?{
         dimension,
         filter,
         displayProperty: 'NAME',
@@ -223,19 +223,38 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         displayProperty: 'NAME',
         includeNumDen: true,
       } 
+    
+      const queryParamsTwo = {
+        dimension,
+        filter,
+        displayProperty: 'NAME',
+        skipMeta: false,
+        skipData: true,
+        includeMetadataDetails: true
+      }
 
       
 
       if (instance.isCurrentInstance) {
         // Internal request via engine.query
-        const analyticsQuery = {
+        const analyticsQuery =  {
           myData: {
             resource: 'analytics',
             params: queryParams,
           },
         };
+        const analyticsQueryTwo =  {
+          myData: {
+            resource: 'analytics',
+            params: queryParamsTwo,
+          },
+        };
 
         const result = await engine.query(analyticsQuery);
+        if(isAnalyticsApiUsedInMap)
+        {
+          const resultTwo = await engine.query(analyticsQueryTwo);
+        }
         setAnalyticsData(result?.myData);
         setAnalyticsQuery(analyticsQuery);
       } else {
