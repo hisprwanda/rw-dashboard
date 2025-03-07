@@ -1,84 +1,431 @@
 import React, { useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import MapSidebar from './MapSideBar'; 
-
 // Fix for default marker icon
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import { BasemapType } from '../../../types/maps';
 import { BASEMAPS } from '../constants';
+import { useAuthorities } from '../../../context/AuthContext';
+import  {geoFeaturesData, analyticsMapData, metaMapData} from "../constants"
+// Import components for district map
+import { GeoJSON } from 'react-leaflet';
 
 let DefaultIcon = L.icon({
-    iconUrl: icon,
-    shadowUrl: iconShadow,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
+  iconUrl: icon,
+  shadowUrl: iconShadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41]
 });
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
+// Sample DHIS2 Legends
+const sampleLegends = [
+  {
+    "name": "legend 1",
+    "legends": [
+      {
+        "name": "Low",
+        "startValue": 0,
+        "endValue": 500,
+        "color": "#FFFFB2"
+      },
+      {
+        "name": "chris",
+        "startValue": 75.3, 
+        "endValue": 99.5,
+        "color": "#ff0000"
+      },
+      {
+        "name": "Medium",
+        "startValue": 500,
+        "endValue": 800,
+        "color": "#FED976"
+      },
+      {
+        "name": "High",
+        "startValue": 800,
+        "endValue": 2000,
+        "color": "#FD8D3C"
+      }
+    ]
+  },
+  {
+    "name": "legend 2",
+    "legends": [
+      {
+        "name": "Very Low",
+        "startValue": 0,
+        "endValue": 300,
+        "color": "#EDF8FB"
+      },
+      {
+        "name": "Low",
+        "startValue": 300,
+        "endValue": 600,
+        "color": "#B2E2E2"
+      },
+      {
+        "name": "Medium",
+        "startValue": 600,
+        "endValue": 900,
+        "color": "#66C2A4"
+      },
+      {
+        "name": "High",
+        "startValue": 900,
+        "endValue": 1200,
+        "color": "#2CA25F"
+      },
+      {
+        "name": "Very High",
+        "startValue": 1200,
+        "endValue": 2000,
+        "color": "#006D2C"
+      }
+    ]
+  }
+];
+
+interface ProcessedDistrict {
+  id: string;
+  name: string;
+  value: number | null;
+  coordinates: number[][][];
+  code: string;
+  region: string;
+}
+
+interface LegendClass {
+  name: string;
+  startValue: number;
+  endValue: number;
+  color: string;
+}
+
+interface Legend {
+  name: string;
+  legends: LegendClass[];
+}
 
 // Main Map Component
 const MapBody: React.FC = () => {
+  //const {geoFeaturesData, analyticsMapData, metaMapData} = useAuthorities();
   // State for current basemap
   const [currentBasemap, setCurrentBasemap] = useState<BasemapType>('osm-light');
-
-  // Sample data of Rwanda health facilities
-  const mapData = [
-    { 
-      id: '1', 
-      name: 'Kigali University Teaching Hospital (CHUK)', 
-      latitude: -1.9524, 
-      longitude: 30.0632, 
-      value: 2500 
-    },
-    { 
-      id: '2', 
-      name: 'King Faisal Hospital', 
-      latitude: -1.9403, 
-      longitude: 30.0578, 
-      value: 2200 
-    },
-    { 
-      id: '3', 
-      name: 'Butaro District Hospital', 
-      latitude: -1.3854, 
-      longitude: 30.0515, 
-      value: 1800 
-    },
-    { 
-      id: '4', 
-      name: 'Gihundwe District Hospital', 
-      latitude: -2.2158, 
-      longitude: 29.2875, 
-      value: 1600 
-    },
-    { 
-      id: '5', 
-      name: 'Ruhengeri Hospital', 
-      latitude: -1.5044, 
-      longitude: 29.6339, 
-      value: 2000 
-    },
-    { 
-      id: '6', 
-      name: 'Kibungo District Hospital', 
-      latitude: -2.1392, 
-      longitude: 30.5424, 
-      value: 1700 
-    },
-    { 
-      id: '7', 
-      name: 'Muhima District Hospital', 
-      latitude: -1.9417, 
-      longitude: 30.0619, 
-      value: 1900 
-    }
-  ];
+  
+  // District Map States
+  const [districts, setDistricts] = useState<ProcessedDistrict[]>([]);
+  const [valueMap, setValueMap] = useState<Map<string, string>>(new Map());
+  const [legendType, setLegendType] = useState<string>("auto"); 
+  const [selectedLegendSet, setSelectedLegendSet] = useState<Legend>(sampleLegends[0]);
+  const [autoLegend, setAutoLegend] = useState<LegendClass[]>([]);
 
   const centerPosition: [number, number] = [-1.9403, 30.0578]; 
+
+  // Effects and functions from DistrictMap
+  React.useEffect(() => {
+    console.log({
+      geoFeaturesData, analyticsMapData, metaMapData
+    });
+    
+    // Check if all required data is available
+    if (!geoFeaturesData || !Array.isArray(geoFeaturesData) || geoFeaturesData.length === 0) {
+      console.log("geoFeaturesData is not ready yet");
+      return;
+    }
+    
+    if (!analyticsMapData || !analyticsMapData.rows || !Array.isArray(analyticsMapData.rows)) {
+      console.log("analyticsMapData is not ready yet");
+      return;
+    }
+    
+    if (!metaMapData) {
+      console.log("metaMapData is not ready yet");
+      return;
+    }
+    
+    // Only proceed if we have all the data
+    try {
+      // Create a map to store values by district ID or other identifier
+      const dataValues = new Map<string, string>();
+      
+      // Process analytics rows
+      analyticsMapData.rows.forEach(row => {
+        if (row && row.length >= 3) {
+          const identifier = row[1]; // This might be districtId, period, or some other identifier
+          const value = row[2];
+          dataValues.set(identifier, value);
+        }
+      });
+      
+      // Store the value map for later use
+      setValueMap(dataValues);
+      
+      const processedDistricts = geoFeaturesData.map(district => {
+        // Safety check for district object
+        if (!district || !district.co || !district.id || !district.na) {
+          return null;
+        }
+        
+        // Parse the coordinates string to GeoJSON format
+        const coordinates = parseCoordinates(district.co);
+        
+        // For your current data, we have just one value
+        // In a more complex scenario, you would look up the value based on district ID
+        let value = null;
+        if (analyticsMapData.rows.length === 1 && analyticsMapData.rows[0] && analyticsMapData.rows[0][2]) {
+          value = parseFloat(analyticsMapData.rows[0][2]);
+        } else {
+          const districtValue = dataValues.get(district.id);
+          value = districtValue ? parseFloat(districtValue) : null;
+        }
+        
+        return {
+          id: district.id,
+          name: district.na,
+          value: value,
+          coordinates: coordinates,
+          code: district.code || "",
+          region: district.pn || ""
+        };
+      }).filter(Boolean) as ProcessedDistrict[]; // Filter out any nulls
+      
+      setDistricts(processedDistricts);
+      
+      // Generate automatic legend only if we have valid districts with values
+      if (processedDistricts.length > 0) {
+        generateAutoLegend(processedDistricts);
+      }
+    } catch (error) {
+      console.error("Error processing map data:", error);
+    }
+  }, [geoFeaturesData, analyticsMapData, metaMapData]);
+  
+  // Generate automatic legend based on data values
+  const generateAutoLegend = (districts: ProcessedDistrict[]) => {
+    const values = districts
+      .map(d => d.value)
+      .filter((value): value is number => value !== null);
+    
+    if (values.length === 0) return;
+    
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const range = max - min;
+    
+    // Generate a 5-class legend
+    const step = range / 5;
+    const autoLegend: LegendClass[] = [
+      {
+        name: "Very Low",
+        startValue: min,
+        endValue: min + step,
+        color: "#EDF8FB"
+      },
+      {
+        name: "Low",
+        startValue: min + step,
+        endValue: min + 2 * step,
+        color: "#B3CDE3"
+      },
+      {
+        name: "Medium",
+        startValue: min + 2 * step,
+        endValue: min + 3 * step,
+        color: "#8C96C6"
+      },
+      {
+        name: "High",
+        startValue: min + 3 * step,
+        endValue: min + 4 * step,
+        color: "#8856A7"
+      },
+      {
+        name: "Very High",
+        startValue: min + 4 * step,
+        endValue: max,
+        color: "#810F7C"
+      }
+    ];
+    
+    setAutoLegend(autoLegend);
+  };
+  
+  // Function to parse coordinates string to proper GeoJSON format
+  const parseCoordinates = (coordinatesString: string): number[][][] => {
+    try {
+      // Clean up the coordinate string which might have extra brackets
+      const cleanString = coordinatesString
+        .replace(/\]\]\]\]$/, ']]]')  // Remove any extra closing brackets
+        .replace(/\[\[\[/, '[[[');    // Ensure proper opening format
+      
+      return JSON.parse(cleanString);
+    } catch (e) {
+      console.error('Error parsing coordinates:', e, coordinatesString);
+      return [[[0, 0]]]; // Return a default in case of parsing error
+    }
+  };
+  
+  // Get color for a value based on the active legend
+  const getColorForValue = (value: number | null) => {
+    if (value === null) return "#FFFFFF"; // Default color for no data
+    
+    // Get the active legend classes
+    const legendClasses = legendType === "auto" ? autoLegend : selectedLegendSet.legends;
+    
+    // Find the matching class
+    for (const legendClass of legendClasses) {
+      if (value >= legendClass.startValue && value <= legendClass.endValue) {
+        return legendClass.color;
+      }
+    }
+    
+    return "#FFFFFF"; // Default color if no matching class
+  };
+  
+  // Style function for GeoJSON based on data values
+  const getStyle = (feature: any) => {
+    const value = feature.properties.value;
+    const color = getColorForValue(value);
+    
+    return {
+      fillColor: color,
+      weight: 1,
+      opacity: 1,
+      color: 'white',
+      fillOpacity: 0.7
+    };
+  };
+  
+  // Convert our processed data to GeoJSON format
+  const createGeoJSON = () => {
+    return {
+      type: 'FeatureCollection',
+      features: districts.map(district => ({
+        type: 'Feature',
+        properties: {
+          id: district.id,
+          name: district.name,
+          value: district.value,
+          code: district.code,
+          region: district.region
+        },
+        geometry: {
+          type: 'Polygon',
+          coordinates: district.coordinates
+        }
+      }))
+    };
+  };
+  
+  // Popup content for when districts are clicked
+  const onEachFeature = (feature: any, layer: any) => {
+    if (!analyticsMapData || !analyticsMapData.rows) return;
+    
+    const props = feature.properties;
+    
+    // For your current data, we have just one value, so we'll use that
+    // In a more complex scenario, you would look up the value based on district ID
+    let displayValue;
+    
+    // Check if we have multiple rows or just one
+    if (analyticsMapData.rows.length === 1) {
+      // If we have just one row, use that value for all districts
+      displayValue = analyticsMapData.rows[0] && analyticsMapData.rows[0][2] ? analyticsMapData.rows[0][2] : 'No data';
+    } else {
+      // If we have multiple rows, try to match by district ID or other identifier
+      displayValue = valueMap.get(props.id) || 'No data';
+    }
+    
+    layer.bindPopup(`
+      <strong>${props.name}</strong><br/>
+      Code: ${props.code}<br/>
+      Region: ${props.region}<br/>
+      Value: ${displayValue || 'No data'}
+    `);
+  };
+  
+  // Legend control component
+  const Legend = () => {
+    // Get active legend classes
+    const legendClasses = legendType === "auto" ? autoLegend : selectedLegendSet.legends;
+    
+    return (
+      <div style={{
+        padding: '10px',
+        backgroundColor: 'white',
+        boxShadow: '0 0 15px rgba(0,0,0,0.2)',
+        borderRadius: '5px',
+        position: 'absolute',
+        bottom: '20px',
+        right: '10px',
+        zIndex: 1000
+      }}>
+        <div style={{ marginBottom: '10px', fontWeight: 'bold' }}>
+          {legendType === "auto" ? "Automatic Legend" : selectedLegendSet.name}
+        </div>
+        {legendClasses.map((item, index) => (
+          <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
+            <div style={{
+              width: '20px',
+              height: '20px',
+              backgroundColor: item.color,
+              marginRight: '5px',
+              border: '1px solid #ccc'
+            }}></div>
+            <span>{item.name}: {item.startValue.toFixed(1)} - {item.endValue.toFixed(1)}</span>
+          </div>
+        ))}
+      </div>
+    );
+  };
+  
+  // Legend type and set selectors
+  const LegendControls = () => {
+    return (
+      <div style={{ marginBottom: '10px' }}>
+        <div style={{ marginBottom: '10px' }}>
+          <label style={{ marginRight: '10px' }}>
+            <input
+              type="radio"
+              value="auto"
+              checked={legendType === "auto"}
+              onChange={() => setLegendType("auto")}
+            />
+            Automatic Legend
+          </label>
+          <label>
+            <input
+              type="radio"
+              value="dhis2"
+              checked={legendType === "dhis2"}
+              onChange={() => setLegendType("dhis2")}
+            />
+            DHIS2 Legend
+          </label>
+        </div>
+        
+        {legendType === "dhis2" && (
+          <select
+            value={selectedLegendSet.name}
+            onChange={(e) => {
+              const selected = sampleLegends.find(legend => legend.name === e.target.value);
+              if (selected) setSelectedLegendSet(selected);
+            }}
+            style={{ padding: '5px', width: '200px' }}
+          >
+            {sampleLegends.map((legend, index) => (
+              <option key={index} value={legend.name}>{legend.name}</option>
+            ))}
+          </select>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="flex h-screen">
@@ -91,30 +438,36 @@ const MapBody: React.FC = () => {
 
       {/* Map Container */}
       <div className="flex-grow h-full">
-        <MapContainer 
-          center={centerPosition} 
-          zoom={7} 
-          className="h-full w-full"
-        >
-          <TileLayer
-            url={BASEMAPS[currentBasemap].url}
-            attribution={BASEMAPS[currentBasemap].attribution}
-          />
-          
-          {mapData.map((location) => (
-            <Marker 
-              key={location.id}
-              position={[location.latitude, location.longitude]}
+        <LegendControls />
+        <div className="h-full w-full relative">
+          {districts.length > 0 ? (
+            <MapContainer 
+              center={centerPosition} 
+              zoom={7} 
+              className="h-full w-full"
             >
-              <Popup>
-                <div>
-                  <h3>{location.name}</h3>
-                  <p>Value: {location.value}</p>
-                </div>
-              </Popup>
-            </Marker>
-          ))}
-        </MapContainer>
+              {/* Base Layer from MapBody */}
+              <TileLayer
+                url={BASEMAPS[currentBasemap].url}
+                attribution={BASEMAPS[currentBasemap].attribution}
+              />
+              
+              {/* District Layer from DistrictMap */}
+              <GeoJSON 
+                data={createGeoJSON()}
+                style={getStyle}
+                onEachFeature={onEachFeature}
+              />
+            </MapContainer>
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <p>Loading map data...</p>
+            </div>
+          )}
+          
+          {/* Legend */}
+          {districts.length > 0 && <Legend />}
+        </div>
       </div>
     </div>
   );

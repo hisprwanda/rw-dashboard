@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import  {geoFeaturesData, analyticsMapData, metaMapData}  from "../constants"
 // Fix Leaflet icon issues
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -107,7 +106,7 @@ interface Legend {
   legends: LegendClass[];
 }
 
-const DistrictMap = () => {
+const DistrictMap = ({geoFeaturesData, analyticsMapData, metaMapData}:{geoFeaturesData:any, analyticsMapData:any, metaMapData:any}) => {
   const [districts, setDistricts] = useState<ProcessedDistrict[]>([]);
   const [valueMap, setValueMap] = useState<Map<string, string>>(new Map());
   const [legendType, setLegendType] = useState<string>("auto"); 
