@@ -1,4 +1,3 @@
-import {geoFeaturesData, analyticsMapData, metaMapData} from "../constants" 
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -114,34 +113,59 @@ const DistrictMap = () => {
   const [legendType, setLegendType] = useState<string>("auto"); 
   const [selectedLegendSet, setSelectedLegendSet] = useState<Legend>(sampleLegends[0]);
   const [autoLegend, setAutoLegend] = useState<LegendClass[]>([]);
-  const {geoFeaturesData,analyticsMapData,metaMapData} = useAuthorities()
+  const {geoFeaturesData, analyticsMapData, metaMapData} = useAuthorities();
+  
   useEffect(() => {
     console.log({
         geoFeaturesData,analyticsMapData,metaMapData
-    })
-    // Process the data to join geometry with analytics
-    if (geoFeaturesData && analyticsMapData && metaMapData) {
+    });
+    
+    // Check if all required data is available
+    if (!geoFeaturesData || !Array.isArray(geoFeaturesData) || geoFeaturesData.length === 0) {
+      console.log("geoFeaturesData is not ready yet");
+      return;
+    }
+    
+    if (!analyticsMapData || !analyticsMapData.rows || !Array.isArray(analyticsMapData.rows)) {
+      console.log("analyticsMapData is not ready yet");
+      return;
+    }
+    
+    if (!metaMapData) {
+      console.log("metaMapData is not ready yet");
+      return;
+    }
+    
+    // Only proceed if we have all the data
+    try {
       // Create a map to store values by district ID or other identifier
       const dataValues = new Map<string, string>();
       
       // Process analytics rows
-      analyticsMapData.rows?.forEach(row => {
-        const identifier = row[1]; // This might be districtId, period, or some other identifier
-        const value = row[2];
-        dataValues.set(identifier, value);
+      analyticsMapData.rows.forEach(row => {
+        if (row && row.length >= 3) {
+          const identifier = row[1]; // This might be districtId, period, or some other identifier
+          const value = row[2];
+          dataValues.set(identifier, value);
+        }
       });
       
       // Store the value map for later use
       setValueMap(dataValues);
       
       const processedDistricts = geoFeaturesData.map(district => {
+        // Safety check for district object
+        if (!district || !district.co || !district.id || !district.na) {
+          return null;
+        }
+        
         // Parse the coordinates string to GeoJSON format
         const coordinates = parseCoordinates(district.co);
         
         // For your current data, we have just one value
         // In a more complex scenario, you would look up the value based on district ID
         let value = null;
-        if (analyticsMapData.rows.length === 1) {
+        if (analyticsMapData.rows.length === 1 && analyticsMapData.rows[0] && analyticsMapData.rows[0][2]) {
           value = parseFloat(analyticsMapData.rows[0][2]);
         } else {
           const districtValue = dataValues.get(district.id);
@@ -153,15 +177,19 @@ const DistrictMap = () => {
           name: district.na,
           value: value,
           coordinates: coordinates,
-          code: district.code,
-          region: district.pn
+          code: district.code || "",
+          region: district.pn || ""
         };
-      });
+      }).filter(Boolean) as ProcessedDistrict[]; // Filter out any nulls
       
       setDistricts(processedDistricts);
       
-      // Generate automatic legend
-      generateAutoLegend(processedDistricts);
+      // Generate automatic legend only if we have valid districts with values
+      if (processedDistricts.length > 0) {
+        generateAutoLegend(processedDistricts);
+      }
+    } catch (error) {
+      console.error("Error processing map data:", error);
     }
   }, [geoFeaturesData, analyticsMapData, metaMapData]);
   
@@ -284,6 +312,8 @@ const DistrictMap = () => {
   
   // Popup content for when districts are clicked
   const onEachFeature = (feature: any, layer: any) => {
+    if (!analyticsMapData || !analyticsMapData.rows) return;
+    
     const props = feature.properties;
     
     // For your current data, we have just one value, so we'll use that
@@ -293,7 +323,7 @@ const DistrictMap = () => {
     // Check if we have multiple rows or just one
     if (analyticsMapData.rows.length === 1) {
       // If we have just one row, use that value for all districts
-      displayValue = analyticsMapData.rows[0][2];
+      displayValue = analyticsMapData.rows[0] && analyticsMapData.rows[0][2] ? analyticsMapData.rows[0][2] : 'No data';
     } else {
       // If we have multiple rows, try to match by district ID or other identifier
       displayValue = valueMap.get(props.id) || 'No data';
@@ -387,7 +417,32 @@ const DistrictMap = () => {
   
   return (
     <div>
-   hello
+      <LegendControls />
+      <div style={{ height: '600px', width: '100%', position: 'relative' }}>
+        {districts.length > 0 ? (
+          <>
+            <MapContainer 
+              center={[-1.9, 30.0]} // Center on Rwanda
+              zoom={8} 
+              style={{ height: '100%', width: '100%' }}
+            >
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              />
+              
+              <GeoJSON 
+                data={createGeoJSON()} 
+                style={getStyle}
+                onEachFeature={onEachFeature}
+              />
+            </MapContainer>
+            <Legend />
+          </>
+        ) : (
+          <div>Loading map data...</div>
+        )}
+      </div>
     </div>
   );
 };
