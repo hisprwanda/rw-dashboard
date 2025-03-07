@@ -7,6 +7,7 @@ import L from 'leaflet';
 // Fix Leaflet icon issues
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+import { useAuthorities } from "../../../context/AuthContext";
 
 // Fix the default icon issue
 let DefaultIcon = L.icon({
@@ -113,15 +114,18 @@ const DistrictMap = () => {
   const [legendType, setLegendType] = useState<string>("auto"); 
   const [selectedLegendSet, setSelectedLegendSet] = useState<Legend>(sampleLegends[0]);
   const [autoLegend, setAutoLegend] = useState<LegendClass[]>([]);
-  
+  const {geoFeaturesData,analyticsMapData,metaMapData} = useAuthorities()
   useEffect(() => {
+    console.log({
+        geoFeaturesData,analyticsMapData,metaMapData
+    })
     // Process the data to join geometry with analytics
     if (geoFeaturesData && analyticsMapData && metaMapData) {
       // Create a map to store values by district ID or other identifier
       const dataValues = new Map<string, string>();
       
       // Process analytics rows
-      analyticsMapData.rows.forEach(row => {
+      analyticsMapData.rows?.forEach(row => {
         const identifier = row[1]; // This might be districtId, period, or some other identifier
         const value = row[2];
         dataValues.set(identifier, value);
@@ -383,32 +387,7 @@ const DistrictMap = () => {
   
   return (
     <div>
-      <LegendControls />
-      <div style={{ height: '600px', width: '100%', position: 'relative' }}>
-        {districts.length > 0 ? (
-          <>
-            <MapContainer 
-              center={[-1.9, 30.0]} // Center on Rwanda
-              zoom={8} 
-              style={{ height: '100%', width: '100%' }}
-            >
-              <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              />
-              
-              <GeoJSON 
-                data={createGeoJSON()} 
-                style={getStyle}
-                onEachFeature={onEachFeature}
-              />
-            </MapContainer>
-            <Legend />
-          </>
-        ) : (
-          <div>Loading map data...</div>
-        )}
-      </div>
+   hello
     </div>
   );
 };
