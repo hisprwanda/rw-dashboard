@@ -1,6 +1,5 @@
-//import  {geoFeaturesData, analyticsMapData, metaMapData} from "../constants"
-import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer } from 'react-leaflet';
+import React, { useState, useEffect, useRef } from 'react';
+import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import MapSidebar from './MapSideBar'; 
@@ -10,9 +9,6 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import { BasemapType } from '../../../types/maps';
 import { BASEMAPS } from '../constants';
 import { useAuthorities } from '../../../context/AuthContext';
-
-// Import components for district map
-import { GeoJSON } from 'react-leaflet';
 
 let DefaultIcon = L.icon({
   iconUrl: icon,
@@ -112,6 +108,50 @@ interface Legend {
   legends: LegendClass[];
 }
 
+// MapUpdater component to handle zooming to data areas
+// This component uses the useMap hook to access the map instance
+const MapUpdater = ({ districts, hasData }) => {
+  const map = useMap();
+  
+  useEffect(() => {
+    if (hasData && districts.length > 0) {
+      // Create a GeoJSON layer with all districts that have data
+      const districtsWithData = districts.filter(d => d.value !== null);
+      
+      if (districtsWithData.length > 0) {
+        // Create a bounds object to calculate the area containing all districts with data
+        const geoJsonLayer = L.geoJSON({
+          type: 'FeatureCollection',
+          features: districtsWithData.map(district => ({
+            type: 'Feature',
+            properties: {},
+            geometry: {
+              type: 'Polygon',
+              coordinates: district.coordinates
+            }
+          }))
+        });
+        
+        // Get the bounds of all districts with data
+        const bounds = geoJsonLayer.getBounds();
+        
+        // Add padding around the bounds (10% of the map size)
+        map.fitBounds(bounds, {
+          padding: [50, 50],
+          maxZoom: 10, // Limit max zoom level to avoid zooming too close
+          animate: true,
+          duration: 1 // Animation duration in seconds
+        });
+        
+        // Clean up the temporary layer
+        geoJsonLayer.remove();
+      }
+    }
+  }, [map, districts, hasData]);
+  
+  return null;
+};
+
 // Main Map Component
 const MapBody: React.FC = () => {
   const {geoFeaturesData, analyticsMapData, metaMapData} = useAuthorities();
@@ -128,7 +168,8 @@ const MapBody: React.FC = () => {
   // Default center for Rwanda - will be updated based on data
   const [centerPosition, setCenterPosition] = useState<[number, number]>([-1.9403, 30.0578]);
   const [dataProcessed, setDataProcessed] = useState<boolean>(false);
-
+  const [hasDataToDisplay, setHasDataToDisplay] = useState<boolean>(false);
+  
   // Calculate center position from district coordinates
   const calculateMapCenter = (districts: ProcessedDistrict[]): [number, number] => {
     if (!districts || districts.length === 0) {
@@ -237,6 +278,10 @@ const MapBody: React.FC = () => {
       // Calculate and set map center position based on districts
       const center = calculateMapCenter(processedDistricts);
       setCenterPosition(center);
+      
+      // Check if we have any districts with actual data values
+      const districtsWithData = processedDistricts.filter(d => d.value !== null);
+      setHasDataToDisplay(districtsWithData.length > 0);
       
       // Generate automatic legend only if we have valid districts with values
       if (processedDistricts.length > 0) {
@@ -504,6 +549,9 @@ const MapBody: React.FC = () => {
                 onEachFeature={onEachFeature}
               />
             )}
+            
+            {/* MapUpdater component to handle auto zooming to data areas */}
+            <MapUpdater districts={districts} hasData={hasDataToDisplay} />
           </MapContainer>
           
           {/* Legend only if we have district data */}
