@@ -1,4 +1,4 @@
-import {geoData, analyticsData, metaData} from "../constants" 
+import {geoFeaturesData, analyticsMapData, metaMapData} from "../constants" 
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -27,6 +27,12 @@ const sampleLegends = [
         "startValue": 0,
         "endValue": 500,
         "color": "#FFFFB2"
+      },
+      {
+        "name": "chris",
+        "startValue": 75.3, 
+        "endValue": 99.5,
+        "color": "#ff0000"
       },
       {
         "name": "Medium",
@@ -79,41 +85,6 @@ const sampleLegends = [
   }
 ];
 
-// Define interfaces for your data
-interface GeoDistrict {
-  id: string;
-  code: string;
-  na: string;
-  pn: string;
-  co: string;
-  [key: string]: any;
-}
-
-interface AnalyticsData {
-  headers: any[];
-  metaData: any;
-  rows: any[][];
-  height: number;
-  width: number;
-  [key: string]: any;
-}
-
-interface MetaData {
-  metaData: {
-    items: {
-      [key: string]: {
-        uid: string;
-        name: string;
-        code?: string;
-        [key: string]: any;
-      }
-    },
-    dimensions: {
-      [key: string]: string[];
-    }
-  },
-  [key: string]: any;
-}
 
 interface ProcessedDistrict {
   id: string;
@@ -139,18 +110,18 @@ interface Legend {
 const DistrictMap = () => {
   const [districts, setDistricts] = useState<ProcessedDistrict[]>([]);
   const [valueMap, setValueMap] = useState<Map<string, string>>(new Map());
-  const [legendType, setLegendType] = useState<string>("auto"); // "auto" or "dhis2"
+  const [legendType, setLegendType] = useState<string>("auto"); 
   const [selectedLegendSet, setSelectedLegendSet] = useState<Legend>(sampleLegends[0]);
   const [autoLegend, setAutoLegend] = useState<LegendClass[]>([]);
   
   useEffect(() => {
     // Process the data to join geometry with analytics
-    if (geoData && analyticsData && metaData) {
+    if (geoFeaturesData && analyticsMapData && metaMapData) {
       // Create a map to store values by district ID or other identifier
       const dataValues = new Map<string, string>();
       
       // Process analytics rows
-      analyticsData.rows.forEach(row => {
+      analyticsMapData.rows.forEach(row => {
         const identifier = row[1]; // This might be districtId, period, or some other identifier
         const value = row[2];
         dataValues.set(identifier, value);
@@ -159,15 +130,15 @@ const DistrictMap = () => {
       // Store the value map for later use
       setValueMap(dataValues);
       
-      const processedDistricts = geoData.map(district => {
+      const processedDistricts = geoFeaturesData.map(district => {
         // Parse the coordinates string to GeoJSON format
         const coordinates = parseCoordinates(district.co);
         
         // For your current data, we have just one value
         // In a more complex scenario, you would look up the value based on district ID
         let value = null;
-        if (analyticsData.rows.length === 1) {
-          value = parseFloat(analyticsData.rows[0][2]);
+        if (analyticsMapData.rows.length === 1) {
+          value = parseFloat(analyticsMapData.rows[0][2]);
         } else {
           const districtValue = dataValues.get(district.id);
           value = districtValue ? parseFloat(districtValue) : null;
@@ -188,7 +159,7 @@ const DistrictMap = () => {
       // Generate automatic legend
       generateAutoLegend(processedDistricts);
     }
-  }, [geoData, analyticsData, metaData]);
+  }, [geoFeaturesData, analyticsMapData, metaMapData]);
   
   // Generate automatic legend based on data values
   const generateAutoLegend = (districts: ProcessedDistrict[]) => {
@@ -316,9 +287,9 @@ const DistrictMap = () => {
     let displayValue;
     
     // Check if we have multiple rows or just one
-    if (analyticsData.rows.length === 1) {
+    if (analyticsMapData.rows.length === 1) {
       // If we have just one row, use that value for all districts
-      displayValue = analyticsData.rows[0][2];
+      displayValue = analyticsMapData.rows[0][2];
     } else {
       // If we have multiple rows, try to match by district ID or other identifier
       displayValue = valueMap.get(props.id) || 'No data';

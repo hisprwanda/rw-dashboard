@@ -6,7 +6,7 @@ const MapHomepage: React.FC = () => {
   return (
     <div className="h-screen">
       <MapBody/>
-     
+     <DistrictMap/>
 
   
     </div>

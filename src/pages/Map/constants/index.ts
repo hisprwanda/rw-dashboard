@@ -19,7 +19,7 @@ export const BASEMAPS = {
 };
 
 
-export const geoData = [
+export const geoFeaturesData = [
   {
       "id": "YuQRtpLP10I",
       "code": "OU_539",
@@ -2149,7 +2149,7 @@ export const geoData = [
       "dimensions": {}
   }
 ]
-export const analyticsData = {
+export const analyticsMapData = {
   "headers": [
       {
           "name": "dx",
@@ -2854,7 +2854,7 @@ export const analyticsData = {
   "width": 3,
   "headerWidth": 3
 }
-export const metaData = {
+export const metaMapData = {
   "headers": [],
   "metaData": {
       "items": {
