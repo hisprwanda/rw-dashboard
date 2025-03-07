@@ -1,5 +1,4 @@
-
-import {geoData,analyticsData,metaData} from "../constants" 
+import {geoData, analyticsData, metaData} from "../constants" 
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -57,7 +56,7 @@ interface MetaData {
 interface ProcessedDistrict {
   id: string;
   name: string;
-  value: number;
+  value: number | null;
   coordinates: number[][][];
   code: string;
   region: string;
@@ -71,26 +70,35 @@ interface DistrictMapProps {
 
 const DistrictMap = () => {
   const [districts, setDistricts] = useState<ProcessedDistrict[]>([]);
+  const [valueMap, setValueMap] = useState<Map<string, string>>(new Map());
   
   useEffect(() => {
     // Process the data to join geometry with analytics
     if (geoData && analyticsData && metaData) {
+      // Create a map to store values by district ID or other identifier
+      const dataValues = new Map<string, string>();
+      
+      // Process analytics rows
+      // This is a simplistic approach - you'll need to adjust based on your data structure
+      analyticsData.rows.forEach(row => {
+        // Assuming row structure is [dataElementId, districtId/ouId, value]
+        // Or for your current example [dataElementId, period, value]
+        const identifier = row[1]; // This might be districtId, period, or some other identifier
+        const value = row[2];
+        dataValues.set(identifier, value);
+      });
+      
+      // Store the value map for later use
+      setValueMap(dataValues);
+      
       const processedDistricts = geoData.map(district => {
-        // Find data value for this district
-        // Assuming the analytics rows contain: [dataElementId, period, value]
-        const dataRow = analyticsData.rows.find(row => 
-          row[0] === 'GKqY2oyD2JB' && row[1] === '2024'
-        );
-        
-        const value = dataRow ? parseFloat(dataRow[2]) : 0;
-        
         // Parse the coordinates string to GeoJSON format
         const coordinates = parseCoordinates(district.co);
         
         return {
           id: district.id,
           name: district.na,
-          value: value,
+          value: null, // Value will be determined in onEachFeature
           coordinates: coordinates,
           code: district.code,
           region: district.pn
@@ -159,11 +167,26 @@ const DistrictMap = () => {
   // Popup content for when districts are clicked
   const onEachFeature = (feature: any, layer: any) => {
     const props = feature.properties;
+    
+    // For your current data, we have just one value, so we'll use that
+    // In a more complex scenario, you would look up the value based on district ID
+    let displayValue;
+    
+    // Check if we have multiple rows or just one
+    if (analyticsData.rows.length === 1) {
+      // If we have just one row, use that value for all districts
+      displayValue = analyticsData.rows[0][2];
+    } else {
+      // If we have multiple rows, try to match by district ID or other identifier
+      // This would need to be adjusted based on your actual data structure
+      displayValue = valueMap.get(props.id) || 'No data';
+    }
+    
     layer.bindPopup(`
       <strong>${props.name}</strong><br/>
       Code: ${props.code}<br/>
       Region: ${props.region}<br/>
-      Value: ${props.value || 'No data'}
+      Value: ${displayValue || 'No data'}
     `);
   };
   
