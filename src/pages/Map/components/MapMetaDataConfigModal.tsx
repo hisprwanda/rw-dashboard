@@ -106,7 +106,7 @@ export function MapMetaDataConfigModal({
      e.preventDefault();
      
      const GeoFeaturesResult = await fetchGeoFeatures()
-   const analyticsResult= await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions), selectedDataSourceDetails);
+   const analyticsResult= await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions), selectedDataSourceDetails,true);
 
     console.log("hello analyticsResult",analyticsResult)
    // onOpenChange(false);

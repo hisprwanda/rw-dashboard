@@ -190,7 +190,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // testing
   const engine = useDataEngine();
-  const fetchAnalyticsData = async (dimension: any,instance:DataSourceFormFields ) => {
+  const fetchAnalyticsData = async (dimension: any,instance:DataSourceFormFields,isBeingAnalyticsApiUsedInMap?:boolean ) => {
     console.log("here is the selected instance",instance)
     console.log("here is the selected dimension",dimension)
     const orgUnitIds = selectedOrganizationUnits?.map((unit: any) => unit).join(';');
@@ -211,12 +211,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setFetchAnalyticsDataError(null);
 
  
-      const queryParams = {
+      const queryParams = isBeingAnalyticsApiUsedInMap ?{
+        dimension,
+        filter,
+        displayProperty: 'NAME',
+        skipData: false,
+        skipMeta: true
+      } : {
         dimension,
         filter,
         displayProperty: 'NAME',
         includeNumDen: true,
-      };
+      } 
 
       
 
