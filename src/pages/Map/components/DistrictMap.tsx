@@ -17,6 +17,68 @@ let DefaultIcon = L.icon({
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 
+// Sample DHIS2 Legends
+const sampleLegends = [
+  {
+    "name": "legend 1",
+    "legends": [
+      {
+        "name": "Low",
+        "startValue": 0,
+        "endValue": 500,
+        "color": "#FFFFB2"
+      },
+      {
+        "name": "Medium",
+        "startValue": 500,
+        "endValue": 800,
+        "color": "#FED976"
+      },
+      {
+        "name": "High",
+        "startValue": 800,
+        "endValue": 2000,
+        "color": "#FD8D3C"
+      }
+    ]
+  },
+  {
+    "name": "legend 2",
+    "legends": [
+      {
+        "name": "Very Low",
+        "startValue": 0,
+        "endValue": 300,
+        "color": "#EDF8FB"
+      },
+      {
+        "name": "Low",
+        "startValue": 300,
+        "endValue": 600,
+        "color": "#B2E2E2"
+      },
+      {
+        "name": "Medium",
+        "startValue": 600,
+        "endValue": 900,
+        "color": "#66C2A4"
+      },
+      {
+        "name": "High",
+        "startValue": 900,
+        "endValue": 1200,
+        "color": "#2CA25F"
+      },
+      {
+        "name": "Very High",
+        "startValue": 1200,
+        "endValue": 2000,
+        "color": "#006D2C"
+      }
+    ]
+  }
+];
+
 // Define interfaces for your data
 interface GeoDistrict {
   id: string;
@@ -62,15 +124,24 @@ interface ProcessedDistrict {
   region: string;
 }
 
-interface DistrictMapProps {
-  geoData: GeoDistrict[];
-  analyticsData: AnalyticsData;
-  metaData: MetaData;
+interface LegendClass {
+  name: string;
+  startValue: number;
+  endValue: number;
+  color: string;
+}
+
+interface Legend {
+  name: string;
+  legends: LegendClass[];
 }
 
 const DistrictMap = () => {
   const [districts, setDistricts] = useState<ProcessedDistrict[]>([]);
   const [valueMap, setValueMap] = useState<Map<string, string>>(new Map());
+  const [legendType, setLegendType] = useState<string>("auto"); // "auto" or "dhis2"
+  const [selectedLegendSet, setSelectedLegendSet] = useState<Legend>(sampleLegends[0]);
+  const [autoLegend, setAutoLegend] = useState<LegendClass[]>([]);
   
   useEffect(() => {
     // Process the data to join geometry with analytics
@@ -79,10 +150,7 @@ const DistrictMap = () => {
       const dataValues = new Map<string, string>();
       
       // Process analytics rows
-      // This is a simplistic approach - you'll need to adjust based on your data structure
       analyticsData.rows.forEach(row => {
-        // Assuming row structure is [dataElementId, districtId/ouId, value]
-        // Or for your current example [dataElementId, period, value]
         const identifier = row[1]; // This might be districtId, period, or some other identifier
         const value = row[2];
         dataValues.set(identifier, value);
@@ -95,10 +163,20 @@ const DistrictMap = () => {
         // Parse the coordinates string to GeoJSON format
         const coordinates = parseCoordinates(district.co);
         
+        // For your current data, we have just one value
+        // In a more complex scenario, you would look up the value based on district ID
+        let value = null;
+        if (analyticsData.rows.length === 1) {
+          value = parseFloat(analyticsData.rows[0][2]);
+        } else {
+          const districtValue = dataValues.get(district.id);
+          value = districtValue ? parseFloat(districtValue) : null;
+        }
+        
         return {
           id: district.id,
           name: district.na,
-          value: null, // Value will be determined in onEachFeature
+          value: value,
           coordinates: coordinates,
           code: district.code,
           region: district.pn
@@ -106,8 +184,61 @@ const DistrictMap = () => {
       });
       
       setDistricts(processedDistricts);
+      
+      // Generate automatic legend
+      generateAutoLegend(processedDistricts);
     }
   }, [geoData, analyticsData, metaData]);
+  
+  // Generate automatic legend based on data values
+  const generateAutoLegend = (districts: ProcessedDistrict[]) => {
+    const values = districts
+      .map(d => d.value)
+      .filter((value): value is number => value !== null);
+    
+    if (values.length === 0) return;
+    
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const range = max - min;
+    
+    // Generate a 5-class legend
+    const step = range / 5;
+    const autoLegend: LegendClass[] = [
+      {
+        name: "Very Low",
+        startValue: min,
+        endValue: min + step,
+        color: "#EDF8FB"
+      },
+      {
+        name: "Low",
+        startValue: min + step,
+        endValue: min + 2 * step,
+        color: "#B3CDE3"
+      },
+      {
+        name: "Medium",
+        startValue: min + 2 * step,
+        endValue: min + 3 * step,
+        color: "#8C96C6"
+      },
+      {
+        name: "High",
+        startValue: min + 3 * step,
+        endValue: min + 4 * step,
+        color: "#8856A7"
+      },
+      {
+        name: "Very High",
+        startValue: min + 4 * step,
+        endValue: max,
+        color: "#810F7C"
+      }
+    ];
+    
+    setAutoLegend(autoLegend);
+  };
   
   // Function to parse coordinates string to proper GeoJSON format
   const parseCoordinates = (coordinatesString: string): number[][][] => {
@@ -124,15 +255,27 @@ const DistrictMap = () => {
     }
   };
   
+  // Get color for a value based on the active legend
+  const getColorForValue = (value: number | null) => {
+    if (value === null) return "#FFFFFF"; // Default color for no data
+    
+    // Get the active legend classes
+    const legendClasses = legendType === "auto" ? autoLegend : selectedLegendSet.legends;
+    
+    // Find the matching class
+    for (const legendClass of legendClasses) {
+      if (value >= legendClass.startValue && value <= legendClass.endValue) {
+        return legendClass.color;
+      }
+    }
+    
+    return "#FFFFFF"; // Default color if no matching class
+  };
+  
   // Style function for GeoJSON based on data values
   const getStyle = (feature: any) => {
-    const value = feature.properties.value || 0;
-    
-    // Create a color scale based on value
-    let color = '#FFFFFF'; // Default
-    if (value > 800) color = '#FF0000'; // High values
-    else if (value > 500) color = '#FFA500'; // Medium values
-    else if (value > 0) color = '#FFFF00'; // Low values
+    const value = feature.properties.value;
+    const color = getColorForValue(value);
     
     return {
       fillColor: color,
@@ -178,7 +321,6 @@ const DistrictMap = () => {
       displayValue = analyticsData.rows[0][2];
     } else {
       // If we have multiple rows, try to match by district ID or other identifier
-      // This would need to be adjusted based on your actual data structure
       displayValue = valueMap.get(props.id) || 'No data';
     }
     
@@ -190,28 +332,112 @@ const DistrictMap = () => {
     `);
   };
   
+  // Legend control component
+  const Legend = () => {
+    // Get active legend classes
+    const legendClasses = legendType === "auto" ? autoLegend : selectedLegendSet.legends;
+    
+    return (
+      <div style={{
+        padding: '10px',
+        backgroundColor: 'white',
+        boxShadow: '0 0 15px rgba(0,0,0,0.2)',
+        borderRadius: '5px',
+        position: 'absolute',
+        bottom: '20px',
+        right: '10px',
+        zIndex: 1000
+      }}>
+        <div style={{ marginBottom: '10px', fontWeight: 'bold' }}>
+          {legendType === "auto" ? "Automatic Legend" : selectedLegendSet.name}
+        </div>
+        {legendClasses.map((item, index) => (
+          <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
+            <div style={{
+              width: '20px',
+              height: '20px',
+              backgroundColor: item.color,
+              marginRight: '5px',
+              border: '1px solid #ccc'
+            }}></div>
+            <span>{item.name}: {item.startValue.toFixed(1)} - {item.endValue.toFixed(1)}</span>
+          </div>
+        ))}
+      </div>
+    );
+  };
+  
+  // Legend type and set selectors
+  const LegendControls = () => {
+    return (
+      <div style={{ marginBottom: '10px' }}>
+        <div style={{ marginBottom: '10px' }}>
+          <label style={{ marginRight: '10px' }}>
+            <input
+              type="radio"
+              value="auto"
+              checked={legendType === "auto"}
+              onChange={() => setLegendType("auto")}
+            />
+            Automatic Legend
+          </label>
+          <label>
+            <input
+              type="radio"
+              value="dhis2"
+              checked={legendType === "dhis2"}
+              onChange={() => setLegendType("dhis2")}
+            />
+            DHIS2 Legend
+          </label>
+        </div>
+        
+        {legendType === "dhis2" && (
+          <select
+            value={selectedLegendSet.name}
+            onChange={(e) => {
+              const selected = sampleLegends.find(legend => legend.name === e.target.value);
+              if (selected) setSelectedLegendSet(selected);
+            }}
+            style={{ padding: '5px', width: '200px' }}
+          >
+            {sampleLegends.map((legend, index) => (
+              <option key={index} value={legend.name}>{legend.name}</option>
+            ))}
+          </select>
+        )}
+      </div>
+    );
+  };
+  
   return (
-    <div style={{ height: '600px', width: '100%' }}>
-      {districts.length > 0 ? (
-        <MapContainer 
-          center={[-1.9, 30.0]} // Center on Rwanda
-          zoom={8} 
-          style={{ height: '100%', width: '100%' }}
-        >
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          />
-          
-          <GeoJSON 
-            data={createGeoJSON()} 
-            style={getStyle}
-            onEachFeature={onEachFeature}
-          />
-        </MapContainer>
-      ) : (
-        <div>Loading map data...</div>
-      )}
+    <div>
+      <LegendControls />
+      <div style={{ height: '600px', width: '100%', position: 'relative' }}>
+        {districts.length > 0 ? (
+          <>
+            <MapContainer 
+              center={[-1.9, 30.0]} // Center on Rwanda
+              zoom={8} 
+              style={{ height: '100%', width: '100%' }}
+            >
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              />
+              
+              <GeoJSON 
+                data={createGeoJSON()} 
+                style={getStyle}
+                onEachFeature={onEachFeature}
+              />
+            </MapContainer>
+            <Legend />
+          </>
+        ) : (
+          <div>Loading map data...</div>
+        )}
+      </div>
     </div>
   );
 };

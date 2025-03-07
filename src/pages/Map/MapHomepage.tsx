@@ -5,7 +5,10 @@ import DistrictMap from './components/DistrictMap'
 const MapHomepage: React.FC = () => {
   return (
     <div className="h-screen">
-      <DistrictMap />
+      <MapBody/>
+     
+
+  
     </div>
   )
 }
