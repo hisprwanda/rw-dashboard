@@ -108,8 +108,9 @@ export function MapMetaDataConfigModal({
      const GeoFeaturesResult = await fetchGeoFeatures()
    const analyticsResult= await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions), selectedDataSourceDetails,true);
 
+    console.log("hello GeoFeaturesResult",GeoFeaturesResult)
     console.log("hello analyticsResult",analyticsResult)
-   // onOpenChange(false);
+    onOpenChange(false);
   };
 
   // Different content based on active tab

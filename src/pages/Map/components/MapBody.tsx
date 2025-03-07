@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+//import  {geoFeaturesData, analyticsMapData, metaMapData} from "../constants"
+import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -9,7 +10,7 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import { BasemapType } from '../../../types/maps';
 import { BASEMAPS } from '../constants';
 import { useAuthorities } from '../../../context/AuthContext';
-import  {geoFeaturesData, analyticsMapData, metaMapData} from "../constants"
+
 // Import components for district map
 import { GeoJSON } from 'react-leaflet';
 
@@ -113,7 +114,7 @@ interface Legend {
 
 // Main Map Component
 const MapBody: React.FC = () => {
-  //const {geoFeaturesData, analyticsMapData, metaMapData} = useAuthorities();
+  const {geoFeaturesData, analyticsMapData, metaMapData} = useAuthorities();
   // State for current basemap
   const [currentBasemap, setCurrentBasemap] = useState<BasemapType>('osm-light');
   
@@ -123,23 +124,60 @@ const MapBody: React.FC = () => {
   const [legendType, setLegendType] = useState<string>("auto"); 
   const [selectedLegendSet, setSelectedLegendSet] = useState<Legend>(sampleLegends[0]);
   const [autoLegend, setAutoLegend] = useState<LegendClass[]>([]);
+  
+  // Default center for Rwanda - will be updated based on data
+  const [centerPosition, setCenterPosition] = useState<[number, number]>([-1.9403, 30.0578]);
+  const [dataProcessed, setDataProcessed] = useState<boolean>(false);
 
-  const centerPosition: [number, number] = [-1.9403, 30.0578]; 
+  // Calculate center position from district coordinates
+  const calculateMapCenter = (districts: ProcessedDistrict[]): [number, number] => {
+    if (!districts || districts.length === 0) {
+      return [-1.9403, 30.0578]; // Default center for Rwanda if no data
+    }
+    
+    let latSum = 0;
+    let lonSum = 0;
+    let pointCount = 0;
+    
+    // Sample some points from each district to calculate average
+    districts.forEach(district => {
+      if (district.coordinates && district.coordinates.length > 0) {
+        // Take a point from each polygon to avoid over-weighting large districts
+        district.coordinates.forEach(polygon => {
+          if (polygon && polygon.length > 0) {
+            // Coordinates are in [lon, lat] format in GeoJSON
+            lonSum += polygon[0][0];
+            latSum += polygon[0][1];
+            pointCount++;
+          }
+        });
+      }
+    });
+    
+    if (pointCount === 0) {
+      return [-1.9403, 30.0578]; // Default center if no valid coordinates
+    }
+    
+    return [latSum / pointCount, lonSum / pointCount];
+  };
 
   // Effects and functions from DistrictMap
-  React.useEffect(() => {
+  useEffect(() => {
     console.log({
       geoFeaturesData, analyticsMapData, metaMapData
     });
     
-    // Check if all required data is available
+    // Mark as processed even if data is incomplete or empty
+    setDataProcessed(true);
+    
+    // Check if required data is available
     if (!geoFeaturesData || !Array.isArray(geoFeaturesData) || geoFeaturesData.length === 0) {
-      console.log("geoFeaturesData is not ready yet");
+      console.log("geoFeaturesData is not ready yet or empty");
       return;
     }
     
     if (!analyticsMapData || !analyticsMapData.rows || !Array.isArray(analyticsMapData.rows)) {
-      console.log("analyticsMapData is not ready yet");
+      console.log("analyticsMapData is not ready yet or empty");
       return;
     }
     
@@ -195,6 +233,10 @@ const MapBody: React.FC = () => {
       }).filter(Boolean) as ProcessedDistrict[]; // Filter out any nulls
       
       setDistricts(processedDistricts);
+      
+      // Calculate and set map center position based on districts
+      const center = calculateMapCenter(processedDistricts);
+      setCenterPosition(center);
       
       // Generate automatic legend only if we have valid districts with values
       if (processedDistricts.length > 0) {
@@ -438,35 +480,50 @@ const MapBody: React.FC = () => {
 
       {/* Map Container */}
       <div className="flex-grow h-full">
-        <LegendControls />
+        {/* Only show legend controls if we have district data */}
+        {districts.length > 0 && <LegendControls />}
+        
         <div className="h-full w-full relative">
-          {districts.length > 0 ? (
-            <MapContainer 
-              center={centerPosition} 
-              zoom={7} 
-              className="h-full w-full"
-            >
-              {/* Base Layer from MapBody */}
-              <TileLayer
-                url={BASEMAPS[currentBasemap].url}
-                attribution={BASEMAPS[currentBasemap].attribution}
-              />
-              
-              {/* District Layer from DistrictMap */}
+          {/* Always show map with base layer */}
+          <MapContainer 
+            center={centerPosition} 
+            zoom={7} 
+            className="h-full w-full"
+          >
+            {/* Base Layer from MapBody */}
+            <TileLayer
+              url={BASEMAPS[currentBasemap].url}
+              attribution={BASEMAPS[currentBasemap].attribution}
+            />
+            
+            {/* District Layer only if we have district data */}
+            {districts.length > 0 && (
               <GeoJSON 
                 data={createGeoJSON()}
                 style={getStyle}
                 onEachFeature={onEachFeature}
               />
-            </MapContainer>
-          ) : (
-            <div className="flex items-center justify-center h-full">
-              <p>Loading map data...</p>
+            )}
+          </MapContainer>
+          
+          {/* Legend only if we have district data */}
+          {districts.length > 0 && <Legend />}
+          
+          {/* Show a subtle notification if data is processed but no districts are found */}
+          {dataProcessed && districts.length === 0 && (
+            <div style={{
+              position: 'absolute',
+              bottom: '10px',
+              left: '10px',
+              padding: '8px 12px',
+              backgroundColor: 'rgba(255, 255, 255, 0.8)',
+              borderRadius: '4px',
+              boxShadow: '0 1px 5px rgba(0,0,0,0.2)',
+              zIndex: 1000
+            }}>
+              No district data available
             </div>
           )}
-          
-          {/* Legend */}
-          {districts.length > 0 && <Legend />}
         </div>
       </div>
     </div>
