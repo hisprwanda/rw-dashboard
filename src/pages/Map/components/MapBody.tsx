@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import  {geoFeaturesData, analyticsMapData, metaMapData} from "../constants"
+import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -135,14 +136,51 @@ const MapUpdater = ({ districts, hasData }) => {
         // Get the bounds of all districts with data
         const bounds = geoJsonLayer.getBounds();
         
-        // Add padding around the bounds (10% of the map size)
+        // Calculate the bounds padding as a negative value to zoom BEYOND the bounds
+        // This creates an extremely close zoom effect
+        const negativePadding = [-50, -50]; // Negative padding to zoom beyond bounds
+        
+        // Apply an extreme zoom
         map.fitBounds(bounds, {
-          padding: [50, 50],
-          maxZoom: 10, // Limit max zoom level to avoid zooming too close
+          padding: negativePadding,
+          maxZoom: 22, // Maximum possible zoom level
           animate: true,
-          duration: 1 // Animation duration in seconds
+          duration: 1
         });
         
+        // For an even more extreme zoom, reduce the bounds by a percentage
+        setTimeout(() => {
+          // Get the current bounds
+          const currentBounds = map.getBounds();
+          // Calculate the center
+          const center = currentBounds.getCenter();
+          // Get the northwest and southeast corners
+          const nw = currentBounds.getNorthWest();
+          const se = currentBounds.getSouthEast();
+          
+          // Calculate reduced bounds (zoom in by reducing the bounds size by 30%)
+          const shrinkFactor = 0.3; // Reduce bounds by 30%
+          const newNW = L.latLng(
+            center.lat + (nw.lat - center.lat) * shrinkFactor,
+            center.lng + (nw.lng - center.lng) * shrinkFactor
+          );
+          const newSE = L.latLng(
+            center.lat + (se.lat - center.lat) * shrinkFactor,
+            center.lng + (se.lng - center.lng) * shrinkFactor
+          );
+          
+          // Create new bounds
+          const reducedBounds = L.latLngBounds(newNW, newSE);
+          
+          // Fit to the reduced bounds
+          map.fitBounds(reducedBounds, {
+            padding: [0, 0],
+            maxZoom: 22,
+            animate: true,
+            duration: 1
+          });
+        }, 100);
+
         // Clean up the temporary layer
         geoJsonLayer.remove();
       }
@@ -154,7 +192,7 @@ const MapUpdater = ({ districts, hasData }) => {
 
 // Main Map Component
 const MapBody: React.FC = () => {
-  const {geoFeaturesData, analyticsMapData, metaMapData} = useAuthorities();
+  //const {geoFeaturesData, analyticsMapData, metaMapData} = useAuthorities();
   // State for current basemap
   const [currentBasemap, setCurrentBasemap] = useState<BasemapType>('osm-light');
   
@@ -176,12 +214,19 @@ const MapBody: React.FC = () => {
       return [-1.9403, 30.0578]; // Default center for Rwanda if no data
     }
     
+    // Filter to only districts with actual data values
+    const districtsWithData = districts.filter(d => d.value !== null);
+    
+    if (districtsWithData.length === 0) {
+      return [-1.9403, 30.0578]; // Default center if no districts have data
+    }
+    
     let latSum = 0;
     let lonSum = 0;
     let pointCount = 0;
     
     // Sample some points from each district to calculate average
-    districts.forEach(district => {
+    districtsWithData.forEach(district => {
       if (district.coordinates && district.coordinates.length > 0) {
         // Take a point from each polygon to avoid over-weighting large districts
         district.coordinates.forEach(polygon => {
@@ -275,7 +320,7 @@ const MapBody: React.FC = () => {
       
       setDistricts(processedDistricts);
       
-      // Calculate and set map center position based on districts
+      // Calculate and set map center position based on districts with data
       const center = calculateMapCenter(processedDistricts);
       setCenterPosition(center);
       
@@ -514,6 +559,10 @@ const MapBody: React.FC = () => {
     );
   };
 
+  // Initial view state for the MapContainer
+  // Set a very high default zoom level
+  const defaultZoom = 12; // Much higher default zoom
+
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
@@ -532,7 +581,7 @@ const MapBody: React.FC = () => {
           {/* Always show map with base layer */}
           <MapContainer 
             center={centerPosition} 
-            zoom={7} 
+            zoom={defaultZoom} 
             className="h-full w-full"
           >
             {/* Base Layer from MapBody */}
