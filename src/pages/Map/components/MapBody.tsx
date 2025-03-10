@@ -1,4 +1,4 @@
-import  {geoFeaturesData, analyticsMapData, metaMapData} from "../constants"
+//import  {geoFeaturesData, analyticsMapData, metaMapData} from "../constants"
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import L from 'leaflet';
@@ -110,22 +110,26 @@ interface Legend {
 }
 
 // MapUpdater component to handle zooming to data areas
-// This component uses the useMap hook to access the map instance
+// Fixed version that properly focuses on data
 const MapUpdater = ({ districts, hasData }) => {
   const map = useMap();
   
   useEffect(() => {
     if (hasData && districts.length > 0) {
-      // Create a GeoJSON layer with all districts that have data
+      // Filter to only districts that have data values
       const districtsWithData = districts.filter(d => d.value !== null);
       
       if (districtsWithData.length > 0) {
-        // Create a bounds object to calculate the area containing all districts with data
+        // Create a GeoJSON layer with all districts that have data
         const geoJsonLayer = L.geoJSON({
           type: 'FeatureCollection',
           features: districtsWithData.map(district => ({
             type: 'Feature',
-            properties: {},
+            properties: {
+              id: district.id,
+              name: district.name,
+              value: district.value
+            },
             geometry: {
               type: 'Polygon',
               coordinates: district.coordinates
@@ -136,51 +140,44 @@ const MapUpdater = ({ districts, hasData }) => {
         // Get the bounds of all districts with data
         const bounds = geoJsonLayer.getBounds();
         
-        // Calculate the bounds padding as a negative value to zoom BEYOND the bounds
-        // This creates an extremely close zoom effect
-        const negativePadding = [-50, -50]; // Negative padding to zoom beyond bounds
-        
-        // Apply an extreme zoom
+        // First zoom to fit the data (initial focus)
         map.fitBounds(bounds, {
-          padding: negativePadding,
-          maxZoom: 22, // Maximum possible zoom level
+          padding: [20, 20],
+          maxZoom: 10, // Lower initial zoom for context
           animate: true,
-          duration: 1
+          duration: 1.0
         });
         
-        // For an even more extreme zoom, reduce the bounds by a percentage
+        // Then zoom in closer after a delay
         setTimeout(() => {
-          // Get the current bounds
-          const currentBounds = map.getBounds();
-          // Calculate the center
-          const center = currentBounds.getCenter();
-          // Get the northwest and southeast corners
-          const nw = currentBounds.getNorthWest();
-          const se = currentBounds.getSouthEast();
+          // Calculate a slightly tighter bound (75% of original size)
+          const center = bounds.getCenter();
+          const northWest = bounds.getNorthWest();
+          const southEast = bounds.getSouthEast();
           
-          // Calculate reduced bounds (zoom in by reducing the bounds size by 30%)
-          const shrinkFactor = 0.3; // Reduce bounds by 30%
+          // Calculate new bounds that are 75% of the size, centered on data
+          const shrinkFactor = 0.75;
           const newNW = L.latLng(
-            center.lat + (nw.lat - center.lat) * shrinkFactor,
-            center.lng + (nw.lng - center.lng) * shrinkFactor
+            center.lat + (northWest.lat - center.lat) * shrinkFactor,
+            center.lng + (northWest.lng - center.lng) * shrinkFactor
           );
           const newSE = L.latLng(
-            center.lat + (se.lat - center.lat) * shrinkFactor,
-            center.lng + (se.lng - center.lng) * shrinkFactor
+            center.lat + (southEast.lat - center.lat) * shrinkFactor,
+            center.lng + (southEast.lng - center.lng) * shrinkFactor
           );
           
-          // Create new bounds
-          const reducedBounds = L.latLngBounds(newNW, newSE);
+          // Create the new tighter bounds
+          const tighterBounds = L.latLngBounds(newNW, newSE);
           
-          // Fit to the reduced bounds
-          map.fitBounds(reducedBounds, {
-            padding: [0, 0],
-            maxZoom: 22,
+          // Apply second zoom with tighter bounds
+          map.fitBounds(tighterBounds, {
+            padding: [30, 30],
+            maxZoom: 14, // Moderate zoom level
             animate: true,
-            duration: 1
+            duration: 1.0
           });
-        }, 100);
-
+        }, 1000);
+        
         // Clean up the temporary layer
         geoJsonLayer.remove();
       }
@@ -192,7 +189,7 @@ const MapUpdater = ({ districts, hasData }) => {
 
 // Main Map Component
 const MapBody: React.FC = () => {
-  //const {geoFeaturesData, analyticsMapData, metaMapData} = useAuthorities();
+  const {geoFeaturesData, analyticsMapData, metaMapData} = useAuthorities();
   // State for current basemap
   const [currentBasemap, setCurrentBasemap] = useState<BasemapType>('osm-light');
   
@@ -560,8 +557,8 @@ const MapBody: React.FC = () => {
   };
 
   // Initial view state for the MapContainer
-  // Set a very high default zoom level
-  const defaultZoom = 12; // Much higher default zoom
+  // Set a moderate default zoom level
+  const defaultZoom = 8; // Reduced from 14 to 8 for initial view
 
   return (
     <div className="flex h-screen">
