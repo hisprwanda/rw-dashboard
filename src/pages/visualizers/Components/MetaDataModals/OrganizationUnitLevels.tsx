@@ -6,11 +6,12 @@ import { useOrgUnitData } from '../../../../services/fetchOrgunitData';
 interface OrganizationUnitLevelsProps {
 
   isUseCurrentUserOrgUnits: boolean;
+  isDataModalBeingUsedInMap?:boolean
 }
 
 const OrganizationUnitLevels: React.FC<OrganizationUnitLevelsProps> = ({
  
-  isUseCurrentUserOrgUnits,
+  isUseCurrentUserOrgUnits,isDataModalBeingUsedInMap
 }) => {
     const { data, error, loading } = useOrgUnitData();
     const {currentUserInfoAndOrgUnitsData,setSelectedOrganizationUnitsLevels,selectedOrganizationUnitsLevels,selectedLevel,setSelectedLevel} = useAuthorities()
@@ -36,7 +37,7 @@ const OrganizationUnitLevels: React.FC<OrganizationUnitLevelsProps> = ({
 
     const selectedLevelIds = orgUnitLevels
       .filter(level => selected.includes(String(level.level)))
-      .map(level => level.id);
+      .map(level => isDataModalBeingUsedInMap ? level.level : level.id);
 
     setSelectedOrganizationUnitsLevels(selectedLevelIds);
   };

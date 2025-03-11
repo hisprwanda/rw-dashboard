@@ -238,7 +238,7 @@ const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsSh
       <div className="mb-6">
         <div className='flex gap-2'>
           {/* levels test */}
-          <OrganizationUnitLevels isUseCurrentUserOrgUnits={isUseCurrentUserOrgUnits} />
+          <OrganizationUnitLevels isUseCurrentUserOrgUnits={isUseCurrentUserOrgUnits} isDataModalBeingUsedInMap={isDataModalBeingUsedInMap} />
           {/* organization unit group */}
           <OrganizationUnitGroup isUseCurrentUserOrgUnits={isUseCurrentUserOrgUnits} />
         </div>
