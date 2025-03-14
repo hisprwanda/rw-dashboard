@@ -104,9 +104,9 @@ export function MapMetaDataConfigModal({
      // Stop event propagation
      e.stopPropagation();
      e.preventDefault();
-     
+     const isAnalyticsApiUsedInMap = true
      const GeoFeaturesResult = await fetchGeoFeatures()
-   const analyticsResult= await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions), selectedDataSourceDetails,true);
+   const analyticsResult= await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions,isAnalyticsApiUsedInMap), selectedDataSourceDetails,isAnalyticsApiUsedInMap);
 
     console.log("hello GeoFeaturesResult",GeoFeaturesResult)
     console.log("hello analyticsResult",analyticsResult)

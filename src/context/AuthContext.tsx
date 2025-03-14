@@ -206,21 +206,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const orgUnitLevelIds = selectedOrganizationUnitsLevels?.map((unit: any) => `LEVEL-${unit}`).join(';');
     const orgUnitGroupIds = selectedOrgUnitGroups?.map((item: any) => `OU_GROUP-${item}`).join(';');
 
-    const filter = `ou:${isUseCurrentUserOrgUnits
+
+    
+    const filter =  isAnalyticsApiUsedInMap ? `pe:2024`
+    :
+    `ou:${isUseCurrentUserOrgUnits
       ? `${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT ? 'USER_ORGUNIT;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_CHILDREN ? 'USER_ORGUNIT_CHILDREN;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_GRANDCHILDREN ? 'USER_ORGUNIT_GRANDCHILDREN;' : ''}`.slice(0, -1)
       : `${orgUnitIds};${orgUnitLevelIds};${orgUnitGroupIds}`}`;
 
     if (
+      // dimension.some(item => item.startsWith("dx:") && item.split(":")[1].trim()) &&
+      //  dimension.some(item => item.startsWith("pe:") && item.split(":")[1].trim()) &&
+      // filter.startsWith("ou:") && filter.split(":")[1].trim()
+
       dimension.some(item => item.startsWith("dx:") && item.split(":")[1].trim()) &&
-      dimension.some(item => item.startsWith("pe:") && item.split(":")[1].trim()) &&
-      filter.startsWith("ou:") && filter.split(":")[1].trim()
+       //dimension.some(item => item.startsWith("pe:") && item.split(":")[1].trim()) &&
+      filter.startsWith("pe:") && filter.split(":")[1].trim()
   ){
     try {
       setIsFetchAnalyticsDataLoading(true);
       setFetchAnalyticsDataError(null);
 
+   const tempDime =  `ou:${isUseCurrentUserOrgUnits
+    ? `${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT ? 'USER_ORGUNIT;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_CHILDREN ? 'USER_ORGUNIT_CHILDREN;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_GRANDCHILDREN ? 'USER_ORGUNIT_GRANDCHILDREN;' : ''}`.slice(0, -1)
+    : `${orgUnitIds};${orgUnitLevelIds};${orgUnitGroupIds}`}`
+   dimension.push(tempDime)
  
-      const queryParams = isAnalyticsApiUsedInMap ?{
+      const queryParams = isAnalyticsApiUsedInMap ? {
         dimension,
         filter,
         displayProperty: 'NAME',
