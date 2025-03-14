@@ -1,7 +1,6 @@
-  import {ProcessedDistrict} from "../types/maps"
-  
+import {ProcessedDistrict,LegendClass} from "../types/maps"
   // Generate automatic legend based on data values
-  const generateAutoLegend = (districts: ProcessedDistrict[]) => {
+export const generateAutoLegend = (districts: ProcessedDistrict []) => {
     const values = districts
       .map(d => d.value)
       .filter((value): value is number => value !== null);
@@ -47,4 +46,6 @@
       }
     ];
     return autoLegend
+   // setAutoLegend(autoLegend);
   };
+  

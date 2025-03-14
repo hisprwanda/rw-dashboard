@@ -7,10 +7,11 @@ import MapSidebar from './MapSideBar';
 // Fix for default marker icon
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-import { BasemapType } from '../../../types/maps';
+import { BasemapType, ProcessedDistrict,Legend,LegendClass } from '../../../types/maps';
 import { BASEMAPS } from '../constants';
 import { useAuthorities } from '../../../context/AuthContext';
 import { MapUpdater } from './MapUpdater';
+import { generateAutoLegend } from '../../../lib/mapHelpers';
 
 let DefaultIcon = L.icon({
   iconUrl: icon,
@@ -88,29 +89,6 @@ const sampleLegends = [
     ]
   }
 ];
-
-interface ProcessedDistrict {
-  id: string;
-  name: string;
-  value: number | null;
-  coordinates: number[][][];
-  code: string;
-  region: string;
-}
-
-interface LegendClass {
-  name: string;
-  startValue: number;
-  endValue: number;
-  color: string;
-}
-
-interface Legend {
-  name: string;
-  legends: LegendClass[];
-}
-
-
 
 // Main Map Component
 const MapBody: React.FC = () => {
@@ -252,7 +230,8 @@ const MapBody: React.FC = () => {
       
       // Generate automatic legend only if we have valid districts with values
       if (processedDistricts.length > 0) {
-        generateAutoLegend(processedDistricts);
+        const legend = generateAutoLegend(processedDistricts);
+        setAutoLegend(legend);
       }
     } catch (error) {
       console.error("Error processing map data:", error);
@@ -260,54 +239,7 @@ const MapBody: React.FC = () => {
   }, [geoFeaturesData, analyticsMapData, metaMapData]);
   
   // Generate automatic legend based on data values
-  const generateAutoLegend = (districts: ProcessedDistrict[]) => {
-    const values = districts
-      .map(d => d.value)
-      .filter((value): value is number => value !== null);
-    
-    if (values.length === 0) return;
-    
-    const min = Math.min(...values);
-    const max = Math.max(...values);
-    const range = max - min;
-    
-    // Generate a 5-class legend
-    const step = range / 5;
-    const autoLegend: LegendClass[] = [
-      {
-        name: "Very Low",
-        startValue: min,
-        endValue: min + step,
-        color: "#EDF8FB"
-      },
-      {
-        name: "Low",
-        startValue: min + step,
-        endValue: min + 2 * step,
-        color: "#B3CDE3"
-      },
-      {
-        name: "Medium",
-        startValue: min + 2 * step,
-        endValue: min + 3 * step,
-        color: "#8C96C6"
-      },
-      {
-        name: "High",
-        startValue: min + 3 * step,
-        endValue: min + 4 * step,
-        color: "#8856A7"
-      },
-      {
-        name: "Very High",
-        startValue: min + 4 * step,
-        endValue: max,
-        color: "#810F7C"
-      }
-    ];
-    
-    setAutoLegend(autoLegend);
-  };
+
   
   // Function to parse coordinates string to proper GeoJSON format
   const parseCoordinates = (coordinatesString: string): number[][][] => {
