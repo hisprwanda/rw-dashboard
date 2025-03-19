@@ -1,6 +1,11 @@
 export type BasemapType = 'osm-light' | 'osm-detailed';
 
-
+// MapSidebar Props Type
+export type MapSidebarProps = {
+  basemaps: Record<BasemapType, BasemapConfig>;
+  currentBasemap: BasemapType;
+  onBasemapChange: (basemap: BasemapType) => void;
+};
 // Basemap Configuration Type
 export type BasemapConfig = {
   imgUrl: string;
@@ -29,3 +34,4 @@ export interface Legend {
   name: string;
   legends: LegendClass[];
 }
+

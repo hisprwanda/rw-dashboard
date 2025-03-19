@@ -17,6 +17,7 @@ import axios from "axios";
 import { dimensionItemTypesTYPES } from "../types/dimensionDataItemTypes";
 import { dimensionItemTypes } from "../constants/dimensionItemTypes";
 import { BackedSelectedItem, visualTypes } from "../types/visualType";
+import { currentInstanceId } from "../constants/currentInstanceInfo";
 
 
 
@@ -48,6 +49,10 @@ interface AuthContextProps {
   selectedChartType:visualTypes,
    setSelectedChartType:any,
    setAnalyticsQuery:any;
+   mapAnalyticsQueryTwo:any;
+    setMapAnalyticsQueryTwo:any;
+    geoFeaturesQuery:any;
+     setGeoFeaturesQuery:any;
    selectedVisualsForDashboard:string[];
    setSelectedVisualsForDashboard:any;
    visualTitleAndSubTitle: VisualTitleAndSubtitleType;
@@ -109,7 +114,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const {  data:systemInfo } = useSystemInfo();
   const [authorities, setAuthorities] = useState<string[]>([]);
   const [userDatails, setUserDatails] = useState<{}>({});
- const [selectedDataSourceOption, setSelectedDataSourceOption] = useState<string>("");
+ const [selectedDataSourceOption, setSelectedDataSourceOption] = useState<string>(currentInstanceId);
  const [geoFeaturesData, setGeoFeaturesData] = useState<any>([])
  const [analyticsMapData, setAnalyticsMapData] = useState<any>([])
  const [metaMapData, setMetaMapData] = useState<any>([])
@@ -145,6 +150,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [selectedLevel, setSelectedLevel] = useState<any>();
   const [selectedOrgUnits, setSelectedOrgUnits] = useState<string[]>([]);
   const [analyticsQuery, setAnalyticsQuery] = useState<any>(null)
+  const [mapAnalyticsQueryTwo, setMapAnalyticsQueryTwo] = useState<any>(null)
+  const [geoFeaturesQuery, setGeoFeaturesQuery] = useState<any>(null)
   const [selectedChartType, setSelectedChartType] = useState<visualTypes>("Column"); 
   const [selectedVisualsForDashboard, setSelectedVisualsForDashboard] = useState<string[]>([]);
   const [visualTitleAndSubTitle, setSelectedVisualTitleAndSubTitle] = useState<VisualTitleAndSubtitleType>({
@@ -287,6 +294,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
       
         setAnalyticsQuery(analyticsQuery);
+        setMapAnalyticsQueryTwo(analyticsQueryTwo)
       } else {
         // External request via axios
 
@@ -354,7 +362,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
 
   return (
-    <AuthContext.Provider value={{analyticsMapData,geoFeaturesData,metaMapData,setAnalyticsMapData,setGeoFeaturesData,setMetaMapData, isExportingDashboardAsPPTX,setIsExportingDashboardAsPPTX,setSubDataItemsData,subDataItemsData,backedSelectedItems,setBackedSelectedItems,dataItemsDataPage,setDataItemsDataPage,selectedDimensionItemType,setSelectedDimensionItemType,selectedDataSourceOption,setSelectedDataSourceOption,currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData,selectedDataSourceDetails,setSelectedDataSourceDetails,dataItemsData,setDataItemsData,setVisualsColorPalettes,visualsColorPalettes, selectedColorPalette,setSelectedColorPalette ,visualSettings,setSelectedVisualSettings,fetchSingleOrgUnitName,visualTitleAndSubTitle,setSelectedVisualTitleAndSubTitle,  selectedVisualsForDashboard, setSelectedVisualsForDashboard,setAnalyticsData,setAnalyticsQuery,selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery,selectedChartType,setSelectedChartType}}>
+    <AuthContext.Provider value={{geoFeaturesQuery, mapAnalyticsQueryTwo,analyticsMapData,setGeoFeaturesQuery,setMapAnalyticsQueryTwo,analyticsMapData,geoFeaturesData,metaMapData,setAnalyticsMapData,setGeoFeaturesData,setMetaMapData, isExportingDashboardAsPPTX,setIsExportingDashboardAsPPTX,setSubDataItemsData,subDataItemsData,backedSelectedItems,setBackedSelectedItems,dataItemsDataPage,setDataItemsDataPage,selectedDimensionItemType,setSelectedDimensionItemType,selectedDataSourceOption,setSelectedDataSourceOption,currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData,selectedDataSourceDetails,setSelectedDataSourceDetails,dataItemsData,setDataItemsData,setVisualsColorPalettes,visualsColorPalettes, selectedColorPalette,setSelectedColorPalette ,visualSettings,setSelectedVisualSettings,fetchSingleOrgUnitName,visualTitleAndSubTitle,setSelectedVisualTitleAndSubTitle,  selectedVisualsForDashboard, setSelectedVisualsForDashboard,setAnalyticsData,setAnalyticsQuery,selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery,selectedChartType,setSelectedChartType}}>
       {children}
     </AuthContext.Provider>
   );
