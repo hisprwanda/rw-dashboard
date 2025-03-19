@@ -14,6 +14,7 @@ import { Loading } from "../../components";
 import { FaEye, FaRegPlayCircle } from "react-icons/fa";
 import { filterOtherCharts } from "../../lib/filterOtherDashboards";
 import i18n from '../../locales/index.js'
+import { useLocalAnalyticsData, useTestOnlineAnalyticsData } from "../../services/test";
 
 
 
@@ -126,6 +127,12 @@ const filterPinnedDashboard = (
 
  
 export default function HomePage() {
+  const { data:TestOnlineAnalyticsData } = useTestOnlineAnalyticsData()
+  const { data:LocalOnlineAnalyticsData } = useLocalAnalyticsData()
+  console.log({
+    TestOnlineAnalyticsData,
+    LocalOnlineAnalyticsData
+  })
   const navigate = useNavigate();
   const { data, loading, isError } = useDashboardsData();
   const { userDatails } = useAuthorities();

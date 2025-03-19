@@ -38,7 +38,12 @@ const fixedPeriodTypes = [
 
 const TabButton = ({ selected, onClick, children }) => (
     <button
-        onClick={onClick}
+        onClick={(e) => {
+            // Stop event propagation to prevent it from bubbling up
+            e.stopPropagation();
+            e.preventDefault();
+            onClick();
+        }}
         className={`px-4 py-2 font-medium rounded-t-lg ${
             selected 
                 ? 'bg-white border-b-2 border-primary text-primary' 
@@ -58,7 +63,12 @@ const TransferList = ({ availableOptions, selectedOptions, onSelect, onDeselect 
                     {availableOptions.map(option => (
                         <button
                             key={option.value}
-                            onClick={() => onSelect(option)}
+                            onClick={(e) => {
+                                // Stop event propagation
+                                e.stopPropagation();
+                                e.preventDefault();
+                                onSelect(option);
+                            }}
                             className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded"
                         >
                             {option.label}
@@ -72,7 +82,12 @@ const TransferList = ({ availableOptions, selectedOptions, onSelect, onDeselect 
                     {selectedOptions.map(option => (
                         <button
                             key={option.value}
-                            onClick={() => onDeselect(option)}
+                            onClick={(e) => {
+                                // Stop event propagation
+                                e.stopPropagation();
+                                e.preventDefault();
+                                onDeselect(option);
+                            }}
                             className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded flex justify-between items-center"
                         >
                             <span>{option.label}</span>
@@ -86,20 +101,20 @@ const TransferList = ({ availableOptions, selectedOptions, onSelect, onDeselect 
 };
 
 interface PeriodPickerProps {
-    setIsShowPeriod: any;
-    onUpdate:any
+    setIsShowPeriod?: any;
+    onUpdate?:any;
+    isDataModalBeingUsedInMap?:boolean
 }
 
-// const [analyticsDimensions?.pe?, setSelectedPeriods] = useState([])
-
-const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod }) => {
- const { analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, isFetchAnalyticsDataLoading, selectedDataSourceDetails } = useAuthorities();
+const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod,isDataModalBeingUsedInMap }) => {
+    const { analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, isFetchAnalyticsDataLoading, selectedDataSourceDetails } = useAuthorities();
     const [selectedTab, setSelectedTab] = useState('relative');
     const [selectedPeriodGroup, setSelectedPeriodGroup] = useState('days');
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [selectedPeriodType, setSelectedPeriodType] = useState('monthly');
     const [availablePeriods, setAvailablePeriods] = useState([]);
     const [allPeriodOptions, setAllPeriodOptions] = useState(new Map());
+    
     const generateFixedPeriods = (year, periodType) => {
         const periods = [];
         const months = [
@@ -257,6 +272,7 @@ const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod 
 
         return periods;
     };
+    
     const filterRelativePeriods = (group) => {
         const periods = groupedPeriods[group] || [];
         return periods.map(period => ({ 
@@ -266,7 +282,6 @@ const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod 
         }));
     };
 
-    
     const updateAvailablePeriods = () => {
         let newPeriods;
         if (selectedTab === 'relative') {
@@ -287,13 +302,14 @@ const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod 
             newPeriods.filter(period => !analyticsDimensions?.pe?.includes(period.value))
         );
     };
+    
     const handleTabChange = (tab) => {
         setSelectedTab(tab);
         updateAvailablePeriods();
     };
 
     const handlePeriodSelect = (period) => {
-        const newSelectedPeriods = [...analyticsDimensions.pe, period.value];
+        const newSelectedPeriods = [...(analyticsDimensions.pe || []), period.value];
        
         setAnalyticsDimensions(prev => ({
             ...prev,
@@ -318,29 +334,34 @@ const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod 
         }
     };
 
-    const handleUpdate = async() => {
+    const handleUpdate = async(e) => {
+        // Stop event propagation
+        e.stopPropagation();
+        e.preventDefault();
+        
         onUpdate?.(analyticsDimensions.pe);
         await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions), selectedDataSourceDetails);
-        setIsShowPeriod(false);
+        setIsShowPeriod && setIsShowPeriod(false);
     };
 
     useEffect(() => {
         updateAvailablePeriods();
     }, [selectedTab, selectedPeriodGroup, selectedYear, selectedPeriodType]);
   
-       // Get selected period objects with labels
-       const selectedPeriodObjects = analyticsDimensions?.pe?.map(periodValue => {
+    // Get selected period objects with labels
+    const selectedPeriodObjects = (analyticsDimensions?.pe || []).map(periodValue => {
         const periodObject = allPeriodOptions.get(periodValue);
         return periodObject || { value: periodValue, label: periodValue }; // Fallback if not found
     });
 
-    useEffect(()=>{
-      
-        console.log("selectedPeriods x",analyticsDimensions.pe)
-    },[analyticsDimensions.pe])
-
-  return (
-        <div className="w-full max-w-4xl p-6 bg-white rounded-lg shadow">
+    return (
+        <div 
+            className="w-full max-w-4xl p-6 bg-white rounded-lg shadow"
+            onClick={(e) => {
+                // Stop event propagation to prevent closing the parent dialog
+                e.stopPropagation();
+            }}
+        >
             <div className="flex gap-2 mb-6 border-b">
                 <TabButton 
                     selected={selectedTab === 'relative'} 
@@ -364,10 +385,13 @@ const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod 
                     <select
                         value={selectedPeriodGroup}
                         onChange={(e) => {
+                            // Stop event propagation
+                            e.stopPropagation();
                             setSelectedPeriodGroup(e.target.value);
                             updateAvailablePeriods();
                         }}
                         className="w-full p-2 border rounded-md bg-white"
+                        onClick={(e) => e.stopPropagation()}
                     >
                         {Object.keys(groupedPeriods).map((group) => (
                             <option key={group} value={group}>
@@ -379,8 +403,8 @@ const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod 
             )}
 
             {selectedTab === 'fixed' && (
-                <div className=" flex gap-3 ">
-                    {/*     Period Type  */}
+                <div className="flex gap-3">
+                    {/* Period Type */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Period Type
@@ -388,10 +412,13 @@ const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod 
                         <select
                             value={selectedPeriodType}
                             onChange={(e) => {
+                                // Stop event propagation
+                                e.stopPropagation();
                                 setSelectedPeriodType(e.target.value);
                                 updateAvailablePeriods();
                             }}
                             className="w-full p-2 border rounded-md bg-white"
+                            onClick={(e) => e.stopPropagation()}
                         >
                             {fixedPeriodTypes.map((type) => (
                                 <option key={type.value} value={type.value}>
@@ -400,7 +427,7 @@ const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod 
                             ))}
                         </select>
                     </div>
-                    {/* year */}
+                    {/* Year */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Year
@@ -409,10 +436,13 @@ const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod 
                             type="number"
                             value={selectedYear}
                             onChange={(e) => {
+                                // Stop event propagation
+                                e.stopPropagation();
                                 setSelectedYear(parseInt(e.target.value, 10));
                                 updateAvailablePeriods();
                             }}
                             className="w-full p-2 border rounded-md bg-white"
+                            onClick={(e) => e.stopPropagation()}
                         />
                     </div>
                 </div>
@@ -424,18 +454,16 @@ const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod 
                 onSelect={handlePeriodSelect}
                 onDeselect={handlePeriodDeselect}
             />
-
-            <div className="flex justify-end mt-6">
-
-            <Button
+         {!isDataModalBeingUsedInMap &&   <div className="flex justify-end mt-6">
+                <Button
                     text={isFetchAnalyticsDataLoading ? 'Loading' : 'Update'}
                     onClick={handleUpdate}
                     variant="primary"
                     type="button"
                     icon={<IoSaveOutline />}
                 />
-            
-            </div>
+            </div>}
+          
         </div>
     );
 };

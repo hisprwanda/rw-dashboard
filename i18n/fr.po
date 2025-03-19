@@ -8,9 +8,6 @@ msgstr ""
 "POT-Creation-Date: 2025-02-16T10:26:30.600Z\n"
 "PO-Revision-Date: 2025-02-16T10:26:30.600Z\n"
 
-msgid "Hello world!"
-msgstr "Bonjour le monde !"
-
 msgid "My Dashboards"
 msgstr "Mes tableaux de bord"
 
@@ -178,5 +175,8 @@ msgstr "Quitter le plein écran"
 
 msgid "Exit"
 msgstr "Sortie"
+
+msgid "bulletin-settings"
+msgstr "paramètres du bulletin"
 
 

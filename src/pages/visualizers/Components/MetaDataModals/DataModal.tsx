@@ -19,11 +19,12 @@ type TransferOption = {
 
 
 interface DataModalProps {
-  setIsShowDataModal: (isShow: boolean) => void;
+  setIsShowDataModal?: (isShow: boolean) => void;
   data: any;
   loading: boolean;
   error: any;
-  subDataItemsData:any
+  subDataItemsData:any;
+  isDataModalBeingUsedInMap?:boolean
 }
 
 // Custom Transfer Component
@@ -161,7 +162,8 @@ const DataModal: React.FC<DataModalProps> = ({
   data,
   error,
   loading,
-  subDataItemsData
+  subDataItemsData,
+  isDataModalBeingUsedInMap
 }) => {
   const [searchDataItem, setSearchDataItem] = useState<string>("");
   const [debouncedSearch, setDebouncedSearch] = useState<string>("");
@@ -590,7 +592,10 @@ useEffect(() => {
         }
        
       </div>
-      <div className="mt-4 flex justify-end">
+      {
+        !isDataModalBeingUsedInMap 
+        &&
+        <div className="mt-4 flex justify-end">
         <Button
           variant="primary"
           text={isFetchAnalyticsDataLoading ? "Loading..." : "Update"}
@@ -599,6 +604,8 @@ useEffect(() => {
           onClick={handleUpdate}
         />
       </div>
+      }
+     
     </div>
   );
 };

@@ -2,8 +2,11 @@ import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { useAuthorities } from '../context/AuthContext';
 import { dimensionItemTypesTYPES } from '../types/dimensionDataItemTypes';
+import { useConfig } from '@dhis2/app-runtime';
+
 
 export const useExternalDataItems = () => {
+    const { apiVersion } = useConfig();
     const { setDataItemsData, setSubDataItemsData } = useAuthorities();
     const [response, setResponse] = useState(null);
     const [error, setError] = useState<string | null>(null);
@@ -163,7 +166,7 @@ export const useExternalDataItems = () => {
 
             try {
                 // Fetch main data
-                const mainResponse = await axios.get(`${url}/api/40/${apiPaths.main.path}`, {
+                const mainResponse = await axios.get(`${url}/api/${apiPaths.main.path}`, {
                     headers: {
                         Authorization: `ApiToken ${token}`,
                     },
@@ -173,7 +176,7 @@ export const useExternalDataItems = () => {
                 let subResponse = null;
                 // Fetch sub data if path exists
                 if (apiPaths.sub) {
-                    subResponse = await axios.get(`${url}/api/40/${apiPaths.sub.path}`, {
+                    subResponse = await axios.get(`${url}/api/${apiPaths.sub.path}`, {
                         headers: {
                             Authorization: `ApiToken ${token}`,
                         },

@@ -1,8 +1,11 @@
 import { useState, useCallback } from "react";
 import axios from "axios";
 import { useAuthorities } from '../context/AuthContext';
+import { useConfig } from "@dhis2/app-runtime";
+
 
 export const useExternalOrgUnitData = () => {
+    const {apiVersion} = useConfig()
     const { setCurrentUserInfoAndOrgUnitsData } = useAuthorities();
   // Local states for response, error, and loading
   const [response, setResponse] = useState(null);
@@ -17,10 +20,10 @@ export const useExternalOrgUnitData = () => {
 
     // Define the queries and their parameters
     const endpoints = {
-        currentUser: `${url}/api/40/me`,
-        orgUnits: `${url}/api/40/organisationUnits`,
-        orgUnitLevels: `${url}/api/40/organisationUnitLevels`,
-        orgUnitGroups: `${url}/api/40/organisationUnitGroups`, // Added endpoint for orgUnitGroups
+        currentUser: `${url}/api/me`,
+        orgUnits: `${url}/api/organisationUnits`,
+        orgUnitLevels: `${url}/api/organisationUnitLevels`,
+        orgUnitGroups: `${url}/api/organisationUnitGroups`, // Added endpoint for orgUnitGroups
     };
 
     const params = {

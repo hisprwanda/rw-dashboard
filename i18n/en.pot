@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-02-28T07:36:15.212Z\n"
-"PO-Revision-Date: 2025-02-28T07:36:15.213Z\n"
+"POT-Creation-Date: 2025-03-05T12:36:11.103Z\n"
+"PO-Revision-Date: 2025-03-05T12:36:11.103Z\n"
 
 msgid "Dashboards"
 msgstr "Dashboards"
@@ -16,6 +16,12 @@ msgstr "Visualizers"
 
 msgid "Data Source"
 msgstr "Data Source"
+
+msgid "Map"
+msgstr "Map"
+
+msgid "Settings"
+msgstr "Settings"
 
 msgid "bulletin-settings"
 msgstr "bulletin-settings"

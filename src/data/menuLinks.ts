@@ -13,9 +13,17 @@ export const menuItems = [
     //     name: "Alerts",
     //     link: "alerts"
     // },
+    // {
+    //     name: `${i18n.t('Data Source')}`, 
+    //     link: "datasource"
+    // },
     {
-        name: `${i18n.t('Data Source')}`, 
-        link: "datasource"
+        name: `${i18n.t('Map')}`, 
+        link: "map"
+    },
+    {
+        name: `${i18n.t('Settings')}`, 
+        link: "settings"
     },
     {
         name: `${i18n.t('bulletin-settings')}`, 
