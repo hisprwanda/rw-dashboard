@@ -206,9 +206,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const orgUnitLevelIds = selectedOrganizationUnitsLevels?.map((unit: any) => `LEVEL-${unit}`).join(';');
     const orgUnitGroupIds = selectedOrgUnitGroups?.map((item: any) => `OU_GROUP-${item}`).join(';');
 
-
+  let selectedPeriodsOnMap:string[] = []
+  selectedPeriodsOnMap.push(`pe:${analyticsDimensions?.pe.join(";")}`);
     
-    const filter =  isAnalyticsApiUsedInMap ? `pe:2024`
+    const filter =  isAnalyticsApiUsedInMap ? `${selectedPeriodsOnMap}`
     :
     `ou:${isUseCurrentUserOrgUnits
       ? `${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT ? 'USER_ORGUNIT;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_CHILDREN ? 'USER_ORGUNIT_CHILDREN;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_GRANDCHILDREN ? 'USER_ORGUNIT_GRANDCHILDREN;' : ''}`.slice(0, -1)
