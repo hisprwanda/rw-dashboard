@@ -19,7 +19,7 @@ export const menuItems = [
     // },
     {
         name: `${i18n.t('Map')}`, 
-        link: "map"
+        link: "maps"
     },
     {
         name: `${i18n.t('Settings')}`, 

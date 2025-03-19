@@ -26,6 +26,7 @@ import TokenTest from "./pages/TokenTest";
 import UserCredentials from "./pages/UserCredentials";
 import { Toaster } from "./components/ui/toaster";
 import MapHomepage from "./pages/Map/MapHomepage";
+import AllMapsPage from "./pages/Map/AllMapsPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -45,7 +46,8 @@ const App: React.FC = () => {
               <Route index element={<HomePage />} />
               <Route path="dashboards" element={<DashboardsPage />} />
               <Route path="visualization" element={<VisualizationPage />} />
-              <Route path="map" element={<MapHomepage />} />
+              <Route path="maps" element={<AllMapsPage />} />
+            
               <Route path="settings" element={<SettingsPage />} />
               <Route path="alerts" element={<AlertsPage />} />
               <Route path="test" element={<TestChart />} />
@@ -54,6 +56,7 @@ const App: React.FC = () => {
               <Route path="datasource" element={<DataSourcePage />} />
               {/* <Route path="data-source" element={<DataSourcePage />} /> */}
               <Route path="unauthorized" element={<UnauthorizedPage />} />
+              <Route path="map/:id?" element={<MapHomepage />} />
               <Route path="visualizers/:id?" element={<VisualizersPage />} />
               <Route path="dashboard/:id?/:present?" element={<CreateDashboardPage />} />
               <Route path="*" element={<NotFoundPage />} />
