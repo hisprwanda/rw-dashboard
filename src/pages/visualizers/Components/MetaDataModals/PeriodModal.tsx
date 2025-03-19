@@ -3,6 +3,7 @@ import { useAuthorities } from '../../../../context/AuthContext';
 import { formatAnalyticsDimensions } from '../../../../lib/formatAnalyticsDimensions';
 import Button from '../../../../components/Button';
 import { IoSaveOutline } from 'react-icons/io5';
+import { dimensionDataHardCoded } from '../../../../constants/bulletinDimension';
 
 const groupedPeriods = {
     days: ['TODAY', 'YESTERDAY', 'LAST_3_DAYS', 'LAST_7_DAYS', 'LAST_14_DAYS', 'LAST_30_DAYS'],
@@ -103,10 +104,11 @@ const TransferList = ({ availableOptions, selectedOptions, onSelect, onDeselect 
 interface PeriodPickerProps {
     setIsShowPeriod?: any;
     onUpdate?:any;
-    isDataModalBeingUsedInMap?:boolean
+    isDataModalBeingUsedInMap?:boolean;
+    isAnalyticsDataHardCoded?: boolean;
 }
 
-const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod,isDataModalBeingUsedInMap }) => {
+const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod,isDataModalBeingUsedInMap,isAnalyticsDataHardCoded }) => {
     const { analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, isFetchAnalyticsDataLoading, selectedDataSourceDetails } = useAuthorities();
     const [selectedTab, setSelectedTab] = useState('relative');
     const [selectedPeriodGroup, setSelectedPeriodGroup] = useState('days');
@@ -340,6 +342,10 @@ const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod,
         e.preventDefault();
         
         onUpdate?.(analyticsDimensions.pe);
+        if(isAnalyticsDataHardCoded)
+        {
+            analyticsDimensions.dx = dimensionDataHardCoded
+        }
         await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions), selectedDataSourceDetails);
         setIsShowPeriod && setIsShowPeriod(false);
     };
