@@ -1,12 +1,14 @@
-import { useDataQuery } from '@dhis2/app-runtime';
+import { useDataQuery, useDataEngine } from '@dhis2/app-runtime';
 import i18n from '@dhis2/d2-i18n';
 import minisanteLogo from './images/minisante_logo.png';
 import rbcLogo from './images/rbc_logo.png';
-import { Key, useState, useEffect, useMemo } from 'react';
+import React,{ Key, useState, useEffect, useMemo } from 'react';
 import { Treemap,PieChart, Pie, Cell, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Tab, Tabs, TabBar, Transfer, Button, Modal } from '@dhis2/ui';
 import { useAuthorities } from '../../../context/AuthContext';
 import { isValidInputData, transformDataForGenericChart } from '../../../lib/localGenericchartFormat';
+import { fetchTrackedEntities, fetchEvents } from '../../bulletin-settings/BulletinService';
+import { chartComponents } from '../../../constants/systemCharts';
 
 
 const datastoreQuery = {
@@ -30,280 +32,208 @@ const relativePeriodQuery = {
 const dataF = [
   {
     name: 'W1',
-    '2023': 0,
+    '2023': 123,
     '2024': 3500,
     threshold: 5500,
   },
   {
     name: 'W2',
-    '2023': 0,
+    '2023': 1313,
     '2024': 3700,
     threshold: 5200,
   },
   {
     name: 'W3',
-    '2023': 0,
+    '2023': 1244,
     '2024': 3400,
     threshold: 4800,
   },
   {
     name: 'W4',
-    '2023': 0,
+    '2023': 1312,
     '2024': 3400,
     threshold: 4000,
   },
   {
     name: 'W5',
-    '2023': 0,
+    '2023': 1314,
     '2024': 2800,
     threshold: 4200,
   },
   {
     name: 'W6',
-    '2023': 0,
+    '2023': 8900,
     '2024': 2400,
     threshold: 4300,
   },
   {
     name: 'W7',
-    '2023': 0,
+    '2023': 9809,
     '2024': 2200,
     threshold: 4300,
   },
   {
     name: 'W8',
-    '2023': 0,
+    '2023': 10000,
     '2024': 2100,
     threshold: 4400,
   },
   {
     name: 'W9',
-    '2023': 0,
+    '2023': 9808,
     '2024': 2200,
     threshold: 4400,
   },
   {
     name: 'W10',
-    '2023': 0,
+    '2023': 234,
     '20 24': 2000,
     threshold: 4500,
   },
 ];
 
-const dataM = [
-  { name: 'Maternal death', value: 4 },
-  { name: 'Perinatal death', value: 77 },
-  { name: 'Under 5 years death', value: 19 },
-];
+
+let dataM: any[];
 
 const COLORSM = ['#3b82f6', '#ef4444', '#9ca3af'];
 
-const dataTree = [
-  {
-    name: 'CHK(CHUK) HNR',
-    value: 10,
-    color: '#4085e3',
-  },
-  {
-    name: 'Gahini DH',
-    value: 6,
-    color: '#a4a4a4',
-  },
-  {
-    name: 'Nyagatare DH',
-    value: 6,
-    color: '#ffd700',
-  },
-  {
-    name: 'Kirehe DH',
-    value: 5,
-    color: '#5cb85c',
-  },
-  {
-    name: 'Butare Chu Hnr (huye)',
-    value: 5,
-    color: '#4085e3',
-  },
-  {
-    name: 'Kibilizi DH',
-    value: 3,
-    color: '#888888',
-  },
-  {
-    name: 'Nemba DH',
-    value: 3,
-    color: '#a0522d',
-  },
-  {
-    name: 'Rwanda Military Hospital',
-    value: 3,
-    color: '#2980b9',
-  },
-  {
-    name: 'Rwinkwavu DH',
-    value: 3,
-    color: '#558b2f',
-  },
-  {
-    name: 'Bushenge PH',
-    value: 4,
-    color: '#4085e3',
-  },
-  {
-    name: 'Ruhengeri RH',
-    value: 4,
-    color: '#a0522d',
-  },
-  {
-    name: 'Kibungo RH',
-    value: 2,
-    color: '#4085e3',
-  },
-  {
-    name: 'Kigeme DH',
-    value: 2,
-    color: '#f59e58',
-  },
-  {
-    name: 'Nyanza DH',
-    value: 2,
-    color: '#cccccc',
- },
-  {
-    name: 'Gikongoro DH',
-    value: 2,
-    color: '#ff6347',
-  },
-  {
-    name: 'Mugina DH',
-    value: 1,
-    color: '#4682b4',
-  },
-  {
-    name: 'Kigali DH',
-    value: 1,
-    color: '#6a5acd',
-  },
-];
 
-const dataT = [
-  { name: "CHK(CHUK) HNR", value: 10, fill: "#4C78A8" }, // Blue
-  { name: "Gisenyi DH", value: 7, fill: "#F58518" }, // Orange
-  { name: "Nyagatare DH", value: 6, fill: "#ECA82D" }, // Yellow
-  { name: "Gahini DH", value: 6, fill: "#D4D4D4" }, // Gray
-  { name: "Butare Chu Hnr (huye)", value: 5, fill: "#4C84D8" }, // Light Blue
-  { name: "Kirehe DH", value: 5, fill: "#7BC87C" }, // Green
-  { name: "Bushenge PH", value: 4, fill: "#384E92" }, // Dark Blue
-  { name: "Ruhengeri RH", value: 4, fill: "#AD5A5A" }, // Reddish Brown
-  { name: "Rwinkwavu DH", value: 3, fill: "#6BAA75" }, // Olive Green
-  { name: "Kibungo RH", value: 2, fill: "#A4C1E3" }, // Light Blue
-  { name: "Kaduha DH", value: 1, fill: "#7C8FBA" }, // Dark Gray Blue
-  { name: "Nyabikenke DH", value: 1, fill: "#BFA834" }, // Olive Yellow
-];
+interface Attribute {
+  attribute: string;
+  displayName: string;
+  value: string;
+}
+
+interface TrackedEntityInstance {
+  attributes: Attribute[];
+}
+
+const getRandomColor = () => {
+  const letters = '0123456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 8)];
+  }
+  return color;
+};
 
 
-const ReportTemplate = () => {
-    const {analyticsData,reportAnalyticsDimensions} = useAuthorities()
+// const dataT = [
+//   { name: "CHK(CHUK) HNR", value: 10 },
+//   { name: "Gisenyi DH", value: 7 },
+//   { name: "Nyagatare DH", value: 6 },
+//   { name: "Gahini DH", value: 6 },
+//   { name: "Butare Chu Hnr (huye)", value: 5 },
+//   { name: "Kirehe DH", value: 5 },
+//   { name: "Bushenge PH", value: 4 },
+//   { name: "Ruhengeri RH", value: 4 },
+//   { name: "Rwinkwavu DH", value: 3 },
+//   { name: "Kibungo RH", value: 2 },
+//   { name: "Kaduha DH", value: 1 },
+//   { name: "Nyabikenke DH", value: 1 },
+// ].map(item => ({ ...item, color: getRandomColor() }));
 
-        const { chartData, chartConfig, error:transformAnalyticsError } = useMemo(() => {
-            if (!isValidInputData(analyticsData)) {
-                return { chartData: [], chartConfig: {}, error: "no data found" };
-            }
-    
-            try {
-                const transformedData = transformDataForGenericChart(analyticsData);
-                //const config = generateChartConfig(data,visualSettings.visualColorPalette);
-                return { chartData: transformedData,  error: null };
-            } catch (err) {
-                return { chartData: [], error: (err as Error).message };
-            }
-        }, [analyticsData]);
+let dataTreeMap: any[];
+
+const CustomizedContent = ({ root, depth, x, y, width, height, index, colors, name, value }) => {
+  return (
+    <g>
+      <rect
+        x={x}
+        y={y}
+        width={width}
+        height={height}
+        style={{
+          fill: colors,
+          stroke: '#fff',
+          strokeWidth: 2 / (depth + 1e-10),
+          strokeOpacity: 1 / (depth + 1e-10),
+        }}
+      />
+      <text
+        x={x + width / 2}
+        y={y + height / 2 + 7}
+        textAnchor="middle"
+        fill="#fff"
+        fontSize={14}
+      >
+        {name}
+      </text>
+      <text
+        x={x + width / 2}
+        y={y + height / 2 - 7}
+        textAnchor="middle"
+        fill="#fff"
+        fontSize={14}
+      >
+        {value}
+      </text>
+    </g>
+  );
+};
 
 
+const ReportTemplate : React.FC = () => {
+  const {analyticsData,reportAnalyticsDimensions,visualTitleAndSubTitle,visualSettings} = useAuthorities()
+  const engine = useDataEngine(); 
+  const [messages, setMessages] = useState<string[]>([]);
+  const [alertFromCommunity, setAlertFromCommunity] = useState<string[]>([]);
+  const [IBSHighlightMessage, setIBSHighlightMessage] = useState<string[]>([]);
+  const [totalEvents, setTotalEvents] = useState<number>(0);
+  const [DiseaseData, setDiseasesMessage] = useState<string[]>([]);
+  const [DeathData, setDeathsMessage] = useState<string[]>([]);
+  const [pieChartDescription, setPieChartDescription] = useState<string>();
+  const [deathDescription, setDeathDescription] = useState<string>();
+  const [total, setTotal] = useState<number>(0);
+  const [diseaseCount, setDiseaseCount] = useState<Record<string, number>>({});
+  const [dataLoading, setDataLoading] = useState<boolean>(true);
+  const [dataError, setDataError] = useState<string | null>(null);
+  const [totalOrgUnit, setTotalOrgUnit] = useState<number>(0);
 
-    const { error, loading, data } = useDataQuery(datastoreQuery);
-  const { data: data1 } = useDataQuery(fixedPeriodQuery);
-  const { data: data2 } = useDataQuery(relativePeriodQuery);
 
-  const [groupedData, setGroupedData] = useState<any>({});
-  const relativePeriodTypes = data2?.results || [];
-  const [periodType, setPeriodType] = useState('');
-  const periodTypes = data1?.results?.periodTypes || [];
-
-  const [availablePeriods, setAvailablePeriods] = useState<any[]>([]); // For Transfer component
-  const [selectedPeriods, setSelectedPeriods] = useState<any[]>([]); 
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-
+  const renderAreaChart = () => {
+    const SelectedChart = chartComponents.find(chart => chart.type === "Area")?.component;
+    return SelectedChart ? <SelectedChart data={analyticsData} visualTitleAndSubTitle={visualTitleAndSubTitle} visualSettings={visualSettings} /> : null;
+};
   useEffect(() => {
-    console.log("relati", relativePeriodTypes)
-    if (relativePeriodTypes) {
-      const grouped = {
-        days: [],
-        weeks: [],
-        biweeks: [],
-        months: [],
-        bimonths: [],
-        quarters: [],
-        sixmonths: [],
-        financialYears: [],
-        years: [],
+      const loadData = async () => {
+          try {
+              const response = await fetchTrackedEntities(engine, 'Hjw70Lodtf2', 'U86iDWxDek8');
+              const otherProgramResponse = await fetchEvents(engine, 'Hjw70Lodtf2', 'ecvn9SiIEXz');
+              const malariaResponse = await fetchEvents(engine, 'Hjw70Lodtf2', 'zCy7bqFHOpa');
+              dataM = response.pieChartData
+              dataTreeMap = response.treeMapData.map(item => ({ ...item, color: getRandomColor() }))
+              // console.log("impuruza Program", otherProgramResponse)
+              console.log("response treemap", response.treeMapData);
+              
+              setMessages([...malariaResponse.message, ...otherProgramResponse.message]);
+              setAlertFromCommunity([...malariaResponse.alertFromCommunity, ...otherProgramResponse.alertFromCommunity])
+              setIBSHighlightMessage(response.IBSHighlightMessage)
+              setTotalEvents(malariaResponse.totalEvents + otherProgramResponse.totalEvents);
+              setDiseasesMessage(response.diseaseMessages);
+              setDeathsMessage(response.deathMessages)
+              setPieChartDescription(response.PieChartDescription);
+              setDeathDescription(response.totalDeathMessages)
+              setTotal(response.total);
+          } catch (err) {
+              setDataError(err instanceof Error ? err.message : 'An unknown error occurred');
+          } finally {
+              setDataLoading(false);
+          }
+
+          console.log("this is the total", total)
+          console.log("IBSHighlightMessage",IBSHighlightMessage)
+          
       };
-      relativePeriodTypes.forEach((item: any) => {
-        if (item.includes('DAY')) grouped.days.push(item);
-        else if (item.includes('WEEK') && !item.includes('BIWEEK')) grouped.weeks.push(item);
-        else if (item.includes('BIWEEK')) grouped.biweeks.push(item);
-        else if (item.includes('MONTH') && !item.includes('BIMONTH')&& !item.includes('SIX_MONTH')&& !item.includes('SIXMONTHS')) grouped.months.push(item);
-        else if (item.includes('BIMONTH')) grouped.bimonths.push(item);
-        else if (item.includes('QUARTER')) grouped.quarters.push(item);
-        else if (item.includes('SIX_MONTH') || item.includes('SIXMONTHS')) grouped.sixmonths.push(item);
-        else if (item.includes('FINANCIAL_YEAR')) grouped.financialYears.push(item);
-        else if (item.includes('YEAR') && !item.includes('FINANCIAL_YEAR')) grouped.years.push(item);
-      });
 
-      setGroupedData(grouped);
-    }
-  }, [relativePeriodTypes]);
+        
 
-   useEffect(()=>{
-    console.log("check",analyticsData)
-    console.log("chartData",chartData)
-   },[analyticsData,chartData])
+        loadData();
+    }, [engine]);
 
 
-  useEffect(() => {
-    // When periodType changes, update availablePeriods
-    if (groupedData[periodType.toLowerCase()]) {
-      setAvailablePeriods(
-        groupedData[periodType.toLowerCase()].map((item: string) => ({
-          label: item.replace(/_/g, ' ').toLowerCase(), // Display text
-          value: item, // Unique identifier
-        }))
-       
-      );
-    } else {
-      setAvailablePeriods([]); // Reset if no data
-    }
-  }, [periodType, groupedData]);
 
-  console.log("item", availablePeriods)
-  
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('relative');
-    const FixedAvailablePeriods = [
-      { value: 'Weekly', label: 'weekly' },
-      { value: 'Last month', label: 'Last month' },
-      { value: 'Last 3 months', label: 'Last 3 months' },
-      { value: 'Last 6 months', label: 'Last 6 months' },
-
-    ];
-
-    const handleYearChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      const newYear = parseInt(event.target.value);
-      setSelectedYear(newYear);
-      // setAvailablePeriods(generateMonthsForYear(newYear));
-  };
-
+  const { error, loading, data } = useDataQuery(datastoreQuery);
   if (error) {
     return <span>{i18n.t('ERROR')}</span>;
   }
@@ -332,8 +262,6 @@ const ReportTemplate = () => {
             </h2>
             <div className="py-4 px-6 mt-4 inline-block">
               <h3 className="text-3xl font-extrabold text-black">{title}</h3>
-              {/* <h4 className="text-xl font-semibold mt-2 text-black">2024</h4> */}
-              {/* <p className="text-lg mt-2 text-black">(08-14 July 2024)</p> */}
             </div>
           </div>
     
@@ -360,17 +288,33 @@ const ReportTemplate = () => {
             <h1 className='bg-blue-400 text-xl text-center font-bold py-4 mb-5'>{data?.results?.page2.main_titles[0]}</h1>
             <h2 className='text-md font-bold mb-2'>{data?.results?.page2.main_titles[1]}:</h2>
             <ul className='list-disc pl-4'>
-              <li> <span className='font-bold'>{data?.results?.page2.sub_titles[0]}:</span> {data?.results?.page2.body_content.alert_community[0]}</li>
+              <li> <span className='font-bold'>{data?.results?.page2.sub_titles[0]}:</span> {totalEvents} alerts: 
+              {alertFromCommunity.length > 0 ? (
+                    <span>
+                        {alertFromCommunity.map((msg, index) => (
+                            <span key={index}>{msg},</span>
+                        ))}
+                    </span>
+                ) : (
+                    <p>No cases found.</p>
+                )} 
+              </li>
               <li className='bold mr-5'> <span className='font-bold'>{data?.results?.page2.sub_titles[1]}:</span> {data?.results?.page2.body_content.Alert_from_EIOS[0]}</li>
               <ul className='list-disc pl-6'>
                 <li>{data?.results?.page2.body_content.Alert_from_EIOS[1]}</li>
                 <li>{data?.results?.page2.body_content.Alert_from_EIOS[2]}</li>
               </ ul>
               <li className='font-bold'>{data?.results?.page2.sub_titles[2]}</li>
-              <ul className='list-disc pl-6'>
-                {data?.results?.page2?.body_content.indicator_highlights.map((highlight: any, index) => (
-                  <li key={index}>{highlight}</li>
-                ))}
+              <ul>
+                {IBSHighlightMessage.length > 0 ? (
+                      <ul className='list-disc pl-6'>
+                          {IBSHighlightMessage.map((msg, index) => (
+                              <li key={index}>{msg}</li>
+                          ))}
+                      </ul>
+                  ) : (
+                      <p>No cases found.</p>
+                  )} 
               </ul>
               <li className='font-bold'>{data?.results?.page2.sub_titles[3]}</li>
               <ul className='list-disc pl-6'>
@@ -398,12 +342,21 @@ const ReportTemplate = () => {
             <h1 className='font-bold mb-4 '>{data?.results?.page3.main_titles[2]}</h1>
             <ul className='list-disc pl-4'>
               <li>
-                <span className='font-bold'>{data?.results?.page3.sub_titles[0]}:</span> {data?.results?.page3.body_content.alert_community[0]}
+                <span className='font-bold'>{data?.results?.page3.sub_titles[0]}:</span> {totalEvents} alerts
               </li>
               <ul className='list-disc pl-6'>
-                  {data?.results?.page3.body_content.alert_community.slice(-4).map((al: any, index) => (
+                  {/* {data?.results?.page3.body_content.alert_community.slice(-4).map((al: any, index) => (
                     <li  key={index}>{al}</li>
-                  ))}
+                  ))} */}
+                      {messages.length > 0 ? (
+                            <ul>
+                                {messages.map((msg, index) => (
+                                    <li key={index}>{msg}</li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>No cases found.</p>
+                        )} 
                 </ul>
               <li>
               <span className='font-bold'>{data?.results?.page3.sub_titles[1]}:</span> {data?.results?.page3.body_content.Alert_from_EIOS[0]}
@@ -435,12 +388,18 @@ const ReportTemplate = () => {
               {data?.results?.page4?.body_content.description}
             </p>
             <h1 className='text-center font-bold my-4'>{data?.results?.page4.main_titles[1]}</h1>
-            <p>{data?.results?.page4.body_content.alert_community}</p>
+            <p>During this Epi week, {total} cases of immediate reportable diseases were notified:</p>
             <ul className='list-disc pl-8'>
-              {data?.results?.page4?.body_content.cases.map((caseC: any, index) => (
-                <li key={index}>{caseC}</li>
-              ))}
-            </ul>
+                {DiseaseData.length > 0 ? (
+                            <ul>
+                                {DiseaseData.map((msg, index) => (
+                                    <li key={index}>{msg}</li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>No cases found.</p>
+                        )} 
+                </ul>
             <h2 className='font-bold my-4'>{data?.results?.page4?.sub_titles[1]}:</h2>
             <ul className='list-disc pl-8'>
               {data?.results?.page4?.body_content.notes.map((note: any, index) => (
@@ -454,58 +413,55 @@ const ReportTemplate = () => {
             <p><span className='font-bold'>{data?.results?.pages.sub_titles[0]}</span>: {data?.results?.pages.reportable_description[0]} </p>
             <p> {data?.results?.pages.reportable_description[1]}</p>       
             <h2 className='font-bold mt-4'>{data?.results?.pages.sub_titles[1]}</h2>
-            <ResponsiveContainer width="100%" height={400}>
-                  <AreaChart data={dataF}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Area type="monotone" dataKey="2023" stackId="1" stroke="#8884d8" fill="#8884d8" />
-                    <Area type="monotone" dataKey="2024" stackId="1" stroke="#82ca9d" fill="#82ca9d" />
-                    <Area type="monotone" dataKey="threshold" stroke="red" fill="none" strokeWidth={2} />
-                  </AreaChart>
-           </ResponsiveContainer>
+
+           <div>{renderAreaChart()}</div>
           </div>
 
           <div className="p-4 rounded-lg mb-5">
             <h1 className='text-center font-bold my-4'>{data?.results?.pages.main_titles[1]}</h1>
-            <p> {data?.results?.pages.body_content.distribution[0]}</p>   
+            <p> {pieChartDescription}</p>   
             <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                      <Pie
-                        data={dataM}
-                        dataKey="value"
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={40}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        label
-                      >
-                        {dataM.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORSM[index % COLORSM.length]} />
-                        ))}
-                      </Pie>
-                      <Legend verticalAlign="bottom" layout="horizontal" />
-                    </PieChart>
-           </ResponsiveContainer>    
-            <ul className='list-disc pl-6'>
-                  {data?.results?.pages.body_content.deaths_reported.map((al: any, index) => (
-                    <li  key={index}>{al}</li>
-                  ))}
-                </ul>
+                  <PieChart>
+                    <Pie
+                      data={dataM}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={40}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      label
+                    >
+                      {dataM && dataM.length > 0 && dataM.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORSM[index % COLORSM.length]} />
+                      ))}
+                    </Pie>
+                    <Legend verticalAlign="bottom" layout="horizontal" />
+                  </PieChart>
+            </ResponsiveContainer>
+            <p>{deathDescription}</p>
+           {DeathData.length > 0 ? (
+                            <ul className='list-disc pl-6'>
+                                {DeathData.map((msg, index) => (
+                                    <li key={index}>{msg}</li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>No cases found.</p>
+                        )} 
           </div>
           <div className="p-4 rounded-lg mb-5">
           <h2 className='font-bold '>{data?.results?.pages.sub_titles[2]}</h2>
            <ResponsiveContainer width="100%" height={400}>
                 <Treemap
-                  data={dataT}
+                  data={dataTreeMap}
                   dataKey="value"
-                  nameKey="name"
+                  ratio={4 / 3}
                   stroke="#fff"
-                  isAnimationActive
-                />
+                  fill="#8884d8"
+                  content={<CustomizedContent/>}
+      />
            </ResponsiveContainer>
 
           </div>

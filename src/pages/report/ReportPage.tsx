@@ -273,19 +273,19 @@ useEffect(() => {
                     <TabsContent value="DATA" className="pt-4">
                         <div>
                             {/* data items */}
-                            <div className="mb-4">
+                            {/* <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Select Period</label>
                                 <Button disabled={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source" text={`${(isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading ) ? "Loading.." : `Data ${analyticsDimensions?.dx?.length === 0 ? "" : `(${analyticsDimensions?.dx?.length})`}`} `} onClick={handleShowDataModal} />
-                            </div>
+                            </div> */}
                             {/* Period */}
                             <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Period</label>
                               <Button disabled={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading } variant="source"  text={`${(isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading ) ? "Loading.." : `Period ${analyticsDimensions?.pe?.length === 0 ? "" : `(${analyticsDimensions?.pe?.length})`} `} `} onClick={handleShowPeriodModal} /> 
                             </div>
                             {/* Organization Unit */}
-                            <div className="mb-4">
+                            {/* <div className="mb-4">
                                 <Button disabled={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source"  text={`${(isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading ) ? "Loading.." : `Organisation Unit`} `} onClick={handleShowOrganizationUnitModal} />
-                            </div>
+                            </div> */}
                         </div>
                     </TabsContent>
                    
@@ -315,7 +315,7 @@ useEffect(() => {
                 <OrganizationModal  data={currentUserInfoAndOrgUnitsData}  loading={orgUnitLoading} error={fetchOrgUnitError} setIsShowOrganizationUnit={setIsShowOrganizationUnit}  />
             </GenericModal>
             <GenericModal isOpen={isShowPeriod} setIsOpen={setIsShowPeriod}>
-                <PeriodModal setIsShowPeriod={setIsShowPeriod} report='report' />
+                <PeriodModal setIsShowPeriod={setIsShowPeriod} isAnalyticsDataHardCoded={true} />
             </GenericModal>
             {/* save visual type form */}
             <GenericModal isOpen={isShowSaveVisualTypeForm} setIsOpen={setIsShowSaveVisualTypeForm}>
