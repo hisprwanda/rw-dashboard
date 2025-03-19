@@ -1,27 +1,37 @@
 import Button from '../../../components/Button';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { MapMetaDataConfigModal } from './MapMetaDataConfigModal';
 import SelectOtherMapLayer from './SelectOtherMapLayer';
-import { BasemapConfig, BasemapType } from '../../../types/maps';
+import { BasemapConfig, BasemapType, MapSidebarProps } from '../../../types/maps';
+import { FaSave } from 'react-icons/fa';
+import { SaveMapModal } from './SaveMapModal';
+import { useAuthorities } from '.././../../context/AuthContext';
 
 
 
 
-// MapSidebar Props Type
-type MapSidebarProps = {
-  basemaps: Record<BasemapType, BasemapConfig>;
-  currentBasemap: BasemapType;
-  onBasemapChange: (basemap: BasemapType) => void;
-};
+
+
 
 const MapSidebar: React.FC<MapSidebarProps> = ({ 
   basemaps, 
   currentBasemap, 
   onBasemapChange 
 }) => {
+const {userDatails, selectedDataSourceOption, selectedOrgUnits, selectedLevel ,analyticsQuery,mapAnalyticsQueryTwo,geoFeaturesQuery} = useAuthorities()
+  
+const [showSaveMapModal, setShowSaveMapModal] = useState(false);
+useEffect(()=>{
+  console.log("test 2",{userDatails, selectedDataSourceOption, selectedOrgUnits, selectedLevel ,analyticsQuery,mapAnalyticsQueryTwo,geoFeaturesQuery})
+},[userDatails, selectedDataSourceOption, selectedOrgUnits, selectedLevel ,analyticsQuery,mapAnalyticsQueryTwo,geoFeaturesQuery])
   return (
     <div className="w-64 bg-white border-r border-gray-200 p-2">
-      <button className="text-sm font-bold mb-2 px-2">+ Add layer</button>  
+       {/* sava map */}
+       <div>
+    <Button text="Save Changes" icon={<FaSave />} onClick={() => setShowSaveMapModal(true)} />
+    <SaveMapModal open={showSaveMapModal} setOpen={setShowSaveMapModal} />
+  </div>
+       {/* selecting other maps layer */}
       <SelectOtherMapLayer /> 
       {/* Basemap Selection */}
       <div className="space-y-1">

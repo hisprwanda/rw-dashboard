@@ -10,7 +10,8 @@ export const useRunGeoFeatures = () => {
         selectedOrganizationUnits, 
         selectedOrganizationUnitsLevels, 
         selectedOrgUnitGroups ,
-        setGeoFeaturesData
+        setGeoFeaturesData,
+        setGeoFeaturesQuery
     } = useAuthorities();
 
     const [data, setData] = useState(null);
@@ -49,6 +50,7 @@ export const useRunGeoFeatures = () => {
             const result = await engine.query(query);
             setData(result);
             setGeoFeaturesData(result?.result)
+            setGeoFeaturesQuery(query)
         } catch (err) {
             setError(err);
         } finally {

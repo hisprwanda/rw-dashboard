@@ -34,7 +34,7 @@ export const MapDataSchema = z.object({
     name: z.string(),
     id: z.string(),
   }),
-  organizationTree: z.array(z.string()).optional(),
+  organizationTree: z.array(z.string()  ).optional(),
   selectedOrgUnitLevel: z.array(z.number()).optional(),
 });
 
