@@ -31,7 +31,7 @@ export function SaveMapModal({
   existingMapData,
 }: SaveMapModalProps) {
   // Get user and data source details from context
-  const { userDatails, selectedDataSourceOption, selectedOrgUnits, selectedLevel, analyticsQuery, mapAnalyticsQueryTwo, geoFeaturesQuery,backedSelectedItems } = useAuthorities();
+  const { userDatails, selectedDataSourceOption, selectedOrgUnits, selectedLevel, analyticsQuery, mapAnalyticsQueryTwo, geoFeaturesQuery,backedSelectedItems,analyticsDimensions } = useAuthorities();
   const { toast } = useToast();
   const engine = useDataEngine();
 
@@ -172,7 +172,8 @@ export function SaveMapModal({
   // Log formData on change
   useEffect(() => {
     console.log("Updated map formData:", formData);
-  }, [formData]);
+    console.log("analyticsDimensions status",analyticsDimensions)
+  }, [formData,analyticsDimensions]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

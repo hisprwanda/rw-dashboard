@@ -177,8 +177,15 @@ export const useFetchSingleMapData = (mapId: string) => {
     previousDataRef.current = data;
 
     const savedDataSourceId = data.dataStore?.dataSourceId;
+    // getting selected period from filter
+    const selectedPeriods = data.dataStore?.queries?.mapAnalyticsQueryOne?.myData?.params?.filter
+    // getting selected data dimension ids
+    let tempAnalyticsData =  data.dataStore?.queries?.mapAnalyticsQueryOne?.myData?.params?.dimension?.slice(0, -1)
+    // creating new dimensions array which is in this format ["dx:778ids","pe:ids"]
+    let analyticsOfPeriodsAndData = [...tempAnalyticsData,selectedPeriods]
+    //// transforming analyticsOfPeriodsAndData to be in the format of {pe:[selectedPeriodIds],dx[selectedDataIds]} analyticsDimension format 
     const dimensions = unFormatAnalyticsDimensions(
-      data.dataStore?.queries?.mapAnalyticsQueryOne?.myData?.params?.dimension
+      analyticsOfPeriodsAndData
     );
 
     setSelectedDataSourceOption(savedDataSourceId);
