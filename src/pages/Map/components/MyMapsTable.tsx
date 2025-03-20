@@ -71,7 +71,7 @@ const MyMapsTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
   const handleView = (data:any) => {
     // clear existing analytics data
     setAnalyticsData([])
-  navigate(`/visualizers/${data?.key}`)
+  navigate(`/map/${data?.key}`)
   };
 
   const handleDelete = (data:any) => {

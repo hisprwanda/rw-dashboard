@@ -89,10 +89,13 @@ const sampleLegends = [
     ]
   }
 ];
-
+type MapBodyProps = {
+  geoFeaturesData:any;
+  analyticsMapData:any;
+  metaMapData:any
+}
 // Main Map Component
-const MapBody: React.FC = () => {
-  const {geoFeaturesData, analyticsMapData, metaMapData} = useAuthorities();
+const MapBody: React.FC<MapBodyProps> = ({analyticsMapData,geoFeaturesData,metaMapData}) => {
   // State for current basemap
   const [currentBasemap, setCurrentBasemap] = useState<BasemapType>('osm-light');
   
@@ -329,8 +332,6 @@ const MapBody: React.FC = () => {
     
     layer.bindPopup(`
       <strong>${props.name}</strong><br/>
-      Code: ${props.code}<br/>
-      Region: ${props.region}<br/>
       Value: ${displayValue || 'No data'}
     `);
   };
