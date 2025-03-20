@@ -257,7 +257,7 @@ function Visualizers() {
                                     {/* Period */}
                                     <div className="mb-4">
                                         {/* <label className="block text-sm font-medium text-gray-700 mb-1">Period</label> */}
-                                        <Button disabled={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source" text={`${(isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading) ? "Loading.." : `${i18n.t('Data')} ${analyticsDimensions?.pe?.length === 0 ? "" : `(${analyticsDimensions?.pe?.length})`} `} `} onClick={handleShowPeriodModal} />
+                                        <Button disabled={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source" text={`${(isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading) ? "Loading.." : `${i18n.t('Period')} ${analyticsDimensions?.pe?.length === 0 ? "" : `(${analyticsDimensions?.pe?.length})`} `} `} onClick={handleShowPeriodModal} />
                                     </div>
                                     {/* Organization Unit */}
                                     <div className="mb-4">

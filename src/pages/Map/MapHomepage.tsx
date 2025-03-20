@@ -5,16 +5,33 @@ import DistrictMap from './components/DistrictMap'
 import { useAuthorities } from '../../context/AuthContext';
 import { useParams } from 'react-router-dom';
 import { useFetchSingleMapData } from '../../services/fetchSingleStoredMap';
+import { Loader } from '@mantine/core';
 
 
 const MapHomepage: React.FC = () => {
   const {id:mapId} = useParams()
-  console.log("hello map id",mapId)
-  const {data,error,isError,loading} = useFetchSingleMapData(mapId)
+  const {geoFeaturesData, analyticsMapData, metaMapData,setIsUseCurrentUserOrgUnits,isSetPredifinedUserOrgUnits} = useAuthorities();
+  const {data:singleSavedMapData,error,isError,loading} = useFetchSingleMapData(mapId)
+
   useEffect(()=>{
-    console.log("heftching saved map data",data)
-  },[data])
-  const {geoFeaturesData, analyticsMapData, metaMapData} = useAuthorities();
+    console.log("heftching saved map data",singleSavedMapData)
+  },[singleSavedMapData])
+
+
+    // update if current user organization is selected
+    useEffect(() => {
+      if (singleSavedMapData) {
+          const isAnyTrue = Object.values(isSetPredifinedUserOrgUnits).some(value => value === true);
+          setIsUseCurrentUserOrgUnits(isAnyTrue);
+      }
+
+  }, [isSetPredifinedUserOrgUnits]);
+  if(loading)
+  {
+    return <p>Loading</p>
+  }
+
+  /// main return
   return (
     <div className="">
       <MapBody analyticsMapData={analyticsMapData}  geoFeaturesData={geoFeaturesData}  metaMapData={metaMapData} />
