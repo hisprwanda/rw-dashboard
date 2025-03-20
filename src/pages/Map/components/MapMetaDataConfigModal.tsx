@@ -109,7 +109,7 @@ export function MapMetaDataConfigModal({
    const analyticsResult= await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions,isAnalyticsApiUsedInMap), selectedDataSourceDetails,isAnalyticsApiUsedInMap);
 
     console.log("hello GeoFeaturesResult",GeoFeaturesResult)
-    console.log("hello analyticsResult",analyticsResublt)
+    console.log("hello analyticsResult",analyticsResult)
     onOpenChange(false);
   };
 
@@ -119,7 +119,7 @@ export function MapMetaDataConfigModal({
       case "data":
         return (
           <div className="space-y-6 py-4">
-              {/* <DataModal data={dataItemsData} isDataModalBeingUsedInMap={true} loading={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} error={dataItemsFetchError}  subDataItemsData={subDataItemsData}  /> */}
+              <DataModal data={dataItemsData} isDataModalBeingUsedInMap={true} loading={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} error={dataItemsFetchError}  subDataItemsData={subDataItemsData}  /> 
           </div>
         );
       case "period":

@@ -360,6 +360,11 @@ const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod,
         return periodObject || { value: periodValue, label: periodValue }; // Fallback if not found
     });
 
+
+    useEffect(()=>{
+        console.log("hello selected periods",analyticsDimensions?.pe)
+    })
+
     return (
         <div 
             className="w-full max-w-4xl p-6 bg-white rounded-lg shadow"

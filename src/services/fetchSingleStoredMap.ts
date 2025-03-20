@@ -178,7 +178,7 @@ export const useFetchSingleMapData = (mapId: string) => {
 
     const savedDataSourceId = data.dataStore?.dataSourceId;
     const dimensions = unFormatAnalyticsDimensions(
-      data.dataStore?.query?.myData?.params?.dimension
+      data.dataStore?.queries?.mapAnalyticsQueryOne?.myData?.params?.dimension
     );
 
     setSelectedDataSourceOption(savedDataSourceId);

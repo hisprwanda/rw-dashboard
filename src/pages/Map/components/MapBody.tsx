@@ -92,10 +92,11 @@ const sampleLegends = [
 type MapBodyProps = {
   geoFeaturesData:any;
   analyticsMapData:any;
-  metaMapData:any
+  metaMapData:any;
+  singleSavedMapData?:any
 }
 // Main Map Component
-const MapBody: React.FC<MapBodyProps> = ({analyticsMapData,geoFeaturesData,metaMapData}) => {
+const MapBody: React.FC<MapBodyProps> = ({analyticsMapData,geoFeaturesData,metaMapData,singleSavedMapData}) => {
   // State for current basemap
   const [currentBasemap, setCurrentBasemap] = useState<BasemapType>('osm-light');
   
@@ -425,6 +426,7 @@ const MapBody: React.FC<MapBodyProps> = ({analyticsMapData,geoFeaturesData,metaM
         basemaps={BASEMAPS}
         currentBasemap={currentBasemap}
         onBasemapChange={setCurrentBasemap}
+        singleSavedMapData={singleSavedMapData}
       />
 
       {/* Map Container */}

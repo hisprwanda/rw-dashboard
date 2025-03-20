@@ -25,11 +25,6 @@ export const VisualDataSchema = z.object({
     customSubTitle: z.string()?.optional(),
     DefaultSubTitle: z.array(z.string()?.nullable()?.optional())?.optional(),
   }),
-  backedSelectedItems:z.array(z.object({
-    label: z.string(),
-    id: z.string(),
- 
-  })),
   visualSettings:  z.object({
     visualColorPalette: z.object({
       name: z.string(), 
@@ -65,6 +60,11 @@ export const VisualDataSchema = z.object({
   }),
   organizationTree: z.array(z.string())?.optional(),
   selectedOrgUnitLevel: z.array(z.number())?.optional(),
+  backedSelectedItems:z.array(z.object({
+    label: z.string(),
+    id: z.string(),
+ 
+  })),
 });
 
 // Infer form fields from the schema

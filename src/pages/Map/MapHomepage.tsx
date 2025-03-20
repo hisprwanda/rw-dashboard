@@ -34,7 +34,7 @@ const MapHomepage: React.FC = () => {
   /// main return
   return (
     <div className="">
-      <MapBody analyticsMapData={analyticsMapData}  geoFeaturesData={geoFeaturesData}  metaMapData={metaMapData} />
+      <MapBody analyticsMapData={analyticsMapData}  geoFeaturesData={geoFeaturesData}  metaMapData={metaMapData} singleSavedMapData={singleSavedMapData} />
     </div>
   )
 }

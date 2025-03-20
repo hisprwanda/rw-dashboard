@@ -31,7 +31,7 @@ export function SaveMapModal({
   existingMapData,
 }: SaveMapModalProps) {
   // Get user and data source details from context
-  const { userDatails, selectedDataSourceOption, selectedOrgUnits, selectedLevel, analyticsQuery, mapAnalyticsQueryTwo, geoFeaturesQuery } = useAuthorities();
+  const { userDatails, selectedDataSourceOption, selectedOrgUnits, selectedLevel, analyticsQuery, mapAnalyticsQueryTwo, geoFeaturesQuery,backedSelectedItems } = useAuthorities();
   const { toast } = useToast();
   const engine = useDataEngine();
 
@@ -76,6 +76,7 @@ export function SaveMapModal({
         updatedAt: Date.now(),
         organizationTree: selectedOrgUnits,
         selectedOrgUnitLevel: selectedLevel,
+        backedSelectedItems:backedSelectedItems
       });
     }
   }, [
@@ -94,23 +95,14 @@ export function SaveMapModal({
   // If editing an existing map, pre-fill the form fields
   useEffect(() => {
     if (mapId && existingMapData) {
-      reset({
-        ...existingMapData.dataStore,
-        // Ensure these values are always the latest
-        queries: {
-          mapAnalyticsQueryOne: analyticsQuery,
-          mapAnalyticsQueryTwo: mapAnalyticsQueryTwo,
-          geoFeaturesQuery: geoFeaturesQuery,
-        },
-        dataSourceId: selectedDataSourceOption,
-        updatedBy: {
-          name: userDatails?.me?.displayName,
-          id: userDatails?.me?.id,
-        },
-        updatedAt: Date.now(),
-        organizationTree: selectedOrgUnits,
-        selectedOrgUnitLevel: selectedLevel,
-      });
+      reset((prevValues) => ({
+        ...prevValues,
+        id: existingMapData?.dataStore?.id,
+        mapName: existingMapData?.dataStore?.mapName || prevValues.mapName,
+        backedSelectedItems: existingMapData?.dataStore?.backedSelectedItems || prevValues.backedSelectedItems,
+        description: existingMapData?.dataStore?.description || prevValues.description,
+        createdAt: existingMapData?.dataStore?.createdAt || prevValues.createdAt,
+    }));
     }
   }, [
     mapId, 
