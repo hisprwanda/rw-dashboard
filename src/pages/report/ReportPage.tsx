@@ -29,6 +29,7 @@ import { currentInstanceId } from '../../constants/currentInstanceInfo';
 import debounce from 'lodash/debounce';
 import { dimensionItemTypes } from '../../constants/dimensionItemTypes';
 import ReportTemplate from './components/ReportTemplate';
+import ReportBulletinLanding from './components/ReportBulletinLanding';
 
 
 function ReportPage() {
@@ -50,6 +51,8 @@ function ReportPage() {
     const selectedDataSourceDetailsRef = useRef(selectedDataSourceDetails);
     const [titleOption, setTitleOption] = useState< 'none' | 'custom'>('none');
     const [subtitleOption, setSubtitleOption] = useState<'auto' | 'none' | 'custom'>('auto');
+    const [isShowBulletinConfig, setIsShowBulletinConfig] = useState<boolean>(false);
+    const [dataSubmitted, setDataSubmitted] = useState(false);
     //// data source options
     const dataSourceOptions = savedDataSource?.dataStore?.entries?.map((entry:any) => (
         <option key={entry?.key} value={entry?.key}>{entry?.value?.instanceName}</option>
@@ -174,7 +177,11 @@ function ReportPage() {
      //// function to handle show modals
     const handleShowDataModal = () => setIsShowDataModal(true);
     const handleShowOrganizationUnitModal = () => setIsShowOrganizationUnit(true);
-    const handleShowPeriodModal = () => setIsShowPeriod(true);
+    const handleShowPeriodModal = () =>{ 
+        setIsShowPeriod(true);
+        setDataSubmitted(false);
+    }
+    const handleShowBulletinConfig = () => setIsShowBulletinConfig(true);
 
 
     // Function to render the selected chart
@@ -272,6 +279,10 @@ useEffect(() => {
                     </TabsList>
                     <TabsContent value="DATA" className="pt-4">
                         <div>
+                            {/* <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Report Config</label>
+                              <Button disabled={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading } variant="source"  text="config bulletin" onClick={handleShowBulletinConfig} /> 
+                            </div> */}
                             {/* data items */}
                             {/* <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Select Period</label>
@@ -286,6 +297,12 @@ useEffect(() => {
                             {/* <div className="mb-4">
                                 <Button disabled={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading} variant="source"  text={`${(isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading ) ? "Loading.." : `Organisation Unit`} `} onClick={handleShowOrganizationUnitModal} />
                             </div> */}
+
+                            {/* <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Report Config</label>
+                              <Button disabled={isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading } variant="source"  text="config bulletin" onClick={handleShowBulletinConfig} /> 
+                            </div> */}
+
                         </div>
                     </TabsContent>
                    
@@ -300,7 +317,9 @@ useEffect(() => {
                         ) : (
                             <div className="flex items-center justify-center w-full h-[600px]">
                                 <div className="w-[100%] max-h-[100%] overflow-x-auto">
-                                    <ReportTemplate/>
+                                {dataSubmitted ? <ReportTemplate /> : <ReportBulletinLanding />}
+                                    {/* <ReportTemplate/>
+                                    < ReportBulletinLanding/> */}
                                 </div>
                             </div>
                         )}
@@ -315,7 +334,10 @@ useEffect(() => {
                 <OrganizationModal  data={currentUserInfoAndOrgUnitsData}  loading={orgUnitLoading} error={fetchOrgUnitError} setIsShowOrganizationUnit={setIsShowOrganizationUnit}  />
             </GenericModal>
             <GenericModal isOpen={isShowPeriod} setIsOpen={setIsShowPeriod}>
-                <PeriodModal setIsShowPeriod={setIsShowPeriod} isAnalyticsDataHardCoded={true} />
+                <PeriodModal 
+                setIsShowPeriod={setIsShowPeriod} 
+                isAnalyticsDataHardCoded={true}
+                setDataSubmitted={setDataSubmitted}  />
             </GenericModal>
             {/* save visual type form */}
             <GenericModal isOpen={isShowSaveVisualTypeForm} setIsOpen={setIsShowSaveVisualTypeForm}>

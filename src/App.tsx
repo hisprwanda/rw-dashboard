@@ -61,7 +61,6 @@ const App: React.FC = () => {
               <Route path="dashboard/:id?/:present?" element={<CreateDashboardPage />} />
               <Route path="*" element={<NotFoundPage />} />
               <Route path="report" element={<ReportPage />} />
-              <Route path="bulletin-settings" element={< BulletinSettingsPage/>}/>
             </Route>
 
             <Route path="admin" element={

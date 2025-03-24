@@ -106,9 +106,10 @@ interface PeriodPickerProps {
     onUpdate?:any;
     isDataModalBeingUsedInMap?:boolean;
     isAnalyticsDataHardCoded?: boolean;
+    setDataSubmitted?: (submitted: boolean) => void;
 }
 
-const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod,isDataModalBeingUsedInMap,isAnalyticsDataHardCoded }) => {
+const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod,isDataModalBeingUsedInMap,isAnalyticsDataHardCoded, setDataSubmitted }) => {
     const { analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, isFetchAnalyticsDataLoading, selectedDataSourceDetails } = useAuthorities();
     const [selectedTab, setSelectedTab] = useState('relative');
     const [selectedPeriodGroup, setSelectedPeriodGroup] = useState('days');
@@ -345,10 +346,15 @@ const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod,
         if(isAnalyticsDataHardCoded)
         {
             analyticsDimensions.dx = dimensionDataHardCoded
+            
         }
-        await fetchAnalyticsData({dimension:formatAnalyticsDimensions(analyticsDimensions),instance:selectedDataSourceDetails});
+        await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions), selectedDataSourceDetails);
+        const checking = fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions), selectedDataSourceDetails);
+        console.log("period modal fetched analytics", checking)
+        setDataSubmitted?.(true);
         setIsShowPeriod && setIsShowPeriod(false);
     };
+    
 
     useEffect(() => {
         updateAvailablePeriods();
