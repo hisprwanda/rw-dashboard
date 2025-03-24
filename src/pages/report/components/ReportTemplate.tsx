@@ -3,12 +3,18 @@ import i18n from '@dhis2/d2-i18n';
 import minisanteLogo from './images/minisante_logo.png';
 import rbcLogo from './images/rbc_logo.png';
 import React,{ Key, useState, useEffect, useMemo,useRef } from 'react';
+import React,{ Key, useState, useEffect, useMemo,useRef } from 'react';
 import { Treemap,PieChart, Pie, Cell, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Tab, Tabs, TabBar, Transfer, Button, Modal } from '@dhis2/ui';
 import { useAuthorities } from '../../../context/AuthContext';
 import { isValidInputData, transformDataForGenericChart } from '../../../lib/localGenericchartFormat';
 import { fetchTrackedEntities, fetchEvents } from './BulletinService';
 import { chartComponents } from '../../../constants/systemCharts';
+import { dimensionDataHardCoded } from '../../../constants/bulletinDimension';
+import { formatAnalyticsDimensions } from '../../../lib/formatAnalyticsDimensions';
+import { Textarea } from "../../../components/ui/textarea";
+import { BulletinAreaChart } from './BulletinAreaCharts';
+
 import { dimensionDataHardCoded } from '../../../constants/bulletinDimension';
 import { formatAnalyticsDimensions } from '../../../lib/formatAnalyticsDimensions';
 import { Textarea } from "../../../components/ui/textarea";
