@@ -51,13 +51,11 @@ export function SaveMapModal({
   
   // Set default values when dependencies change or component mounts
   useEffect(() => {
-    // Only set default values if not editing an existing map
-    if (!mapId || !existingMapData) {
       reset({
-        id: generateUid(),
-        mapType: "Thematic",
-        mapName: "",
-        description: "",
+        id: mapId ? existingMapData?.dataStore?.id :  generateUid(),
+        mapType:mapId ? existingMapData?.dataStore?.mapType  : "Thematic",
+        mapName: mapId ? existingMapData?.dataStore?.mapName  : "",
+        description: mapId ? existingMapData?.dataStore?.description  :  "",
         queries: {
           mapAnalyticsQueryOne: analyticsQuery,
           mapAnalyticsQueryTwo: mapAnalyticsQueryTwo,
@@ -78,7 +76,7 @@ export function SaveMapModal({
         selectedOrgUnitLevel: selectedLevel,
         backedSelectedItems:backedSelectedItems
       });
-    }
+    
   }, [
     analyticsQuery, 
     mapAnalyticsQueryTwo, 
@@ -90,31 +88,6 @@ export function SaveMapModal({
     mapId, 
     existingMapData, 
     reset
-  ]);
-
-  // If editing an existing map, pre-fill the form fields
-  useEffect(() => {
-    if (mapId && existingMapData) {
-      reset((prevValues) => ({
-        ...prevValues,
-        id: existingMapData?.dataStore?.id,
-        mapName: existingMapData?.dataStore?.mapName || prevValues.mapName,
-        backedSelectedItems: existingMapData?.dataStore?.backedSelectedItems || prevValues.backedSelectedItems,
-        description: existingMapData?.dataStore?.description || prevValues.description,
-        createdAt: existingMapData?.dataStore?.createdAt || prevValues.createdAt,
-    }));
-    }
-  }, [
-    mapId, 
-    existingMapData, 
-    reset, 
-    analyticsQuery, 
-    mapAnalyticsQueryTwo, 
-    geoFeaturesQuery, 
-    selectedDataSourceOption,
-    selectedOrgUnits,
-    selectedLevel,
-    userDatails
   ]);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);

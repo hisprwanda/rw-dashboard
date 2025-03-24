@@ -93,10 +93,11 @@ type MapBodyProps = {
   geoFeaturesData:any;
   analyticsMapData:any;
   metaMapData:any;
-  singleSavedMapData?:any
+  singleSavedMapData?:any;
+  mapId?:string
 }
 // Main Map Component
-const MapBody: React.FC<MapBodyProps> = ({analyticsMapData,geoFeaturesData,metaMapData,singleSavedMapData}) => {
+const MapBody: React.FC<MapBodyProps> = ({analyticsMapData,geoFeaturesData,metaMapData,singleSavedMapData,mapId}) => {
   // State for current basemap
   const [currentBasemap, setCurrentBasemap] = useState<BasemapType>('osm-light');
   
@@ -427,6 +428,7 @@ const MapBody: React.FC<MapBodyProps> = ({analyticsMapData,geoFeaturesData,metaM
         currentBasemap={currentBasemap}
         onBasemapChange={setCurrentBasemap}
         singleSavedMapData={singleSavedMapData}
+        mapId={mapId}
       />
 
       {/* Map Container */}

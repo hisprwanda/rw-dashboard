@@ -17,7 +17,8 @@ const MapSidebar: React.FC<MapSidebarProps> = ({
   basemaps, 
   currentBasemap, 
   onBasemapChange ,
-  singleSavedMapData
+  singleSavedMapData,
+  mapId
 }) => {
 const {userDatails, selectedDataSourceOption, selectedOrgUnits, selectedLevel ,analyticsQuery,mapAnalyticsQueryTwo,geoFeaturesQuery} = useAuthorities()
   
@@ -30,7 +31,7 @@ useEffect(()=>{
        {/* sava map */}
        <div>
     <Button text="Save Changes" icon={<FaSave />} onClick={() => setShowSaveMapModal(true)} />
-    <SaveMapModal open={showSaveMapModal} setOpen={setShowSaveMapModal} existingMapData={singleSavedMapData} />
+    <SaveMapModal open={showSaveMapModal} setOpen={setShowSaveMapModal} existingMapData={singleSavedMapData} mapId={mapId} />
   </div>
        {/* selecting other maps layer */}
       <SelectOtherMapLayer /> 
