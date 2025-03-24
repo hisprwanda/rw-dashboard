@@ -106,6 +106,7 @@ export function MapMetaDataConfigModal({
      e.preventDefault();
      const isAnalyticsApiUsedInMap = true
      const GeoFeaturesResult = await fetchGeoFeatures()
+     console.log("hello analyticsDimensions before saving map",analyticsDimensions)
    const analyticsResult= await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions,isAnalyticsApiUsedInMap), selectedDataSourceDetails,isAnalyticsApiUsedInMap);
 
     console.log("hello GeoFeaturesResult",GeoFeaturesResult)

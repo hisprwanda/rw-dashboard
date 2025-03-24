@@ -18,6 +18,7 @@ import { useDataItems } from './fetchDataItems';
 import { useExternalDataItems } from './useExternalDataItems';
 import { useExternalOrgUnitData } from './fetchExternalOrgUnit';
 import { useOrgUnitData } from './fetchOrgunitData';
+import { useRunGeoFeatures } from './maps';
 
 interface VisualData {
   dataStore?: {
@@ -104,12 +105,14 @@ export const useFetchSingleMapData = (mapId: string) => {
   }), [mapId]);
 
   const { data, loading, error, refetch } = useDataQuery<VisualData>(query);
+  const {fetchGeoFeatures} = useRunGeoFeatures()
 
   const handleDataSourceChange = useCallback(async (
     dataSourceId: string | undefined,
     dimensions: any,
     dataSourceDetails: any
   ) => {
+    const isAnalyticsApiUsedInMap = true
     if (dataSourceId === currentInstanceId) {
       const currentInstanceDetails = {
         instanceName: systemInfo?.title?.applicationTitle || '',
@@ -117,10 +120,12 @@ export const useFetchSingleMapData = (mapId: string) => {
       };
       // clear existing analytics data
       setAnalyticsData([]);
+      /// fetch geo features data
+      await fetchGeoFeatures()
       // run analytics with saved data
-      fetchAnalyticsData(
-        formatAnalyticsDimensions(dimensions),
-        currentInstanceDetails
+      await fetchAnalyticsData(
+        formatAnalyticsDimensions(dimensions,isAnalyticsApiUsedInMap),
+        currentInstanceDetails,isAnalyticsApiUsedInMap
       );
       // fetch necessary data for selected instance
       setSelectedDataSourceDetails(currentInstanceDetails);
@@ -132,10 +137,12 @@ export const useFetchSingleMapData = (mapId: string) => {
     } else if (dataSourceDetails) {
         // clear existing analytics data
       setAnalyticsData([]);
+          /// fetch geo features data
+          await fetchGeoFeatures()
            // run analytics with saved data
-      fetchAnalyticsData(
-        formatAnalyticsDimensions(dimensions),
-        dataSourceDetails
+      await fetchAnalyticsData(
+        formatAnalyticsDimensions(dimensions,isAnalyticsApiUsedInMap),
+        dataSourceDetails,isAnalyticsApiUsedInMap
       );
             // fetch necessary data for selected instance
       setSelectedDataSourceDetails(dataSourceDetails);
@@ -159,6 +166,7 @@ export const useFetchSingleMapData = (mapId: string) => {
     fetchExternalDataItems,
     fetchExternalUserInfoAndOrgUnitData,
     fetchAnalyticsData,
+   fetchGeoFeatures,
     setAnalyticsData,
     setCurrentUserInfoAndOrgUnitsData,
     setSelectedDataSourceDetails
@@ -201,19 +209,19 @@ export const useFetchSingleMapData = (mapId: string) => {
     setAnalyticsQuery(data.dataStore?.queries?.mapAnalyticsQueryOne );
     setMapAnalyticsQueryTwo(data.dataStore?.queries?.mapAnalyticsQueryTwo);
     setGeoFeaturesQuery(data.dataStore?.queries?.geoFeaturesQuery);
-
+    const selectedOrgUnit = data.dataStore?.queries?.mapAnalyticsQueryOne?.myData?.params?.dimension?.[1]
     setSelectedOrganizationUnits(
-      formatSelectedOrganizationUnit(data.dataStore?.query?.myData?.params?.filter)
+      formatSelectedOrganizationUnit(selectedOrgUnit)
     );
     setIsSetPredifinedUserOrgUnits(
-      formatCurrentUserSelectedOrgUnit(data.dataStore?.query?.myData?.params?.filter)
+      formatCurrentUserSelectedOrgUnit(selectedOrgUnit)
     );
     setSelectedOrgUnits(data.dataStore?.organizationTree);
     setSelectedOrgUnitGroups(
-      formatOrgUnitGroup(data.dataStore?.query?.myData?.params?.filter)
+      formatOrgUnitGroup(selectedOrgUnit)
     );
     setSelectedOrganizationUnitsLevels(
-      formatOrgUnitLevels(data.dataStore?.query?.myData?.params?.filter)
+      formatOrgUnitLevels(selectedOrgUnit)
     );
     setSelectedLevel(data.dataStore?.selectedOrgUnitLevel);
     setSelectedVisualTitleAndSubTitle(data.dataStore?.visualTitleAndSubTitle);
