@@ -208,7 +208,7 @@ function Visualizers() {
 
     useEffect(() => {
         selectedDataSourceDetailsRef.current = selectedDataSourceDetails;
-        // reset to page one
+        // reset to pagination to page one if datasource is changed
         setDataItemsDataPage(1);
     }, [selectedDataSourceDetails]);
 

@@ -346,7 +346,7 @@ const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod,
         {
             analyticsDimensions.dx = dimensionDataHardCoded
         }
-        await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions), selectedDataSourceDetails);
+        await fetchAnalyticsData({dimension:formatAnalyticsDimensions(analyticsDimensions),instance:selectedDataSourceDetails});
         setIsShowPeriod && setIsShowPeriod(false);
     };
 

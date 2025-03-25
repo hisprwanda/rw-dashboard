@@ -116,10 +116,8 @@ export const useFetchSingleVisualData = (visualId: string) => {
       // clear existing analytics data
       setAnalyticsData([]);
       // run analytics with saved data
-      fetchAnalyticsData(
-        formatAnalyticsDimensions(dimensions),
-        currentInstanceDetails
-      );
+      fetchAnalyticsData({dimension:formatAnalyticsDimensions(dimensions),instance:currentInstanceDetails});
+     // fetchAnalyticsData(formatAnalyticsDimensions(dimensions),currentInstanceDetails);
       // fetch necessary data for selected instance
       setSelectedDataSourceDetails(currentInstanceDetails);
       await fetchCurrentInstanceData(selectedDimensionItemType);

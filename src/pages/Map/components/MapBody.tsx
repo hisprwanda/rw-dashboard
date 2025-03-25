@@ -12,6 +12,7 @@ import { BASEMAPS } from '../constants';
 import { useAuthorities } from '../../../context/AuthContext';
 import { MapUpdater } from './MapUpdater';
 import { generateAutoLegend } from '../../../lib/mapHelpers';
+import { useFetchSingleMapData } from '../../../services/fetchSingleStoredMap';
 
 let DefaultIcon = L.icon({
   iconUrl: icon,
@@ -98,6 +99,7 @@ type MapBodyProps = {
 }
 // Main Map Component
 const MapBody: React.FC<MapBodyProps> = ({analyticsMapData,geoFeaturesData,metaMapData,singleSavedMapData,mapId}) => {
+
   // State for current basemap
   const [currentBasemap, setCurrentBasemap] = useState<BasemapType>('osm-light');
   

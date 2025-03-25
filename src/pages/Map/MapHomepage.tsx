@@ -12,8 +12,8 @@ import { formatAnalyticsDimensions } from '../../lib/formatAnalyticsDimensions';
 const MapHomepage: React.FC = () => {
   const {id:mapId} = useParams()
   const {geoFeaturesData, analyticsMapData, metaMapData,setIsUseCurrentUserOrgUnits,isSetPredifinedUserOrgUnits,fetchAnalyticsData,analyticsDimensions,selectedDataSourceDetails} = useAuthorities();
-  const {data:singleSavedMapData,error,isError,loading} = useFetchSingleMapData(mapId)
-  const {fetchGeoFeatures} = useRunGeoFeatures()
+  const {data:singleSavedMapData,error,isError,loading,isFetchCurrentInstanceDataItemsLoading,isFetchExternalInstanceDataItemsLoading,isHandleDataSourceChangeLoading} = useFetchSingleMapData(mapId)
+
 
   useEffect(()=>{
     console.log("heftching saved map data",singleSavedMapData)
@@ -29,6 +29,10 @@ const MapHomepage: React.FC = () => {
       }
 
   }, [isSetPredifinedUserOrgUnits]);
+
+  useEffect(()=>{
+    console.log("helo isHandleDataSourceChangeLoading",isHandleDataSourceChangeLoading)
+  },[isHandleDataSourceChangeLoading])
   if(loading)
   {
     return <p>Loading</p>

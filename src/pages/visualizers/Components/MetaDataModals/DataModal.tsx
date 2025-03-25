@@ -377,10 +377,7 @@ const DataModal: React.FC<DataModalProps> = ({
   };
 
   const handleUpdate = async () => {
-    await fetchAnalyticsData(
-      formatAnalyticsDimensions(analyticsDimensions),
-      selectedDataSourceDetails
-    );
+    await fetchAnalyticsData({dimension:formatAnalyticsDimensions(analyticsDimensions),instance:selectedDataSourceDetails});
     setIsShowDataModal(false);
     setDataItemsDataPage(1);
   };

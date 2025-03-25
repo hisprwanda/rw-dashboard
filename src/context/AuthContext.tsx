@@ -21,6 +21,9 @@ import { currentInstanceId } from "../constants/currentInstanceInfo";
 
 
 
+
+
+
 interface AuthContextProps {
   userDatails: {};
   authorities: string[];
@@ -206,9 +209,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // testing
   const engine = useDataEngine();
-  const fetchAnalyticsData = async (dimension: any,instance:DataSourceFormFields,isAnalyticsApiUsedInMap?:boolean ) => {
-    console.log("here is the selected instance",instance)
-    console.log("here is the selected dimension",dimension)
+  type fetchAnalyticsDataProps = {
+    dimension: any;
+    instance:DataSourceFormFields;
+    isAnalyticsApiUsedInMap?:boolean
+  }
+  const fetchAnalyticsData = async ({dimension,instance,isAnalyticsApiUsedInMap}:fetchAnalyticsDataProps ):Promise<void> => {
     const orgUnitIds = selectedOrganizationUnits?.map((unit: any) => unit)?.join(';');
     const orgUnitLevelIds = selectedOrganizationUnitsLevels?.map((unit: any) => `LEVEL-${unit}`)?.join(';');
     const orgUnitGroupIds = selectedOrgUnitGroups?.map((item: any) => `OU_GROUP-${item}`)?.join(';');
