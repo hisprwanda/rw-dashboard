@@ -51,3 +51,111 @@ export const generateAutoLegend = (districts: ProcessedDistrict []) => {
    // setAutoLegend(autoLegend);
   };
   
+// Calculate map center from district coordinates
+export const calculateMapCenter = (districts: ProcessedDistrict[]): [number, number] => {
+  if (!districts || districts.length === 0) {
+    return [-1.9403, 30.0578]; // Default center for Rwanda
+  }
+  
+  const districtsWithData = districts.filter(d => d.value !== null);
+  
+  if (districtsWithData.length === 0) {
+    return [-1.9403, 30.0578];
+  }
+  
+  let latSum = 0;
+  let lonSum = 0;
+  let pointCount = 0;
+  
+  districtsWithData.forEach(district => {
+    if (district.coordinates && district.coordinates.length > 0) {
+      district.coordinates.forEach(polygon => {
+        if (polygon && polygon.length > 0) {
+          lonSum += polygon[0][0];
+          latSum += polygon[0][1];
+          pointCount++;
+        }
+      });
+    }
+  });
+  
+  return pointCount > 0 
+    ? [latSum / pointCount, lonSum / pointCount] 
+    : [-1.9403, 30.0578];
+};
+
+// Parse coordinates string to GeoJSON format
+export const parseCoordinates = (coordinatesString: string): number[][][] => {
+  try {
+    const cleanString = coordinatesString
+      .replace(/\]\]\]\]$/, ']]]')
+      .replace(/\[\[\[/, '[[[');
+    
+    return JSON.parse(cleanString);
+  } catch (e) {
+    console.error('Error parsing coordinates:', e, coordinatesString);
+    return [[[0, 0]]];
+  }
+};
+
+// Get color for a value based on legend classes
+export const getColorForValue = (
+  value: number | null, 
+  legendClasses: LegendClass[]
+): string => {
+  if (value === null) return "#FFFFFF";
+  
+  for (const legendClass of legendClasses) {
+    if (value >= legendClass.startValue && value <= legendClass.endValue) {
+      return legendClass.color;
+    }
+  }
+  
+  return "#FFFFFF";
+};
+
+// Convert processed districts to GeoJSON
+export const createGeoJSON = (districts: ProcessedDistrict[]) => {
+  return {
+    type: 'FeatureCollection',
+    features: districts.map(district => ({
+      type: 'Feature',
+      properties: {
+        id: district.id,
+        name: district.name,
+        value: district.value,
+        code: district.code,
+        region: district.region
+      },
+      geometry: {
+        type: 'Polygon',
+        coordinates: district.coordinates
+      }
+    }))
+  };
+};
+
+// Popup content for district features
+export const onEachFeature = (
+  feature: any, 
+  layer: any, 
+  analyticsMapData: any, 
+  valueMap: Map<string, string>
+) => {
+  if (!analyticsMapData?.rows) return;
+  
+  const props = feature.properties;
+  
+  let displayValue;
+  
+  if (analyticsMapData.rows.length === 1) {
+    displayValue = analyticsMapData.rows[0]?.[2] || 'No data';
+  } else {
+    displayValue = valueMap.get(props.id) || 'No data';
+  }
+  
+  layer.bindPopup(`
+    <strong>${props.name}</strong><br/>
+    Value: ${displayValue}
+  `);
+};
