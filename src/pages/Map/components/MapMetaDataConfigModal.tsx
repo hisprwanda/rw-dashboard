@@ -107,10 +107,12 @@ export function MapMetaDataConfigModal({
      const isAnalyticsApiUsedInMap = true
      const GeoFeaturesResult = await fetchGeoFeatures()
      console.log("hello analyticsDimensions before saving map",analyticsDimensions) 
+     let selectedPeriodsOnMap = []
+     selectedPeriodsOnMap.push(`pe:${analyticsDimensions?.pe?.join(";")}`);
      const analyticsResult = await fetchAnalyticsData({
       dimension: formatAnalyticsDimensions(analyticsDimensions,isAnalyticsApiUsedInMap),
       instance: selectedDataSourceDetails,
-      isAnalyticsApiUsedInMap: isAnalyticsApiUsedInMap
+      isAnalyticsApiUsedInMap,selectedPeriodsOnMap
     });
     console.log("hello GeoFeaturesResult",GeoFeaturesResult)
     console.log("hello analyticsResult",analyticsResult)

@@ -18,6 +18,7 @@ import { dimensionItemTypesTYPES } from "../types/dimensionDataItemTypes";
 import { dimensionItemTypes } from "../constants/dimensionItemTypes";
 import { BackedSelectedItem, visualTypes } from "../types/visualType";
 import { currentInstanceId } from "../constants/currentInstanceInfo";
+import { getAnalyticsFilter } from "../lib/getAnalyticsFilters";
 
 
 
@@ -212,24 +213,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   type fetchAnalyticsDataProps = {
     dimension: any;
     instance:DataSourceFormFields;
-    isAnalyticsApiUsedInMap?:boolean
+    isAnalyticsApiUsedInMap?:boolean;
+    selectedPeriodsOnMap?:string[]
   }
-  const fetchAnalyticsData = async ({dimension,instance,isAnalyticsApiUsedInMap}:fetchAnalyticsDataProps ):Promise<void> => {
+  const fetchAnalyticsData = async ({dimension,instance,isAnalyticsApiUsedInMap,selectedPeriodsOnMap = []}:fetchAnalyticsDataProps ):Promise<void> => {
     const orgUnitIds = selectedOrganizationUnits?.map((unit: any) => unit)?.join(';');
     const orgUnitLevelIds = selectedOrganizationUnitsLevels?.map((unit: any) => `LEVEL-${unit}`)?.join(';');
-    const orgUnitGroupIds = selectedOrgUnitGroups?.map((item: any) => `OU_GROUP-${item}`)?.join(';');
+    const orgUnitGroupIds = selectedOrgUnitGroups?.map((item: any) => `OU_GROUP-${item}`)?.join(';'); 
 
-  let selectedPeriodsOnMap:string[] = []
-  selectedPeriodsOnMap.push(`pe:${analyticsDimensions?.pe?.join(";")}`);
-    
-    const filter =  isAnalyticsApiUsedInMap ? `${selectedPeriodsOnMap}`
-    :
-    `ou:${isUseCurrentUserOrgUnits
-      ? `${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT ? 'USER_ORGUNIT;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_CHILDREN ? 'USER_ORGUNIT_CHILDREN;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_GRANDCHILDREN ? 'USER_ORGUNIT_GRANDCHILDREN;' : ''}`.slice(0, -1)
-      : `${orgUnitIds};${orgUnitLevelIds};${orgUnitGroupIds}`}`;
+    const filter =  getAnalyticsFilter({
+      isAnalyticsApiUsedInMap,
+      selectedPeriodsOnMap,
+      isUseCurrentUserOrgUnits,
+      isSetPredifinedUserOrgUnits,
+      orgUnitIds,
+      orgUnitLevelIds,
+      orgUnitGroupIds,
+    });
 
-    if (isAnalyticsApiUsedInMap ? ( dimension.some(item => item.startsWith("dx:") && item.split(":")[1].trim()) &&
-    filter.startsWith("pe:") && filter.split(":")[1].trim()) : ( dimension.some(item => item.startsWith("dx:") && item.split(":")[1].trim()) &&
+    ///// before running api check if all required states have valid data
+    if (isAnalyticsApiUsedInMap ? 
+      ( dimension.some(item => item.startsWith("dx:") && item.split(":")[1].trim()) &&
+    filter.startsWith("pe:") && filter.split(":")[1].trim()) : 
+    ( dimension.some(item => item.startsWith("dx:") && item.split(":")[1].trim()) &&
     dimension.some(item => item.startsWith("pe:") && item.split(":")[1].trim()) &&
    filter.startsWith("ou:") && filter.split(":")[1].trim())
       
