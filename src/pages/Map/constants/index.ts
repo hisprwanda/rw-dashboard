@@ -1,5 +1,6 @@
 import osm from '../../../assets/osm.png';
 import osmlight from '../../../assets/osmlight.png';
+import { Legend } from '../../../types/maps';
 
 export const BASEMAPS = {
   'osm-light': {
@@ -18,6 +19,74 @@ export const BASEMAPS = {
   },
 };
 
+
+export const sampleLegends: Legend[] = [
+  {
+    "name": "legend 1",
+    "legends": [
+      {
+        "name": "Low",
+        "startValue": 0,
+        "endValue": 500,
+        "color": "#FFFFB2"
+      },
+      {
+        "name": "Medium",
+        "startValue": 500,
+        "endValue": 800,
+        "color": "#FED976"
+      },
+      {
+        "name": "High",
+        "startValue": 800,
+        "endValue": 2000,
+        "color": "#FD8D3C"
+      }
+    ]
+  },
+  {
+    "name": "legend 2",
+    "legends": [
+      {
+        "name": "Very Low",
+        "startValue": 0,
+        "endValue": 300,
+        "color": "#EDF8FB"
+      },
+      {
+        "name": "Low",
+        "startValue": 300,
+        "endValue": 600,
+        "color": "#B2E2E2"
+      },
+      {
+        "name": "Medium",
+        "startValue": 600,
+        "endValue": 900,
+        "color": "#66C2A4"
+      },
+      {
+        "name": "High",
+        "startValue": 900,
+        "endValue": 1200,
+        "color": "#2CA25F"
+      },
+      {
+        "name": "Very High",
+        "startValue": 1200,
+        "endValue": 2000,
+        "color": "#006D2C"
+      }
+    ]
+  }
+];
+
+
+
+
+
+
+////////////////////// testing map dummy data
 
 export const geoFeaturesData = [
     {
