@@ -25,6 +25,7 @@ import { useExternalDataItems } from "../../../services/useExternalDataItems";
 import { useOrgUnitData } from "../../../services/fetchOrgunitData";
 import { formatAnalyticsDimensions } from "../../../lib/formatAnalyticsDimensions";
 import { useRunGeoFeatures } from "../../../services/maps";
+import { getSelectedOrgUnitsWhenUsingMap } from "../../../lib/getAnalyticsFilters";
 
 
 type MapMetaDataConfigModalProps = {
@@ -51,6 +52,19 @@ export function MapMetaDataConfigModal({
     aggregationType: "By data element",
     showCompletedEvents: false
   });
+  const orgUnitIds = selectedOrganizationUnits?.map((unit: any) => unit)?.join(';');
+  const orgUnitLevelIds = selectedOrganizationUnitsLevels?.map((unit: any) => `LEVEL-${unit}`)?.join(';');
+  const orgUnitGroupIds = selectedOrgUnitGroups?.map((item: any) => `OU_GROUP-${item}`)?.join(';');
+
+  const selectedOrgUnitsWhenUsingMap =  getSelectedOrgUnitsWhenUsingMap({
+   isUseCurrentUserOrgUnits,
+   isSetPredifinedUserOrgUnits,
+   orgUnitIds,
+   orgUnitLevelIds,
+   orgUnitGroupIds,
+ })
+ let selectedPeriodsOnMap = []
+ selectedPeriodsOnMap.push(`pe:${analyticsDimensions?.pe?.join(";")}`);
   console.log("currentUserInfoAndOrgUnitsData",currentUserInfoAndOrgUnitsData)
   const [hasError, setHasError] = useState(true);
 
@@ -105,15 +119,12 @@ export function MapMetaDataConfigModal({
      e.stopPropagation();
      e.preventDefault();
      const isAnalyticsApiUsedInMap = true
-     const GeoFeaturesResult = await fetchGeoFeatures()
-     console.log("hello analyticsDimensions before saving map",analyticsDimensions) 
+     const GeoFeaturesResult = await fetchGeoFeatures({selectedOrgUnitsWhenUsingMap})
      const analyticsResult = await fetchAnalyticsData({
       dimension: formatAnalyticsDimensions(analyticsDimensions,isAnalyticsApiUsedInMap),
       instance: selectedDataSourceDetails,
-      isAnalyticsApiUsedInMap: isAnalyticsApiUsedInMap
+      isAnalyticsApiUsedInMap,selectedPeriodsOnMap,selectedOrgUnitsWhenUsingMap
     });
-    console.log("hello GeoFeaturesResult",GeoFeaturesResult)
-    console.log("hello analyticsResult",analyticsResult)
     onOpenChange(false);
   };
 

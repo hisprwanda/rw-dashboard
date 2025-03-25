@@ -3,6 +3,9 @@ import { useAuthorities } from '../context/AuthContext';
 import { useDataEngine } from '@dhis2/app-runtime';
 import { useDataQuery } from '@dhis2/app-runtime';
 
+type fetchGeoFeatures = {
+    selectedOrgUnitsWhenUsingMap:any
+}
 export const useRunGeoFeatures = () => {
     const engine = useDataEngine();
     const { 
@@ -19,32 +22,19 @@ export const useRunGeoFeatures = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const orgUnitIds = selectedOrganizationUnits?.map((unit: any) => unit).join(';');
-    const orgUnitLevelIds = selectedOrganizationUnitsLevels?.map((unit: any) => `LEVEL-${unit}`).join(';');
-    const orgUnitGroupIds = selectedOrgUnitGroups?.map((item: any) => `OU_GROUP-${item}`).join(';');
-
-    const ou = `ou:${
-        isUseCurrentUserOrgUnits
-            ? `${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT ? 'USER_ORGUNIT;' : ''}${
-                isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_CHILDREN ? 'USER_ORGUNIT_CHILDREN;' : ''}${
-                isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_GRANDCHILDREN ? 'USER_ORGUNIT_GRANDCHILDREN;' : ''
-            }`.slice(0, -1)
-            : `${orgUnitIds};${orgUnitLevelIds};${orgUnitGroupIds}`
-    }`;
-
-    const queryParams = {
-        ou,
-        displayProperty: 'NAME',
-    };
-
-    const query = {
-        result: {
-            resource: 'geoFeatures',
-            params: queryParams,
-        },
-    };
-
-    const fetchGeoFeatures = async () => {
+    const fetchGeoFeatures = async ({selectedOrgUnitsWhenUsingMap}:fetchGeoFeatures) => {
+        const ou = selectedOrgUnitsWhenUsingMap
+        const queryParams = {
+            ou,
+            displayProperty: 'NAME',
+        };
+    
+        const query = {
+            result: {
+                resource: 'geoFeatures',
+                params: queryParams,
+            },
+        };
         setLoading(true);
         setError(null);
         try {
