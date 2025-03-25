@@ -12,6 +12,7 @@ import { BASEMAPS } from '../constants';
 import { useAuthorities } from '../../../context/AuthContext';
 import { MapUpdater } from './MapUpdater';
 import { generateAutoLegend } from '../../../lib/mapHelpers';
+import { useFetchSingleMapData } from '../../../services/fetchSingleStoredMap';
 
 let DefaultIcon = L.icon({
   iconUrl: icon,
@@ -89,10 +90,16 @@ const sampleLegends = [
     ]
   }
 ];
-
+type MapBodyProps = {
+  geoFeaturesData:any;
+  analyticsMapData:any;
+  metaMapData:any;
+  singleSavedMapData?:any;
+  mapId?:string
+}
 // Main Map Component
-const MapBody: React.FC = () => {
-  const {geoFeaturesData, analyticsMapData, metaMapData} = useAuthorities();
+const MapBody: React.FC<MapBodyProps> = ({analyticsMapData,geoFeaturesData,metaMapData,singleSavedMapData,mapId}) => {
+
   // State for current basemap
   const [currentBasemap, setCurrentBasemap] = useState<BasemapType>('osm-light');
   
@@ -329,8 +336,6 @@ const MapBody: React.FC = () => {
     
     layer.bindPopup(`
       <strong>${props.name}</strong><br/>
-      Code: ${props.code}<br/>
-      Region: ${props.region}<br/>
       Value: ${displayValue || 'No data'}
     `);
   };
@@ -424,6 +429,8 @@ const MapBody: React.FC = () => {
         basemaps={BASEMAPS}
         currentBasemap={currentBasemap}
         onBasemapChange={setCurrentBasemap}
+        singleSavedMapData={singleSavedMapData}
+        mapId={mapId}
       />
 
       {/* Map Container */}

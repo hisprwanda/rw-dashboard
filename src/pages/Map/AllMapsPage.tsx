@@ -41,8 +41,6 @@ useEffect(()=>{
   return (
     <div className='container w-full m-auto  p-2'  >
       {loading ? <Loading /> : <>
-
-
         <Tabs defaultValue="my-maps" className="w-full bg-white shadow-md rounded-lg p-4">
           <div className='flex justify-between' >
             <TabsList className="flex items-center justify-center gap-3 ">

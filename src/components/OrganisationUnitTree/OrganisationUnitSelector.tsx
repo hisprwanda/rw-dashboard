@@ -133,7 +133,7 @@ const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsSh
   // Handle update analytics API
   const handleUpdateAnalytics = async () => {
     // Continue with analytics fetch
-    await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions), selectedDataSourceDetails);
+    await fetchAnalyticsData({dimension:formatAnalyticsDimensions(analyticsDimensions),instance:selectedDataSourceDetails});
     setIsShowOrganizationUnit(false);
   };
 

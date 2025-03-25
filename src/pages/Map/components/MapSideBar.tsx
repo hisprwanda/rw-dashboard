@@ -16,7 +16,9 @@ import { useAuthorities } from '.././../../context/AuthContext';
 const MapSidebar: React.FC<MapSidebarProps> = ({ 
   basemaps, 
   currentBasemap, 
-  onBasemapChange 
+  onBasemapChange ,
+  singleSavedMapData,
+  mapId
 }) => {
 const {userDatails, selectedDataSourceOption, selectedOrgUnits, selectedLevel ,analyticsQuery,mapAnalyticsQueryTwo,geoFeaturesQuery} = useAuthorities()
   
@@ -29,7 +31,7 @@ useEffect(()=>{
        {/* sava map */}
        <div>
     <Button text="Save Changes" icon={<FaSave />} onClick={() => setShowSaveMapModal(true)} />
-    <SaveMapModal open={showSaveMapModal} setOpen={setShowSaveMapModal} />
+    <SaveMapModal open={showSaveMapModal} setOpen={setShowSaveMapModal} existingMapData={singleSavedMapData} mapId={mapId} />
   </div>
        {/* selecting other maps layer */}
       <SelectOtherMapLayer /> 

@@ -36,6 +36,11 @@ export const MapDataSchema = z.object({
   }),
   organizationTree: z.array(z.string()  ).optional(),
   selectedOrgUnitLevel: z.array(z.number()).optional(),
+  backedSelectedItems:z.array(z.object({
+    label: z.string(),
+    id: z.string(),
+ 
+  })),
 });
 
 // Infer form fields from the schema

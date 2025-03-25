@@ -31,7 +31,7 @@ export function SaveMapModal({
   existingMapData,
 }: SaveMapModalProps) {
   // Get user and data source details from context
-  const { userDatails, selectedDataSourceOption, selectedOrgUnits, selectedLevel, analyticsQuery, mapAnalyticsQueryTwo, geoFeaturesQuery } = useAuthorities();
+  const { userDatails, selectedDataSourceOption, selectedOrgUnits, selectedLevel, analyticsQuery, mapAnalyticsQueryTwo, geoFeaturesQuery,backedSelectedItems,analyticsDimensions } = useAuthorities();
   const { toast } = useToast();
   const engine = useDataEngine();
 
@@ -51,13 +51,11 @@ export function SaveMapModal({
   
   // Set default values when dependencies change or component mounts
   useEffect(() => {
-    // Only set default values if not editing an existing map
-    if (!mapId || !existingMapData) {
       reset({
-        id: generateUid(),
-        mapType: "Thematic",
-        mapName: "",
-        description: "",
+        id: mapId ? existingMapData?.dataStore?.id :  generateUid(),
+        mapType:mapId ? existingMapData?.dataStore?.mapType  : "Thematic",
+        mapName: mapId ? existingMapData?.dataStore?.mapName  : "",
+        description: mapId ? existingMapData?.dataStore?.description  :  "",
         queries: {
           mapAnalyticsQueryOne: analyticsQuery,
           mapAnalyticsQueryTwo: mapAnalyticsQueryTwo,
@@ -76,8 +74,9 @@ export function SaveMapModal({
         updatedAt: Date.now(),
         organizationTree: selectedOrgUnits,
         selectedOrgUnitLevel: selectedLevel,
+        backedSelectedItems:backedSelectedItems
       });
-    }
+    
   }, [
     analyticsQuery, 
     mapAnalyticsQueryTwo, 
@@ -89,40 +88,6 @@ export function SaveMapModal({
     mapId, 
     existingMapData, 
     reset
-  ]);
-
-  // If editing an existing map, pre-fill the form fields
-  useEffect(() => {
-    if (mapId && existingMapData) {
-      reset({
-        ...existingMapData.dataStore,
-        // Ensure these values are always the latest
-        queries: {
-          mapAnalyticsQueryOne: analyticsQuery,
-          mapAnalyticsQueryTwo: mapAnalyticsQueryTwo,
-          geoFeaturesQuery: geoFeaturesQuery,
-        },
-        dataSourceId: selectedDataSourceOption,
-        updatedBy: {
-          name: userDatails?.me?.displayName,
-          id: userDatails?.me?.id,
-        },
-        updatedAt: Date.now(),
-        organizationTree: selectedOrgUnits,
-        selectedOrgUnitLevel: selectedLevel,
-      });
-    }
-  }, [
-    mapId, 
-    existingMapData, 
-    reset, 
-    analyticsQuery, 
-    mapAnalyticsQueryTwo, 
-    geoFeaturesQuery, 
-    selectedDataSourceOption,
-    selectedOrgUnits,
-    selectedLevel,
-    userDatails
   ]);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -180,7 +145,8 @@ export function SaveMapModal({
   // Log formData on change
   useEffect(() => {
     console.log("Updated map formData:", formData);
-  }, [formData]);
+    console.log("analyticsDimensions status",analyticsDimensions)
+  }, [formData,analyticsDimensions]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

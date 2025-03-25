@@ -1,7 +1,7 @@
 import { useDataQuery } from '@dhis2/app-runtime';
-import { useEffect, useCallback, useMemo, useRef } from 'react';
+import { useEffect, useCallback, useMemo, useRef, useState } from 'react';
 import { useAuthorities } from '../context/AuthContext';
-import { useDataSourceData } from '../services/DataSourceHooks';
+import { useDataSourceData } from './DataSourceHooks';
 import { 
   formatAnalyticsDimensions, 
   unFormatAnalyticsDimensions 
@@ -18,6 +18,7 @@ import { useDataItems } from './fetchDataItems';
 import { useExternalDataItems } from './useExternalDataItems';
 import { useExternalOrgUnitData } from './fetchExternalOrgUnit';
 import { useOrgUnitData } from './fetchOrgunitData';
+import { useRunGeoFeatures } from './maps';
 
 interface VisualData {
   dataStore?: {
@@ -41,9 +42,10 @@ interface VisualData {
   };
 }
 
-export const useFetchSingleVisualData = (visualId: string) => {
+export const useFetchSingleMapData = (mapId: string) => {
   const isInitialMount = useRef(true);
   const previousDataRef = useRef<VisualData | null>(null);
+  const [dataSourceChangeLoading, setDataSourceChangeLoading] = useState(false);
   
   const {
     fetchCurrentInstanceData,
@@ -67,6 +69,8 @@ export const useFetchSingleVisualData = (visualId: string) => {
     setSelectedDataSourceDetails,
     setSelectedChartType,
     setAnalyticsQuery,
+    setGeoFeaturesQuery,
+    setMapAnalyticsQueryTwo,
     setAnalyticsDimensions,
     setIsSetPredifinedUserOrgUnits,
     setSelectedOrganizationUnits,
@@ -84,68 +88,69 @@ export const useFetchSingleVisualData = (visualId: string) => {
     setCurrentUserInfoAndOrgUnitsData
   } = useAuthorities();
 
-  // Early return if no visualId
-  if (!visualId) {
+  if (!mapId) {
     return { 
       data: null, 
       loading: false, 
       error: null, 
       isError: false, 
-      refetch: () => {} 
+      refetch: () => {},
+      isHandleDataSourceChangeLoading: false,
+      dataItemsFetchError,
+      isFetchCurrentInstanceDataItemsLoading,
+      fetchExternalDataError,
+      isFetchExternalInstanceDataItemsLoading
     };
   }
 
   const query = useMemo(() => ({
     dataStore: {
-      resource: `dataStore/${process.env.REACT_APP_VISUALS_STORE}/${visualId}`,
+      resource: `dataStore/${process.env.REACT_APP_MAPS_STORE}/${mapId}`,
     },
-  }), [visualId]);
+  }), [mapId]);
 
-  const { data, loading, error, refetch } = useDataQuery<VisualData>(query);
+  const { data, loading, error, refetch } = useDataQuery(query);
+  const { fetchGeoFeatures } = useRunGeoFeatures()
 
   const handleDataSourceChange = useCallback(async (
     dataSourceId: string | undefined,
     dimensions: any,
     dataSourceDetails: any
   ) => {
-    if (dataSourceId === currentInstanceId) {
-      const currentInstanceDetails = {
-        instanceName: systemInfo?.title?.applicationTitle || '',
-        isCurrentInstance: true,
-      };
-      // clear existing analytics data
-      setAnalyticsData([]);
-      // run analytics with saved data
-      fetchAnalyticsData({dimension:formatAnalyticsDimensions(dimensions),instance:currentInstanceDetails});
-     // fetchAnalyticsData(formatAnalyticsDimensions(dimensions),currentInstanceDetails);
-      // fetch necessary data for selected instance
-      setSelectedDataSourceDetails(currentInstanceDetails);
-      await fetchCurrentInstanceData(selectedDimensionItemType);
-      const result = await fetchCurrentUserInfoAndOrgUnitData();
-      setCurrentUserInfoAndOrgUnitsData(result);
-      
-    
-    } else if (dataSourceDetails) {
-        // clear existing analytics data
-      setAnalyticsData([]);
-           // run analytics with saved data
-      fetchAnalyticsData(
-        formatAnalyticsDimensions(dimensions),
-        dataSourceDetails
-      );
-            // fetch necessary data for selected instance
-      setSelectedDataSourceDetails(dataSourceDetails);
-      await fetchExternalDataItems(
-        dataSourceDetails.url,
-        dataSourceDetails.token,
-        selectedDimensionItemType
-      );
-      await fetchExternalUserInfoAndOrgUnitData(
-        dataSourceDetails.url,
-        dataSourceDetails.token
-      );
-      
-   
+ 
+    try {
+      console.log("hello dimension data in aaaa",dimensions)
+      setDataSourceChangeLoading(true);
+      const isAnalyticsApiUsedInMap = true;
+      if (dataSourceId === currentInstanceId) {
+        const currentInstanceDetails = {
+          instanceName: systemInfo?.title?.applicationTitle || '',
+          isCurrentInstance: true,
+        };
+        setAnalyticsData([]);
+        await fetchGeoFeatures();
+        await fetchAnalyticsData({dimension:formatAnalyticsDimensions(dimensions,isAnalyticsApiUsedInMap),instance:currentInstanceDetails,isAnalyticsApiUsedInMap});
+        setSelectedDataSourceDetails(currentInstanceDetails);
+        await fetchCurrentInstanceData(selectedDimensionItemType);
+        const result = await fetchCurrentUserInfoAndOrgUnitData();
+        setCurrentUserInfoAndOrgUnitsData(result);
+      } else if (dataSourceDetails) {
+        setAnalyticsData([]);
+        await fetchGeoFeatures();
+        await fetchAnalyticsData({dimension:formatAnalyticsDimensions(dimensions,isAnalyticsApiUsedInMap),instance:dataSourceDetails,isAnalyticsApiUsedInMap});
+        setSelectedDataSourceDetails(dataSourceDetails);
+        await fetchExternalDataItems(
+          dataSourceDetails.url,
+          dataSourceDetails.token,
+          selectedDimensionItemType
+        );
+        await fetchExternalUserInfoAndOrgUnitData(
+          dataSourceDetails.url,
+          dataSourceDetails.token
+        );
+      }
+    } finally {
+      setDataSourceChangeLoading(false);
     }
   }, [
     systemInfo,
@@ -155,9 +160,11 @@ export const useFetchSingleVisualData = (visualId: string) => {
     fetchExternalDataItems,
     fetchExternalUserInfoAndOrgUnitData,
     fetchAnalyticsData,
+    fetchGeoFeatures,
     setAnalyticsData,
     setCurrentUserInfoAndOrgUnitsData,
-    setSelectedDataSourceDetails
+    setSelectedDataSourceDetails,
+    
   ]);
 
   useEffect(() => {
@@ -173,9 +180,10 @@ export const useFetchSingleVisualData = (visualId: string) => {
     previousDataRef.current = data;
 
     const savedDataSourceId = data.dataStore?.dataSourceId;
-    const dimensions = unFormatAnalyticsDimensions(
-      data.dataStore?.query?.myData?.params?.dimension
-    );
+    const selectedPeriods = data.dataStore?.queries?.mapAnalyticsQueryOne?.myData?.params?.filter;
+    let tempAnalyticsData = data.dataStore?.queries?.mapAnalyticsQueryOne?.myData?.params?.dimension?.slice(0, -1);
+    let analyticsOfPeriodsAndData = [...tempAnalyticsData, selectedPeriods];
+    const dimensions = unFormatAnalyticsDimensions(analyticsOfPeriodsAndData);
 
     setSelectedDataSourceOption(savedDataSourceId);
     setAnalyticsDimensions(dimensions);
@@ -184,49 +192,24 @@ export const useFetchSingleVisualData = (visualId: string) => {
       (item: any) => item.key === savedDataSourceId
     )?.value;
 
-    // Update all visual related states (like settings)
     setSelectedChartType(data.dataStore?.visualType);
-    setAnalyticsQuery(data.dataStore?.query);
-    setSelectedOrganizationUnits(
-      formatSelectedOrganizationUnit(data.dataStore?.query?.myData?.params?.filter)
-    );
-    setIsSetPredifinedUserOrgUnits(
-      formatCurrentUserSelectedOrgUnit(data.dataStore?.query?.myData?.params?.filter)
-    );
+    setAnalyticsQuery(data.dataStore?.queries?.mapAnalyticsQueryOne);
+    setMapAnalyticsQueryTwo(data.dataStore?.queries?.mapAnalyticsQueryTwo);
+    setGeoFeaturesQuery(data.dataStore?.queries?.geoFeaturesQuery);
+    const selectedOrgUnit = data.dataStore?.queries?.mapAnalyticsQueryOne?.myData?.params?.dimension?.[1];
+    setSelectedOrganizationUnits(formatSelectedOrganizationUnit(selectedOrgUnit));
+    setIsSetPredifinedUserOrgUnits(formatCurrentUserSelectedOrgUnit(selectedOrgUnit));
     setSelectedOrgUnits(data.dataStore?.organizationTree);
-    setSelectedOrgUnitGroups(
-      formatOrgUnitGroup(data.dataStore?.query?.myData?.params?.filter)
-    );
-    setSelectedOrganizationUnitsLevels(
-      formatOrgUnitLevels(data.dataStore?.query?.myData?.params?.filter)
-    );
+    setSelectedOrgUnitGroups(formatOrgUnitGroup(selectedOrgUnit));
+    setSelectedOrganizationUnitsLevels(formatOrgUnitLevels(selectedOrgUnit));
     setSelectedLevel(data.dataStore?.selectedOrgUnitLevel);
     setSelectedVisualTitleAndSubTitle(data.dataStore?.visualTitleAndSubTitle);
     setSelectedColorPalette(data.dataStore?.visualSettings?.visualColorPalette);
     setSelectedVisualSettings(data.dataStore?.visualSettings);
     setBackedSelectedItems(data.dataStore?.backedSelectedItems);
 
-    // Handle data source change
     handleDataSourceChange(savedDataSourceId, dimensions, selectedDataSourceDetails);
-  }, [
-    data,
-    savedDataSource,
-    handleDataSourceChange,
-    setAnalyticsDimensions,
-    setSelectedDataSourceOption,
-    setSelectedChartType,
-    setAnalyticsQuery,
-    setSelectedOrganizationUnits,
-    setIsSetPredifinedUserOrgUnits,
-    setSelectedOrgUnits,
-    setSelectedOrgUnitGroups,
-    setSelectedOrganizationUnitsLevels,
-    setSelectedLevel,
-    setSelectedVisualTitleAndSubTitle,
-    setSelectedColorPalette,
-    setSelectedVisualSettings,
-    setBackedSelectedItems
-  ]);
+  }, [data, savedDataSource, handleDataSourceChange, setAnalyticsDimensions, setSelectedDataSourceOption, setSelectedChartType, setAnalyticsQuery, setSelectedOrganizationUnits, setIsSetPredifinedUserOrgUnits, setSelectedOrgUnits, setSelectedOrgUnitGroups, setSelectedOrganizationUnitsLevels, setSelectedLevel, setSelectedVisualTitleAndSubTitle, setSelectedColorPalette, setSelectedVisualSettings, setBackedSelectedItems]);
 
   return {
     data,
@@ -234,27 +217,10 @@ export const useFetchSingleVisualData = (visualId: string) => {
     error,
     isError: !!error,
     refetch,
+    isHandleDataSourceChangeLoading: dataSourceChangeLoading,
     dataItemsFetchError,
     isFetchCurrentInstanceDataItemsLoading,
     fetchExternalDataError,
     isFetchExternalInstanceDataItemsLoading
   };
 };
-export const useFetchVisualsData = ()=>{
-    const query = {
-        dataStore: {  
-            resource: `dataStore/${process.env.REACT_APP_VISUALS_STORE}`,
-            params: () => ({
-              fields: '.',
-            }),
-        },
-    };
-
-    const { data, loading, error ,isError,refetch} = useDataQuery(query);
-  // Sort the entries based on `updatedAt` in descending order
-  const sortedData = data?.dataStore?.entries?.sort(
-    (a, b) => b.value.updatedAt - a.value.updatedAt
-);
-    return { data, loading, error,isError,refetch };
-
-}

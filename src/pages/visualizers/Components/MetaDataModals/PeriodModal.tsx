@@ -346,7 +346,7 @@ const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod,
         {
             analyticsDimensions.dx = dimensionDataHardCoded
         }
-        await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions), selectedDataSourceDetails);
+        await fetchAnalyticsData({dimension:formatAnalyticsDimensions(analyticsDimensions),instance:selectedDataSourceDetails});
         setIsShowPeriod && setIsShowPeriod(false);
     };
 
@@ -359,6 +359,11 @@ const PeriodPicker : React.FC<PeriodPickerProps>  = ({ onUpdate,setIsShowPeriod,
         const periodObject = allPeriodOptions.get(periodValue);
         return periodObject || { value: periodValue, label: periodValue }; // Fallback if not found
     });
+
+
+    useEffect(()=>{
+        console.log("hello selected periods",analyticsDimensions?.pe)
+    })
 
     return (
         <div 

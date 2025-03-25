@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-03-05T12:36:11.103Z\n"
-"PO-Revision-Date: 2025-03-05T12:36:11.103Z\n"
+"POT-Creation-Date: 2025-03-24T11:17:23.260Z\n"
+"PO-Revision-Date: 2025-03-24T11:17:23.261Z\n"
 
 msgid "Dashboards"
 msgstr "Dashboards"
@@ -131,6 +131,18 @@ msgstr "Created By"
 msgid "Pinned Dashboards"
 msgstr "Pinned Dashboards"
 
+msgid "My Maps"
+msgstr "My Maps"
+
+msgid "Other Charts"
+msgstr "Other Charts"
+
+msgid "New Map"
+msgstr "New Map"
+
+msgid "Type"
+msgstr "Type"
+
 msgid "ERROR"
 msgstr "ERROR"
 
@@ -151,9 +163,6 @@ msgstr "Update"
 
 msgid "Save"
 msgstr "Save"
-
-msgid "Type"
-msgstr "Type"
 
 msgid "New data source"
 msgstr "New data source"
@@ -176,9 +185,6 @@ msgstr "Visual Name"
 msgid "My Charts"
 msgstr "My Charts"
 
-msgid "Other Charts"
-msgstr "Other Charts"
-
 msgid "New Visualizer"
 msgstr "New Visualizer"
 
@@ -187,3 +193,6 @@ msgstr "SETTINGS"
 
 msgid "Main Dimensions"
 msgstr "Main Dimensions"
+
+msgid "Period"
+msgstr "Period"
