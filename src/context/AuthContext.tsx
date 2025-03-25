@@ -18,7 +18,7 @@ import { dimensionItemTypesTYPES } from "../types/dimensionDataItemTypes";
 import { dimensionItemTypes } from "../constants/dimensionItemTypes";
 import { BackedSelectedItem, visualTypes } from "../types/visualType";
 import { currentInstanceId } from "../constants/currentInstanceInfo";
-import { getAnalyticsFilter } from "../lib/getAnalyticsFilters";
+import { getAnalyticsFilter, getSelectedOrgUnitsWhenUsingMap } from "../lib/getAnalyticsFilters";
 
 
 
@@ -214,9 +214,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     dimension: any;
     instance:DataSourceFormFields;
     isAnalyticsApiUsedInMap?:boolean;
-    selectedPeriodsOnMap?:string[]
+    selectedPeriodsOnMap?:string[];
+    selectedOrgUnitsWhenUsingMap?:string[]
   }
-  const fetchAnalyticsData = async ({dimension,instance,isAnalyticsApiUsedInMap,selectedPeriodsOnMap = []}:fetchAnalyticsDataProps ):Promise<void> => {
+  const fetchAnalyticsData = async ({dimension,instance,isAnalyticsApiUsedInMap,selectedPeriodsOnMap = [],selectedOrgUnitsWhenUsingMap = []}:fetchAnalyticsDataProps ):Promise<void> => {
     const orgUnitIds = selectedOrganizationUnits?.map((unit: any) => unit)?.join(';');
     const orgUnitLevelIds = selectedOrganizationUnitsLevels?.map((unit: any) => `LEVEL-${unit}`)?.join(';');
     const orgUnitGroupIds = selectedOrgUnitGroups?.map((item: any) => `OU_GROUP-${item}`)?.join(';'); 
@@ -244,12 +245,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setIsFetchAnalyticsDataLoading(true);
       setFetchAnalyticsDataError(null);
 
-   const tempDime =  `ou:${isUseCurrentUserOrgUnits
-    ? `${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT ? 'USER_ORGUNIT;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_CHILDREN ? 'USER_ORGUNIT_CHILDREN;' : ''}${isSetPredifinedUserOrgUnits.is_USER_ORGUNIT_GRANDCHILDREN ? 'USER_ORGUNIT_GRANDCHILDREN;' : ''}`.slice(0, -1)
-    : `${orgUnitIds};${orgUnitLevelIds};${orgUnitGroupIds}`}`
+
     if(isAnalyticsApiUsedInMap)
     {
-      dimension.push(tempDime) 
+      dimension.push(selectedOrgUnitsWhenUsingMap) 
     }
   
  
