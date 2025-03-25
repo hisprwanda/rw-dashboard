@@ -117,7 +117,8 @@ export const useFetchSingleMapData = (mapId: string) => {
     dimensions: any,
     dataSourceDetails: any
   ) => {
- 
+    let selectedPeriodsOnMap:string[] = []
+    selectedPeriodsOnMap.push(`pe:${dimensions?.pe?.join(";")}`);
     try {
       console.log("hello dimension data in aaaa",dimensions)
       setDataSourceChangeLoading(true);
@@ -129,7 +130,7 @@ export const useFetchSingleMapData = (mapId: string) => {
         };
         setAnalyticsData([]);
         await fetchGeoFeatures();
-        await fetchAnalyticsData({dimension:formatAnalyticsDimensions(dimensions,isAnalyticsApiUsedInMap),instance:currentInstanceDetails,isAnalyticsApiUsedInMap});
+        await fetchAnalyticsData({dimension:formatAnalyticsDimensions(dimensions,isAnalyticsApiUsedInMap),instance:currentInstanceDetails,isAnalyticsApiUsedInMap,selectedPeriodsOnMap});
         setSelectedDataSourceDetails(currentInstanceDetails);
         await fetchCurrentInstanceData(selectedDimensionItemType);
         const result = await fetchCurrentUserInfoAndOrgUnitData();
@@ -137,7 +138,7 @@ export const useFetchSingleMapData = (mapId: string) => {
       } else if (dataSourceDetails) {
         setAnalyticsData([]);
         await fetchGeoFeatures();
-        await fetchAnalyticsData({dimension:formatAnalyticsDimensions(dimensions,isAnalyticsApiUsedInMap),instance:dataSourceDetails,isAnalyticsApiUsedInMap});
+        await fetchAnalyticsData({dimension:formatAnalyticsDimensions(dimensions,isAnalyticsApiUsedInMap),instance:dataSourceDetails,isAnalyticsApiUsedInMap,selectedPeriodsOnMap});
         setSelectedDataSourceDetails(dataSourceDetails);
         await fetchExternalDataItems(
           dataSourceDetails.url,
