@@ -5,7 +5,6 @@
 
 
  export function formatCurrentUserSelectedOrgUnit(orgUnitString:any)  {
-  console.log("hello reveived orgUnitString",orgUnitString)
   // Remove the 'ou:' prefix if it exists
   const cleanedString = orgUnitString?.startsWith('ou:') ? orgUnitString?.slice(3) : orgUnitString;
 

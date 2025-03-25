@@ -119,7 +119,7 @@ export function MapMetaDataConfigModal({
      e.stopPropagation();
      e.preventDefault();
      const isAnalyticsApiUsedInMap = true
-     const GeoFeaturesResult = await fetchGeoFeatures()
+     const GeoFeaturesResult = await fetchGeoFeatures({selectedOrgUnitsWhenUsingMap})
      const analyticsResult = await fetchAnalyticsData({
       dimension: formatAnalyticsDimensions(analyticsDimensions,isAnalyticsApiUsedInMap),
       instance: selectedDataSourceDetails,

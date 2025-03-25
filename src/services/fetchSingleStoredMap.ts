@@ -50,7 +50,7 @@ type handleDataSourceChangeProps = {
   selectedOrganizationUnits: any;
   selectedOrganizationUnitsLevels: any;
   selectedOrgUnitGroups: any;
-  isSetPredifinedUserOrgUnits:any
+  isSetPredifinedUserOrgUnits: any;
 };
 
 export const useFetchSingleMapData = (mapId: string) => {
@@ -134,7 +134,7 @@ export const useFetchSingleMapData = (mapId: string) => {
       selectedOrgUnitGroups,
       selectedOrganizationUnits,
       selectedOrganizationUnitsLevels,
-      isSetPredifinedUserOrgUnits
+      isSetPredifinedUserOrgUnits,
     }: handleDataSourceChangeProps) => {
       let selectedPeriodsOnMap: string[] = [];
       selectedPeriodsOnMap.push(`pe:${dimensions?.pe?.join(";")}`);
@@ -172,7 +172,7 @@ export const useFetchSingleMapData = (mapId: string) => {
             isCurrentInstance: true,
           };
           setAnalyticsData([]);
-          await fetchGeoFeatures();
+          await fetchGeoFeatures({ selectedOrgUnitsWhenUsingMap });
           await fetchAnalyticsData({
             dimension: formatAnalyticsDimensions(
               dimensions,
@@ -189,7 +189,7 @@ export const useFetchSingleMapData = (mapId: string) => {
           setCurrentUserInfoAndOrgUnitsData(result);
         } else if (dataSourceDetails) {
           setAnalyticsData([]);
-          await fetchGeoFeatures();
+          await fetchGeoFeatures({ selectedOrgUnitsWhenUsingMap });
           await fetchAnalyticsData({
             dimension: formatAnalyticsDimensions(
               dimensions,
@@ -284,10 +284,13 @@ export const useFetchSingleMapData = (mapId: string) => {
     setSelectedVisualSettings(data.dataStore?.visualSettings);
     setBackedSelectedItems(data.dataStore?.backedSelectedItems);
 
-    const selectedOrganizationUnits = formatSelectedOrganizationUnit(selectedOrgUnit);
-    const selectedOrganizationUnitsLevels =formatOrgUnitLevels(selectedOrgUnit);
+    const selectedOrganizationUnits =
+      formatSelectedOrganizationUnit(selectedOrgUnit);
+    const selectedOrganizationUnitsLevels =
+      formatOrgUnitLevels(selectedOrgUnit);
     const selectedOrgUnitGroups = formatOrgUnitGroup(selectedOrgUnit);
-    const isSetPredifinedUserOrgUnits = formatCurrentUserSelectedOrgUnit(selectedOrgUnit);
+    const isSetPredifinedUserOrgUnits =
+      formatCurrentUserSelectedOrgUnit(selectedOrgUnit);
     handleDataSourceChange({
       dataSourceId: savedDataSourceId,
       dimensions,
@@ -295,7 +298,7 @@ export const useFetchSingleMapData = (mapId: string) => {
       selectedOrganizationUnits,
       selectedOrganizationUnitsLevels,
       selectedOrgUnitGroups,
-      isSetPredifinedUserOrgUnits
+      isSetPredifinedUserOrgUnits,
     });
   }, [
     data,
