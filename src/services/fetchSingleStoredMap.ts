@@ -163,7 +163,6 @@ export const useFetchSingleMapData = (mapId: string) => {
       });
       /// end defining selectedOrgUnitsWhenUsingMap
       try {
-        console.log("hello dimension data in aaaa", dimensions);
         setDataSourceChangeLoading(true);
         const isAnalyticsApiUsedInMap = true;
         if (dataSourceId === currentInstanceId) {
