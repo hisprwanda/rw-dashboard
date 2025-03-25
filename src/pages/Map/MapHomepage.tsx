@@ -27,13 +27,9 @@ const MapHomepage: React.FC = () => {
           const isAnyTrue = Object.values(isSetPredifinedUserOrgUnits).some(value => value === true);
           setIsUseCurrentUserOrgUnits(isAnyTrue);
       }
-
   }, [isSetPredifinedUserOrgUnits]);
 
-  useEffect(()=>{
-    console.log("helo isHandleDataSourceChangeLoading",isHandleDataSourceChangeLoading)
-  },[isHandleDataSourceChangeLoading])
-  if(loading)
+  if(loading || isHandleDataSourceChangeLoading)
   {
     return <p>Loading</p>
   }

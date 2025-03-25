@@ -1,79 +1,120 @@
-import { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
+import { useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
-// MapUpdater component to handle zooming to data areas
-export const MapUpdater = ({ districts, hasData }) => {
+
+type MapUpdaterProps = {
+  districts: Array<{
+    id: string;
+    name: string;
+    value: number | null;
+    coordinates: any // Make this more flexible
+  }>;
+  hasData: boolean;
+};
+
+export const MapUpdater: React.FC<MapUpdaterProps> = ({ districts, hasData }) => {
   const map = useMap();
-  
-  useEffect(() => {
-    if (hasData && districts.length > 0) {
-      // Filter to only districts that have data values
-      const districtsWithData = districts.filter(d => d.value !== null);
-      
-      if (districtsWithData.length > 0) {
-        // Create a GeoJSON layer with all districts that have data
-        const geoJsonLayer = L.geoJSON({
-          type: 'FeatureCollection',
-          features: districtsWithData.map(district => ({
-            type: 'Feature',
-            properties: {
-              id: district.id,
-              name: district.name,
-              value: district.value
-            },
-            geometry: {
-              type: 'Polygon',
-              coordinates: district.coordinates
-            }
-          }))
-        });
-        
-        // Get the bounds of all districts with data
-        const bounds = geoJsonLayer.getBounds();
-        
-        // First zoom to fit the data (initial focus)
-        map.fitBounds(bounds, {
-          padding: [20, 20],
-          maxZoom: 10, // Lower initial zoom for context
-          animate: true,
-          duration: 1.0
-        });
-        
-        // Then zoom in closer after a delay
-        setTimeout(() => {
-          // Calculate a slightly tighter bound (75% of original size)
-          const center = bounds.getCenter();
-          const northWest = bounds.getNorthWest();
-          const southEast = bounds.getSouthEast();
-          
-          // Calculate new bounds that are 75% of the size, centered on data
-          const shrinkFactor = 0.75;
-          const newNW = L.latLng(
-            center.lat + (northWest.lat - center.lat) * shrinkFactor,
-            center.lng + (northWest.lng - center.lng) * shrinkFactor
-          );
-          const newSE = L.latLng(
-            center.lat + (southEast.lat - center.lat) * shrinkFactor,
-            center.lng + (southEast.lng - center.lng) * shrinkFactor
-          );
-          
-          // Create the new tighter bounds
-          const tighterBounds = L.latLngBounds(newNW, newSE);
-          
-          // Apply second zoom with tighter bounds
-          map.fitBounds(tighterBounds, {
-            padding: [30, 30],
-            maxZoom: 14, // Moderate zoom level
-            animate: true,
-            duration: 1.0
-          });
-        }, 1000);
-        
-        // Clean up the temporary layer
-        geoJsonLayer.remove();
+
+  const fitMapToBounds = useCallback(() => {
+    // Debugging: Log the entire districts array
+    console.log('Districts data:', districts);
+
+    // Ensure map is fully initialized
+    if (!map || !hasData || districts.length === 0) return;
+
+    // Filter districts with data
+    const districtsWithData = districts.filter(d => d.value !== null);
+    
+    if (districtsWithData.length === 0) return;
+
+    // Initialize bounds tracking
+    let minLat = Infinity;
+    let maxLat = -Infinity;
+    let minLng = Infinity;
+    let maxLng = -Infinity;
+
+    // Helper function to process different coordinate formats
+    const processCoordinates = (coords: any) => {
+      // Debugging: Log the coordinate structure
+      console.log('Coordinate structure:', coords);
+
+      // Handle different possible coordinate formats
+      if (typeof coords === 'string') {
+        try {
+          coords = JSON.parse(coords);
+        } catch (error) {
+          console.error('Error parsing coordinate string:', error);
+          return;
+        }
       }
+
+      // If it's a single coordinate point
+      if (coords.length === 2 && typeof coords[0] === 'number' && typeof coords[1] === 'number') {
+        minLat = Math.min(minLat, coords[1]);
+        maxLat = Math.max(maxLat, coords[1]);
+        minLng = Math.min(minLng, coords[0]);
+        maxLng = Math.max(maxLng, coords[0]);
+        return;
+      }
+
+      // Recursive processing for nested arrays
+      coords.forEach((item: any) => {
+        if (Array.isArray(item)) {
+          processCoordinates(item);
+        }
+      });
+    };
+
+    // Process coordinates for each district
+    districtsWithData.forEach(district => {
+      try {
+        processCoordinates(district.coordinates);
+      } catch (error) {
+        console.error('Error processing district coordinates:', district, error);
+      }
+    });
+
+    // Check if we have valid bounds
+    if (
+      minLat !== Infinity && 
+      maxLat !== -Infinity && 
+      minLng !== Infinity && 
+      maxLng !== -Infinity
+    ) {
+      try {
+        // Create bounds manually
+        const bounds = L.latLngBounds(
+          L.latLng(minLat, minLng),
+          L.latLng(maxLat, maxLng)
+        );
+
+        // Use setTimeout to ensure map is fully ready
+        setTimeout(() => {
+          // Ensure map is still valid
+          if (map && map.getCenter) {
+            map.fitBounds(bounds, {
+              padding: [50, 50],
+              maxZoom: 10,
+              animate: true
+            });
+          }
+        }, 0);
+      } catch (error) {
+        console.error("Error fitting bounds:", error);
+      }
+    } else {
+      console.warn('Could not calculate bounds from districts');
     }
   }, [map, districts, hasData]);
-  
+
+  // Use two effects to ensure robust initialization
+  useEffect(() => {
+    // Defer the initial fitting
+    const timeoutId = setTimeout(fitMapToBounds, 100);
+    return () => clearTimeout(timeoutId);
+  }, [fitMapToBounds]);
+
   return null;
 };
+
+export default MapUpdater;
