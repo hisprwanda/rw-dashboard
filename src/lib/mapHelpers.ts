@@ -18,33 +18,35 @@ export const generateAutoLegend = (districts: ProcessedDistrict []) => {
         name: "Very Low",
         startValue: min,
         endValue: min + step,
-        color: "#EDF8FB"
+        color: "#FEE5D9" // Light red/pink
       },
       {
         name: "Low",
         startValue: min + step,
         endValue: min + 2 * step,
-        color: "#B3CDE3"
+        color: "#FC9272" // Soft red
       },
       {
         name: "Medium",
         startValue: min + 2 * step,
         endValue: min + 3 * step,
-        color: "#8C96C6"
+        color: "#FB6A4A" // Medium red
       },
       {
         name: "High",
         startValue: min + 3 * step,
         endValue: min + 4 * step,
-        color: "#8856A7"
+        color: "#DE2D26" // Deep red
       },
       {
         name: "Very High",
         startValue: min + 4 * step,
         endValue: max,
-        color: "#810F7C"
+        color: "#A50F15" // Dark red
       }
     ];
+    
+    
     return autoLegend
    // setAutoLegend(autoLegend);
   };
