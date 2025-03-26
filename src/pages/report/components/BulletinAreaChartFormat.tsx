@@ -1,7 +1,6 @@
 import { InputData } from "../../../lib/localGenericchartFormat";
 import { ChartConfig } from "../../../components/ui/chart";
 import {visualColorPaletteTypes} from "../../../types/visualSettingsTypes"
-import { dimensionDataHardCoded } from "../../../constants/bulletinDimension";
 
 
 

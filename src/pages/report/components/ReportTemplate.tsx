@@ -7,7 +7,7 @@ import { Treemap,PieChart, Pie, Cell, AreaChart, Area, XAxis, YAxis, CartesianGr
 import { Tab, Tabs, TabBar, Transfer, Button, Modal } from '@dhis2/ui';
 import { useAuthorities } from '../../../context/AuthContext';
 import { isValidInputData, transformDataForGenericChart } from '../../../lib/localGenericchartFormat';
-import { fetchTrackedEntities, fetchEvents } from '../../bulletin-settings/BulletinService';
+import { fetchTrackedEntities, fetchEvents } from './BulletinService';
 import { chartComponents } from '../../../constants/systemCharts';
 import { dimensionDataHardCoded } from '../../../constants/bulletinDimension';
 import { formatAnalyticsDimensions } from '../../../lib/formatAnalyticsDimensions';
@@ -170,7 +170,7 @@ const CustomizedContent = ({ root, depth, x, y, width, height, index, colors, na
 
 
 const ReportTemplate : React.FC = () => {
-  const {analyticsData,reportAnalyticsDimensions,isFetchAnalyticsDataLoading,visualTitleAndSubTitle,visualSettings, analyticsDimensions,fetchAnalyticsData,selectedDataSourceDetails} = useAuthorities()
+  const {analyticsData,isFetchAnalyticsDataLoading,visualTitleAndSubTitle,visualSettings, analyticsDimensions,fetchAnalyticsData,selectedDataSourceDetails} = useAuthorities()
   const engine = useDataEngine(); 
   const [messages, setMessages] = useState<string[]>([]);
   const [alertFromCommunity, setAlertFromCommunity] = useState<string[]>([]);
@@ -186,6 +186,7 @@ const ReportTemplate : React.FC = () => {
   const [dataError, setDataError] = useState<string | null>(null);
   const [totalOrgUnit, setTotalOrgUnit] = useState<number>(0);
   const [showLanding, setShowLanding] = useState<boolean>(true);
+  const [showDeaths, setShowDeath] = useState<number>(0);
 
 // Complete implementation with debugging and proper data formatting
 const renderAreaCharts = () => {
@@ -290,7 +291,6 @@ const renderAreaCharts = () => {
   });
 };
 
-// Helper function to get disease name from ID
 const getDiseaseNameById = (id) => {
   // Corrected disease mapping based on your JSON metadata
   const diseaseNames = {
@@ -305,20 +305,51 @@ const getDiseaseNameById = (id) => {
   return diseaseNames[id] || null;
 };
 
+function extractWeekData(weekString) {
+  // Use a regular expression to match the week number and the dates
+  const regex = /(Week \d+)\s+(\d{4}-\d{2}-\d{2})\s*-\s*(\d{4}-\d{2}-\d{2})/;
+  const match = weekString.match(regex);
+
+  if (match) {
+      const weekNumber = match[1]; // First captured group (week number)
+      const startDate = match[2]; // Second captured group (start date)
+      const endDate = match[3]; // Third captured group (end date)
+
+      return {
+          weekNumber: weekNumber,
+          startDate: startDate,
+          endDate: endDate
+      };
+  } else {
+      return {
+          weekNumber: null,
+          startDate: null,
+          endDate: null
+      };
+  }
+}
+
+const selectedPeriod = analyticsData.metaData.dimensions.pe;
+const selectedItems = analyticsData.metaData.items;
+const key = selectedPeriod[0];
+const value = selectedItems[key];
+const periodName = value.name
+const {startDate, endDate, weekNumber} = extractWeekData(periodName);
+console.log("week number", weekNumber)
+console.log("startDate", startDate)
+console.log("endDate", endDate)
+
 
 
   useEffect(() => {
       const loadData = async () => {
           try {
             setDataLoading(true);
-              const response = await fetchTrackedEntities(engine, 'Hjw70Lodtf2', 'U86iDWxDek8');
-              const otherProgramResponse = await fetchEvents(engine, 'Hjw70Lodtf2', 'ecvn9SiIEXz');
-              const malariaResponse = await fetchEvents(engine, 'Hjw70Lodtf2', 'zCy7bqFHOpa');
+              const response = await fetchTrackedEntities(engine, 'Hjw70Lodtf2', 'U86iDWxDek8', startDate, endDate);
+              const otherProgramResponse = await fetchEvents(engine, 'Hjw70Lodtf2', 'ecvn9SiIEXz',startDate, endDate);
+              const malariaResponse = await fetchEvents(engine, 'Hjw70Lodtf2', 'zCy7bqFHOpa', startDate, endDate);
               dataM = response.pieChartData
-              dataTreeMap = response.treeMapData.map(item => ({ ...item, color: getRandomColor() }))
-              // console.log("impuruza Program", otherProgramResponse)
-              console.log("response treemap", response.treeMapData);
-              
+              dataTreeMap = response.treeMapData.map(item => ({ ...item, color: getRandomColor() }))              
               setMessages([...malariaResponse.message, ...otherProgramResponse.message]);
               setAlertFromCommunity([...malariaResponse.alertFromCommunity, ...otherProgramResponse.alertFromCommunity])
               setIBSHighlightMessage(response.IBSHighlightMessage)
@@ -327,6 +358,7 @@ const getDiseaseNameById = (id) => {
               setDeathsMessage(response.deathMessages)
               setPieChartDescription(response.PieChartDescription);
               setDeathDescription(response.totalDeathMessages)
+              setShowDeath(response.totalReportedDeaths)
               setTotal(response.total);
           } catch (err) {
               setDataError(err instanceof Error ? err.message : 'An unknown error occurred');
@@ -354,8 +386,6 @@ const getDiseaseNameById = (id) => {
     return <span>{i18n.t('Loading...')}</span>;
   }
  
-
-   const title = reportAnalyticsDimensions?.pe?.join(",")
   return (
     <>
     {/* <DisplayAreaCharts/> */}
@@ -375,8 +405,10 @@ const getDiseaseNameById = (id) => {
             <h2 className="text-5xl font-bold uppercase tracking-wide">
               {data?.results?.page1.titles[0]}
             </h2>
+            <h3>{weekNumber}</h3>
+            <h3>{startDate} - {endDate}</h3>
             <div className="py-4 px-6 mt-4 inline-block">
-              <h3 className="text-3xl font-extrabold text-black">{title}</h3>
+              {/* <h3 className="text-3xl font-extrabold text-black">{title}</h3> */}
             </div>
           </div>
     
@@ -403,7 +435,9 @@ const getDiseaseNameById = (id) => {
           <div className="p-4 rounded-lg mb-5">
             <h1 className='bg-blue-400 text-xl text-center font-bold py-4 mb-5'>{data?.results?.page2.main_titles[0]}</h1>
             <h2 className='text-md font-bold mb-2'>{data?.results?.page2.main_titles[1]}:</h2>
-                <ul className='list-disc pl-4'>
+           <ul className='list-disc pl-4'>
+            {totalEvents > 0 ? (
+              <>
               <li> <span className='font-bold'>{data?.results?.page2.sub_titles[0]}:</span> {totalEvents} alerts: 
               {alertFromCommunity.length > 0 ? (
                     <span>
@@ -415,23 +449,29 @@ const getDiseaseNameById = (id) => {
                     <p>No cases found.</p>
                 )} 
               </li>
+              </>
+            ): null}
               <li className='bold mr-5'> <span className='font-bold'>{data?.results?.page2.sub_titles[1]}:</span> {data?.results?.page2.body_content.Alert_from_EIOS[0]}</li>
               <ul className='list-disc pl-6'>
                 <li>{data?.results?.page2.body_content.Alert_from_EIOS[1]}</li>
                 <li>{data?.results?.page2.body_content.Alert_from_EIOS[2]}</li>
               </ ul>
-              <li className='font-bold'>{data?.results?.page2.sub_titles[2]}</li>
-              <ul>
-                {IBSHighlightMessage.length > 0 ? (
-                      <ul className='list-disc pl-6'>
-                          {IBSHighlightMessage.map((msg, index) => (
-                              <li key={index}>{msg}</li>
-                          ))}
-                      </ul>
-                  ) : (
-                      <p>No cases found.</p>
-                  )} 
-              </ul>
+              {total > 0 ? (
+                <>
+                    <li className='font-bold'>{data?.results?.page2.sub_titles[2]}</li>
+                    <ul>
+                      {IBSHighlightMessage.length > 0 ? (
+                            <ul className='list-disc pl-6'>
+                                {IBSHighlightMessage.map((msg, index) => (
+                                    <li key={index}>{msg}</li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>No cases found.</p>
+                        )} 
+                    </ul>
+                </>
+              ): null  }
               <li className='font-bold'>{data?.results?.page2.sub_titles[3]}</li>
               <ul className='list-disc pl-6'>
                 {data?.results?.page2?.body_content.outbreaks_updates.map((update: any, index) => (
@@ -448,7 +488,7 @@ const getDiseaseNameById = (id) => {
     
           {/* Page 3 */}
           <div className="p-4 rounded-lg mb-5">
-            <h1 className='bg-blue-400 text-xl text-center font-bold py-4 mb-5'>{data?.results?.page3.main_titles[0]}</h1>
+            <h1 className='bg-blue-400 text-xl text-center font-bold py-4 mb-5'>{data?.results?.page3.main_titles[0]} {weekNumber}</h1>
             <p className='mb-4'>
               <span className='font-bold'>{data?.results?.page3.main_titles[1]}:</span>
               {data?.results?.page3?.body_content.description.map((parag: any, index: Key | null | undefined) => (
@@ -458,23 +498,25 @@ const getDiseaseNameById = (id) => {
     
             <h1 className='font-bold mb-4 '>{data?.results?.page3.main_titles[2]}</h1>
             <ul className='list-disc pl-4'>
-              <li>
-                <span className='font-bold'>{data?.results?.page3.sub_titles[0]}:</span> {totalEvents} alerts
-              </li>
-              <ul className='list-disc pl-6'>
-                  {/* {data?.results?.page3.body_content.alert_community.slice(-4).map((al: any, index) => (
-                    <li  key={index}>{al}</li>
-                  ))} */}
-                      {messages.length > 0 ? (
-                            <ul>
-                                {messages.map((msg, index) => (
-                                    <li key={index}>{msg}</li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <p>No cases found.</p>
-                        )} 
-                </ul>
+              {totalEvents > 0 ? (
+                <>
+                    <li>
+                      <span className='font-bold'>{data?.results?.page3.sub_titles[0]}:</span> {totalEvents} alerts
+                    </li>
+                    <ul className='list-disc pl-6'>
+                            {messages.length > 0 ? (
+                                  <ul>
+                                      {messages.map((msg, index) => (
+                                          <li key={index}>{msg}</li>
+                                      ))}
+                                  </ul>
+                              ) : (
+                                  <p>No cases found.</p>
+                              )} 
+                      </ul>
+                </>
+              ): null}
+
               <li>
               <span className='font-bold'>{data?.results?.page3.sub_titles[1]}:</span> {data?.results?.page3.body_content.Alert_from_EIOS[0]}
               </li>
@@ -498,51 +540,58 @@ const getDiseaseNameById = (id) => {
           </div>
     
           {/* Page 4 */}
-          <div className="p-4 rounded-lg mb-2">
-            <h1 className='bg-blue-400 text-xl text-center font-bold py-4 mb-5'>{data?.results?.page4.main_titles[0]}</h1>
-            <p>
-              <span className='font-bold'>{data?.results?.page4.sub_titles[0]}: </span>
-              {data?.results?.page4?.body_content.description}
-            </p>
-            <h1 className='text-center font-bold my-4'>{data?.results?.page4.main_titles[1]}</h1>
-            <p>During this Epi week, {total} cases of immediate reportable diseases were notified:</p>
-            <ul className='list-disc pl-8'>
-                {DiseaseData.length > 0 ? (
-                            <ul>
-                                {DiseaseData.map((msg, index) => (
-                                    <li key={index}>{msg}</li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <p>No cases found.</p>
-                        )} 
-                </ul>
-            <h2 className='font-bold my-4'>{data?.results?.page4?.sub_titles[1]}:</h2>
-            <Textarea
-                        label="IMMEDIATE REPORTABLE DISEASES Notes"
-                        name="immediateReportableDiseasesNotes"
-                        // value={formData.immediateReportableDiseasesNotes}
-                        // onChange={handleChange}
-                        placeholder="Enter notes..."
-                      />
-            {/* <ul className='list-disc pl-8'>
-              {data?.results?.page4?.body_content.notes.map((note: any, index) => (
-                <li key={index}>{note}</li>
-              ))}
-            </ul> */}
-          </div>
+          {
+            total > 0 ? (
+              <div className="p-4 rounded-lg mb-2">
+              <h1 className='bg-blue-400 text-xl text-center font-bold py-4 mb-5'>{data?.results?.page4.main_titles[0]}</h1>
+              <p>
+                <span className='font-bold'>{data?.results?.page4.sub_titles[0]}: </span>
+                {data?.results?.page4?.body_content.description}
+              </p>
+              <h1 className='text-center font-bold my-4'>IMMEDIATE REPORTABLE DISEASES – EPI{weekNumber}</h1>
+              <p>During this Epi week, {total} cases of immediate reportable diseases were notified:</p>
+              <ul className='list-disc pl-8'>
+                  {DiseaseData.length > 0 ? (
+                              <ul>
+                                  {DiseaseData.map((msg, index) => (
+                                      <li key={index}>{msg}</li>
+                                  ))}
+                              </ul>
+                          ) : (
+                              <p>No cases found.</p>
+                          )} 
+                  </ul>
+              <h2 className='font-bold my-4'>{data?.results?.page4?.sub_titles[1]}:</h2>
+              <Textarea
+                          label="IMMEDIATE REPORTABLE DISEASES Notes"
+                          name="immediateReportableDiseasesNotes"
+                          // value={formData.immediateReportableDiseasesNotes}
+                          // onChange={handleChange}
+                          placeholder="Enter notes..."
+                        />
+              {/* <ul className='list-disc pl-8'>
+                {data?.results?.page4?.body_content.notes.map((note: any, index) => (
+                  <li key={index}>{note}</li>
+                ))}
+              </ul> */}
+            </div>
+            ): null
+          }
+       
          {/* other pages*/}
           <div className="p-4 rounded-lg mb-5">
-            <h1 className='text-center font-bold my-4'>{data?.results?.pages.main_titles[0]}</h1>
+            <h1 className='text-center font-bold my-4'>WEEKLY REPORTABLE DISEASES – EPI {weekNumber}</h1>
             <p><span className='font-bold'>{data?.results?.pages.sub_titles[0]}</span>: {data?.results?.pages.reportable_description[0]} </p>
             <p> {data?.results?.pages.reportable_description[1]}</p>       
             <h2 className='font-bold mt-4'>{data?.results?.pages.sub_titles[1]}</h2>
 
            <div className="p-4 rounded-lg mb-5">{renderAreaCharts()}</div>
           </div>
-
+    {
+      showDeaths > 0 ? (
+    <div>
           <div className="p-4 rounded-lg mb-5">
-            <h1 className='text-center font-bold my-4'>{data?.results?.pages.main_titles[1]}</h1>
+            <h1 className='text-center font-bold my-4'>DISTRIBUTION OF REPORTED DEATHS IN eIDSR – EPIDEMIOLOGICAL {weekNumber}</h1>
             <p> {pieChartDescription}</p>   
             <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
@@ -589,6 +638,10 @@ const getDiseaseNameById = (id) => {
            </ResponsiveContainer>
 
           </div>
+          </div>
+      ) : null
+    }
+          
           <div className="p-4 rounded-lg mb-5">
               <h1 className='bg-blue-400 text-xl text-center font-bold py-4 mb-5'>{data?.results?.pages.main_titles[2]}</h1>
               <h2 className='font-bold mt-4'>{data?.results?.pages.sub_titles[3]}</h2>

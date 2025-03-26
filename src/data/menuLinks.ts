@@ -26,10 +26,6 @@ export const menuItems = [
         link: "settings"
     },
     {
-        name: `${i18n.t('bulletin-settings')}`, 
-        link: "bulletin-settings"
-    },
-    {
         name: `${i18n.t('report')}`, 
         link: "report"
     }
