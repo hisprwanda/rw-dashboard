@@ -7,13 +7,13 @@ import { useFetchSingleMapData } from '../../services/fetchSingleStoredMap';
 import { Loader } from '@mantine/core';
 import { useRunGeoFeatures } from '../../services/maps';
 import { formatAnalyticsDimensions } from '../../lib/formatAnalyticsDimensions';
-
+import { CircularLoader } from '@dhis2/ui'
 
 const MapHomepage: React.FC = () => {
   const {id:mapId} = useParams()
-  const {geoFeaturesData, analyticsMapData, metaMapData,setIsUseCurrentUserOrgUnits,isSetPredifinedUserOrgUnits,fetchAnalyticsData,analyticsDimensions,selectedDataSourceDetails} = useAuthorities();
+  const {geoFeaturesData, analyticsMapData, metaMapData,setIsUseCurrentUserOrgUnits,isSetPredifinedUserOrgUnits,isFetchAnalyticsDataLoading} = useAuthorities();
   const {data:singleSavedMapData,error,isError,loading,isFetchCurrentInstanceDataItemsLoading,isFetchExternalInstanceDataItemsLoading,isHandleDataSourceChangeLoading} = useFetchSingleMapData(mapId)
-
+  const {loading:isFetchingGeoFeaturesLoading} = useRunGeoFeatures()
     // update if current user organization is selected
     useEffect(() => {
       if (singleSavedMapData) {
@@ -22,9 +22,9 @@ const MapHomepage: React.FC = () => {
       }
   }, [isSetPredifinedUserOrgUnits]);
 
-  if(loading || isHandleDataSourceChangeLoading)
+  if(loading || isFetchAnalyticsDataLoading || isFetchingGeoFeaturesLoading)
   {
-    return <p>Loading</p>
+    return <div className='flex justify-center align-middle'  ><CircularLoader/></div>
   }
 
   /// main return

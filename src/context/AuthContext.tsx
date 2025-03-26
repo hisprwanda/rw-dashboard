@@ -124,8 +124,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
  const [metaMapData, setMetaMapData] = useState<any>([])
   /// this is the current instance definition as data source
   const defaultDataSource: DataSourceFormFields = {
-    instanceName: systemInfo?.title?.applicationTitle || "", // Fallback to an empty string if undefined
+    instanceName: systemInfo?.title?.applicationTitle || "",
+    url: "",
+    token: "",
+    type: "DHIS2",
     isCurrentInstance: true,
+    description: ""
   };
   
   const [selectedDataSourceDetails, setSelectedDataSourceDetails] = useState<DataSourceFormFields>(defaultDataSource);

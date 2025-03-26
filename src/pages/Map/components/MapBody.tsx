@@ -125,12 +125,15 @@ const MapBody: React.FC<MapBodyProps> = ({
   }, [geoFeaturesData, analyticsMapData, metaMapData]);
 
   // Style function for GeoJSON
-  const getStyle = (feature: any) => {
+  const getStyleOne = (feature: any) => {
     const value = feature.properties.value;
-    const color = getColorForValue(
-      value, 
-      legendType === "auto" ? autoLegend : selectedLegendSet.legends
-    );
+    
+    // Add explicit type checking and fallback
+    const legendClasses = legendType === "auto" 
+      ? (autoLegend || []) 
+      : (selectedLegendSet?.legends || []);
+    
+    const color = getColorForValue(value, legendClasses);
     
     return {
       fillColor: color,
@@ -181,7 +184,7 @@ const MapBody: React.FC<MapBodyProps> = ({
             {districts.length > 0 && (
               <GeoJSON 
                 data={createGeoJSON(districts)}
-                style={getStyle}
+                style={getStyleOne}
                 onEachFeature={(feature, layer) => 
                   onEachFeature(feature, layer, analyticsMapData, valueMap)
                 }

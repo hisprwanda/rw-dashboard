@@ -29,10 +29,6 @@ const SelectOtherMapLayer = () => {
     setIsModalOpen(true);
   };
 
-  // Function to handle modal close
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-  };
 
   return (
     <ul className="space-y-2 p-0 list-none max-h-[600px] overflow-y-auto">

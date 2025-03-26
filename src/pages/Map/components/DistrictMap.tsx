@@ -275,7 +275,7 @@ const DistrictMap = ({geoFeaturesData, analyticsMapData, metaMapData}:{geoFeatur
   };
   
   // Style function for GeoJSON based on data values
-  const getStyle = (feature: any) => {
+  const getStyleTwo = (feature: any) => {
     const value = feature.properties.value;
     const color = getColorForValue(value);
     
@@ -432,7 +432,7 @@ const DistrictMap = ({geoFeaturesData, analyticsMapData, metaMapData}:{geoFeatur
               
               <GeoJSON 
                 data={createGeoJSON()} 
-                style={getStyle}
+                style={getStyleTwo}
                 onEachFeature={onEachFeature}
               />
             </MapContainer>
