@@ -16,6 +16,7 @@ import { Label } from "../../../components/ui/label";
 import Button from "../../../components/Button";
 import { useAuthorities } from "../../../context/AuthContext";
 import { useToast } from "../../../components/ui/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface SaveMapModalProps {
   open: boolean;
@@ -34,7 +35,7 @@ export function SaveMapModal({
   const { userDatails, selectedDataSourceOption, selectedOrgUnits, selectedLevel, analyticsQuery, mapAnalyticsQueryTwo, geoFeaturesQuery,backedSelectedItems,analyticsDimensions } = useAuthorities();
   const { toast } = useToast();
   const engine = useDataEngine();
-
+  const navigate = useNavigate()
   // Initialize form with resolver but without default values initially
   const {
     register,
@@ -108,6 +109,11 @@ export function SaveMapModal({
         description: "Map saved successfully",
         variant: "default",
       });
+      if(!mapId){
+        // added navigate(`/maps`) intentionally to fix length undefined bug
+               navigate(`/maps`)
+              navigate(`/map/${uid}`)    
+             }
       // Close the modal after saving
       setOpen(false);
     } catch (error) {
