@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useDataEngine } from '@dhis2/app-runtime';
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { IoIosMore } from "react-icons/io";
 import { CiEdit } from "react-icons/ci";
@@ -13,17 +14,24 @@ import { GenericModal } from '../../../components';
 import { useFetchVisualsData } from '../../../services/fetchVisuals';
 import { useNavigate } from 'react-router-dom';
 import { useAuthorities } from '../../../context/AuthContext';
-import { FaEye } from 'react-icons/fa';
+import { FaEye, FaRegTrashAlt } from 'react-icons/fa';
 import i18n from '../../../locales/index.js'
-
+import { useToast } from "../../../components/ui/use-toast";
+import { useFetchAllSavedMaps } from '../../../services/maps';
+import { DeleteMapModal } from './DeleteMapModal';
 
 
 const MyMapsTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
+  const { toast } = useToast();
   const {setAnalyticsData} = useAuthorities();
     const navigate = useNavigate();
-    const {refetch}  = useFetchVisualsData()
+    const { refetch } = useFetchAllSavedMaps();
     const [isShowDeleteVisual,setIsShowDeleteVisual] = useState<boolean>(false)
     const [selectedVisual, setSelectedVisual] = useState<any |undefined>();
+    const [deleteModalData, setDeleteModalData] = useState<{
+      mapId: string;
+      mapName: string;
+    } | null>(null);
 
 
   // Ensure savedVisualData is an array
@@ -74,10 +82,28 @@ const MyMapsTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
   navigate(`/map/${data?.key}`)
   };
 
-  const handleDelete = (data:any) => {
-    setSelectedVisual(data)
-    setIsShowDeleteVisual(true);
+  const engine = useDataEngine();
+  const handleDeleteMap = async (MapId: string) => {
+    try {
+      await engine.mutate({
+        resource: `dataStore/${process.env.REACT_APP_MAPS_STORE}/${MapId}`,
+        type: "delete",
+      });
 
+      toast({
+        title: "Success",
+        description: "Map deleted successfully",
+        variant: "default",
+      });
+      refetch();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
+      console.error("Failed to delete Map:", error);
+    }
   };
 
   const table = useMantineReactTable({
@@ -96,8 +122,15 @@ const MyMapsTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
     renderRowActions: ({ row }) => (
       <div className="flex gap-2  "> 
       <FaEye className='text-xl hover:cursor-pointer  hover:text-primary '   onClick={() => handleView(row?.original)} />
-      <RiDeleteBin5Line className='text-xl  hover:cursor-pointer text-red-600  hover:text-red-900 '    onClick={() => handleDelete(row?.original)} />
-       </div>
+      <RiDeleteBin5Line className='text-xl  hover:cursor-pointer text-red-600  hover:text-red-900 '
+              onClick={() =>
+                setDeleteModalData({
+                  mapId: row.original.key,
+                  mapName: row.original.value.mapName,
+                })
+              }
+            />
+    </div>
     ),
    
   });
@@ -105,17 +138,17 @@ const MyMapsTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
   // Table component
   return (
     <div>
- 
+  {deleteModalData && (
+        <DeleteMapModal
+          MapId={deleteModalData.mapId}
+          MapName={deleteModalData.mapName}
+          onClose={() => setDeleteModalData(null)}
+          onDelete={handleDeleteMap}
+        />
+      )}
 
       <MantineReactTable table={table}  />
 
-
-      {/* <GenericModal
-       isOpen={isShowDeleteVisual}
-       setIsOpen={setIsShowDeleteVisual}
-       >
-       <DeleteVisualTypeCard id={selectedVisual?.key} setIsShowDeleteVisualType={setIsShowDeleteVisual}  refetch={refetch} />
-       </GenericModal> */}
 
     </div>
 

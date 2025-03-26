@@ -19,6 +19,7 @@ import { generateAutoLegend,  calculateMapCenter,
   getColorForValue, 
   createGeoJSON, 
   onEachFeature  } from '../../../lib/mapHelpers';
+import MapUpdater from './MapUpdater';
 
 // Fix for default marker icon
 let DefaultIcon = L.icon({
@@ -186,10 +187,12 @@ const MapBody: React.FC<MapBodyProps> = ({
                 }
               />
             )}
+             <MapUpdater districts={districts} hasData={hasDataToDisplay} />
           </MapContainer>
           
           {/* Legend */}
           {districts.length > 0 && (
+            
             <MapLegend
               legendType={legendType}
               autoLegend={autoLegend}
