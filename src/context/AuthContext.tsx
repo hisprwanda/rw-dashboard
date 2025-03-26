@@ -20,11 +20,6 @@ import { BackedSelectedItem, visualTypes } from "../types/visualType";
 import { currentInstanceId } from "../constants/currentInstanceInfo";
 import { getAnalyticsFilter, getSelectedOrgUnitsWhenUsingMap } from "../lib/getAnalyticsFilters";
 
-
-
-
-
-
 interface AuthContextProps {
   userDatails: {};
   authorities: string[];
@@ -129,8 +124,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
   
   const [selectedDataSourceDetails, setSelectedDataSourceDetails] = useState<DataSourceFormFields>(defaultDataSource);
-
-    const [selectedDimensionItemType, setSelectedDimensionItemType] = useState<dimensionItemTypesTYPES>(dimensionItemTypes[0])
+  const [selectedDimensionItemType, setSelectedDimensionItemType] = useState<dimensionItemTypesTYPES>(dimensionItemTypes[0])
 
   // metadata states
   // 
@@ -140,8 +134,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
  const [currentUserInfoAndOrgUnitsData, setCurrentUserInfoAndOrgUnitsData] = useState<any>()
  // const currentUserOrgUnitId = userDatails?.me?.organisationUnits?.[0]?.id || "Hjw70Lodtf2";
   const [backedSelectedItems, setBackedSelectedItems] = useState<BackedSelectedItem[]>([]);
-  
-
   const defaultUserOrgUnit = currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName
   const [isFetchAnalyticsDataLoading, setIsFetchAnalyticsDataLoading] = useState(false);
   const [analyticsData, setAnalyticsData] = useState<any>(null);
@@ -164,11 +156,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     customSubTitle:""
   })
 
-  useEffect(()=>{
-    console.log("track selectedOrganizationUnits",selectedOrganizationUnits)
-  },[selectedOrganizationUnits])
  const [selectedColorPalette, setSelectedColorPalette] = useState<visualColorPaletteTypes>(systemDefaultColorPalettes[0] || []);
-
  const [visualsColorPalettes,setVisualsColorPalettes] =useState<ColorPaletteTypes >(systemDefaultColorPalettes)
   const [visualSettings, setSelectedVisualSettings] = useState<VisualSettingsTypes>({ backgroundColor: '#ffffff',visualColorPalette:selectedColorPalette,fillColor:"#ffffff",XAxisSettings:{color:"#000000",fontSize:12},YAxisSettings:{color:"#000000",fontSize:12} })
 
@@ -205,7 +193,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading user authorities</div>;
-
 
 
   // testing

@@ -37,6 +37,7 @@ type MapBodyProps = {
   metaMapData: any;
   singleSavedMapData?: any;
   mapId?: string;
+  isHideSideBar?:boolean
 }
 
 const MapBody: React.FC<MapBodyProps> = ({
@@ -44,7 +45,8 @@ const MapBody: React.FC<MapBodyProps> = ({
   geoFeaturesData,
   metaMapData,
   singleSavedMapData,
-  mapId
+  mapId,
+  isHideSideBar = true
 }) => {
   // State management
   const [currentBasemap, setCurrentBasemap] = useState<BasemapType>('osm-light');
@@ -147,18 +149,23 @@ const MapBody: React.FC<MapBodyProps> = ({
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
-      <MapSidebar 
+      {!isHideSideBar && <>
+        <MapSidebar 
         basemaps={BASEMAPS}
         currentBasemap={currentBasemap}
         onBasemapChange={setCurrentBasemap}
         singleSavedMapData={singleSavedMapData}
         mapId={mapId}
       />
+      </>  }
+     
 
       {/* Map Container */}
       <div className="flex-grow h-full">
         {/* Legend Controls */}
-        {districts.length > 0 && (
+        {
+          !isHideSideBar && <>
+            {districts.length > 0 && (
           <LegendControls
             legendType={legendType}
             setLegendType={setLegendType}
@@ -167,6 +174,9 @@ const MapBody: React.FC<MapBodyProps> = ({
             sampleLegends={sampleLegends}
           />
         )}
+          </>
+        }
+      
         
         <div className="h-full w-full relative">
           <MapContainer 
