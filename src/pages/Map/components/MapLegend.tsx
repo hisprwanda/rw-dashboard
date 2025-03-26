@@ -4,21 +4,29 @@ import { ChevronDown, ChevronUp, X } from 'lucide-react';
 
 type MapLegendProps = {
   legendType: string;
-  autoLegend: LegendClass[];
-  selectedLegendSet: Legend;
+  autoLegend?: LegendClass[]; // Make this optional
+  selectedLegendSet?: Legend; // Make this optional
 };
 
 const MapLegend: React.FC<MapLegendProps> = ({ 
   legendType, 
-  autoLegend, 
+  autoLegend = [], // Provide a default empty array
   selectedLegendSet 
 }) => {
   // State to control legend visibility
   const [isMinimized, setIsMinimized] = useState<boolean>(false);
   const [isHidden, setIsHidden] = useState<boolean>(false);
   
-  // Get active legend classes
-  const legendClasses = legendType === "auto" ? autoLegend : selectedLegendSet.legends;
+  // Get active legend classes with null checks
+  const legendClasses = legendType === "auto" 
+    ? (autoLegend || []) 
+    : (selectedLegendSet?.legends || []);
+
+  // If no legend classes are available, return null or a placeholder
+  if (!Array.isArray(legendClasses) || legendClasses.length === 0) {
+    console.warn('No legend classes available', { legendType, autoLegend, selectedLegendSet });
+    return null; // or return a placeholder component
+  }
 
   return (
     <div 
@@ -32,21 +40,12 @@ const MapLegend: React.FC<MapLegendProps> = ({
         onClick={() => setIsMinimized(!isMinimized)}
       >
         <div className="font-bold flex-grow">
-          {legendType === "auto" ? "Automatic Legend" : selectedLegendSet.name}
+          {legendType === "auto" 
+            ? "Automatic Legend" 
+            : (selectedLegendSet?.name || "Legend")}
         </div>
         
         <div className="flex items-center space-x-2">
-          {/* Close Button */}
-          {/* <button 
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsHidden(true);
-            }} 
-            className="hover:bg-gray-200 rounded-full p-1"
-          >
-            <X size={20} />
-          </button> */}
-          
           {/* Minimize/Maximize Toggle */}
           {isMinimized ? <ChevronUp />: <ChevronDown /> }
         </div>
