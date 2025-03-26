@@ -4,13 +4,19 @@ import { useSystemInfo } from "../services/fetchSystemInfo";
 import { chartComponents } from "../constants/systemCharts";
 import { systemDefaultColorPalettes } from "../constants/colorPalettes";
 import { currentInstanceId } from "../constants/currentInstanceInfo";
+
+type resetAnalyticsStatesToDefaultValuesParams = {
+    isBeingUsedInMap?:boolean
+}
+
+
 export const useResetAnalyticsStatesToDefault = ()=>{
-  const {selectedColorPalette,currentUserInfoAndOrgUnitsData, setSelectedDataSourceOption,setSelectedVisualSettings,setVisualsColorPalettes,setIsUseCurrentUserOrgUnits,setSelectedOrganizationUnits,setSelectedOrgUnits,setSelectedOrgUnitGroups,setSelectedOrganizationUnitsLevels,setSelectedLevel,setSelectedVisualTitleAndSubTitle,setIsSetPredifinedUserOrgUnits,setAnalyticsDimensions,setSelectedChartType,setSelectedDimensionItemType,setSelectedDataSourceDetails,setAnalyticsData,setAnalyticsQuery} =   useAuthorities()
+  const {  setGeoFeaturesData,setAnalyticsMapData,setMetaMapData, selectedColorPalette,currentUserInfoAndOrgUnitsData, setSelectedDataSourceOption,setSelectedVisualSettings,setVisualsColorPalettes,setIsUseCurrentUserOrgUnits,setSelectedOrganizationUnits,setSelectedOrgUnits,setSelectedOrgUnitGroups,setSelectedOrganizationUnitsLevels,setSelectedLevel,setSelectedVisualTitleAndSubTitle,setIsSetPredifinedUserOrgUnits,setAnalyticsDimensions,setSelectedChartType,setSelectedDimensionItemType,setSelectedDataSourceDetails,setAnalyticsData,setAnalyticsQuery} =   useAuthorities()
   const { data: systemInfo } = useSystemInfo();
   const defaultUserOrgUnit = currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName;
-   
+ 
       /// function to clear reset to default values
-      function resetToDefaultValues() {
+      function resetAnalyticsStatesToDefaultValues({isBeingUsedInMap}:resetAnalyticsStatesToDefaultValuesParams = {}) {
         setSelectedDimensionItemType(dimensionItemTypes[0]);
         setSelectedDataSourceDetails({
             instanceName: systemInfo?.title?.applicationTitle || "", // Fallback to an empty string if undefined
@@ -43,6 +49,12 @@ export const useResetAnalyticsStatesToDefault = ()=>{
         setVisualsColorPalettes(systemDefaultColorPalettes[0] || []);
         setSelectedVisualSettings({ backgroundColor: '#ffffff', visualColorPalette: selectedColorPalette, fillColor: "#ffffff", XAxisSettings: { color: "#000000", fontSize: 12 }, YAxisSettings: { color: "#000000", fontSize: 12 } });
         setSelectedDataSourceOption(currentInstanceId);
+        if(isBeingUsedInMap)
+        {
+            setGeoFeaturesData([])
+            setAnalyticsMapData([])
+            setMetaMapData([])
+        }
     }
     ///
     function resetOtherValuesToDefaultExceptDataSource() {
@@ -77,5 +89,5 @@ export const useResetAnalyticsStatesToDefault = ()=>{
 
 
 
-    return {resetToDefaultValues,resetOtherValuesToDefaultExceptDataSource }
+    return {resetAnalyticsStatesToDefaultValues,resetOtherValuesToDefaultExceptDataSource }
 }

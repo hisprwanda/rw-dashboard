@@ -58,7 +58,7 @@ function Visualizers() {
     const visualizationRef = useRef<HTMLDivElement>(null);
     const captureRef = useRef<HTMLDivElement>(null);
     const [isFullscreen, setIsFullscreen] = useState(false);
-    const {resetOtherValuesToDefaultExceptDataSource,resetToDefaultValues} = useResetAnalyticsStatesToDefault()
+    const {resetOtherValuesToDefaultExceptDataSource,resetAnalyticsStatesToDefaultValues} = useResetAnalyticsStatesToDefault()
 
     //// data source options
     const dataSourceOptions = savedDataSource?.dataStore?.entries?.map((entry: any) => (
@@ -67,7 +67,7 @@ function Visualizers() {
     // if visualId is false then set all chart related states to default
     useEffect(() => {
         if (!visualId) {
-            resetToDefaultValues();
+            resetAnalyticsStatesToDefaultValues();
             /// if no visual created , fetch data of current instance
             fetchCurrentInstanceData(selectedDimensionItemType);
             fetchCurrentUserAndOrgUnitData();
