@@ -176,7 +176,5 @@ msgstr "Quitter le plein écran"
 msgid "Exit"
 msgstr "Sortie"
 
-msgid "bulletin-settings"
-msgstr "paramètres du bulletin"
 
 

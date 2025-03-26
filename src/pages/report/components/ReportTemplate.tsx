@@ -2,13 +2,18 @@ import { useDataQuery, useDataEngine } from '@dhis2/app-runtime';
 import i18n from '@dhis2/d2-i18n';
 import minisanteLogo from './images/minisante_logo.png';
 import rbcLogo from './images/rbc_logo.png';
-import React,{ Key, useState, useEffect, useMemo } from 'react';
+import React,{ Key, useState, useEffect, useMemo,useRef } from 'react';
 import { Treemap,PieChart, Pie, Cell, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Tab, Tabs, TabBar, Transfer, Button, Modal } from '@dhis2/ui';
 import { useAuthorities } from '../../../context/AuthContext';
 import { isValidInputData, transformDataForGenericChart } from '../../../lib/localGenericchartFormat';
-import { fetchTrackedEntities, fetchEvents } from '../../bulletin-settings/BulletinService';
+import { fetchTrackedEntities, fetchEvents } from './BulletinService';
 import { chartComponents } from '../../../constants/systemCharts';
+import { dimensionDataHardCoded } from '../../../constants/bulletinDimension';
+import { formatAnalyticsDimensions } from '../../../lib/formatAnalyticsDimensions';
+import { Textarea } from "../../../components/ui/textarea";
+import { BulletinAreaChart } from './BulletinAreaCharts';
+
 
 
 const datastoreQuery = {
@@ -17,17 +22,6 @@ const datastoreQuery = {
   },
 };
 
-const fixedPeriodQuery = {
-  results: {
-    resource: `periodTypes`,
-  },
-};
-
-const relativePeriodQuery = {
-  results: {
-    resource: `periodTypes/relativePeriodTypes`,
-  },
-};
 
 const dataF = [
   {
@@ -93,7 +87,8 @@ const dataF = [
 ];
 
 
-let dataM: any[];
+let dataM: any[] = [];
+
 
 const COLORSM = ['#3b82f6', '#ef4444', '#9ca3af'];
 
@@ -133,7 +128,8 @@ const getRandomColor = () => {
 //   { name: "Nyabikenke DH", value: 1 },
 // ].map(item => ({ ...item, color: getRandomColor() }));
 
-let dataTreeMap: any[];
+let dataTreeMap: any[] = [];
+
 
 const CustomizedContent = ({ root, depth, x, y, width, height, index, colors, name, value }) => {
   return (
@@ -174,7 +170,7 @@ const CustomizedContent = ({ root, depth, x, y, width, height, index, colors, na
 
 
 const ReportTemplate : React.FC = () => {
-  const {analyticsData,reportAnalyticsDimensions,visualTitleAndSubTitle,visualSettings} = useAuthorities()
+  const {analyticsData,isFetchAnalyticsDataLoading,visualTitleAndSubTitle,visualSettings, analyticsDimensions,fetchAnalyticsData,selectedDataSourceDetails} = useAuthorities()
   const engine = useDataEngine(); 
   const [messages, setMessages] = useState<string[]>([]);
   const [alertFromCommunity, setAlertFromCommunity] = useState<string[]>([]);
@@ -186,26 +182,174 @@ const ReportTemplate : React.FC = () => {
   const [deathDescription, setDeathDescription] = useState<string>();
   const [total, setTotal] = useState<number>(0);
   const [diseaseCount, setDiseaseCount] = useState<Record<string, number>>({});
-  const [dataLoading, setDataLoading] = useState<boolean>(true);
+  const [dataLoading, setDataLoading] = useState<boolean>(false);
   const [dataError, setDataError] = useState<string | null>(null);
   const [totalOrgUnit, setTotalOrgUnit] = useState<number>(0);
+  const [showLanding, setShowLanding] = useState<boolean>(true);
+  const [showDeaths, setShowDeath] = useState<number>(0);
 
-
-  const renderAreaChart = () => {
-    const SelectedChart = chartComponents.find(chart => chart.type === "Area")?.component;
-    return SelectedChart ? <SelectedChart data={analyticsData} visualTitleAndSubTitle={visualTitleAndSubTitle} visualSettings={visualSettings} /> : null;
+// Complete implementation with debugging and proper data formatting
+const renderAreaCharts = () => {
+  const SelectedChart = BulletinAreaChart;
+  
+  if (!SelectedChart || !analyticsData || !dimensionDataHardCoded) {
+    console.log("Missing required data:", { 
+      hasChart: !!SelectedChart, 
+      hasAnalyticsData: !!analyticsData, 
+      hasDimensions: !!dimensionDataHardCoded 
+    });
+    return null;
+  }
+  
+  // Format data in the structure expected by the chart component
+  const formatChartData = (diseaseId) => {
+    // Filter rows for this specific disease
+    const diseaseRows = analyticsData.rows.filter(row => row[0] === diseaseId);
+    console.log("disease rows", diseaseRows)
+    
+    if (diseaseRows.length === 0) {
+      console.log(`No data found for disease ID: ${diseaseId}`);
+      return [];
+    }
+    
+    // Sort by period to ensure chronological order
+    diseaseRows.sort((a, b) => a[1].localeCompare(b[1]));
+    const diseaseName = getDiseaseNameById(diseaseId);
+    
+    // Transform to the format expected by the chart component
+    return diseaseRows.map(row => ({
+      dx: row[0],
+      pe: row[1],
+      month: analyticsData.metaData.items[row[1]]?.name || row[1], // Period name if available
+      name: diseaseName,
+      [diseaseName]: parseFloat(row[2]),
+      // Include any other properties your chart component expects
+    }));
+  };
+  
+  // Get the disease IDs from the metadata
+  const diseaseIds = analyticsData.metaData.dimensions.dx || dimensionDataHardCoded;
+  
+  console.log("Rendering charts for diseases:", diseaseIds);
+  
+  // Return an array of area charts, one for each disease ID
+  return diseaseIds.map(diseaseId => {
+    const chartData = formatChartData(diseaseId);
+    
+    console.log(`Disease ${diseaseId} data points: ${chartData.length}`);
+    console.log("the chartData should be like thus", chartData)
+    console.log("the analytics data was like ths", analyticsData)
+    
+    // If we have data for this disease ID, render a chart
+    if (chartData.length > 0) {
+      const diseaseName = analyticsData.metaData.items[diseaseId]?.name || 
+                          getDiseaseNameById(diseaseId) || 
+                          `Disease ${diseaseId}`;
+      
+      return (
+        <div key={diseaseId} className="mb-8">
+          {/* <h3 className="text-lg font-semibold mb-2">{diseaseName}</h3> */}
+          <SelectedChart 
+            data={chartData} 
+            visualTitleAndSubTitle={{
+              ...visualTitleAndSubTitle,
+              title: diseaseName
+            }} 
+            visualSettings={{
+              ...visualSettings,
+              // Make sure these settings are compatible with your chart component
+              xAxis: {
+                ...visualSettings?.xAxis,
+                dataKey: 'name'  // Use period name for x-axis
+              },
+              yAxis: {
+                ...visualSettings?.yAxis,
+              },
+              series: [
+                {
+                  dataKey: 'value',
+                  name: diseaseName,
+                  // Add any other series properties needed
+                }
+              ]
+            }} 
+          />
+        </div>
+      );
+    }
+    
+    return (
+      <div key={diseaseId} className="mb-8">
+        <h3 className="text-lg font-semibold mb-2">
+          {/* {analyticsData.metaData.items[diseaseId]?.name || getDiseaseNameById(diseaseId) || `Disease ${diseaseId}`} */}
+        </h3>
+        <div className="p-8 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500">
+          No data found
+        </div>
+      </div>
+    );
+  });
 };
+
+const getDiseaseNameById = (id) => {
+  // Corrected disease mapping based on your JSON metadata
+  const diseaseNames = {
+    "CxTT5NVd8o1": "Simple malaria",
+    "TnhQi1knkS7": "Flu syndrome",
+    "Efu7jw6Y45t": "Severe pneumonia under 5 years",
+    "KLdYJhoI1yM": "Rabies exposure",
+    "XCuqmbPR8vX": "COVID-19",
+    "j10s9Gfed0c": "Non bloody diarrhoea under 5 years"
+  };
+  
+  return diseaseNames[id] || null;
+};
+
+function extractWeekData(weekString) {
+  // Use a regular expression to match the week number and the dates
+  const regex = /(Week \d+)\s+(\d{4}-\d{2}-\d{2})\s*-\s*(\d{4}-\d{2}-\d{2})/;
+  const match = weekString.match(regex);
+
+  if (match) {
+      const weekNumber = match[1]; // First captured group (week number)
+      const startDate = match[2]; // Second captured group (start date)
+      const endDate = match[3]; // Third captured group (end date)
+
+      return {
+          weekNumber: weekNumber,
+          startDate: startDate,
+          endDate: endDate
+      };
+  } else {
+      return {
+          weekNumber: null,
+          startDate: null,
+          endDate: null
+      };
+  }
+}
+
+const selectedPeriod = analyticsData.metaData.dimensions.pe;
+const selectedItems = analyticsData.metaData.items;
+const key = selectedPeriod[0];
+const value = selectedItems[key];
+const periodName = value.name
+const {startDate, endDate, weekNumber} = extractWeekData(periodName);
+console.log("week number", weekNumber)
+console.log("startDate", startDate)
+console.log("endDate", endDate)
+
+
+
   useEffect(() => {
       const loadData = async () => {
           try {
-              const response = await fetchTrackedEntities(engine, 'Hjw70Lodtf2', 'U86iDWxDek8');
-              const otherProgramResponse = await fetchEvents(engine, 'Hjw70Lodtf2', 'ecvn9SiIEXz');
-              const malariaResponse = await fetchEvents(engine, 'Hjw70Lodtf2', 'zCy7bqFHOpa');
+            setDataLoading(true);
+              const response = await fetchTrackedEntities(engine, 'Hjw70Lodtf2', 'U86iDWxDek8', startDate, endDate);
+              const otherProgramResponse = await fetchEvents(engine, 'Hjw70Lodtf2', 'ecvn9SiIEXz',startDate, endDate);
+              const malariaResponse = await fetchEvents(engine, 'Hjw70Lodtf2', 'zCy7bqFHOpa', startDate, endDate);
               dataM = response.pieChartData
-              dataTreeMap = response.treeMapData.map(item => ({ ...item, color: getRandomColor() }))
-              // console.log("impuruza Program", otherProgramResponse)
-              console.log("response treemap", response.treeMapData);
-              
+              dataTreeMap = response.treeMapData.map(item => ({ ...item, color: getRandomColor() }))              
               setMessages([...malariaResponse.message, ...otherProgramResponse.message]);
               setAlertFromCommunity([...malariaResponse.alertFromCommunity, ...otherProgramResponse.alertFromCommunity])
               setIBSHighlightMessage(response.IBSHighlightMessage)
@@ -214,6 +358,7 @@ const ReportTemplate : React.FC = () => {
               setDeathsMessage(response.deathMessages)
               setPieChartDescription(response.PieChartDescription);
               setDeathDescription(response.totalDeathMessages)
+              setShowDeath(response.totalReportedDeaths)
               setTotal(response.total);
           } catch (err) {
               setDataError(err instanceof Error ? err.message : 'An unknown error occurred');
@@ -226,10 +371,9 @@ const ReportTemplate : React.FC = () => {
           
       };
 
-        
-
         loadData();
-    }, [engine]);
+    }, [engine]); // Ensure that the engine is the only dependency
+
 
 
 
@@ -238,15 +382,16 @@ const ReportTemplate : React.FC = () => {
     return <span>{i18n.t('ERROR')}</span>;
   }
 
-  if (loading) {
+  if (loading ||  dataLoading || isFetchAnalyticsDataLoading) {
     return <span>{i18n.t('Loading...')}</span>;
   }
  
-
-   const title = reportAnalyticsDimensions?.pe?.join(",")
   return (
     <>
+    {/* <DisplayAreaCharts/> */}
+
         {/* <button className="bg-blue-400" onClick={downloadPDF}>Download</button> */}
+      
         <h1 className=' text-center text-3xl font-bold uppercase tracking-wide my-6'>Epidemological Bulletin</h1>
         <div id="content-to-download" className='bg-white p-5 mx-auto mt-5 rounded-lg shadow-md max-w-4xl'>
           {/* Header Logos */}
@@ -260,8 +405,10 @@ const ReportTemplate : React.FC = () => {
             <h2 className="text-5xl font-bold uppercase tracking-wide">
               {data?.results?.page1.titles[0]}
             </h2>
+            <h3>{weekNumber}</h3>
+            <h3>{startDate} - {endDate}</h3>
             <div className="py-4 px-6 mt-4 inline-block">
-              <h3 className="text-3xl font-extrabold text-black">{title}</h3>
+              {/* <h3 className="text-3xl font-extrabold text-black">{title}</h3> */}
             </div>
           </div>
     
@@ -282,12 +429,15 @@ const ReportTemplate : React.FC = () => {
               <span className="bold">{data?.results?.page1.titles[2]}:</span> {data?.results?.page1.body_content[2]}
             </p>
           </div>
-    
+          
+          
           {/* Page 2 */}
           <div className="p-4 rounded-lg mb-5">
             <h1 className='bg-blue-400 text-xl text-center font-bold py-4 mb-5'>{data?.results?.page2.main_titles[0]}</h1>
             <h2 className='text-md font-bold mb-2'>{data?.results?.page2.main_titles[1]}:</h2>
-            <ul className='list-disc pl-4'>
+           <ul className='list-disc pl-4'>
+            {totalEvents > 0 ? (
+              <>
               <li> <span className='font-bold'>{data?.results?.page2.sub_titles[0]}:</span> {totalEvents} alerts: 
               {alertFromCommunity.length > 0 ? (
                     <span>
@@ -299,23 +449,29 @@ const ReportTemplate : React.FC = () => {
                     <p>No cases found.</p>
                 )} 
               </li>
+              </>
+            ): null}
               <li className='bold mr-5'> <span className='font-bold'>{data?.results?.page2.sub_titles[1]}:</span> {data?.results?.page2.body_content.Alert_from_EIOS[0]}</li>
               <ul className='list-disc pl-6'>
                 <li>{data?.results?.page2.body_content.Alert_from_EIOS[1]}</li>
                 <li>{data?.results?.page2.body_content.Alert_from_EIOS[2]}</li>
               </ ul>
-              <li className='font-bold'>{data?.results?.page2.sub_titles[2]}</li>
-              <ul>
-                {IBSHighlightMessage.length > 0 ? (
-                      <ul className='list-disc pl-6'>
-                          {IBSHighlightMessage.map((msg, index) => (
-                              <li key={index}>{msg}</li>
-                          ))}
-                      </ul>
-                  ) : (
-                      <p>No cases found.</p>
-                  )} 
-              </ul>
+              {total > 0 ? (
+                <>
+                    <li className='font-bold'>{data?.results?.page2.sub_titles[2]}</li>
+                    <ul>
+                      {IBSHighlightMessage.length > 0 ? (
+                            <ul className='list-disc pl-6'>
+                                {IBSHighlightMessage.map((msg, index) => (
+                                    <li key={index}>{msg}</li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>No cases found.</p>
+                        )} 
+                    </ul>
+                </>
+              ): null  }
               <li className='font-bold'>{data?.results?.page2.sub_titles[3]}</li>
               <ul className='list-disc pl-6'>
                 {data?.results?.page2?.body_content.outbreaks_updates.map((update: any, index) => (
@@ -327,11 +483,12 @@ const ReportTemplate : React.FC = () => {
                 <li>{data?.results?.page2?.body_content.completness[0]}</li>
               </ul>
             </ul>
+        
           </div>
     
           {/* Page 3 */}
           <div className="p-4 rounded-lg mb-5">
-            <h1 className='bg-blue-400 text-xl text-center font-bold py-4 mb-5'>{data?.results?.page3.main_titles[0]}</h1>
+            <h1 className='bg-blue-400 text-xl text-center font-bold py-4 mb-5'>{data?.results?.page3.main_titles[0]} {weekNumber}</h1>
             <p className='mb-4'>
               <span className='font-bold'>{data?.results?.page3.main_titles[1]}:</span>
               {data?.results?.page3?.body_content.description.map((parag: any, index: Key | null | undefined) => (
@@ -341,23 +498,25 @@ const ReportTemplate : React.FC = () => {
     
             <h1 className='font-bold mb-4 '>{data?.results?.page3.main_titles[2]}</h1>
             <ul className='list-disc pl-4'>
-              <li>
-                <span className='font-bold'>{data?.results?.page3.sub_titles[0]}:</span> {totalEvents} alerts
-              </li>
-              <ul className='list-disc pl-6'>
-                  {/* {data?.results?.page3.body_content.alert_community.slice(-4).map((al: any, index) => (
-                    <li  key={index}>{al}</li>
-                  ))} */}
-                      {messages.length > 0 ? (
-                            <ul>
-                                {messages.map((msg, index) => (
-                                    <li key={index}>{msg}</li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <p>No cases found.</p>
-                        )} 
-                </ul>
+              {totalEvents > 0 ? (
+                <>
+                    <li>
+                      <span className='font-bold'>{data?.results?.page3.sub_titles[0]}:</span> {totalEvents} alerts
+                    </li>
+                    <ul className='list-disc pl-6'>
+                            {messages.length > 0 ? (
+                                  <ul>
+                                      {messages.map((msg, index) => (
+                                          <li key={index}>{msg}</li>
+                                      ))}
+                                  </ul>
+                              ) : (
+                                  <p>No cases found.</p>
+                              )} 
+                      </ul>
+                </>
+              ): null}
+
               <li>
               <span className='font-bold'>{data?.results?.page3.sub_titles[1]}:</span> {data?.results?.page3.body_content.Alert_from_EIOS[0]}
               </li>
@@ -381,44 +540,58 @@ const ReportTemplate : React.FC = () => {
           </div>
     
           {/* Page 4 */}
-          <div className="p-4 rounded-lg mb-2">
-            <h1 className='bg-blue-400 text-xl text-center font-bold py-4 mb-5'>{data?.results?.page4.main_titles[0]}</h1>
-            <p>
-              <span className='font-bold'>{data?.results?.page4.sub_titles[0]}: </span>
-              {data?.results?.page4?.body_content.description}
-            </p>
-            <h1 className='text-center font-bold my-4'>{data?.results?.page4.main_titles[1]}</h1>
-            <p>During this Epi week, {total} cases of immediate reportable diseases were notified:</p>
-            <ul className='list-disc pl-8'>
-                {DiseaseData.length > 0 ? (
-                            <ul>
-                                {DiseaseData.map((msg, index) => (
-                                    <li key={index}>{msg}</li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <p>No cases found.</p>
-                        )} 
-                </ul>
-            <h2 className='font-bold my-4'>{data?.results?.page4?.sub_titles[1]}:</h2>
-            <ul className='list-disc pl-8'>
-              {data?.results?.page4?.body_content.notes.map((note: any, index) => (
-                <li key={index}>{note}</li>
-              ))}
-            </ul>
-          </div>
+          {
+            total > 0 ? (
+              <div className="p-4 rounded-lg mb-2">
+              <h1 className='bg-blue-400 text-xl text-center font-bold py-4 mb-5'>{data?.results?.page4.main_titles[0]}</h1>
+              <p>
+                <span className='font-bold'>{data?.results?.page4.sub_titles[0]}: </span>
+                {data?.results?.page4?.body_content.description}
+              </p>
+              <h1 className='text-center font-bold my-4'>IMMEDIATE REPORTABLE DISEASES – EPI{weekNumber}</h1>
+              <p>During this Epi week, {total} cases of immediate reportable diseases were notified:</p>
+              <ul className='list-disc pl-8'>
+                  {DiseaseData.length > 0 ? (
+                              <ul>
+                                  {DiseaseData.map((msg, index) => (
+                                      <li key={index}>{msg}</li>
+                                  ))}
+                              </ul>
+                          ) : (
+                              <p>No cases found.</p>
+                          )} 
+                  </ul>
+              <h2 className='font-bold my-4'>{data?.results?.page4?.sub_titles[1]}:</h2>
+              <Textarea
+                          label="IMMEDIATE REPORTABLE DISEASES Notes"
+                          name="immediateReportableDiseasesNotes"
+                          // value={formData.immediateReportableDiseasesNotes}
+                          // onChange={handleChange}
+                          placeholder="Enter notes..."
+                        />
+              {/* <ul className='list-disc pl-8'>
+                {data?.results?.page4?.body_content.notes.map((note: any, index) => (
+                  <li key={index}>{note}</li>
+                ))}
+              </ul> */}
+            </div>
+            ): null
+          }
+       
          {/* other pages*/}
           <div className="p-4 rounded-lg mb-5">
-            <h1 className='text-center font-bold my-4'>{data?.results?.pages.main_titles[0]}</h1>
+            <h1 className='text-center font-bold my-4'>WEEKLY REPORTABLE DISEASES – EPI {weekNumber}</h1>
             <p><span className='font-bold'>{data?.results?.pages.sub_titles[0]}</span>: {data?.results?.pages.reportable_description[0]} </p>
             <p> {data?.results?.pages.reportable_description[1]}</p>       
             <h2 className='font-bold mt-4'>{data?.results?.pages.sub_titles[1]}</h2>
 
-           <div>{renderAreaChart()}</div>
+           <div className="p-4 rounded-lg mb-5">{renderAreaCharts()}</div>
           </div>
-
+    {
+      showDeaths > 0 ? (
+    <div>
           <div className="p-4 rounded-lg mb-5">
-            <h1 className='text-center font-bold my-4'>{data?.results?.pages.main_titles[1]}</h1>
+            <h1 className='text-center font-bold my-4'>DISTRIBUTION OF REPORTED DEATHS IN eIDSR – EPIDEMIOLOGICAL {weekNumber}</h1>
             <p> {pieChartDescription}</p>   
             <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
@@ -465,6 +638,10 @@ const ReportTemplate : React.FC = () => {
            </ResponsiveContainer>
 
           </div>
+          </div>
+      ) : null
+    }
+          
           <div className="p-4 rounded-lg mb-5">
               <h1 className='bg-blue-400 text-xl text-center font-bold py-4 mb-5'>{data?.results?.pages.main_titles[2]}</h1>
               <h2 className='font-bold mt-4'>{data?.results?.pages.sub_titles[3]}</h2>
@@ -510,13 +687,27 @@ const ReportTemplate : React.FC = () => {
                     </tbody>
                </table>
               <h2 className='font-bold mt-4'>{data?.results?.pages.sub_titles[0]}</h2>
-              <p className='mb-4'>{data?.results?.pages.outbreak_description}</p>
+              <Textarea
+                        label="IMMEDIATE REPORTABLE DISEASES Notes"
+                        name="immediateReportableDiseasesNotes"
+                        // value={formData.immediateReportableDiseasesNotes}
+                        // onChange={handleChange}
+                        placeholder="Enter description..."
+                      />
+              {/* <p className='mb-4'>{data?.results?.pages.outbreak_description}</p> */}
               <h2 className='font-bold mt-4'>{data?.results?.pages.sub_titles[4]}</h2>
-              <ul className='list-disc pl-6'>
+              <Textarea
+                        label="IMMEDIATE REPORTABLE DISEASES Notes"
+                        name="immediateReportableDiseasesNotes"
+                        // value={formData.immediateReportableDiseasesNotes}
+                        // onChange={handleChange}
+                        placeholder="Enter notes..."
+                      />
+              {/* <ul className='list-disc pl-6'>
                       {data?.results?.pages.body_content.action_taken.map((al: any, index) => (
                         <li  key={index}>{al}</li>
                       ))}
-                </ul>
+                </ul> */}
 
           </div>
           <div className="p-4 rounded-lg mb-5">
@@ -527,11 +718,25 @@ const ReportTemplate : React.FC = () => {
                         <li  key={index}>{al}</li>
                       ))}
                 </ul>
-                <p className='mt-4'>{data?.results?.pages.body_content.completness_description[1]}</p>
+                {/* {/* <p className='mt-4'>{data?.results?.pages.body_content.completness_description[1]}</p> */}
+                <Textarea
+                        label="IMMEDIATE REPORTABLE DISEASES Notes"
+                        name="immediateReportableDiseasesNotes"
+                        // value={formData.immediateReportableDiseasesNotes}
+                        // onChange={handleChange}
+                        placeholder="Enter notes..."
+                      />
                 <p className='mt-4'>
                   <span><h2 className='font-bold'>{data?.results?.pages.sub_titles[5]}:</h2></span>
-                  {data?.results?.pages.body_content.notes}
-                </p>
+                  {/* {data?.results?.pages.body_content.notes} */}
+                  <Textarea
+                        label="IMMEDIATE REPORTABLE DISEASES Notes"
+                        name="immediateReportableDiseasesNotes"
+                        // value={formData.immediateReportableDiseasesNotes}
+                        // onChange={handleChange}
+                        placeholder="Enter notes..."
+                      />
+                </p> 
 
           </div>
          
@@ -595,11 +800,12 @@ const ReportTemplate : React.FC = () => {
                     <td className="border px-2 py-1 bg-green-500 text-white">98%</td>
                 </tr>
             </tbody>
-        </table>
+      </table>
 
-        </div>
-      </>
+      </div>
+      
+  </>
   )
 }
 
-export default ReportTemplate
+export default ReportTemplate;

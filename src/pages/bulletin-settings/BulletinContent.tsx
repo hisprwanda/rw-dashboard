@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDataEngine } from '@dhis2/app-runtime';
-import { fetchTrackedEntities, fetchEvents } from './BulletinService';
+import { fetchTrackedEntities, fetchEvents } from '../report/components/BulletinService';
 
 interface Attribute {
     attribute: string;

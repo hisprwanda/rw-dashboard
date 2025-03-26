@@ -32,181 +32,6 @@ interface ApiResponseEvents {
         instances: EventDataValue[];
     };
 }
-
-// export const fetchTrackedEntities = async (
-//     engine: any,
-//     orgUnit: string,
-//     program: string
-// ): Promise<{ 
-//     diseaseMessages: string[];
-//     deathMessages: string[];
-//     publicEventMessages: string[];
-//     IBSHighlightMessage: string[];
-//     PieChartDescription: string;
-//     totalDeathMessages: string;
-//     deathChartData: { name: string; value: number }[];
-//     total: number; 
-//     totalOrgUnits: Record<string, number>;
-// }> => {
-//     try {
-//         const result: ApiResponseTrackedEntities = await engine.query({
-//             trackedEntities: {
-//                 resource: 'tracker/trackedEntities',
-//                 params: {
-//                     enrollmentEnrolledAfter: '2023-11-23',
-//                     enrollmentEnrolledBefore: '2023-11-30',
-//                     orgUnit,
-//                     program,
-//                     fields: 'orgUnit,attributes[attribute,displayName,value]',
-//                     totalPages: true,
-//                     ouMode: 'DESCENDANTS',
-//                     skipPaging: true
-//                 },
-//             },
-//         });
-
-//         const orgUnitQuery ={
-//             orgUnit: {
-//                 resource: 'organisationUnits',
-//                 id: ({ id }) => id,
-//                 params: {
-//                     fields: ['displayName']
-//                 }
-//             }
-//         }
-
-
-//         console.log("death org unit", orgUnitQuery)
-        
-//         const diseaseCounts: Record<string, number> = {};
-//         const deathCounts: Record<string, Record<string, number>> = {}; // Store death type counts per orgUnit
-//         const publicEventCounts: Record<string, number> = {};
-//         const uniqueOrgUnits: Record<string, Set<string>> = {};
-//         const totalDeathTypes: Record<string, number> = {}; // Track overall death type counts
-        
-
-//         result.trackedEntities.instances.forEach((instance) => {
-//             let currentOrgUnit = instance.orgUnit;
-//             let category: string | null = null;
-//             let diseaseType: string | null = null;
-
-//             instance.attributes.forEach((attr) => {
-//                 if (attr.attribute === 'uOTHyxNv2W4') {
-//                     const value = attr.value.toLowerCase();
-//                     diseaseType = attr.value;
-//                     if (value.includes("death")) {
-//                         category = 'deaths';
-//                     } else if (value.includes("public health event")) {
-//                         category = 'publicEvents';
-//                     } else {
-//                         category = 'diseases';
-//                     }
-//                 }
-//             });
-            
-//             if (category && diseaseType) {
-//                 if (!uniqueOrgUnits[diseaseType]) {
-//                     uniqueOrgUnits[diseaseType] = new Set();
-//                 }
-//                 uniqueOrgUnits[diseaseType].add(currentOrgUnit);
-                
-//                 if (category === 'deaths') {
-//                     if (!deathCounts[currentOrgUnit]) {
-//                         deathCounts[currentOrgUnit] = {};
-//                     }
-//                     if (!deathCounts[currentOrgUnit][diseaseType]) {
-//                         deathCounts[currentOrgUnit][diseaseType] = 0;
-//                     }
-//                     deathCounts[currentOrgUnit][diseaseType] += 1;
-                    
-//                     if (!totalDeathTypes[diseaseType]) {
-//                         totalDeathTypes[diseaseType] = 0;
-//                     }
-//                     totalDeathTypes[diseaseType] += 1;
-//                 } else if (category === 'publicEvents') {
-//                     if (!publicEventCounts[diseaseType]) {
-//                         publicEventCounts[diseaseType] = 0;
-//                     }
-//                     publicEventCounts[diseaseType] += 1;
-//                 } else {
-//                     if (!diseaseCounts[diseaseType]) {
-//                         diseaseCounts[diseaseType] = 0;
-//                     }
-//                     diseaseCounts[diseaseType] += 1;
-//                 }
-//             }
-//         });
-
-//         let diseaseMessages: string[] = [];
-//         let deathMessages: string[] = [];
-//         let publicEventMessages: string[] = [];
-//         let IBSHighlightMessage: string[] = [];
-//         let allDiseases: string[] = [];
-//         let totalDeaths = 0;
-//         let totalPublicEvents = 0;
-       
-        
-//         Object.entries(diseaseCounts).forEach(([disease, count]) => {
-//             const uniqueOrgUnitCount = uniqueOrgUnits[disease]?.size || 0;
-//             diseaseMessages.push(`${count} cases of ${disease.replace(/_/g, ' ')} reported by ${uniqueOrgUnitCount} HFs`);
-//             allDiseases.push(disease);
-//         });
-        
-//         const reportingFacilities = new Set<string>();
-//         Object.entries(deathCounts).forEach(([orgUnit, deathTypes]) => {
-//             const deathsInUnit = Object.values(deathTypes).reduce((sum, count) => sum + count, 0);
-//             totalDeaths += deathsInUnit;
-//             reportingFacilities.add(orgUnit);
-//             const deathDetails = Object.entries(deathTypes)
-//                 .map(([deathType, count]) => `${count} were ${deathType}`)
-//                 .join(', ');
-//             const { deathOrgUnit } = await engine.query(orgUnitQuery, {
-//                     variables: { id: orgUnit }
-//                 })
-//             console.log("death orfytytdrtdgg unit", deathOrgUnit.displayName)
-//             deathMessages.push(`${deathsInUnit} deaths were reported by ${orgUnit} (${deathDetails})`);
-//         });
-  
-//         const totalDeathMessages = `${totalDeaths} deaths were reported from ${reportingFacilities.size} health facilities as follows:`;
-         
-
-//         Object.entries(publicEventCounts).forEach(([eventType, count]) => {
-//             const uniqueOrgUnitCount = uniqueOrgUnits[eventType]?.size || 0;
-//             totalPublicEvents += count;
-//             publicEventMessages.push(`${count} cases of ${eventType} reported by ${uniqueOrgUnitCount} HFs`);
-//         });
-        
-//         // Prepare data for pie chart
-//         const deathChartData = Object.entries(totalDeathTypes).map(([name, value]) => ({ name, value }));
-        
-//         // Calculate death percentages
-//         const pieChartDescriptions = deathChartData.map(({ name, value }) => {
-//             const percentage = ((value / totalDeaths) * 100).toFixed(0);
-//             return `${value} (${percentage}%) were ${name}`;
-//         }).join(', ');
-
-//         const PieChartDescription = `As summarized in the Pie Chart below, a total number of ${totalDeaths} deaths were reported through the electronic Integrated Disease Surveillance and Response (eIDSR) system. Among these deaths, ${pieChartDescriptions}.`;
-
-//         return {
-//             diseaseMessages,
-//             deathMessages,
-//             publicEventMessages,
-//             IBSHighlightMessage,
-//             PieChartDescription,
-//             deathChartData,
-//             totalDeathMessages,
-//             total: result.trackedEntities.instances.length,
-//             totalOrgUnits: Object.fromEntries(
-//                 Object.entries(uniqueOrgUnits).map(([key, orgUnitSet]) => [key, orgUnitSet.size])
-//             ),
-//         };
-//     } catch (error: any) {
-//         throw new Error(error.message);
-//     }
-// };
-
-
-
 export const fetchOrgUnitName = async (engine: any, orgUnitId: string): Promise<string> => {
     try {
         const response = await engine.query({
@@ -227,7 +52,9 @@ export const fetchOrgUnitName = async (engine: any, orgUnitId: string): Promise<
 export const fetchTrackedEntities = async (
     engine: any,
     orgUnit: string,
-    program: string
+    program: string,
+    enrollmentEnrolledAfter: string,
+    enrollmentEnrolledBefore: string
 ): Promise<{ 
     diseaseMessages: string[];
     deathMessages: string[];
@@ -235,6 +62,7 @@ export const fetchTrackedEntities = async (
     IBSHighlightMessage: string[];
     PieChartDescription: string;
     totalDeathMessages: string;
+    totalReportedDeaths: number;
     treeMapData: { name: string; value: number }[];
     pieChartData: { name: string; value: number }[];
     total: number; 
@@ -245,8 +73,8 @@ export const fetchTrackedEntities = async (
             trackedEntities: {
                 resource: 'tracker/trackedEntities',
                 params: {
-                    enrollmentEnrolledAfter: '2023-11-23',
-                    enrollmentEnrolledBefore: '2023-11-30',
+                    enrollmentEnrolledAfter,
+                    enrollmentEnrolledBefore,
                     orgUnit,
                     program,
                     fields: 'orgUnit,attributes[attribute,displayName,value]',
@@ -346,6 +174,7 @@ export const fetchTrackedEntities = async (
 
 
         const totalDeathMessages = `${totalDeaths} deaths were reported from ${reportingFacilities.size} health facilities as follows:`;
+        const totalReportedDeaths = totalDeaths;
 
         Object.entries(publicEventCounts).forEach(([eventType, count]) => {
             const uniqueOrgUnitCount = uniqueOrgUnits[eventType]?.size || 0;
@@ -357,9 +186,17 @@ export const fetchTrackedEntities = async (
         const sortedDeathTypes = Object.entries(totalDeathTypes).sort((a, b) => b[1] - a[1]);
         const topDeathTypes = sortedDeathTypes.slice(0, 2).map(([type]) => type).join(' and ');
 
-        IBSHighlightMessage.push(`${result.trackedEntities.instances.length} immediate reportable events were notified by health facilities countrywide. These include: ${allDiseases.join(', ')}.`);
-        IBSHighlightMessage.push(`A total of ${totalDeaths} deaths were reported through the electronic Integrated Disease Surveillance and Response (eIDSR) system. Most of the deaths were ${topDeathTypes}.`);
-        IBSHighlightMessage.push(`A total of ${totalPublicEvents} public events were reported.`);
+        if (result.trackedEntities.instances.length > 0) {
+            IBSHighlightMessage.push(`${result.trackedEntities.instances.length} immediate reportable events were notified by health facilities countrywide. These include: ${allDiseases.join(', ')}.`);
+        }
+        // Check if there are any reported deaths
+        if (totalDeaths > 0) {
+            IBSHighlightMessage.push(`A total of ${totalDeaths} deaths were reported through the electronic Integrated Disease Surveillance and Response (eIDSR) system. Most of the deaths were ${topDeathTypes}.`);
+        }
+        // Check if there are any public events reported
+        if (totalPublicEvents > 0) {
+            IBSHighlightMessage.push(`A total of ${totalPublicEvents} public events were reported.`);
+        }
 
         // Prepare PieChart Data
         pieChartData = sortedDeathTypes.map(([type, count]) => ({ name: type, value: count }));
@@ -376,6 +213,7 @@ export const fetchTrackedEntities = async (
             pieChartData,
             treeMapData,
             totalDeathMessages,
+            totalReportedDeaths,
             total: result.trackedEntities.instances.length,
             totalOrgUnits: Object.fromEntries(
                 Object.entries(uniqueOrgUnits).map(([key, orgUnitSet]) => [key, orgUnitSet.size])
@@ -391,19 +229,22 @@ export const fetchTrackedEntities = async (
 export const fetchEvents = async (
     engine: any,
     orgUnit: string,
-    program: string
+    program: string,
+    enrollmentEnrolledAfter: string,
+    enrollmentEnrolledBefore: string
 ): Promise<{ message: string[]; totalEvents: number; totalOrgUnits: Record<string, number>; alertFromCommunity: string[] }> => {
     try {
         const result: ApiResponseEvents = await engine.query({
             trackerEvents: {
                 resource: 'tracker/events',
                 params: {
-                    enrollmentEnrolledAfter: '2023-12-31',
                     orgUnit,
                     program,
                     fields: 'orgUnit,dataValues[dataElement,value]',
                     totalPages: true,
                     ouMode: 'DESCENDANTS',
+                    enrollmentEnrolledAfter,
+                    enrollmentEnrolledBefore
                     // skipPaging: true
                 },
             },

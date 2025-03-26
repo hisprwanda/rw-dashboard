@@ -10,4 +10,3 @@ export { default as DashboardsPage, } from "./dashboards/DashboardsPage";
 export { default as DataSourcePage, } from "./settings/DataSource/DataSourcePage";
 export { default as VisualizationPage, } from "./visualizers/VisualizationPage";
 export { default as ReportPage, } from "./report/ReportPage";
-export { default as BulletinSettingsPage, } from "./bulletin-settings/BulletinSettings";
