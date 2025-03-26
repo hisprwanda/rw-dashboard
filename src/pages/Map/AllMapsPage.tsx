@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/ta
 import { useAuthorities } from '../../context/AuthContext';
 import { filterOtherCharts } from '../../lib/filterOtherDashboards';
 import i18n from '../../locales/index.js'
+import { useResetAnalyticsStatesToDefault } from '../../hooks/useResetAnalyticsStatesTDefault';
 
 function filterSavedChartsByCreatorId(data: any, creatorId: string) {
   return data?.filter(item => item.value.createdBy.id === creatorId);
@@ -17,22 +18,14 @@ function filterSavedChartsByCreatorId(data: any, creatorId: string) {
 
 
 const AllMapsPage = () => {
-  const { data, loading, isError } = useFetchAllSavedMaps();
-
+  const { data, loading, isError,refetch } = useFetchAllSavedMaps();
+  const {resetAnalyticsStatesToDefaultValues} = useResetAnalyticsStatesToDefault()
   const { userDatails } = useAuthorities();
-
-useEffect(()=>{
-    console.log("hello saved map data",data)
-})
-
-
-  console.log("data?.dataStore?.entries", data?.dataStore?.entries);
-  console.log("userDatailsuserGroups", userDatails?.me?.userGroups);
-  console.log("final", filterSavedChartsByCreatorId(data?.dataStore?.entries, userDatails?.me?.id));
   const navigate = useNavigate();
 
   //handle go to create visualizer page
   const handleGoToCreateMap = () => {
+    resetAnalyticsStatesToDefaultValues({isBeingUsedInMap:true})
     navigate('/map');
   };
 

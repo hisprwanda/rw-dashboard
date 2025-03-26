@@ -14,13 +14,6 @@ const MapHomepage: React.FC = () => {
   const {geoFeaturesData, analyticsMapData, metaMapData,setIsUseCurrentUserOrgUnits,isSetPredifinedUserOrgUnits,fetchAnalyticsData,analyticsDimensions,selectedDataSourceDetails} = useAuthorities();
   const {data:singleSavedMapData,error,isError,loading,isFetchCurrentInstanceDataItemsLoading,isFetchExternalInstanceDataItemsLoading,isHandleDataSourceChangeLoading} = useFetchSingleMapData(mapId)
 
-
-  useEffect(()=>{
-    console.log("heftching saved map data",singleSavedMapData)
-  },[singleSavedMapData])
-
-
-
     // update if current user organization is selected
     useEffect(() => {
       if (singleSavedMapData) {

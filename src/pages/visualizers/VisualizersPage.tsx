@@ -33,6 +33,7 @@ import ExportModal from './Components/ExportModal';
 import { useToast } from "../../components/ui/use-toast";
 import { Maximize2 } from 'lucide-react';
 import i18n from '../../locales/index.js'
+import { useResetAnalyticsStatesToDefault } from '../../hooks/useResetAnalyticsStatesTDefault';
 
 function Visualizers() {
     const { id: visualId } = useParams();
@@ -57,81 +58,16 @@ function Visualizers() {
     const visualizationRef = useRef<HTMLDivElement>(null);
     const captureRef = useRef<HTMLDivElement>(null);
     const [isFullscreen, setIsFullscreen] = useState(false);
+    const {resetOtherValuesToDefaultExceptDataSource,resetAnalyticsStatesToDefaultValues} = useResetAnalyticsStatesToDefault()
 
     //// data source options
     const dataSourceOptions = savedDataSource?.dataStore?.entries?.map((entry: any) => (
         <option key={entry?.key} value={entry?.key}>{entry?.value?.instanceName}</option>
     ));
-
-    /// function to clear reset to default values
-    function resetToDefaultValues() {
-        setSelectedDimensionItemType(dimensionItemTypes[0]);
-        setSelectedDataSourceDetails({
-            instanceName: systemInfo?.title?.applicationTitle || "", // Fallback to an empty string if undefined
-            isCurrentInstance: true,
-        });
-        setAnalyticsData(null);
-        setSelectedChartType(chartComponents[0]?.type);
-        setAnalyticsQuery(null);
-        setAnalyticsDimensions({ dx: [], pe: ['LAST_12_MONTHS'] });
-        setIsSetPredifinedUserOrgUnits({
-            is_USER_ORGUNIT: true,
-            is_USER_ORGUNIT_CHILDREN: false,
-            is_USER_ORGUNIT_GRANDCHILDREN: false
-        });
-        setIsUseCurrentUserOrgUnits(true);
-        setSelectedOrganizationUnits([]);
-        setSelectedOrgUnits([]);
-        setSelectedOrgUnitGroups([]);
-        setSelectedOrganizationUnitsLevels([]);
-        setSelectedLevel([]);
-        setSelectedVisualTitleAndSubTitle((prev) => {
-            return {
-                ...prev,
-                visualTitle: "",
-                DefaultSubTitle: [defaultUserOrgUnit],
-                customSubTitle: ""
-            };
-        });
-        setVisualsColorPalettes(systemDefaultColorPalettes[0] || []);
-        setSelectedVisualSettings({ backgroundColor: '#ffffff', visualColorPalette: selectedColorPalette, fillColor: "#ffffff", XAxisSettings: { color: "#000000", fontSize: 12 }, YAxisSettings: { color: "#000000", fontSize: 12 } });
-        setSelectedDataSourceOption(currentInstanceId);
-    }
-    ///
-    function resetOtherValuesToDefaultExceptDataSource() {
-        setSelectedDimensionItemType(dimensionItemTypes[0]);
-        setAnalyticsData(null);
-        setSelectedChartType(chartComponents[0]?.type);
-        setAnalyticsQuery(null);
-        setAnalyticsDimensions({ dx: [], pe: ['LAST_12_MONTHS'] });
-        setIsSetPredifinedUserOrgUnits({
-            is_USER_ORGUNIT: true,
-            is_USER_ORGUNIT_CHILDREN: false,
-            is_USER_ORGUNIT_GRANDCHILDREN: false
-        });
-        setIsUseCurrentUserOrgUnits(true);
-        setSelectedOrganizationUnits([]);
-        setSelectedOrgUnits([]);
-        setSelectedOrgUnitGroups([]);
-        setSelectedOrganizationUnitsLevels([]);
-        setSelectedLevel([]);
-        setSelectedVisualTitleAndSubTitle((prev) => {
-            return {
-                ...prev,
-                visualTitle: "",
-                DefaultSubTitle: [defaultUserOrgUnit],
-                customSubTitle: ""
-            };
-        });
-        setVisualsColorPalettes(systemDefaultColorPalettes[0] || []);
-        setSelectedVisualSettings({ backgroundColor: '#ffffff', visualColorPalette: selectedColorPalette, fillColor: "#ffffff", XAxisSettings: { color: "#000000", fontSize: 12 }, YAxisSettings: { color: "#000000", fontSize: 12 } });
-
-    }
-
     // if visualId is false then set all chart related states to default
     useEffect(() => {
         if (!visualId) {
-            resetToDefaultValues();
+            resetAnalyticsStatesToDefaultValues();
             /// if no visual created , fetch data of current instance
             fetchCurrentInstanceData(selectedDimensionItemType);
             fetchCurrentUserAndOrgUnitData();
