@@ -7,12 +7,6 @@ import { FaSave } from 'react-icons/fa';
 import { SaveMapModal } from './SaveMapModal';
 import { useAuthorities } from '.././../../context/AuthContext';
 
-
-
-
-
-
-
 const MapSidebar: React.FC<MapSidebarProps> = ({ 
   basemaps, 
   currentBasemap, 

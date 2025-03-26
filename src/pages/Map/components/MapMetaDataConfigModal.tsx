@@ -39,9 +39,9 @@ export function MapMetaDataConfigModal({
   isOpen, 
   onOpenChange 
 }: MapMetaDataConfigModalProps) {
-  const {fetchGeoFeatures} = useRunGeoFeatures()
+  const {fetchGeoFeatures,loading:isFetchGeoDataLoading} = useRunGeoFeatures()
   const { loading: orgUnitLoading, error: fetchOrgUnitError, data: orgUnitsData, fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData();
-  const { subDataItemsData, setDataItemsDataPage, dataItemsDataPage, selectedDataSourceOption, setSelectedDataSourceOption, currentUserInfoAndOrgUnitsData, setCurrentUserInfoAndOrgUnitsData, dataItemsData, selectedDataSourceDetails, setSelectedDataSourceDetails, setSelectedDimensionItemType, analyticsData, isFetchAnalyticsDataLoading, selectedChartType, setSelectedChartType, setAnalyticsQuery, isUseCurrentUserOrgUnits, analyticsQuery, analyticsDimensions, setAnalyticsDimensions, setIsSetPredifinedUserOrgUnits, isSetPredifinedUserOrgUnits, selectedOrganizationUnits, setSelectedOrganizationUnits, setIsUseCurrentUserOrgUnits, selectedOrgUnits, setSelectedOrgUnits, selectedOrgUnitGroups, setSelectedOrgUnitGroups, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedLevel, setSelectedLevel, fetchAnalyticsData, setAnalyticsData, fetchAnalyticsDataError, setSelectedVisualTitleAndSubTitle, visualTitleAndSubTitle, visualSettings, setSelectedVisualSettings, setVisualsColorPalettes, selectedColorPalette, selectedDimensionItemType } = useAuthorities();
+  const { subDataItemsData, setDataItemsDataPage, dataItemsDataPage, selectedDataSourceOption, setSelectedDataSourceOption, currentUserInfoAndOrgUnitsData, setCurrentUserInfoAndOrgUnitsData, dataItemsData, selectedDataSourceDetails, setSelectedDataSourceDetails, setSelectedDimensionItemType, analyticsData, isFetchAnalyticsDataLoading, selectedChartType, setSelectedChartType, setAnalyticsQuery, isUseCurrentUserOrgUnits, analyticsQuery, analyticsDimensions, setAnalyticsDimensions, setIsSetPredifinedUserOrgUnits, isSetPredifinedUserOrgUnits, selectedOrganizationUnits, selectedOrgUnitGroups, selectedOrganizationUnitsLevels, fetchAnalyticsData } = useAuthorities();
   const { error: dataItemsFetchError, loading: isFetchCurrentInstanceDataItemsLoading, fetchCurrentInstanceData } = useDataItems();
   const { fetchExternalDataItems, response, error, loading: isFetchExternalInstanceDataItemsLoading } = useExternalDataItems();
   const [activeTab, setActiveTab] = useState("data");
@@ -80,38 +80,12 @@ export function MapMetaDataConfigModal({
       fetchCurrentUserAndOrgUnitData()
     },[])
 
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      onOpenChange(false);
-    }, 1000);
-  };
-
-  const handleInputChange = (field, value) => {
-    setFormData({
-      ...formData,
-      [field]: value
-    });
-    
-    // Clear error if indicator group has a value
-    if (field === 'indicatorGroup' && value) {
-      setHasError(false);
-    } else if (field === 'indicatorGroup' && !value) {
-      setHasError(true);
-    }
-  };
-
   const tabs = [
     { id: "data", label: "Data" },
     { id: "period", label: "Period" },
     { id: "orgUnits", label: "Org Units" },
-    { id: "filter", label: "Filter" },
-    { id: "style", label: "Style" }
+    // { id: "filter", label: "Filter" },
+    // { id: "style", label: "Style" }
   ];
 
   const handleAddLayer = async(e) => {
@@ -176,7 +150,7 @@ export function MapMetaDataConfigModal({
           <DialogTitle className="text-xl">Add new thematic layer</DialogTitle>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleAddLayer}>
           {/* Tab Navigation */}
           <div className="border-b flex">
             {tabs.map((tab) => (
@@ -209,12 +183,11 @@ export function MapMetaDataConfigModal({
             </Button>
             <Button 
               type="submit" 
-             // disabled={isLoading || hasError}
+              disabled={(isFetchAnalyticsDataLoading || isFetchGeoDataLoading)}
              // className={`mt-4 ${hasError ? 'opacity-50 cursor-not-allowed' : ''}`}
               className={`mt-4`}
-              onClick={handleAddLayer}
             >
-              {isLoading ? "Adding..." : "Add layer"}
+              {(isFetchAnalyticsDataLoading|| isFetchGeoDataLoading)? "Adding layer..." : "Add layer"}
             </Button>
           </DialogFooter>
         </form>

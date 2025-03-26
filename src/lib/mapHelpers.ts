@@ -101,9 +101,16 @@ export const parseCoordinates = (coordinatesString: string): number[][][] => {
 // Get color for a value based on legend classes
 export const getColorForValue = (
   value: number | null, 
-  legendClasses: LegendClass[]
+  legendClasses: LegendClass[] | undefined
 ): string => {
-  if (value === null) return "#FFFFFF";
+  // If value is null or legendClasses is undefined, return default white
+  if (value === null || !legendClasses) return "#FFFFFF";
+  
+  // Ensure legendClasses is an array with at least one element
+  if (!Array.isArray(legendClasses) || legendClasses.length === 0) {
+    console.warn('Invalid legend classes provided', legendClasses);
+    return "#FFFFFF";
+  }
   
   for (const legendClass of legendClasses) {
     if (value >= legendClass.startValue && value <= legendClass.endValue) {
@@ -113,7 +120,6 @@ export const getColorForValue = (
   
   return "#FFFFFF";
 };
-
 // Convert processed districts to GeoJSON
 export const createGeoJSON = (districts: ProcessedDistrict[]) => {
   return {
