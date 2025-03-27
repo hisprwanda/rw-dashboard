@@ -429,8 +429,7 @@ const PeriodPicker: React.FC<PeriodPickerProps> = ({
     if (isAnalyticsDataHardCoded) {
       analyticsDimensions.dx = dimensionDataHardCoded
     }
-    await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions), selectedDataSourceDetails)
-    const checking = fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions), selectedDataSourceDetails)
+    const checking = await fetchAnalyticsData({dimension:formatAnalyticsDimensions(analyticsDimensions), instance:selectedDataSourceDetails})
     console.log("period modal fetched analytics", checking)
     setDataSubmitted?.(true)
     setIsShowPeriod && setIsShowPeriod(false)

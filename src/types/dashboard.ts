@@ -48,6 +48,22 @@ export const DashboardSchema = z.object({
           }),
       })
   ),
+  selectedMaps: z.array(
+      z.object({
+          i: z.string(),
+          x: z.number(),
+          y: z.number(),
+          w: z.number(),
+          h: z.number(),
+          isMapItem: z.literal(true),
+          mapName: z.string(),
+          geoFeaturesQuery: z.any(),
+          mapAnalyticsQueryOneQuery: z.any(),
+          mapAnalyticsQueryTwo: z.any(),
+          mapType: z.string(),
+          dataSourceId: z.string().nonempty({ message: "Data source ID is required" })
+      })
+  ),
   sharing: z.array(
     z.object({
       name: z.string(),

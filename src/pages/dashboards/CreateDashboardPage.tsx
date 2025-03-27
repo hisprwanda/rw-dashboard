@@ -27,6 +27,7 @@ import i18n from '../../locales/index.js'
 import { exportToPPTX } from '../../lib/exportToPPTX'; 
 import { FileText } from 'lucide-react';
 import { usePPTXExport } from '../../hooks/useExportDashboard';
+import { useFetchAllSavedMaps } from '../../services/maps';
 
 const CreateDashboardPage: React.FC = () => {
     const { toast } = useToast();
@@ -34,6 +35,7 @@ const CreateDashboardPage: React.FC = () => {
     const { id: dashboardId ,present:isPresentModeFromView} = useParams();
     const navigate = useNavigate();
     const { data: allSavedVisuals ,error,isError,loading} = useFetchVisualsData();
+    const {data:allSavedMaps,loading:isLoadingAllSavedMaps} = useFetchAllSavedMaps()
     const {data:singleSavedDashboardData,error:singleSavedDashboardDataError,isError:isErrorFetchSingleSavedDashboardData,loading:isLoadingFetchSingleSavedDashboardData} = useFetchSingleDashboardData(dashboardId)
     const [isPresentMode,setIsPresentMode] = useState(false)
 
@@ -73,6 +75,7 @@ const CreateDashboardPage: React.FC = () => {
             createdAt: Date.now(),
             updatedAt: Date.now(),
             selectedVisuals: [],
+            selectedMaps:[],
             sharing: [],
             previewImg:"",
             isOfficialDashboard: false,
@@ -110,7 +113,8 @@ const CreateDashboardPage: React.FC = () => {
                 ...prevValues, 
                 dashboardName: singleSavedDashboardData?.dataStore?.dashboardName || prevValues.dashboardName,
                 dashboardDescription: singleSavedDashboardData?.dataStore?.dashboardDescription || prevValues.dashboardDescription,
-                selectedVisuals: singleSavedDashboardData?.dataStore?.selectedVisuals   ,
+                selectedVisuals: singleSavedDashboardData?.dataStore?.selectedVisuals ,
+                selectedMaps: singleSavedDashboardData?.dataStore?.selectedMaps ,
                 sharing: singleSavedDashboardData?.dataStore?.sharing || prevValues.sharing,
                 createdBy: singleSavedDashboardData?.dataStore?.createdBy || prevValues.createdBy,
                 createdAt: singleSavedDashboardData?.dataStore?.createdAt || prevValues.createdAt,
@@ -122,14 +126,19 @@ const CreateDashboardPage: React.FC = () => {
       
     }, [singleSavedDashboardData, dashboardId, reset]);
     const selectedVisuals = watch("selectedVisuals");
+    const selectedMaps = watch("selectedMaps");
     const backgroundColor = watch("dashboardSettings.backgroundColor", tempDashboardSettings.backgroundColor);
-
+     // Watch form values
+     const watchedValues = watch()
     useEffect(()=>{
         console.log("hello selectedVisuals",selectedVisuals)
-    },[selectedVisuals])
+        console.log("hello selectedMaps",selectedMaps)
+        console.log("hello map form data",watchedValues)
+        console.log("hello allSavedMaps",allSavedMaps)
+    
+    },[selectedVisuals,watchedValues,allSavedMaps,selectedMaps])
 
-         // Watch form values
-     const watchedValues = watch()
+    
 
   useEffect(() => {
     setTempDashboardSettings((prev) => ({ ...prev, backgroundColor }));
@@ -137,6 +146,9 @@ const CreateDashboardPage: React.FC = () => {
   
   const isVisualSelected = (visualKey: string) => {
     return selectedVisuals.some(v => v.i === visualKey);
+};
+  const isMapSelected = (mapKey: string) => {
+    return selectedMaps.some(v => v.i === mapKey);
 };
 
 const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
@@ -150,8 +162,19 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
 
     </option>
 ));
+const mapsOptions = allSavedMaps?.dataStore?.entries?.map((entry: any) => (
+    <option 
+        key={entry.key} 
+        value={entry.key}
+        disabled={isMapSelected(entry.key)}
+        className={isMapSelected(entry.key) ? 'bg-gray-100 text-gray-500' : ''}
+    >
+        {entry.value.mapName} ({entry.value.mapType}) 
 
-    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    </option>
+));
+
+    const handleVisualsSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedKey = e.target.value;
         const visual = allSavedVisuals?.dataStore?.entries?.find((entry: any) => entry.key === selectedKey);
         if (visual && !selectedVisuals.some(v => v.i === visual.key)) {
@@ -170,7 +193,27 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
             };
             setValue("selectedVisuals", [...selectedVisuals, newVisual]);
         }
-
+    };
+    const handleMapsSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedKey = e.target.value;
+        const map = allSavedMaps?.dataStore?.entries?.find((entry: any) => entry.key === selectedKey);
+        if (map && !selectedMaps.some(v => v.i === map.key)) {
+            const newMap = {
+                i: map.key,
+                x: (selectedMaps.length * 3) % 12,
+                y: Math.floor(selectedMaps.length / 4) * 3,
+                w: 3,
+                h: 3,
+                mapName: map.value.mapName,
+                geoFeaturesQuery: map.value.queries.geoFeaturesQuery,
+                mapAnalyticsQueryOneQuery: map.value.queries.mapAnalyticsQueryOne,
+                mapAnalyticsQueryTwo: map.value.queries.mapAnalyticsQueryTwo,
+                mapType: map.value.mapType,
+                dataSourceId: map.value.dataSourceId,
+                isMapItem: true as const
+            };
+            setValue("selectedMaps", [...selectedMaps, newMap]);
+        }
     };
 
     const handleLayoutChange = (layout: Layout[]) => {
@@ -371,13 +414,22 @@ const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
 </div>
            
             </div>
-<div>
+<div className=' flex gap-4'   >
+    {/* visual selections */}
     <select
-        onChange={handleSelectChange}
+        onChange={handleVisualsSelectChange}
         className="block w-full px-3 py-2 border rounded-md shadow-sm mt-3"
     >
         <option value="">{loading ? "Loading" : `${i18n.t('Select a visual')}` }</option>
         {visualOptions}
+    </select>
+    {/* map selection */}
+    <select
+        onChange={handleMapsSelectChange}
+        className="block w-full px-3 py-2 border rounded-md shadow-sm mt-3"
+    >
+        <option value="">{loading ? "Loading" : `${i18n.t('Select a Map')}` }</option>
+        {mapsOptions}
     </select>
 </div>
 
