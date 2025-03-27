@@ -147,6 +147,9 @@ const CreateDashboardPage: React.FC = () => {
   const isVisualSelected = (visualKey: string) => {
     return selectedVisuals.some(v => v.i === visualKey);
 };
+  const isMapSelected = (mapKey: string) => {
+    return selectedMaps.some(v => v.i === mapKey);
+};
 
 const visualOptions = allSavedVisuals?.dataStore?.entries?.map((entry: any) => (
     <option 
@@ -163,8 +166,8 @@ const mapsOptions = allSavedMaps?.dataStore?.entries?.map((entry: any) => (
     <option 
         key={entry.key} 
         value={entry.key}
-        disabled={isVisualSelected(entry.key)}
-        className={isVisualSelected(entry.key) ? 'bg-gray-100 text-gray-500' : ''}
+        disabled={isMapSelected(entry.key)}
+        className={isMapSelected(entry.key) ? 'bg-gray-100 text-gray-500' : ''}
     >
         {entry.value.mapName} ({entry.value.mapType}) 
 
