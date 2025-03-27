@@ -1,38 +1,57 @@
-import CustomOrganisationUnitTree from "../../pages/visualizers/Components/MetaDataModals/CustomOrganisationUnitTree";
+import { useMemo } from "react";
+import SingleMapItem from "../../pages/Map/components/SingleMapItem";
 
-
-
-function transformDataToPieChartFormat(data:any, colors:any) {
-  const totals = {};
-  const colorCount = colors.length; // Number of available colors
-
-  // Calculate totals for each disease dynamically
-  data.forEach((entry) => {
-    for (const key in entry) {
-      if (key !== "month") {
-        totals[key] = (totals[key] || 0) + entry[key];
-      }
-    }
-  });
-
-  // Transform the totals into the desired array format with dynamic colors
-  const transformedData = Object.entries(totals).map(([name, total], index) => ({
-    name,
-    total,
-    fill: colors[index % colorCount], // Assign colors cyclically
-  }));
-
-  return transformedData;
-}
-
-
-
-const handleNodeSelect = (node) => {
-  console.log('Selected node y:', node);
-};
 export function TestChart() {
+  const dataGeo = useMemo(() => ({
+      "result": {
+          "params": {
+              "displayProperty": "NAME",
+              "ou": "ou:ImspTQPwCqd;LEVEL-2;"
+          },
+          "resource": "geoFeatures"
+      }
+  }), []);
+
+  const mapAnalyticsQueryOneQuery = useMemo(() => ({
+      "myData": {
+          "params": {
+              "dimension": [
+                  "dx:Tt5TAvdfdVK",
+                  "ou:ImspTQPwCqd;LEVEL-2;"
+              ],
+              "displayProperty": "NAME",
+              "filter": "pe:2024",
+              "skipData": false,
+              "skipMeta": true
+          },
+          "resource": "analytics"
+      }
+  }), []);
+
+  const mapAnalyticsQueryTwo = useMemo(() => ({
+      "myData": {
+          "params": {
+              "dimension": [
+                  "dx:Tt5TAvdfdVK",
+                  "ou:ImspTQPwCqd;LEVEL-2;"
+              ],
+              "displayProperty": "NAME",
+              "filter": "pe:2024",
+              "includeMetadataDetails": true,
+              "skipData": true,
+              "skipMeta": false
+          },
+          "resource": "analytics"
+      }
+  }), []);
+
   return (
-   <h2>Hello test</h2>
+      <div>
+          <SingleMapItem 
+              geoFeaturesQuery={dataGeo} 
+              mapAnalyticsQueryOneQuery={mapAnalyticsQueryOneQuery} 
+              mapAnalyticsQueryTwo={mapAnalyticsQueryTwo} 
+          />
+      </div>
   );
 }
-

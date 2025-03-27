@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useAuthorities } from '../context/AuthContext';
 import { useDataEngine } from '@dhis2/app-runtime';
 import { useDataQuery } from '@dhis2/app-runtime';
@@ -6,6 +6,11 @@ import { useDataQuery } from '@dhis2/app-runtime';
 type fetchGeoFeatures = {
     selectedOrgUnitsWhenUsingMap:any
 }
+type useFetchSavedGeoFeatureByQueryProps = {
+  geoFeaturesQuery: any;
+  mapAnalyticsQueryOneQuery: any;
+  mapAnalyticsQueryTwo: any;
+};
 export const useRunGeoFeatures = () => {
     const engine = useDataEngine();
     const { 
@@ -71,4 +76,75 @@ export const useFetchAllSavedMaps = ()=>{
     return { data, loading, error,isError,refetch };
 
 }
+
+
+export const useFetchSavedGeoFeatureByQuery = ({
+  geoFeaturesQuery,
+  mapAnalyticsQueryOneQuery,
+  mapAnalyticsQueryTwo,
+}: useFetchSavedGeoFeatureByQueryProps) => {
+  const engine = useDataEngine();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [geoFeaturesSavedData, setGeoFeaturesSavedData] = useState(null);
+  const [analyticsMapData, setAnalyticsMapData] = useState(null);
+  const [metaMapData, setMetaMapData] = useState(null);
+
+  // Memoize the final query object with correct resource structure
+  const finalQuery = useMemo(() => {
+    if (!geoFeaturesQuery) {
+      return null;
+    }
+    return {
+      geoFeatures: {
+        resource: "geoFeatures",
+        params: geoFeaturesQuery.result.params,
+      },
+      mapAnalyticsOne: {
+        resource: "analytics",
+        params: mapAnalyticsQueryOneQuery.myData.params,
+      },
+      mapAnalyticsTwo: {
+        resource: "analytics",
+        params: mapAnalyticsQueryTwo.myData.params,
+      },
+    };
+  }, [geoFeaturesQuery, mapAnalyticsQueryOneQuery, mapAnalyticsQueryTwo]);
+
+  const runSavedSingleGeoFeature = useCallback(async () => {
+    if (!finalQuery) {
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await engine.query(finalQuery);
+      console.log("ppppppp geo", result?.geoFeatures);
+      console.log("ppppppp mapAnalyticsOne", result?.mapAnalyticsOne);
+      console.log("ppppppp mapAnalyticsTwo", result?.mapAnalyticsTwo);
+      setGeoFeaturesSavedData(result?.geoFeatures);
+      setAnalyticsMapData(result?.mapAnalyticsOne);
+      setMetaMapData(result?.mapAnalyticsTwo);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err : new Error("An unknown error occurred")
+      );
+      console.error("Query Error:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [engine, finalQuery]);
+
+  return {
+    geoFeaturesSavedData,
+    analyticsMapData,
+    metaMapData,
+    loading,
+    error,
+    runSavedSingleGeoFeature,
+  };
+};
+
+
 
