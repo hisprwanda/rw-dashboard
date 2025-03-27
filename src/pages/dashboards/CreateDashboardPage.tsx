@@ -28,6 +28,7 @@ import { exportToPPTX } from '../../lib/exportToPPTX';
 import { FileText } from 'lucide-react';
 import { usePPTXExport } from '../../hooks/useExportDashboard';
 import { useFetchAllSavedMaps } from '../../services/maps';
+import SingleMapItem from '../Map/components/SingleMapItem';
 
 const CreateDashboardPage: React.FC = () => {
     const { toast } = useToast();
@@ -45,7 +46,6 @@ const CreateDashboardPage: React.FC = () => {
       const [isFullscreen, setIsFullscreen] = useState(false);
     const [containerWidth, setContainerWidth] = useState(window.innerWidth);
 
-   // console.log("test single data",singleSavedDashboardData)
     const { userDatails } = useAuthorities();
     const [isSuccess, setIsSuccess] = useState(false);
     const engine = useDataEngine();
@@ -217,18 +217,54 @@ const mapsOptions = allSavedMaps?.dataStore?.entries?.map((entry: any) => (
     };
 
     const handleLayoutChange = (layout: Layout[]) => {
-        const updatedLayout = layout.map(layoutItem => {
+        // Update selectedVisuals
+        const updatedVisualsLayout = layout.filter(layoutItem => 
+            selectedVisuals.some(v => v.i === layoutItem.i)
+        ).map(layoutItem => {
             const existingVisual = selectedVisuals.find(v => v.i === layoutItem.i);
             return existingVisual
-                ? { ...layoutItem, visualName: existingVisual.visualName, visualQuery: existingVisual.visualQuery, visualType: existingVisual.visualType , visualSettings: existingVisual.visualSettings,
-                    visualTitleAndSubTitle:existingVisual.visualTitleAndSubTitle, dataSourceId:existingVisual.dataSourceId }
+                ? { 
+                    ...layoutItem, 
+                    visualName: existingVisual.visualName, 
+                    visualQuery: existingVisual.visualQuery, 
+                    visualType: existingVisual.visualType, 
+                    visualSettings: existingVisual.visualSettings,
+                    visualTitleAndSubTitle: existingVisual.visualTitleAndSubTitle, 
+                    dataSourceId: existingVisual.dataSourceId 
+                }
                 : layoutItem;
         });
-        setValue("selectedVisuals", updatedLayout);
+
+        // Update selectedMaps
+        const updatedMapsLayout = layout.filter(layoutItem => 
+            selectedMaps.some(m => m.i === layoutItem.i)
+        ).map(layoutItem => {
+            const existingMap = selectedMaps.find(m => m.i === layoutItem.i);
+            return existingMap
+                ? { 
+                    ...layoutItem, 
+                    mapName: existingMap.mapName,
+                    geoFeaturesQuery: existingMap.geoFeaturesQuery,
+                    mapAnalyticsQueryOneQuery: existingMap.mapAnalyticsQueryOneQuery,
+                    mapAnalyticsQueryTwo: existingMap.mapAnalyticsQueryTwo,
+                    mapType: existingMap.mapType,
+                    dataSourceId: existingMap.dataSourceId,
+                    isMapItem: true as const
+                }
+                : layoutItem;
+        });
+
+        // Update the form values
+        setValue("selectedVisuals", updatedVisualsLayout);
+        setValue("selectedMaps", updatedMapsLayout);
     };
 
-    const handleDeleteWidget = (id: string) => {
-        setValue("selectedVisuals", selectedVisuals.filter(widget => widget.i !== id));
+    const handleDeleteWidget = (id: string, isMap: boolean) => {
+        if (isMap) {
+            setValue("selectedMaps", selectedMaps.filter(widget => widget.i !== id));
+        } else {
+            setValue("selectedVisuals", selectedVisuals.filter(widget => widget.i !== id));
+        }
     };
 
     const onSubmit: SubmitHandler<DashboardFormFields> = async (data) => {
@@ -342,7 +378,6 @@ const mapsOptions = allSavedMaps?.dataStore?.entries?.map((entry: any) => (
             }
             const dashboardName = watch("dashboardName");
     return ( isPresentMode ? <div className='flex flex-col  ' >
-       {/* how can I pass dashboard name in PresentDashboard */}
       <PresentDashboard dashboardData={selectedVisuals} setIsPresentMode={setIsPresentMode}  dashboardName={dashboardName}   />
     </div>  :
         <form className="p-2" onSubmit={handleSubmit(onSubmit)}>
@@ -438,7 +473,8 @@ const mapsOptions = allSavedMaps?.dataStore?.entries?.map((entry: any) => (
           
             <div ref={captureRef}  >
             <MemoizedGridLayout
-                layout={selectedVisuals}
+                visualLayout={selectedVisuals}
+                mapLayout={selectedMaps}
                 onLayoutChange={handleLayoutChange}
                 cols={12}
                 rowHeight={100}
@@ -455,7 +491,8 @@ const mapsOptions = allSavedMaps?.dataStore?.entries?.map((entry: any) => (
 
 // Memoized GridLayout component to prevent unnecessary re-renders
 const MemoizedGridLayout = React.memo(({
-    layout,
+    visualLayout,
+    mapLayout,
     onLayoutChange,
     cols,
     rowHeight,
@@ -464,20 +501,26 @@ const MemoizedGridLayout = React.memo(({
     onDeleteWidget,
     isFullscreen
 }: {
-    layout: ExtendedLayout[];
+    visualLayout: ExtendedLayout[];
+    mapLayout: ExtendedLayout[];
     onLayoutChange: (layout: Layout[]) => void;
     cols: number;
     rowHeight: number;
     width: number;
     backgroundColor:string;
-    onDeleteWidget: (id: string) => void;
+    onDeleteWidget: (id: string, isMap: boolean) => void;
     isFullscreen: boolean;
-}) => (
-  
+}) => {
+    // Combine and sort visuals and maps together
+    const combinedLayout = [...visualLayout, ...mapLayout].sort((a, b) => {
+        return (a.y * 12 + a.x) - (b.y * 12 + b.x);
+    });
+
+    return (
     <GridLayout
         className="layout"
         style={{backgroundColor,minHeight:"400px"}}
-        layout={layout}
+        layout={combinedLayout}
         onLayoutChange={onLayoutChange}
         cols={cols}
         rowHeight={rowHeight}
@@ -485,7 +528,7 @@ const MemoizedGridLayout = React.memo(({
         draggableHandle=".drag-handle"
         resizeHandles={['se', 'sw', 'ne', 'nw', 'e', 'w', 's', 'n']}
     >
-        {layout.map((widget) => (
+        {combinedLayout.map((widget) => (
          <div 
          key={widget.i} 
          className="widget bg-white" 
@@ -493,20 +536,30 @@ const MemoizedGridLayout = React.memo(({
          style={{ position: "relative", padding: "10px", overflow: "visible" }}
        >
          <div className="drag-handle text-center" style={{ cursor: "move" }}>
-           {widget.visualName}
+           {widget.visualName || widget.mapName}
          </div>
-         <DashboardVisualItem 
-           query={widget.visualQuery} 
-           visualType={widget.visualType} 
-           visualSettings={widget.visualSettings} 
-           dataSourceId={widget.dataSourceId} 
-           visualTitleAndSubTitle={widget.visualTitleAndSubTitle} 
-         />
+         {('visualQuery' in widget) ? (
+           <DashboardVisualItem 
+             query={widget.visualQuery} 
+             visualType={widget.visualType} 
+             visualSettings={widget.visualSettings} 
+             dataSourceId={widget.dataSourceId} 
+             visualTitleAndSubTitle={widget.visualTitleAndSubTitle} 
+           />
+         ) : (
+           <SingleMapItem
+             geoFeaturesQuery={widget.geoFeaturesQuery}
+             mapAnalyticsQueryOneQuery={widget.mapAnalyticsQueryOneQuery}
+             mapAnalyticsQueryTwo={widget.mapAnalyticsQueryTwo}
+             
+           />
+         )}
+        
          {!isFullscreen && (
            <FaTrash
              className="delete-button"  // Added class for easier removal during export
              style={{ position: "absolute", top: "10px", right: "10px", cursor: "pointer", color: "#7d0000" }}
-             onClick={() => onDeleteWidget(widget.i)}
+             onClick={() => onDeleteWidget(widget.i, 'isMapItem' in widget)}
            />
          )}
        </div>
@@ -514,6 +567,6 @@ const MemoizedGridLayout = React.memo(({
     </GridLayout>
  
 
-));
+)});
 
 export default CreateDashboardPage;

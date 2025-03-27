@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import SingleMapItem from "../../pages/Map/components/SingleMapItem";
 
 export function TestChart() {
-  const dataGeo = useMemo(() => ({
+  const dataGeo = {
       "result": {
           "params": {
               "displayProperty": "NAME",
@@ -10,9 +10,9 @@ export function TestChart() {
           },
           "resource": "geoFeatures"
       }
-  }), []);
+  }
 
-  const mapAnalyticsQueryOneQuery = useMemo(() => ({
+  const mapAnalyticsQueryOneQuery = {
       "myData": {
           "params": {
               "dimension": [
@@ -26,9 +26,9 @@ export function TestChart() {
           },
           "resource": "analytics"
       }
-  }), []);
+  }
 
-  const mapAnalyticsQueryTwo = useMemo(() => ({
+  const mapAnalyticsQueryTwo = {
       "myData": {
           "params": {
               "dimension": [
@@ -43,7 +43,7 @@ export function TestChart() {
           },
           "resource": "analytics"
       }
-  }), []);
+  }
 
   return (
       <div>
