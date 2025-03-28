@@ -29,7 +29,7 @@ const MapHomepage: React.FC = () => {
 
   /// main return
   return (
-    <div className="">
+    <div className="bg-green-500 h-[calc(100vh-110px)] w-screen">
       <MapBody analyticsMapData={analyticsMapData}  geoFeaturesData={geoFeaturesData}  metaMapData={metaMapData} singleSavedMapData={singleSavedMapData} mapId={mapId} />
     </div>
   )
