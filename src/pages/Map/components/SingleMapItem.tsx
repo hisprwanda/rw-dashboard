@@ -44,14 +44,6 @@ const SingleMapItem: React.FC<SingleMapItemProps> = ({
         runSavedSingleGeoFeature();
     }, [runSavedSingleGeoFeature]);
 
-
-    useEffect(()=>{
-        console.log("hello saved metax data",{    geoFeaturesSavedData,
-            analyticsMapData,
-             metaMapData})
-    },[    geoFeaturesSavedData,
-        analyticsMapData,
-         metaMapData])
     // Handle loading state
     if (loading) return <CircularLoader />;
 
@@ -62,8 +54,7 @@ const SingleMapItem: React.FC<SingleMapItemProps> = ({
 
     // Render data or placeholder
     return (
-        <div>
-           hello world
+        <div className='py-1 h-full w-full overflow-auto' >
            <MapBody analyticsMapData={analyticsMapData} geoFeaturesData={geoFeaturesSavedData} metaMapData={metaMapData}  isHideSideBar={true} />
         </div>
     );

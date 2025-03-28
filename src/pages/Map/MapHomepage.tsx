@@ -29,7 +29,7 @@ const MapHomepage: React.FC = () => {
 
   /// main return
   return (
-    <div className="">
+    <div className=" py-1 h-[calc(100vh-50px)] w-screen overflow-auto">
       <MapBody analyticsMapData={analyticsMapData}  geoFeaturesData={geoFeaturesData}  metaMapData={metaMapData} singleSavedMapData={singleSavedMapData} mapId={mapId} />
     </div>
   )

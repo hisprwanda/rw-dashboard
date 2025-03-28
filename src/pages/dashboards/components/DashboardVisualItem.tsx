@@ -83,7 +83,7 @@ const DashboardVisualItem: React.FC<DashboardVisualItemProps> = ({
         ) : null;
     };
 
-    return <div>{renderChart()}</div>;
+    return <div >{renderChart()}</div>;
 };
 
 export default DashboardVisualItem;
