@@ -62,8 +62,7 @@ const SingleMapItem: React.FC<SingleMapItemProps> = ({
 
     // Render data or placeholder
     return (
-        <div>
-           hello world
+        <div className='py-1 h-full w-full overflow-auto ' >
            <MapBody analyticsMapData={analyticsMapData} geoFeaturesData={geoFeaturesSavedData} metaMapData={metaMapData}  isHideSideBar={true} />
         </div>
     );

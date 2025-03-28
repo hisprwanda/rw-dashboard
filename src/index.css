@@ -1067,8 +1067,8 @@ video {
   height: 600px;
 }
 
-.h-\[calc\(100vh-110px\)\] {
-  height: calc(100vh - 110px);
+.h-\[calc\(100vh-50px\)\] {
+  height: calc(100vh - 50px);
 }
 
 .h-\[var\(--radix-navigation-menu-viewport-height\)\] {

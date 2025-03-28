@@ -533,12 +533,13 @@ const MemoizedGridLayout = React.memo(({
          key={widget.i} 
          className="widget bg-white" 
          data-visual-id={widget.i}
-         style={{ position: "relative", padding: "10px", overflow: "visible" }}
+         style={{ position: "relative", padding: "10px", overflow: "hidden", height: "100%", width: "100%" }}
        >
          <div className="drag-handle text-center" style={{ cursor: "move" }}>
            {widget.visualName || widget.mapName}
          </div>
          {('visualQuery' in widget) ? (
+          
            <DashboardVisualItem 
              query={widget.visualQuery} 
              visualType={widget.visualType} 
@@ -547,12 +548,15 @@ const MemoizedGridLayout = React.memo(({
              visualTitleAndSubTitle={widget.visualTitleAndSubTitle} 
            />
          ) : (
-           <SingleMapItem
+            <div className="h-full w-full"  >
+                     <SingleMapItem
              geoFeaturesQuery={widget.geoFeaturesQuery}
              mapAnalyticsQueryOneQuery={widget.mapAnalyticsQueryOneQuery}
              mapAnalyticsQueryTwo={widget.mapAnalyticsQueryTwo}
              
            />
+            </div>
+      
          )}
         
          {!isFullscreen && (

@@ -166,13 +166,14 @@ const MapBody: React.FC<MapBodyProps> = ({
         {
           !isHideSideBar && <>
             {districts.length > 0 && (
-          <LegendControls
-            legendType={legendType}
-            setLegendType={setLegendType}
-            selectedLegendSet={selectedLegendSet}
-            setSelectedLegendSet={setSelectedLegendSet}
-            sampleLegends={sampleLegends}
-          />
+          // <LegendControls
+          //   legendType={legendType}
+          //   setLegendType={setLegendType}
+          //   selectedLegendSet={selectedLegendSet}
+          //   setSelectedLegendSet={setSelectedLegendSet}
+          //   sampleLegends={sampleLegends}
+          // />
+          <p></p>
         )}
           </>
         }
