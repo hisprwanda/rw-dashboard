@@ -46,7 +46,7 @@ const MapBody: React.FC<MapBodyProps> = ({
   metaMapData,
   singleSavedMapData,
   mapId,
-  isHideSideBar = true
+  isHideSideBar
 }) => {
   // State management
   const [currentBasemap, setCurrentBasemap] = useState<BasemapType>('osm-light');
