@@ -14,7 +14,7 @@ import { z } from "zod";
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useParams ,useNavigate} from 'react-router-dom';
-import { DashboardSchema, DashboardFormFields, dashboardSettings } from '../../types/dashboard';
+import { DashboardSchema, DashboardFormFields, dashboardSettings, ExtendedLayout } from '../../types/dashboard';
 import { useFetchSingleDashboardData } from '../../services/fetchDashboard';
 import { Loading } from '../../components';
 import html2canvas from 'html2canvas';
@@ -378,7 +378,12 @@ const mapsOptions = allSavedMaps?.dataStore?.entries?.map((entry: any) => (
             }
             const dashboardName = watch("dashboardName");
     return ( isPresentMode ? <div className='flex flex-col  ' >
-      <PresentDashboard dashboardData={selectedVisuals} setIsPresentMode={setIsPresentMode}  dashboardName={dashboardName}   />
+        <PresentDashboard 
+    dashboardData={selectedVisuals} 
+    dashboardMaps={selectedMaps}  // Add this line
+    setIsPresentMode={setIsPresentMode}  
+    dashboardName={dashboardName}   
+  />
     </div>  :
         <form className="p-2" onSubmit={handleSubmit(onSubmit)}>
             <div className=" flex justify-between ">
@@ -533,7 +538,7 @@ const MemoizedGridLayout = React.memo(({
          key={widget.i} 
          className="widget bg-white" 
          data-visual-id={widget.i}
-         style={{ position: "relative", padding: "10px", overflow: "hidden", height: "100%", width: "100%" }}
+         style={{ position: "relative", padding: "10px", overflow: "auto", height: "100%", width: "100%" }}
        >
          <div className="drag-handle text-center" style={{ cursor: "move" }}>
            {widget.visualName || widget.mapName}
