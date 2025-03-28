@@ -420,23 +420,74 @@ const PeriodPicker: React.FC<PeriodPickerProps> = ({
     }
   }
 
+  const generateExtendedWeekPeriods = (selectedPeriod: string) => {
+    // Extract year and week from the selected period
+    const weekMatch = selectedPeriod.match(/(\d{4})W(\d+)/)
+    if (!weekMatch) return []
+
+    const year = parseInt(weekMatch[1])
+    const week = parseInt(weekMatch[2])
+
+    const extendedPeriods = []
+
+    if (week > 1) {
+      // For weeks > 1, include previous weeks in the same year
+      for (let i = 1; i <= week; i++) {
+        extendedPeriods.push(`${year}W${i.toString().padStart(2, "0")}`)
+      }
+    } else {
+      // For week 1, include 6 weeks from the previous year
+      const previousYear = year - 1
+      for (let i = 47; i <= 52; i++) {
+        extendedPeriods.push(`${previousYear}W${i.toString().padStart(2, "0")}`)
+      }
+      // Add week 1 of the current year
+      extendedPeriods.push(`${year}W01`)
+    }
+
+    return extendedPeriods
+  }
+ 
   const handleUpdate = async (e) => {
     // Stop event propagation
     e.stopPropagation()
     e.preventDefault()
 
-    onUpdate?.(analyticsDimensions.pe)
-    if (isAnalyticsDataHardCoded) {
-      analyticsDimensions.dx = dimensionDataHardCoded
+    let periodsToFetch = analyticsDimensions.pe || []
+
+    // Special handling for bulletin mode with weekly periods
+    if (isPeriodInBulletin && analyticsDimensions.pe && analyticsDimensions.pe.length > 0) {
+      const selectedPeriod = analyticsDimensions.pe[0]
+      
+      // Check if the selected period is a weekly period
+      if (selectedPeriod.match(/\d{4}W\d+/)) {
+        periodsToFetch = generateExtendedWeekPeriods(selectedPeriod)
+      }
     }
-    await fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions), selectedDataSourceDetails)
-    const checking = fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions), selectedDataSourceDetails)
-    console.log("period modal fetched analytics", checking)
+
+    // Update the dimensions with extended periods
+    const updatedDimensions = {
+      ...analyticsDimensions,
+      pe: periodsToFetch
+    }
+
+    console.log("update period", updatedDimensions)
+
+    onUpdate?.(periodsToFetch)
+    
+    if (isAnalyticsDataHardCoded) {
+      updatedDimensions.dx = dimensionDataHardCoded
+    }
+    
+    await fetchAnalyticsData({
+      dimension: formatAnalyticsDimensions(updatedDimensions), 
+      instance: selectedDataSourceDetails
+    })
+    
     setDataSubmitted?.(true)
     setIsShowPeriod && setIsShowPeriod(false)
   }
-
-  // Initialize component with appropriate defaults based on isPeriodInBulletin
+ 
   useEffect(() => {
     if (isPeriodInBulletin) {
       setSelectedTab("fixed")
