@@ -10,13 +10,14 @@ import { FaPause, FaPlay } from "react-icons/fa";
 import { IoMdExit } from "react-icons/io";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
 import DashboardVisualItem from "./DashboardVisualItem";
+import SingleMapItem from "../../Map/components/SingleMapItem";
 import song1 from "../../../songs/song1.mp3";
 import song2 from "../../../songs/song2.mp3";
 import song3 from "../../../songs/song3.mp3";
 import i18n from '../../../locales/index.js'
 
-
 import { ChevronLeft, ChevronRight, Music2, Pause, Play, RotateCcw, ZoomIn, ZoomOut, Maximize2, Minimize2 } from "lucide-react";
+
 const mp3Files = [
   { name: "Track 1", src: song1 },
   { name: "Track 2", src: song2 },
@@ -27,221 +28,220 @@ interface PresentDashboardProps {
   dashboardData: any[];
   setIsPresentMode: (mode: boolean) => void;
   dashboardName: string;
+  dashboardMaps?: any[];  // Optional maps prop
 }
 
 const PresentDashboard: React.FC<PresentDashboardProps> = ({
   dashboardData,
   setIsPresentMode,
   dashboardName,
+  dashboardMaps = []  // Default to empty array
 }) => {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [isTrackPaused, setIsTrackPaused] = useState(false)
   
     const [currentTrack, setCurrentTrack] = useState<string | null>(null);
-  const [slidesToShow, setSlidesToShow] = useState(1);
-  const [delay, setDelay] = useState(2000);
-  const [isPaused, setIsPaused] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [currentSlide, setCurrentSlide] = useState(1);
-  const [showControls, setShowControls] = useState(true);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const controlsTimeoutRef = useRef<NodeJS.Timeout>();
+    const [slidesToShow, setSlidesToShow] = useState(1);
+    const [delay, setDelay] = useState(2000);
+    const [isPaused, setIsPaused] = useState(false);
+    const [isFullscreen, setIsFullscreen] = useState(false);
+    const [currentSlide, setCurrentSlide] = useState(1);
+    const [showControls, setShowControls] = useState(true);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const controlsTimeoutRef = useRef<NodeJS.Timeout>();
+useEffect(()=>{
+  console.log("hello bog",dashboardMaps)
+},[dashboardMaps])
+    // Combine visuals and maps
+    const combinedData = [...dashboardData, ...(dashboardMaps || [])];
 
-  const autoplayPlugin = useRef(
-    Autoplay({ delay, stopOnInteraction: true })
-  );
+    const autoplayPlugin = useRef(
+      Autoplay({ delay, stopOnInteraction: true })
+    );
 
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    {
-      loop: true,
-      align: "start",
-      slidesToScroll: 1,
-      dragFree: true,
-    },
-    [autoplayPlugin.current]
-  );
+    const [emblaRef, emblaApi] = useEmblaCarousel(
+      {
+        loop: true,
+        align: "start",
+        slidesToScroll: 1,
+        dragFree: true,
+      },
+      [autoplayPlugin.current]
+    );
 
-  const scrollPrev = useCallback(() => {
-    if (emblaApi) {
-      emblaApi.scrollPrev();
-      updateCurrentSlide();
-    }
-  }, [emblaApi]);
-
-  const scrollNext = useCallback(() => {
-    if (emblaApi) {
-      emblaApi.scrollNext();
-      updateCurrentSlide();
-    }
-  }, [emblaApi]);
-
-  const updateCurrentSlide = useCallback(() => {
-    if (emblaApi) {
-      setCurrentSlide(emblaApi.selectedScrollSnap() + 1);
-    }
-  }, [emblaApi]);
-
-  const toggleFullscreen = useCallback(() => {
-    if (!document.fullscreenElement) {
-      containerRef.current?.requestFullscreen();
-      setIsFullscreen(true);
-      setShowControls(false);
-    } else {
-      document.exitFullscreen();
-      setIsFullscreen(false);
-      setShowControls(true);
-    }
-  }, []);
-
-  const togglePause = useCallback(() => {
-    if (isPaused) {
-      autoplayPlugin.current.play();
-    } else {
-      autoplayPlugin.current.stop();
-    }
-    setIsPaused(!isPaused);
-  }, [isPaused]);
-
-  const handleMouseMove = useCallback(() => {
-    if (isFullscreen) {
-      setShowControls(true);
-      if (controlsTimeoutRef.current) {
-        clearTimeout(controlsTimeoutRef.current);
+    const scrollPrev = useCallback(() => {
+      if (emblaApi) {
+        emblaApi.scrollPrev();
+        updateCurrentSlide();
       }
-      controlsTimeoutRef.current = setTimeout(() => {
-        setShowControls(false);
-      }, 3000);
-    }
-  }, [isFullscreen]);
+    }, [emblaApi]);
 
-  useEffect(() => {
-    const handleFullscreenChange = () => {
+    const scrollNext = useCallback(() => {
+      if (emblaApi) {
+        emblaApi.scrollNext();
+        updateCurrentSlide();
+      }
+    }, [emblaApi]);
+
+    const updateCurrentSlide = useCallback(() => {
+      if (emblaApi) {
+        setCurrentSlide(emblaApi.selectedScrollSnap() + 1);
+      }
+    }, [emblaApi]);
+
+    const toggleFullscreen = useCallback(() => {
       if (!document.fullscreenElement) {
+        containerRef.current?.requestFullscreen();
+        setIsFullscreen(true);
+        setShowControls(false);
+      } else {
+        document.exitFullscreen();
         setIsFullscreen(false);
         setShowControls(true);
       }
-    };
+    }, []);
 
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
-  }, []);
-
-  useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.code === "Space") {
-        e.preventDefault();
-        togglePause();
-      } else if (e.code === "Escape" && !isFullscreen) {
-        setIsPresentMode(false);
-      } else if (e.code === "ArrowLeft") {
-        scrollPrev();
-      } else if (e.code === "ArrowRight") {
-        scrollNext();
-      } else if (e.code === "KeyF") {
-        toggleFullscreen();
+    const togglePause = useCallback(() => {
+      if (isPaused) {
+        autoplayPlugin.current.play();
+      } else {
+        autoplayPlugin.current.stop();
       }
-    };
+      setIsPaused(!isPaused);
+    }, [isPaused]);
 
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [togglePause, setIsPresentMode, isFullscreen, scrollPrev, scrollNext, toggleFullscreen]);
-
-  useEffect(() => {
-    if (emblaApi) {
-      emblaApi.on("select", updateCurrentSlide);
-      updateCurrentSlide();
-    }
-    return () => {
-      if (controlsTimeoutRef.current) {
-        clearTimeout(controlsTimeoutRef.current);
+    const handleMouseMove = useCallback(() => {
+      if (isFullscreen) {
+        setShowControls(true);
+        if (controlsTimeoutRef.current) {
+          clearTimeout(controlsTimeoutRef.current);
+        }
+        controlsTimeoutRef.current = setTimeout(() => {
+          setShowControls(false);
+        }, 3000);
       }
-    };
-  }, [emblaApi, updateCurrentSlide]);
+    }, [isFullscreen]);
 
-  useEffect(() => {
-    if (emblaApi) {
-      emblaApi.reInit();
-    }
-  }, [emblaApi, slidesToShow]);
+    useEffect(() => {
+      const handleFullscreenChange = () => {
+        if (!document.fullscreenElement) {
+          setIsFullscreen(false);
+          setShowControls(true);
+        }
+      };
 
-  useEffect(() => {
-    if (autoplayPlugin.current) {
-      autoplayPlugin.current.options.delay = delay;
+      document.addEventListener('fullscreenchange', handleFullscreenChange);
+      return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    }, []);
+
+    useEffect(() => {
+      const handleKeyPress = (e: KeyboardEvent) => {
+        if (e.code === "Space") {
+          e.preventDefault();
+          togglePause();
+        } else if (e.code === "Escape" && !isFullscreen) {
+          setIsPresentMode(false);
+        } else if (e.code === "ArrowLeft") {
+          scrollPrev();
+        } else if (e.code === "ArrowRight") {
+          scrollNext();
+        } else if (e.code === "KeyF") {
+          toggleFullscreen();
+        }
+      };
+
+      window.addEventListener("keydown", handleKeyPress);
+      return () => window.removeEventListener("keydown", handleKeyPress);
+    }, [togglePause, setIsPresentMode, isFullscreen, scrollPrev, scrollNext, toggleFullscreen]);
+
+    useEffect(() => {
+      if (emblaApi) {
+        emblaApi.on("select", updateCurrentSlide);
+        updateCurrentSlide();
+      }
+      return () => {
+        if (controlsTimeoutRef.current) {
+          clearTimeout(controlsTimeoutRef.current);
+        }
+      };
+    }, [emblaApi, updateCurrentSlide]);
+
+    useEffect(() => {
       if (emblaApi) {
         emblaApi.reInit();
       }
-    }
-  }, [emblaApi, delay]);
+    }, [emblaApi, slidesToShow]);
 
+    useEffect(() => {
+      if (autoplayPlugin.current) {
+        autoplayPlugin.current.options.delay = delay;
+        if (emblaApi) {
+          emblaApi.reInit();
+        }
+      }
+    }, [emblaApi, delay]);
 
-  /// handle song
+    /// handle song
     const handleTrackChange = (value: string) => {
       setCurrentTrack(value);
       if (audioRef.current) {
         audioRef.current.src = value;
         audioRef.current.play();
-     
       }
     };
   
     const resetAudio = () => {
-      if (audioRef.current  && audioRef.current.src) {
+      if (audioRef.current && audioRef.current.src) {
         audioRef.current.currentTime = 0;
-     
       }
     };
- // Function to play the audio
- const playAudio = () => {
-  if (audioRef.current && audioRef.current.src && audioRef.current.readyState >= 2) {
-    audioRef.current.play();
-    setIsTrackPaused(false);
-  }
-};
 
+    // Function to play the audio
+    const playAudio = () => {
+      if (audioRef.current && audioRef.current.src && audioRef.current.readyState >= 2) {
+        audioRef.current.play();
+        setIsTrackPaused(false);
+      }
+    };
 
-// Function to pause the audio
-const pauseAudio = () => {
-  if (audioRef.current && audioRef.current.src) {
-    audioRef.current.pause();
-    setIsTrackPaused(true)
-  }
-};
+    // Function to pause the audio
+    const pauseAudio = () => {
+      if (audioRef.current && audioRef.current.src) {
+        audioRef.current.pause();
+        setIsTrackPaused(true)
+      }
+    };
 
-// Function to stop the audio
-const stopAudio = () => {
-  if (audioRef.current) {
-    audioRef.current.src = null
-    setCurrentTrack(null)
-  }
-};
-
-  
+    // Function to stop the audio
+    const stopAudio = () => {
+      if (audioRef.current) {
+        audioRef.current.src = null
+        setCurrentTrack(null)
+      }
+    };
   
     const togglePlayback = useCallback(() => {
       if (isPaused) {
-
         autoplayPlugin.current.play();
-         playAudio()
-       // audioRef.current?.play();
+        playAudio()
       } else {
         autoplayPlugin.current.stop();
         pauseAudio()
-       // audioRef.current?.pause();
       }
       setIsPaused(!isPaused);
     }, [isPaused]);
 
-      useEffect(() => {
-        const handleKeyPress = (event: KeyboardEvent) => {
-          if (event.code === "Space") {
-            event.preventDefault();
-            togglePlayback();
-          }
-        };
-    
-        window.addEventListener("keydown", handleKeyPress);
-        return () => window.removeEventListener("keydown", handleKeyPress);
-      }, [isPaused]);
+    useEffect(() => {
+      const handleKeyPress = (event: KeyboardEvent) => {
+        if (event.code === "Space") {
+          event.preventDefault();
+          togglePlayback();
+        }
+      };
+  
+      window.addEventListener("keydown", handleKeyPress);
+      return () => window.removeEventListener("keydown", handleKeyPress);
+    }, [isPaused]);
 
   return (
     <div 
@@ -255,15 +255,13 @@ const stopAudio = () => {
             {dashboardName}
           </h3>
           <span className={`text-sm text-muted-foreground font-semibold ${isFullscreen ? 'text-white' : 'text-primary'}`}>
-     ({i18n.t('Slide')} {currentSlide} {i18n.t('of')} {dashboardData.length}) 
+     ({i18n.t('Slide')} {currentSlide} {i18n.t('of')} {combinedData.length}) 
 </span>
 
             </div>
       
         {(!isFullscreen || showControls) && (
           <>
-          
-
             {!isFullscreen && (
             <div className="bg-gray-100 rounded-lg p-4 shadow-sm">
             <div className="flex  justify-between">
@@ -334,8 +332,6 @@ const stopAudio = () => {
                   />
                   </div>
                 </div>
-      
-            
               </div>
 
                   {/* Presentation Controls */}
@@ -379,29 +375,49 @@ const stopAudio = () => {
 
           <div ref={emblaRef} className="overflow-hidden h-full w-full">
             <div className="flex h-full items-center ">
-              {dashboardData.map((item, index) => (
+              {combinedData.map((item, index) => (
                 <div
                   key={index}
                   className="flex-[0_0_auto] min-w-0 w-full h-full flex items-center"
-                  style={{ width: `${100 / slidesToShow}%`,backgroundColor:item.visualSettings.backgroundColor }}
+                  style={{ 
+                    width: `${100 / slidesToShow}%`, 
+                    backgroundColor: item.visualSettings?.backgroundColor || item.backgroundColor || '#ffffff' 
+                  }}
                 >
-                  <div className=" w-full">
-                  <h4 
-                  className={`text-xl font-medium text-center ${
-            (!isFullscreen || showControls) ? "text-gray-400" : "text-gray-400"
-                   }`}
-                 >
-                {index + 1}. {item.visualName}
-                   </h4>
+                  <div className="w-full">
+                    <h4 
+                      className={`text-xl font-medium text-center ${
+                        (!isFullscreen || showControls) ? "text-gray-400" : "text-gray-400"
+                      }`}
+                    >
+                      {index + 1}. {item.visualName || item.mapName}
+                    </h4>
 
-                    <div className="h-full" style={{backgroundColor:item.visualSettings.backgroundColor}} >
-                      <DashboardVisualItem
-                        query={item.visualQuery}
-                        dataSourceId={item.dataSourceId}
-                        visualType={item.visualType}
-                        visualSettings={item.visualSettings}
-                        visualTitleAndSubTitle={item.visualTitleAndSubTitle}
-                      />
+                    <div 
+                      className="h-full" 
+                      style={{
+                        backgroundColor: item.visualSettings?.backgroundColor || item.backgroundColor || 'transparent'
+                      }} 
+                    >
+                      {/* Render either Visual Item or Map Item */}
+                      {item.visualQuery ? (
+                        <DashboardVisualItem
+                          query={item.visualQuery}
+                          dataSourceId={item.dataSourceId}
+                          visualType={item.visualType}
+                          visualSettings={item.visualSettings}
+                          visualTitleAndSubTitle={item.visualTitleAndSubTitle}
+                        />
+                      ) : (
+                        <div  className=" h-[calc(100vh-50px)] " >
+                             <SingleMapItem
+                          geoFeaturesQuery={item.geoFeaturesQuery}
+                          mapAnalyticsQueryOneQuery={item.mapAnalyticsQueryOneQuery}
+                          mapAnalyticsQueryTwo={item.mapAnalyticsQueryTwo}
+                        />
+                        </div>
+                     
+                      )}
                     </div>
                   </div>
                 </div>
