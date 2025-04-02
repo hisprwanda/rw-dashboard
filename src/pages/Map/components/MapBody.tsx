@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
+import React, { useState, useEffect, useRef } from 'react';
+import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -13,13 +13,15 @@ import MapLegend from './MapLegend';
 import LegendControls from './LegendControls';
 
 import { BasemapType, ProcessedDistrict, Legend, LegendClass } from '../../../types/maps';
-import { BASEMAPS,sampleLegends } from '../constants';
-import { generateAutoLegend,  calculateMapCenter, 
-  parseCoordinates, 
-  getColorForValue, 
-  createGeoJSON, 
-  onEachFeature  } from '../../../lib/mapHelpers';
-import MapUpdater from './MapUpdater';
+import { BASEMAPS, sampleLegends } from '../constants';
+import { 
+  generateAutoLegend,
+  calculateMapCenter,
+  parseCoordinates,
+  getColorForValue,
+  createGeoJSON,
+  onEachFeature
+} from '../../../lib/mapHelpers';
 
 // Fix for default marker icon
 let DefaultIcon = L.icon({
@@ -31,13 +33,46 @@ let DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
+// Map View Updater Component
+// This component will update the map view when center position or zoom changes
+const MapViewUpdater: React.FC<{
+  center: [number, number],
+  zoom: number,
+  geoJsonData: any
+}> = ({ center, zoom, geoJsonData }) => {
+  const map = useMap();
+  
+  useEffect(() => {
+    if (geoJsonData && Object.keys(geoJsonData).length > 0) {
+      try {
+        // Create a GeoJSON layer to calculate bounds
+        const geoLayer = L.geoJSON(geoJsonData);
+        const bounds = geoLayer.getBounds();
+        
+        // Only fit bounds if the bounds are valid
+        if (bounds.isValid()) {
+          map.fitBounds(bounds);
+          return; // Exit early since we've set the bounds
+        }
+      } catch (error) {
+        console.error("Error fitting bounds:", error);
+      }
+    }
+    
+    // Fallback to center and zoom if bounds fitting fails or no GeoJSON
+    map.setView(center, zoom);
+  }, [map, center, zoom, geoJsonData]);
+
+  return null;
+};
+
 type MapBodyProps = {
   geoFeaturesData: any;
   analyticsMapData: any;
   metaMapData: any;
   singleSavedMapData?: any;
   mapId?: string;
-  isHideSideBar?:boolean
+  isHideSideBar?: boolean;
 }
 
 const MapBody: React.FC<MapBodyProps> = ({
@@ -46,7 +81,7 @@ const MapBody: React.FC<MapBodyProps> = ({
   metaMapData,
   singleSavedMapData,
   mapId,
-  isHideSideBar 
+  isHideSideBar
 }) => {
   // State management
   const [currentBasemap, setCurrentBasemap] = useState<BasemapType>('osm-light');
@@ -56,11 +91,10 @@ const MapBody: React.FC<MapBodyProps> = ({
   const [selectedLegendSet, setSelectedLegendSet] = useState<Legend>(sampleLegends[0]);
   const [autoLegend, setAutoLegend] = useState<LegendClass[]>([]);
   const [centerPosition, setCenterPosition] = useState<[number, number]>([0, 28]);
+  const [zoomLevel, setZoomLevel] = useState<number>(2);
   const [dataProcessed, setDataProcessed] = useState<boolean>(false);
   const [hasDataToDisplay, setHasDataToDisplay] = useState<boolean>(false);
-
-  // Default view settings
-  const defaultZoom = 2;
+  const [geoJsonData, setGeoJsonData] = useState<any>(null);
 
   // Main data processing effect
   useEffect(() => {
@@ -75,7 +109,7 @@ const MapBody: React.FC<MapBodyProps> = ({
     }
     
     try {
-      // Data processing logic (similar to original)
+      // Data processing logic
       const dataValues = new Map<string, string>();
       
       analyticsMapData.rows.forEach(row => {
@@ -110,17 +144,28 @@ const MapBody: React.FC<MapBodyProps> = ({
       
       setDistricts(processedDistricts);
       
-      // Calculate center and set other states
-      const center = calculateMapCenter(processedDistricts);
-      setCenterPosition(center);
+      // Generate GeoJSON data
+      const generatedGeoJson = createGeoJSON(processedDistricts);
+      setGeoJsonData(generatedGeoJson);
+      
+      // Calculate center and set zoom
+      if (processedDistricts.length > 0) {
+        const center = calculateMapCenter(processedDistricts);
+        setCenterPosition(center);
+        
+        // Set a higher zoom level when we have specific coordinates
+        setZoomLevel(8);
+        
+        const legend = generateAutoLegend(processedDistricts);
+        setAutoLegend(legend);
+      } else {
+        // Default values when no districts are available
+        setCenterPosition([0, 28]);
+        setZoomLevel(2);
+      }
       
       const districtsWithData = processedDistricts.filter(d => d.value !== null);
       setHasDataToDisplay(districtsWithData.length > 0);
-      
-      if (processedDistricts.length > 0) {
-        const legend = generateAutoLegend(processedDistricts);
-        setAutoLegend(legend);
-      }
     } catch (error) {
       console.error("Error processing map data:", error);
     }
@@ -149,40 +194,31 @@ const MapBody: React.FC<MapBodyProps> = ({
   return (
     <div className="flex flex-1 h-full w-full bg-red-500">
       {/* Sidebar */}
-      {!isHideSideBar && <>
+      {!isHideSideBar && (
         <MapSidebar 
-        basemaps={BASEMAPS}
-        currentBasemap={currentBasemap}
-        onBasemapChange={setCurrentBasemap}
-        singleSavedMapData={singleSavedMapData}
-        mapId={mapId}
-      />
-      </>  }
-     
+          basemaps={BASEMAPS}
+          currentBasemap={currentBasemap}
+          onBasemapChange={setCurrentBasemap}
+          singleSavedMapData={singleSavedMapData}
+          mapId={mapId}
+        />
+      )}
 
       {/* Map Container */}
       <div className="flex-grow h-full">
         {/* Legend Controls */}
-        {
-          !isHideSideBar && <>
+        {!isHideSideBar && (
+          <>
             {districts.length > 0 && (
-          // <LegendControls
-          //   legendType={legendType}
-          //   setLegendType={setLegendType}
-          //   selectedLegendSet={selectedLegendSet}
-          //   setSelectedLegendSet={setSelectedLegendSet}
-          //   sampleLegends={sampleLegends}
-          // />
-          <p></p>
-        )}
+              <p></p>
+            )}
           </>
-        }
+        )}
       
-        
         <div className="h-full w-full relative">
           <MapContainer 
             center={centerPosition} 
-            zoom={defaultZoom} 
+            zoom={zoomLevel} 
             className="h-full w-full"
           >
             {/* Base Layer */}
@@ -191,22 +227,27 @@ const MapBody: React.FC<MapBodyProps> = ({
               attribution={BASEMAPS[currentBasemap].attribution}
             />
             
+            {/* Map View Updater */}
+            <MapViewUpdater 
+              center={centerPosition}
+              zoom={zoomLevel}
+              geoJsonData={geoJsonData}
+            />
+            
             {/* District Layer */}
-            {districts.length > 0 && (
+            {districts.length > 0 && geoJsonData && (
               <GeoJSON 
-                data={createGeoJSON(districts)}
+                data={geoJsonData}
                 style={getStyleOne}
                 onEachFeature={(feature, layer) => 
                   onEachFeature(feature, layer, analyticsMapData, valueMap)
                 }
               />
             )}
-            
           </MapContainer>
           
           {/* Legend */}
           {districts.length > 0 && (
-            
             <MapLegend
               legendType={legendType}
               autoLegend={autoLegend}
