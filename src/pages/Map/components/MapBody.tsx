@@ -154,7 +154,7 @@ const MapBody: React.FC<MapBodyProps> = ({
         setCenterPosition(center);
         
         // Set a higher zoom level when we have specific coordinates
-        setZoomLevel(8);
+        setZoomLevel(19);
         
         const legend = generateAutoLegend(processedDistricts);
         setAutoLegend(legend);
@@ -219,6 +219,7 @@ const MapBody: React.FC<MapBodyProps> = ({
           <MapContainer 
             center={centerPosition} 
             zoom={zoomLevel} 
+            zoomAnimation={false}
             className="h-full w-full"
           >
             {/* Base Layer */}
