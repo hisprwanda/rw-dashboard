@@ -55,12 +55,12 @@ const MapBody: React.FC<MapBodyProps> = ({
   const [legendType, setLegendType] = useState<string>("auto");
   const [selectedLegendSet, setSelectedLegendSet] = useState<Legend>(sampleLegends[0]);
   const [autoLegend, setAutoLegend] = useState<LegendClass[]>([]);
-  const [centerPosition, setCenterPosition] = useState<[number, number]>([-1.9403, 30.0578]);
+  const [centerPosition, setCenterPosition] = useState<[number, number]>([0, 28]);
   const [dataProcessed, setDataProcessed] = useState<boolean>(false);
   const [hasDataToDisplay, setHasDataToDisplay] = useState<boolean>(false);
 
   // Default view settings
-  const defaultZoom = 8;
+  const defaultZoom = 2;
 
   // Main data processing effect
   useEffect(() => {
@@ -201,7 +201,7 @@ const MapBody: React.FC<MapBodyProps> = ({
                 }
               />
             )}
-             <MapUpdater districts={districts} hasData={hasDataToDisplay} />
+            
           </MapContainer>
           
           {/* Legend */}
