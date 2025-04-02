@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-03-24T11:17:23.260Z\n"
-"PO-Revision-Date: 2025-03-24T11:17:23.261Z\n"
+"POT-Creation-Date: 2025-04-01T12:27:31.542Z\n"
+"PO-Revision-Date: 2025-04-01T12:27:31.543Z\n"
 
 msgid "Dashboards"
 msgstr "Dashboards"
@@ -100,6 +100,9 @@ msgstr "Background Color"
 
 msgid "Select a visual"
 msgstr "Select a visual"
+
+msgid "Select a Map"
+msgstr "Select a Map"
 
 msgid "My Dashboards"
 msgstr "My Dashboards"

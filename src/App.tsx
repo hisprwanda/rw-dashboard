@@ -46,8 +46,7 @@ const App: React.FC = () => {
               <Route index element={<HomePage />} />
               <Route path="dashboards" element={<DashboardsPage />} />
               <Route path="visualization" element={<VisualizationPage />} />
-              <Route path="maps" element={<AllMapsPage />} />
-            
+              <Route path="maps" element={<AllMapsPage />} /> 
               <Route path="settings" element={<SettingsPage />} />
               <Route path="alerts" element={<AlertsPage />} />
               <Route path="test" element={<TestChart />} />
