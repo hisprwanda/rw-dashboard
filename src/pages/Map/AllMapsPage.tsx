@@ -47,7 +47,7 @@ const AllMapsPage = () => {
                 value="Other-Maps"
                 className="text-[#2C6693] text-xl font-bold"
               >
-                   {i18n.t('Other Charts')}
+                   {i18n.t('Other Maps')}
               </TabsTrigger>
             </TabsList>
             <Button variant="primary" text={i18n.t('New Map')} type="button" onClick={handleGoToCreateMap}

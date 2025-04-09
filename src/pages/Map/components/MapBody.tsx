@@ -219,7 +219,7 @@ const MapBody: React.FC<MapBodyProps> = ({
           <MapContainer 
             center={centerPosition} 
             zoom={zoomLevel} 
-            zoomAnimation={false}
+            zoomAnimation={false} //// temporally disabled to fix leafjs bug
             className="h-full w-full"
           >
             {/* Base Layer */}

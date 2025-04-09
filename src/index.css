@@ -621,6 +621,10 @@ video {
   top: -10rem;
 }
 
+.bottom-0 {
+  bottom: 0px;
+}
+
 .bottom-10 {
   bottom: 2.5rem;
 }
@@ -1940,6 +1944,11 @@ video {
   background-color: rgb(55 65 81 / var(--tw-bg-opacity));
 }
 
+.bg-gray-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(17 24 39 / var(--tw-bg-opacity));
+}
+
 .bg-green-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(220 252 231 / var(--tw-bg-opacity));
@@ -2335,6 +2344,10 @@ video {
 
 .uppercase {
   text-transform: uppercase;
+}
+
+.lowercase {
+  text-transform: lowercase;
 }
 
 .capitalize {
