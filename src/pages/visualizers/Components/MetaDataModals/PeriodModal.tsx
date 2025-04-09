@@ -60,14 +60,38 @@ const TabButton = ({ selected, onClick, children }) => (
   </button>
 )
 
-const TransferList = ({ availableOptions, selectedOptions, onSelect, onDeselect, isPeriodInBulletin = false }) => {
+const TransferList = ({ 
+  availableOptions, 
+  selectedOptions, 
+  onSelect, 
+  onDeselect, 
+  isPeriodInBulletin = false, 
+  onSelectAll, 
+  onDeselectAll 
+}) => {
   // Determine if select buttons should be disabled (for bulletin mode with 1+ selections)
   const isSelectDisabled = isPeriodInBulletin && selectedOptions.length > 0
+  const hasAvailableOptions = availableOptions.length > 0
+  const hasSelectedOptions = selectedOptions.length > 0
 
   return (
     <div className="grid grid-cols-2 gap-4 mt-4">
       <div className="border rounded-lg p-4">
-        <h3 className="font-medium mb-2">Available Periods</h3>
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="font-medium">Available Periods</h3>
+          {hasAvailableOptions && !isPeriodInBulletin && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                e.preventDefault()
+                onSelectAll()
+              }}
+              className="text-sm text-blue-600 hover:text-blue-800"
+            >
+              Select All
+            </button>
+          )}
+        </div>
         <div className="space-y-2 max-h-64 overflow-y-auto">
           {availableOptions.map((option) => (
             <button
@@ -92,7 +116,21 @@ const TransferList = ({ availableOptions, selectedOptions, onSelect, onDeselect,
         )}
       </div>
       <div className="border rounded-lg p-4">
-        <h3 className="font-medium mb-2">Selected Periods</h3>
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="font-medium">Selected Periods</h3>
+          {hasSelectedOptions && !isPeriodInBulletin && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                e.preventDefault()
+                onDeselectAll()
+              }}
+              className="text-sm text-blue-600 hover:text-blue-800"
+            >
+              Deselect All
+            </button>
+          )}
+        </div>
         <div className="space-y-2 max-h-64 overflow-y-auto">
           {selectedOptions.map((option) => (
             <button
@@ -420,6 +458,63 @@ const PeriodPicker: React.FC<PeriodPickerProps> = ({
     }
   }
 
+  // Handle selecting all available periods
+  const handleSelectAll = () => {
+    // Skip this functionality in bulletin mode
+    if (isPeriodInBulletin) return
+
+    // Get all available period values
+    const availablePeriodValues = availablePeriods.map(period => period.value)
+    
+    // Combine with existing selections
+    const newSelectedPeriods = [
+      ...(analyticsDimensions.pe || []),
+      ...availablePeriodValues
+    ]
+
+    // Update analytics dimensions
+    setAnalyticsDimensions(prev => ({
+      ...prev,
+      pe: newSelectedPeriods
+    }))
+
+    // Clear available periods
+    setAvailablePeriods([])
+  }
+
+  // Handle deselecting all periods
+  const handleDeselectAll = () => {
+    // Skip this functionality in bulletin mode
+    if (isPeriodInBulletin) return
+
+    // Get current selected periods to add back to available
+    const currentSelected = analyticsDimensions.pe || []
+    const periodsToAddBack = []
+
+    // For each selected period, determine if it should be added back to available list
+    currentSelected.forEach(periodValue => {
+      const periodObject = allPeriodOptions.get(periodValue)
+      if (periodObject) {
+        const isRelativePeriod = periodObject.type === "relative"
+        
+        // Add period back if it matches the current tab
+        if ((selectedTab === "relative" && isRelativePeriod) || 
+            (selectedTab === "fixed" && !isRelativePeriod)) {
+          periodsToAddBack.push(periodObject)
+        }
+      }
+    })
+
+    // Clear selected periods
+    setAnalyticsDimensions(prev => ({
+      ...prev,
+      pe: []
+    }))
+
+    // Add periods back to available list
+    setAvailablePeriods(prev => [...prev, ...periodsToAddBack])
+  }
+
   const handleUpdate = async (e) => {
     // Stop event propagation
     e.stopPropagation()
@@ -553,12 +648,6 @@ const PeriodPicker: React.FC<PeriodPickerProps> = ({
           </div>
         </div>
       )}
-      {/* 
-            {isPeriodInBulletin && (
-                <div className="mt-4 p-3 text-blue-800">
-                    <p className='text-red-500'>Only one weekly period can be selected.</p> 
-                </div>
-            )} */}
 
       <TransferList
         availableOptions={availablePeriods}
@@ -566,6 +655,8 @@ const PeriodPicker: React.FC<PeriodPickerProps> = ({
         onSelect={handlePeriodSelect}
         onDeselect={handlePeriodDeselect}
         isPeriodInBulletin={isPeriodInBulletin}
+        onSelectAll={handleSelectAll}
+        onDeselectAll={handleDeselectAll}
       />
 
       {!isDataModalBeingUsedInMap && (
@@ -585,4 +676,3 @@ const PeriodPicker: React.FC<PeriodPickerProps> = ({
 }
 
 export default PeriodPicker
-
