@@ -85,6 +85,23 @@ const CustomTransfer: React.FC<{
     onChange({ selected: newSelected });
   };
 
+  // Handle select all
+  const handleSelectAll = () => {
+    // Get all available option values that aren't already selected
+    const availableValues = options
+      .filter(option => !selected.includes(option.value))
+      .map(option => option.value);
+    
+    // Add them to selected items
+    const newSelected = [...selected, ...availableValues];
+    onChange({ selected: newSelected });
+  };
+
+  // Handle deselect all
+  const handleDeselectAll = () => {
+    onChange({ selected: [] });
+  };
+
   // test 
   useEffect(()=>{
     console.log("backedSelectedItems",backedSelectedItems)
@@ -93,8 +110,15 @@ const CustomTransfer: React.FC<{
   return (
     <div className={`flex gap-4 h-96 ${className}`}>
       <div className="w-1/2 border rounded-lg overflow-hidden flex flex-col">
-        <div className="p-2 bg-gray-50 border-b">
+        <div className="p-2 bg-gray-50 border-b flex justify-between items-center">
           <h3 className="text-sm font-medium text-gray-700">Available Items</h3>
+          <button
+            onClick={handleSelectAll}
+            className="text-xs bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded transition duration-200"
+            disabled={loading || options.length === 0}
+          >
+            Select All
+          </button>
         </div>
         <div 
           className="flex-1 overflow-y-auto p-2"
@@ -127,8 +151,15 @@ const CustomTransfer: React.FC<{
       </div>
 
       <div className="w-1/2 border rounded-lg overflow-hidden flex flex-col">
-        <div className="p-2 bg-gray-50 border-b">
+        <div className="p-2 bg-gray-50 border-b flex justify-between items-center">
           <h3 className="text-sm font-medium text-gray-700">Selected Items</h3>
+          <button
+            onClick={handleDeselectAll}
+            className="text-xs bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded transition duration-200"
+            disabled={backedSelectedItems.length === 0}
+          >
+            Deselect All
+          </button>
         </div>
         <div className="flex-1 overflow-y-auto p-2">
           {backedSelectedItems.map(item => (
@@ -375,7 +406,7 @@ const DataModal: React.FC<DataModalProps> = ({
       dx: [...newSelected],
     }));
   };
-
+  
   const handleUpdate = async () => {
     await fetchAnalyticsData({dimension:formatAnalyticsDimensions(analyticsDimensions),instance:selectedDataSourceDetails});
     setIsShowDataModal(false);
