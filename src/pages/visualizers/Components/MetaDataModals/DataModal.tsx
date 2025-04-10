@@ -284,10 +284,22 @@ const DataModal: React.FC<DataModalProps> = ({
     // Memoized options to avoid unnecessary recomputation
     const filterTransformedOptions = (options: TransferOption[], otherOptionsId, groupsIdOrSubDataItemIds) => {
       // If 'otherOptionsId' is REPORTING_RATE, filter based on that metric
+            
+      console.log("options 11",options)
+      console.log("otherOptionsId selected",otherOptionsId)
+      console.log("groupsIdOrSubDataItemIds",groupsIdOrSubDataItemIds)
       if (otherOptionsId === "REPORTING_RATE") {
-        return options.filter(option => option.value.includes("REPORTING_RATE"));
+        return options.filter(option => option.value?.split(".")?.[1] === "REPORTING_RATE");
+      }else if (otherOptionsId === "REPORTING_RATE_ON_TIME") {
+        return options.filter(option => option.value.includes("REPORTING_RATE_ON_TIME"));
       }
-  
+      else if (otherOptionsId === "ACTUAL_REPORTS") {
+        return options.filter(option => option.value.includes("ACTUAL_REPORTS"));
+      }
+      else if (otherOptionsId === "EXPECTED_REPORTS") {
+        return options.filter(option => option.value.includes("EXPECTED_REPORTS"));
+      }
+      
       // If 'groupsIdOrSubDataItemIds' is provided, filter based on the group
       // if (groupsIdOrSubDataItemIds) {
       //   return options.filter(option => option.value.includes(groupsIdOrSubDataItemIds));
@@ -370,7 +382,6 @@ const DataModal: React.FC<DataModalProps> = ({
   
     // Filter transformedOptions based on the selected filters
     const filteredTransformedOptions = filterTransformedOptions(transformedOptions, otherOptionsId, groupsIdOrSubDataItemIds);
-  
     // Set the available options without making additional API requests
     setAvailableOptions(prev => dataItemsDataPage > 1 ? [...filteredTransformedOptions] : filteredTransformedOptions);
     setAvailableSubOptions(prev => dataItemsDataPage > 1 ? [...prev, ...transformedSubOptions] : transformedSubOptions);
