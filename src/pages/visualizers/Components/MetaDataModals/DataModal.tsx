@@ -289,9 +289,9 @@ const DataModal: React.FC<DataModalProps> = ({
       }
   
       // If 'groupsIdOrSubDataItemIds' is provided, filter based on the group
-      if (groupsIdOrSubDataItemIds) {
-        return options.filter(option => option.value.includes(groupsIdOrSubDataItemIds));
-      }
+      // if (groupsIdOrSubDataItemIds) {
+      //   return options.filter(option => option.value.includes(groupsIdOrSubDataItemIds));
+      // }
   
       return options;
     };
