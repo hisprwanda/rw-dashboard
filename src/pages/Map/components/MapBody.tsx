@@ -73,6 +73,7 @@ type MapBodyProps = {
   singleSavedMapData?: any;
   mapId?: string;
   isHideSideBar?: boolean;
+  mapName?:string
 }
 
 const MapBody: React.FC<MapBodyProps> = ({
@@ -81,7 +82,8 @@ const MapBody: React.FC<MapBodyProps> = ({
   metaMapData,
   singleSavedMapData,
   mapId,
-  isHideSideBar
+  isHideSideBar,
+  mapName
 }) => {
   // State management
   const [currentBasemap, setCurrentBasemap] = useState<BasemapType>('osm-light');
@@ -192,7 +194,7 @@ const MapBody: React.FC<MapBodyProps> = ({
   };
 
   return (
-    <div className="flex flex-1 h-full w-full bg-red-500">
+    <div className="flex flex-1 h-full w-full">
       {/* Sidebar */}
       {!isHideSideBar && (
         <MapSidebar 
@@ -216,6 +218,12 @@ const MapBody: React.FC<MapBodyProps> = ({
         )}
       
         <div className="h-full w-full relative">
+        {mapName && (
+  <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[1000] text-center font-bold text-xl text-gray-800 bg-white bg-opacity-80 px-4 py-1 rounded shadow-md">
+    {mapName}
+  </div>
+)}
+  
           <MapContainer 
             center={centerPosition} 
             zoom={zoomLevel} 
