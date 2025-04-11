@@ -295,8 +295,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setMapAnalyticsQueryTwo(analyticsQueryTwo)
       } else {
         // External request via axios
-
-        console.log("beta query",queryParams)
         const response = await axios.get(`${instance.url}/api/analytics`, {
           headers: {
             Authorization: `ApiToken ${instance.token}`,

@@ -22,6 +22,7 @@ import {
   createGeoJSON,
   onEachFeature
 } from '../../../lib/mapHelpers';
+import { useAuthorities } from '../../../context/AuthContext';
 
 // Fix for default marker icon
 let DefaultIcon = L.icon({
@@ -97,6 +98,7 @@ const MapBody: React.FC<MapBodyProps> = ({
   const [dataProcessed, setDataProcessed] = useState<boolean>(false);
   const [hasDataToDisplay, setHasDataToDisplay] = useState<boolean>(false);
   const [geoJsonData, setGeoJsonData] = useState<any>(null);
+  const {mapAnalyticsQueryTwo} = useAuthorities()
 
   // Main data processing effect
   useEffect(() => {
@@ -249,7 +251,7 @@ const MapBody: React.FC<MapBodyProps> = ({
                 data={geoJsonData}
                 style={getStyleOne}
                 onEachFeature={(feature, layer) => 
-                  onEachFeature(feature, layer, analyticsMapData, valueMap)
+                  onEachFeature(feature, layer, analyticsMapData, valueMap,metaMapData,mapAnalyticsQueryTwo)
                 }
               />
             )}
