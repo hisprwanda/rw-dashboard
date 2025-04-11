@@ -34,8 +34,50 @@ let DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
+// New Label Controls Component
+const LabelControls: React.FC<{
+  labelOptions: Array<{id: string, label: string}>,
+  selectedLabels: string[],
+  onChange: (labels: string[]) => void,
+  onApply: () => void
+}> = ({ labelOptions, selectedLabels, onChange, onApply }) => {
+  
+  const handleCheckboxChange = (labelId: string) => {
+    const updatedLabels = selectedLabels.includes(labelId)
+      ? selectedLabels.filter(id => id !== labelId)
+      : [...selectedLabels, labelId];
+    
+    onChange(updatedLabels);
+  };
+
+  return (
+    <div className="absolute top-4 right-4 z-[1000] bg-white p-3 rounded-md shadow-lg">
+      <h3 className="font-bold mb-2">Show Labels</h3>
+      
+      {labelOptions.map(option => (
+        <div key={option.id} className="flex items-center mb-1">
+          <input
+            type="checkbox"
+            id={option.id}
+            checked={selectedLabels.includes(option.id)}
+            onChange={() => handleCheckboxChange(option.id)}
+            className="mr-2"
+          />
+          <label htmlFor={option.id}>{option.label}</label>
+        </div>
+      ))}
+      
+      <button 
+        onClick={onApply}
+        className="mt-2 bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 w-full"
+      >
+        Apply
+      </button>
+    </div>
+  );
+};
+
 // Map View Updater Component
-// This component will update the map view when center position or zoom changes
 const MapViewUpdater: React.FC<{
   center: [number, number],
   zoom: number,
@@ -67,6 +109,153 @@ const MapViewUpdater: React.FC<{
   return null;
 };
 
+// New component to manage permanent labels
+const MapLabels: React.FC<{
+  geoJsonData: any,
+  appliedLabels: string[],
+  analyticsMapData: any,
+  valueMap: Map<string, string>,
+  metaMapData: any,
+  mapAnalyticsQueryTwo: any
+}> = ({ 
+  geoJsonData, 
+  appliedLabels, 
+  analyticsMapData, 
+  valueMap, 
+  metaMapData, 
+  mapAnalyticsQueryTwo 
+}) => {
+  const map = useMap();
+  const labelsRef = useRef<L.Layer[]>([]);
+
+  // Clean up any existing labels
+  useEffect(() => {
+    return () => {
+      labelsRef.current.forEach(label => {
+        if (map && label) {
+          map.removeLayer(label);
+        }
+      });
+      labelsRef.current = [];
+    };
+  }, [map]);
+
+  // Create or update labels when applied labels change
+  useEffect(() => {
+    if (!map || !geoJsonData || appliedLabels.length === 0) return;
+
+    // Clear existing labels
+    labelsRef.current.forEach(label => {
+      if (map && label) {
+        map.removeLayer(label);
+      }
+    });
+    labelsRef.current = [];
+
+    // Skip if no labels to show
+    if (appliedLabels.length === 0) return;
+
+    // Process each feature in the GeoJSON
+    geoJsonData.features.forEach((feature: any) => {
+      // Get feature geometry
+      if (!feature?.geometry?.coordinates) return;
+      
+      // Get feature properties
+      const props = feature.properties;
+      
+      // Skip if no props
+      if (!props) return;
+      
+      // Calculate center point for the feature
+      let center;
+      
+      try {
+        // Calculate center depending on geometry type
+        if (feature.geometry.type === 'Polygon') {
+          const polygon = L.polygon(feature.geometry.coordinates[0].map((c: number[]) => [c[1], c[0]]));
+          center = polygon.getBounds().getCenter();
+        } else if (feature.geometry.type === 'MultiPolygon') {
+          const polygons = feature.geometry.coordinates.map((poly: number[][][]) => 
+            poly[0].map((c: number[]) => [c[1], c[0]])
+          );
+          const multiPolygon = L.polygon(polygons);
+          center = multiPolygon.getBounds().getCenter();
+        } else {
+          // Skip non-polygon features
+          return;
+        }
+      } catch (error) {
+        console.error("Error calculating center:", error);
+        return;
+      }
+      
+      // Get label data
+      const selectedDataId = mapAnalyticsQueryTwo?.myData?.params?.dimension?.find((d: string) => d.startsWith("dx:"))?.split(":")[1];
+      const selectedDataName = metaMapData?.metaData?.items?.[selectedDataId]?.name;
+      const filter = mapAnalyticsQueryTwo?.myData?.params?.filter;
+      const selectedPeriod = filter?.startsWith("pe:") ? filter.split("pe:")[1].replace(/_/g, " ") : null;
+      const selectedAreaName = props.name;
+      
+      let displayValue;
+      if (analyticsMapData.rows.length === 1) {
+        displayValue = analyticsMapData.rows[0]?.[2] || 'No data';
+      } else {
+        displayValue = valueMap.get(props.id) || 'No data';
+      }
+
+      // Create label content based on selected options
+      let labelContent = '';
+      if (appliedLabels.includes('area')) labelContent += `${selectedAreaName}${appliedLabels.length > 1 ? '<br>' : ''}`;
+      if (appliedLabels.includes('data') && selectedDataName) {
+        labelContent += `${selectedDataName}${(appliedLabels.includes('period') || appliedLabels.includes('value')) ? '<br>' : ''}`;
+      }
+      if (appliedLabels.includes('period') && selectedPeriod) {
+        labelContent += `${selectedPeriod}${appliedLabels.includes('value') ? '<br>' : ''}`;
+      }
+      if (appliedLabels.includes('value')) labelContent += `${displayValue}`;
+
+      // Create a div icon with the label
+      if (labelContent && center) {
+        const icon = L.divIcon({
+          html: `<div class="map-permanent-label">${labelContent}</div>`,
+          className: 'map-label-icon',
+          iconSize: [100, 40],
+          iconAnchor: [50, 20]
+        });
+
+        // Add the marker with the label
+        const marker = L.marker(center, { icon }).addTo(map);
+        labelsRef.current.push(marker);
+      }
+    });
+
+    // Add CSS for the labels
+    if (!document.getElementById('map-label-styles')) {
+      const style = document.createElement('style');
+      style.id = 'map-label-styles';
+      style.innerHTML = `
+        .map-permanent-label {
+          background-color: white;
+          padding: 2px 5px;
+          border-radius: 3px;
+          font-size: 10px;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+          pointer-events: none;
+          text-align: center;
+          white-space: nowrap;
+        }
+        .map-label-icon {
+          background: none;
+          border: none;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }, [map, geoJsonData, appliedLabels, analyticsMapData, valueMap, metaMapData, mapAnalyticsQueryTwo]);
+
+  return null;
+};
+
 type MapBodyProps = {
   geoFeaturesData: any;
   analyticsMapData: any;
@@ -74,7 +263,7 @@ type MapBodyProps = {
   singleSavedMapData?: any;
   mapId?: string;
   isHideSideBar?: boolean;
-  mapName?:string
+  mapName?: string;
 }
 
 const MapBody: React.FC<MapBodyProps> = ({
@@ -98,7 +287,18 @@ const MapBody: React.FC<MapBodyProps> = ({
   const [dataProcessed, setDataProcessed] = useState<boolean>(false);
   const [hasDataToDisplay, setHasDataToDisplay] = useState<boolean>(false);
   const [geoJsonData, setGeoJsonData] = useState<any>(null);
-  const {mapAnalyticsQueryTwo} = useAuthorities()
+  const { mapAnalyticsQueryTwo } = useAuthorities();
+  
+  // Label controls state
+  const [showLabelControls, setShowLabelControls] = useState<boolean>(false);
+  const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
+  const [appliedLabels, setAppliedLabels] = useState<string[]>([]);
+  const [labelOptions] = useState([
+    { id: 'area', label: 'Area Name' },
+    { id: 'data', label: 'Data Name' },
+    { id: 'period', label: 'Period' },
+    { id: 'value', label: 'Value' }
+  ]);
 
   // Main data processing effect
   useEffect(() => {
@@ -175,6 +375,12 @@ const MapBody: React.FC<MapBodyProps> = ({
     }
   }, [geoFeaturesData, analyticsMapData, metaMapData]);
 
+  // Apply selected labels
+  const handleApplyLabels = () => {
+    setAppliedLabels([...selectedLabels]);
+    setShowLabelControls(false);
+  };
+
   // Style function for GeoJSON
   const getStyleOne = (feature: any) => {
     const value = feature.properties.value;
@@ -220,12 +426,35 @@ const MapBody: React.FC<MapBodyProps> = ({
         )}
       
         <div className="h-full w-full relative">
-        {mapName && (
-  <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[1000] text-center font-bold text-xl text-gray-800 bg-white bg-opacity-80 px-4 py-1 rounded shadow-md">
-    {mapName}
-  </div>
-)}
-  
+          {/* Map Title */}
+          {mapName && (
+            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[1000] text-center font-bold text-xl text-gray-800 bg-white bg-opacity-80 px-4 py-1 rounded shadow-md">
+              {mapName}
+            </div>
+          )}
+
+          {/* Show Labels Button */}
+          {districts.length > 0 && (
+            <div className="absolute top-4 right-4 z-[999]">
+              <button 
+                onClick={() => setShowLabelControls(!showLabelControls)}
+                className="bg-white px-3 py-1 rounded-md shadow-md hover:bg-gray-100"
+              >
+                {showLabelControls ? 'Hide Label Options' : 'Show Labels'}
+              </button>
+            </div>
+          )}
+
+          {/* Label Control Panel */}
+          {showLabelControls && (
+            <LabelControls 
+              labelOptions={labelOptions}
+              selectedLabels={selectedLabels}
+              onChange={setSelectedLabels}
+              onApply={handleApplyLabels}
+            />
+          )}
+          
           <MapContainer 
             center={centerPosition} 
             zoom={zoomLevel} 
@@ -251,8 +480,20 @@ const MapBody: React.FC<MapBodyProps> = ({
                 data={geoJsonData}
                 style={getStyleOne}
                 onEachFeature={(feature, layer) => 
-                  onEachFeature(feature, layer, analyticsMapData, valueMap,metaMapData,mapAnalyticsQueryTwo)
+                  onEachFeature(feature, layer, analyticsMapData, valueMap, metaMapData, mapAnalyticsQueryTwo)
                 }
+              />
+            )}
+            
+            {/* Permanent Labels */}
+            {districts.length > 0 && geoJsonData && appliedLabels.length > 0 && (
+              <MapLabels
+                geoJsonData={geoJsonData}
+                appliedLabels={appliedLabels}
+                analyticsMapData={analyticsMapData}
+                valueMap={valueMap}
+                metaMapData={metaMapData}
+                mapAnalyticsQueryTwo={mapAnalyticsQueryTwo}
               />
             )}
           </MapContainer>

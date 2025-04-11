@@ -741,6 +741,10 @@ video {
   z-index: 1;
 }
 
+.z-\[999\] {
+  z-index: 999;
+}
+
 .col-span-3 {
   grid-column: span 3 / span 3;
 }

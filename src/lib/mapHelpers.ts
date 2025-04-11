@@ -147,19 +147,19 @@ export const onEachFeature = (
   layer: any, 
   analyticsMapData: any, 
   valueMap: Map<string, string>,
-  metaMapData:any,
-  mapAnalyticsQueryTwo:any
+  metaMapData: any,
+  mapAnalyticsQueryTwo: any
 ) => {
- console.log("hhelmmo",mapAnalyticsQueryTwo)
-  const selectedDataId = mapAnalyticsQueryTwo?.myData?.params?.dimension?.find(d => d.startsWith("dx:"))?.split(":")[1]
-  const selectedDataName = metaMapData?.metaData?.items?.[selectedDataId]?.name
-  const filter = mapAnalyticsQueryTwo?.myData?.params?.filter;
-const selectedPeriod = filter.startsWith("pe:") ? filter.split("pe:")[1].replace(/_/g, " ") : null;
-
+  console.log("hhelmmo", mapAnalyticsQueryTwo);
 
   if (!analyticsMapData?.rows) return;
   
+  const selectedDataId = mapAnalyticsQueryTwo?.myData?.params?.dimension?.find(d => d.startsWith("dx:"))?.split(":")[1];
+  const selectedDataName = metaMapData?.metaData?.items?.[selectedDataId]?.name;
+  const filter = mapAnalyticsQueryTwo?.myData?.params?.filter;
+  const selectedPeriod = filter?.startsWith("pe:") ? filter.split("pe:")[1].replace(/_/g, " ") : null;
   const props = feature.properties;
+  const selectedAreaName = props.name;
   
   let displayValue;
   
@@ -169,8 +169,13 @@ const selectedPeriod = filter.startsWith("pe:") ? filter.split("pe:")[1].replace
     displayValue = valueMap.get(props.id) || 'No data';
   }
   
+  // Store these values in the feature properties for later use with permanent labels
+  feature.properties.selectedDataName = selectedDataName;
+  feature.properties.selectedPeriod = selectedPeriod;
+  feature.properties.displayValue = displayValue;
+  
   layer.bindPopup(`
-       <strong>${props.name}</strong><br/>
+       <strong>${selectedAreaName}</strong><br/>
         ${selectedDataName}<br/>
        ${selectedPeriod}</><br/>
       Value: ${displayValue} 
