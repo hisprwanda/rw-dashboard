@@ -4,12 +4,14 @@ import { LabelControls } from '../MapLabels';
 type ThematicStylesTabProps = {
     appliedLabels: string[];
     setAppliedLabels: React.Dispatch<React.SetStateAction<string[]>>;
+    selectedLabels:string[];
+     setSelectedLabels:any
   }
 
-const ThematicStylesTab: React.FC<ThematicStylesTabProps> = ({appliedLabels,setAppliedLabels }) => {
+const ThematicStylesTab: React.FC<ThematicStylesTabProps> = ({appliedLabels,setAppliedLabels,selectedLabels,setSelectedLabels }) => {
   // Label controls state
   const [showLabelControls, setShowLabelControls] = useState<boolean>(false);
-  const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
+  //const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   const [labelOptions] = useState([
     { id: 'area', label: 'Area Name' },
     { id: 'data', label: 'Data Name' },

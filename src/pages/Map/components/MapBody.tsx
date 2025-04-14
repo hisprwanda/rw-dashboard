@@ -100,6 +100,7 @@ const MapBody: React.FC<MapBodyProps> = ({
   const [geoJsonData, setGeoJsonData] = useState<any>(null);
   const { mapAnalyticsQueryTwo } = useAuthorities();
   const [appliedLabels, setAppliedLabels] = useState<string[]>([]);
+  const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   
   // Main data processing effect
   useEffect(() => {
@@ -208,6 +209,8 @@ const MapBody: React.FC<MapBodyProps> = ({
           mapId={mapId}
           appliedLabels={appliedLabels}
           setAppliedLabels={setAppliedLabels}
+          selectedLabels = {selectedLabels}
+          setSelectedLabels={setSelectedLabels}
         >
         </MapSidebar>
       )}

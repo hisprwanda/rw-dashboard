@@ -8,7 +8,9 @@ export type MapSidebarProps = {
   singleSavedMapData?:any;
   mapId?:string;
   appliedLabels:string[];
-   setAppliedLabels:any
+   setAppliedLabels:any;
+   selectedLabels:string[];
+   setSelectedLabels:any
 };
 // Basemap Configuration Type
 export type BasemapConfig = {

@@ -34,7 +34,9 @@ type MapMetaDataConfigModalProps = {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   appliedLabels:string[];
-   setAppliedLabels:any
+   setAppliedLabels:any;
+   selectedLabels:string[];
+   setSelectedLabels:any
 }
 
 export function MapMetaDataConfigModal({ 
@@ -42,7 +44,9 @@ export function MapMetaDataConfigModal({
   isOpen, 
   onOpenChange ,
   appliedLabels,
-  setAppliedLabels
+  setAppliedLabels,
+  selectedLabels,
+  setSelectedLabels
 }: MapMetaDataConfigModalProps) {
   const {fetchGeoFeatures,loading:isFetchGeoDataLoading} = useRunGeoFeatures()
   const { loading: orgUnitLoading, error: fetchOrgUnitError, data: orgUnitsData, fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData();
@@ -138,7 +142,7 @@ export function MapMetaDataConfigModal({
       case "style":
         return (
           <div className="py-4">
-          <ThematicStylesTab   appliedLabels={appliedLabels} setAppliedLabels={setAppliedLabels} />
+          <ThematicStylesTab   appliedLabels={appliedLabels} setAppliedLabels={setAppliedLabels} selectedLabels={selectedLabels} setSelectedLabels={setSelectedLabels} />
           </div>
         );
       default:
