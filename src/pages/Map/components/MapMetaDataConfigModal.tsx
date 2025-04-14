@@ -26,18 +26,23 @@ import { useOrgUnitData } from "../../../services/fetchOrgunitData";
 import { formatAnalyticsDimensions } from "../../../lib/formatAnalyticsDimensions";
 import { useRunGeoFeatures } from "../../../services/maps";
 import { getSelectedOrgUnitsWhenUsingMap } from "../../../lib/getAnalyticsFilters";
+import ThematicStylesTab from "./themanticLayer/ThematicStylesTab";
 
 
 type MapMetaDataConfigModalProps = {
   themeLayerType: "Thematic Layer" | any;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
+  appliedLabels:string[];
+   setAppliedLabels:any
 }
 
 export function MapMetaDataConfigModal({ 
   themeLayerType, 
   isOpen, 
-  onOpenChange 
+  onOpenChange ,
+  appliedLabels,
+  setAppliedLabels
 }: MapMetaDataConfigModalProps) {
   const {fetchGeoFeatures,loading:isFetchGeoDataLoading} = useRunGeoFeatures()
   const { loading: orgUnitLoading, error: fetchOrgUnitError, data: orgUnitsData, fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData();
@@ -85,7 +90,7 @@ export function MapMetaDataConfigModal({
     { id: "period", label: "Period" },
     { id: "orgUnits", label: "Org Units" },
     // { id: "filter", label: "Filter" },
-    // { id: "style", label: "Style" }
+    { id: "style", label: "Style" }
   ];
 
   const handleAddLayer = async(e) => {
@@ -133,7 +138,7 @@ export function MapMetaDataConfigModal({
       case "style":
         return (
           <div className="py-4">
-            <p className="text-gray-500">Style configuration options will appear here.</p>
+          <ThematicStylesTab   appliedLabels={appliedLabels} setAppliedLabels={setAppliedLabels} />
           </div>
         );
       default:
@@ -150,7 +155,7 @@ export function MapMetaDataConfigModal({
           <DialogTitle className="text-xl">Add new thematic layer</DialogTitle>
         </DialogHeader>
         
-        <form onSubmit={handleAddLayer}>
+        <form >
           {/* Tab Navigation */}
           <div className="border-b flex">
             {tabs.map((tab) => (
@@ -182,7 +187,7 @@ export function MapMetaDataConfigModal({
               Cancel
             </Button>
             <Button 
-              type="submit" 
+              onClick={(e)=>handleAddLayer(e)} 
               disabled={(isFetchAnalyticsDataLoading || isFetchGeoDataLoading)}
              // className={`mt-4 ${hasError ? 'opacity-50 cursor-not-allowed' : ''}`}
               className={`mt-4`}

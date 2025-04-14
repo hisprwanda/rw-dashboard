@@ -10,7 +10,8 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 // Imported components
 import MapSidebar from './MapSideBar';
 import MapLegend from './MapLegend';
-import { LabelControls, MapLabels } from './MapLabels';
+import { MapLabels } from './MapLabels';
+
 
 import { BasemapType, ProcessedDistrict, Legend, LegendClass } from '../../../types/maps';
 import { BASEMAPS, sampleLegends } from '../constants';
@@ -98,18 +99,8 @@ const MapBody: React.FC<MapBodyProps> = ({
   const [hasDataToDisplay, setHasDataToDisplay] = useState<boolean>(false);
   const [geoJsonData, setGeoJsonData] = useState<any>(null);
   const { mapAnalyticsQueryTwo } = useAuthorities();
-  
-  // Label controls state
-  const [showLabelControls, setShowLabelControls] = useState<boolean>(false);
-  const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   const [appliedLabels, setAppliedLabels] = useState<string[]>([]);
-  const [labelOptions] = useState([
-    { id: 'area', label: 'Area Name' },
-    { id: 'data', label: 'Data Name' },
-    { id: 'period', label: 'Period' },
-    { id: 'value', label: 'Value' }
-  ]);
-
+  
   // Main data processing effect
   useEffect(() => {
     console.log({ geoFeaturesData, analyticsMapData, metaMapData });
@@ -185,12 +176,6 @@ const MapBody: React.FC<MapBodyProps> = ({
     }
   }, [geoFeaturesData, analyticsMapData, metaMapData]);
 
-  // Apply selected labels
-  const handleApplyLabels = () => {
-    setAppliedLabels([...selectedLabels]);
-    setShowLabelControls(false);
-  };
-
   // Style function for GeoJSON
   const getStyleOne = (feature: any) => {
     const value = feature.properties.value;
@@ -221,7 +206,10 @@ const MapBody: React.FC<MapBodyProps> = ({
           onBasemapChange={setCurrentBasemap}
           singleSavedMapData={singleSavedMapData}
           mapId={mapId}
-        />
+          appliedLabels={appliedLabels}
+          setAppliedLabels={setAppliedLabels}
+        >
+        </MapSidebar>
       )}
 
       {/* Map Container */}
@@ -243,29 +231,6 @@ const MapBody: React.FC<MapBodyProps> = ({
             </div>
           )}
 
-          {/* Show Labels Button */}
-          {districts.length > 0 && (
-            <div className="absolute top-4 right-4 z-[999]">
-              <button 
-                onClick={() => setShowLabelControls(!showLabelControls)}
-                className="bg-white px-3 py-1 rounded-md shadow-md hover:bg-gray-100"
-              >
-                {showLabelControls ? 'Hide Label Options' : 'Show Labels'}
-              </button>
-            </div>
-          )}
-
-          {/* Label Control Panel */}
-          {showLabelControls && (
-            <LabelControls 
-              labelOptions={labelOptions}
-              selectedLabels={selectedLabels}
-              onChange={setSelectedLabels}
-              onApply={handleApplyLabels}
-              onClose={() => setShowLabelControls(false)}
-            />
-          )}
-          
           <MapContainer 
             center={centerPosition} 
             zoom={zoomLevel} 
@@ -296,8 +261,8 @@ const MapBody: React.FC<MapBodyProps> = ({
               />
             )}
             
-            {/* Permanent Labels */}
-            {districts.length > 0 && geoJsonData && appliedLabels.length > 0 && (
+             {/* Permanent Labels */}
+             {districts.length > 0 && geoJsonData && appliedLabels.length > 0 && (
               <MapLabels
                 geoJsonData={geoJsonData}
                 appliedLabels={appliedLabels}

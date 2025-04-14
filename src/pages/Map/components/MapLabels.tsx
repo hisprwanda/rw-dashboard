@@ -8,7 +8,7 @@ export const LabelControls: React.FC<{
   labelOptions: Array<{id: string, label: string}>,
   selectedLabels: string[],
   onChange: (labels: string[]) => void,
-  onApply: () => void,
+  onApply: (e: React.MouseEvent<HTMLButtonElement>) => void
   onClose: () => void
 }> = ({ labelOptions, selectedLabels, onChange, onApply, onClose }) => {
   
@@ -43,7 +43,7 @@ export const LabelControls: React.FC<{
       ))}
       
       <button 
-        onClick={onApply}
+        onClick={(e) => onApply(e)}
         className="mt-2 bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 w-full"
       >
         Apply

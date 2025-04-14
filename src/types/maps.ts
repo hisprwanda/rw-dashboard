@@ -6,7 +6,9 @@ export type MapSidebarProps = {
   currentBasemap: BasemapType;
   onBasemapChange: (basemap: BasemapType) => void;
   singleSavedMapData?:any;
-  mapId?:string
+  mapId?:string;
+  appliedLabels:string[];
+   setAppliedLabels:any
 };
 // Basemap Configuration Type
 export type BasemapConfig = {
