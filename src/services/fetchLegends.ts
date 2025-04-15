@@ -34,8 +34,8 @@ export const useFetchSingleLegend = () => {
                 }
             });
 
-            setData(response.legend);
-            return response.legend;
+            setData(response.legend?.legends);
+            return response.legend.legends;
         } catch (error) {
             setIsError(true);
             console.error("fetch single legend failed", error);
