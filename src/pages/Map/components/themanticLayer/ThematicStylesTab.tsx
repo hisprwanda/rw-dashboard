@@ -1,17 +1,17 @@
+
 import React, { useState, useEffect } from 'react';
 import { LabelControls } from '../MapLabels';
 
 type ThematicStylesTabProps = {
     appliedLabels: string[];
     setAppliedLabels: React.Dispatch<React.SetStateAction<string[]>>;
-    selectedLabels:string[];
-     setSelectedLabels:any
-  }
+    selectedLabels: string[];
+    setSelectedLabels: any;
+}
 
-const ThematicStylesTab: React.FC<ThematicStylesTabProps> = ({appliedLabels,setAppliedLabels,selectedLabels,setSelectedLabels }) => {
+const ThematicStylesTab: React.FC<ThematicStylesTabProps> = ({appliedLabels, setAppliedLabels, selectedLabels, setSelectedLabels }) => {
   // Label controls state
   const [showLabelControls, setShowLabelControls] = useState<boolean>(false);
-  //const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   const [labelOptions] = useState([
     { id: 'area', label: 'Area Name' },
     { id: 'data', label: 'Data Name' },
@@ -19,11 +19,17 @@ const ThematicStylesTab: React.FC<ThematicStylesTabProps> = ({appliedLabels,setA
     { id: 'value', label: 'Value' }
   ]);
 
-  // Apply selected labels
-  const handleApplyLabels = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
+  // UseEffect to apply labels whenever selectedLabels changes
+  useEffect(() => {
+    // Only apply if the labels panel is showing and selectedLabels has been initialized
+    if (showLabelControls && selectedLabels) {
+      setAppliedLabels([...selectedLabels]);
+    }
+  }, [selectedLabels, showLabelControls, setAppliedLabels]);
+  
+  // We'll keep this function for any direct calls that might be needed
+  const handleApplyLabels = () => {
     setAppliedLabels([...selectedLabels]);
-    setShowLabelControls(false);
   };
   
   return (

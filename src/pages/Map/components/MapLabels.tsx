@@ -3,12 +3,13 @@ import React, { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import { useMap } from 'react-leaflet';
 
+
 // Label Controls Component
 export const LabelControls: React.FC<{
   labelOptions: Array<{id: string, label: string}>,
   selectedLabels: string[],
   onChange: (labels: string[]) => void,
-  onApply: (e: React.MouseEvent<HTMLButtonElement>) => void
+  onApply: () => void,
   onClose: () => void
 }> = ({ labelOptions, selectedLabels, onChange, onApply, onClose }) => {
   
@@ -18,10 +19,11 @@ export const LabelControls: React.FC<{
       : [...selectedLabels, labelId];
     
     onChange(updatedLabels);
+    // We'll let the parent component handle applying changes through useEffect
   };
 
   return (
-    <div className="absolute top-4 right-4 z-[1000] bg-white p-3 rounded-md shadow-lg">
+    <div className="bg-white p-3 rounded-md shadow-lg">
       <div className="flex justify-between items-center mb-2">
         <h3 className="font-bold">Show Labels</h3>
         <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
@@ -41,13 +43,6 @@ export const LabelControls: React.FC<{
           <label htmlFor={option.id}>{option.label}</label>
         </div>
       ))}
-      
-      <button 
-        onClick={(e) => onApply(e)}
-        className="mt-2 bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 w-full"
-      >
-        Apply
-      </button>
     </div>
   );
 };
