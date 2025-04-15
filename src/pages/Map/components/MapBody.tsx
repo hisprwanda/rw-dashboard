@@ -24,6 +24,7 @@ import {
   onEachFeature
 } from '../../../lib/mapHelpers';
 import { useAuthorities } from '../../../context/AuthContext';
+import LegendControls from './LegendControls';
 
 // Fix for default marker icon
 let DefaultIcon = L.icon({
@@ -197,6 +198,14 @@ const MapBody: React.FC<MapBodyProps> = ({
     };
   };
 
+  const legendControllersKit = { 
+    legendType: legendType,
+    setLegendType: setLegendType,
+    selectedLegendSet: selectedLegendSet,
+    setSelectedLegendSet: setSelectedLegendSet,
+    sampleLegends: sampleLegends
+  };
+  
   return (
     <div className="flex flex-1 h-full w-full">
       {/* Sidebar */}
@@ -211,6 +220,7 @@ const MapBody: React.FC<MapBodyProps> = ({
           setAppliedLabels={setAppliedLabels}
           selectedLabels = {selectedLabels}
           setSelectedLabels={setSelectedLabels}
+          legendControllersKit={legendControllersKit}
         >
         </MapSidebar>
       )}
@@ -218,13 +228,19 @@ const MapBody: React.FC<MapBodyProps> = ({
       {/* Map Container */}
       <div className="flex-grow h-full">
         {/* Legend Controls */}
-        {!isHideSideBar && (
+        {/* {!isHideSideBar && (
           <>
             {districts.length > 0 && (
-              <p></p>
+              <LegendControls
+              legendType={legendType}
+              setLegendType={setLegendType}
+              selectedLegendSet={selectedLegendSet}
+              setSelectedLegendSet={setSelectedLegendSet}
+              sampleLegends={sampleLegends}
+            />
             )}
           </>
-        )}
+        )} */}
       
         <div className="h-full w-full relative">
           {/* Map Title */}

@@ -22,10 +22,17 @@ type SelectOtherMapLayerProps = {
   appliedLabels:string[];
    setAppliedLabels:any;
    selectedLabels:string[];
-   setSelectedLabels:any
+   setSelectedLabels:any;
+   legendControllersKit:{
+    legendType:any;
+    setLegendType:any;
+    selectedLegendSet:any;
+    setSelectedLegendSet:any;
+    sampleLegends:any
+   }
 }
 
-const SelectOtherMapLayer:React.FC<SelectOtherMapLayerProps> = ({appliedLabels,setAppliedLabels,selectedLabels,setSelectedLabels}) => {
+const SelectOtherMapLayer:React.FC<SelectOtherMapLayerProps> = ({legendControllersKit,appliedLabels,setAppliedLabels,selectedLabels,setSelectedLabels}) => {
   // State to track which layer is selected
   const [selectedLayer, setSelectedLayer] = useState(null);
   // State to control modal visibility
@@ -71,6 +78,7 @@ const SelectOtherMapLayer:React.FC<SelectOtherMapLayerProps> = ({appliedLabels,s
           setAppliedLabels = {setAppliedLabels}
           selectedLabels = {selectedLabels}
           setSelectedLabels ={setSelectedLabels}
+          legendControllersKit={legendControllersKit}
         />
       )}
     </ul>

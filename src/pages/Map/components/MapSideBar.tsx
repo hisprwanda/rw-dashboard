@@ -16,7 +16,8 @@ const MapSidebar: React.FC<MapSidebarProps> = ({
   appliedLabels,
   setAppliedLabels,
   selectedLabels,
-  setSelectedLabels
+  setSelectedLabels,
+  legendControllersKit
 }) => {
 const {userDatails, selectedDataSourceOption, selectedOrgUnits, selectedLevel ,analyticsQuery,mapAnalyticsQueryTwo,geoFeaturesQuery} = useAuthorities()
   
@@ -32,7 +33,7 @@ useEffect(()=>{
     <SaveMapModal open={showSaveMapModal} setOpen={setShowSaveMapModal} existingMapData={singleSavedMapData} mapId={mapId} />
   </div>
        {/* selecting other maps layer */}
-      <SelectOtherMapLayer  appliedLabels = {appliedLabels}  setAppliedLabels={setAppliedLabels}   selectedLabels={selectedLabels} setSelectedLabels={setSelectedLabels}  /> 
+      <SelectOtherMapLayer legendControllersKit={legendControllersKit}  appliedLabels = {appliedLabels}  setAppliedLabels={setAppliedLabels}   selectedLabels={selectedLabels} setSelectedLabels={setSelectedLabels}  /> 
       {/* Basemap Selection */}
       <div className="space-y-1">
         <h3 className="text-xs text-gray-500 px-2 mb-1">Basemap</h3>

@@ -10,7 +10,14 @@ export type MapSidebarProps = {
   appliedLabels:string[];
    setAppliedLabels:any;
    selectedLabels:string[];
-   setSelectedLabels:any
+   setSelectedLabels:any;
+   legendControllersKit:{
+    legendType:any;
+    setLegendType:any;
+    selectedLegendSet:any;
+    setSelectedLegendSet:any;
+    sampleLegends:any
+   }
 };
 // Basemap Configuration Type
 export type BasemapConfig = {

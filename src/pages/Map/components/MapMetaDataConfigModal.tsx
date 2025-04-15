@@ -27,6 +27,7 @@ import { formatAnalyticsDimensions } from "../../../lib/formatAnalyticsDimension
 import { useRunGeoFeatures } from "../../../services/maps";
 import { getSelectedOrgUnitsWhenUsingMap } from "../../../lib/getAnalyticsFilters";
 import ThematicStylesTab from "./themanticLayer/ThematicStylesTab";
+import LegendControls from "./LegendControls";
 
 
 type MapMetaDataConfigModalProps = {
@@ -36,7 +37,14 @@ type MapMetaDataConfigModalProps = {
   appliedLabels:string[];
    setAppliedLabels:any;
    selectedLabels:string[];
-   setSelectedLabels:any
+   setSelectedLabels:any;
+   legendControllersKit:{
+    legendType:any;
+    setLegendType:any;
+    selectedLegendSet:any;
+    setSelectedLegendSet:any;
+    sampleLegends:any
+   }
 }
 
 export function MapMetaDataConfigModal({ 
@@ -46,7 +54,8 @@ export function MapMetaDataConfigModal({
   appliedLabels,
   setAppliedLabels,
   selectedLabels,
-  setSelectedLabels
+  setSelectedLabels,
+  legendControllersKit
 }: MapMetaDataConfigModalProps) {
   const {fetchGeoFeatures,loading:isFetchGeoDataLoading} = useRunGeoFeatures()
   const { loading: orgUnitLoading, error: fetchOrgUnitError, data: orgUnitsData, fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData();
@@ -141,9 +150,33 @@ export function MapMetaDataConfigModal({
         );
       case "style":
         return (
-          <div className="py-4">
-          <ThematicStylesTab   appliedLabels={appliedLabels} setAppliedLabels={setAppliedLabels} selectedLabels={selectedLabels} setSelectedLabels={setSelectedLabels} />
+          <div className="py-6 px-4 md:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Labels Section */}
+            <div className="bg-white rounded-2xl shadow-sm p-4 border border-gray-100">
+              <h2 className="text-lg font-semibold  text-gray-800">Labels</h2>
+              <ThematicStylesTab
+                appliedLabels={appliedLabels}
+                setAppliedLabels={setAppliedLabels}
+                selectedLabels={selectedLabels}
+                setSelectedLabels={setSelectedLabels}
+              />
+            </div>
+        
+            {/* Legends Section */}
+            <div className="bg-white rounded-2xl shadow-sm p-4 border border-gray-100">
+              <h2 className="text-lg font-semibold  text-gray-800">Legends</h2>
+              <LegendControls
+                legendType={legendControllersKit.legendType}
+                setLegendType={legendControllersKit.setLegendType}
+                selectedLegendSet={legendControllersKit.selectedLegendSet}
+                setSelectedLegendSet={legendControllersKit.setSelectedLegendSet}
+                sampleLegends={legendControllersKit.sampleLegends}
+              />
+            </div>
           </div>
+        </div>
+        
         );
       default:
         return null;

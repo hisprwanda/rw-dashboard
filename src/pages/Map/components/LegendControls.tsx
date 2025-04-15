@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Legend } from '../../../types/maps';
+import { useFetchSingleLegend, useLegendsData } from '../../../services/fetchLegends';
 
 type LegendControlsProps = {
   legendType: string;
@@ -16,6 +17,13 @@ const LegendControls: React.FC<LegendControlsProps> = ({
   setSelectedLegendSet,
   sampleLegends
 }) => {
+  const {myLegendSets,error,isError,loading} = useLegendsData()
+  const {data,fetchSingleLegendById} = useFetchSingleLegend()
+
+  useEffect(()=>{
+    const id = "damG4QRevI1"
+    fetchSingleLegendById({id})
+  },[])
   return (
     <div className="mb-2 p-2">
       <div className="mb-2">
@@ -28,7 +36,7 @@ const LegendControls: React.FC<LegendControlsProps> = ({
             className="mr-1"
           />
           Automatic Legend
-        </label>
+        </label> <br/>
         <label>
           <input
             type="radio"
@@ -37,7 +45,7 @@ const LegendControls: React.FC<LegendControlsProps> = ({
             onChange={() => setLegendType("dhis2")}
             className="mr-1"
           />
-          DHIS2 Legend
+          My Legend
         </label>
       </div>
       
