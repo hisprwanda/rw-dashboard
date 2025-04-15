@@ -70,7 +70,7 @@ const OtherMapsTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
   const handleView = (data:any) => {
     // clear existing analytics data
     setAnalyticsData([])
-  navigate(`/map/${data?.key}`)
+  navigate(`/map/${data?.key}/${data.value.mapName}`)
   };
 
   const handleDelete = (data:any) => {

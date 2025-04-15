@@ -112,7 +112,7 @@ export function SaveMapModal({
       if(!mapId){
         // added navigate(`/maps`) intentionally to fix length undefined bug
                navigate(`/maps`)
-              navigate(`/map/${uid}`)    
+              navigate(`/map/${uid}/${formData?.mapName}`)    
              }
       // Close the modal after saving
       setOpen(false);

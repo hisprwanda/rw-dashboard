@@ -26,18 +26,36 @@ import { useOrgUnitData } from "../../../services/fetchOrgunitData";
 import { formatAnalyticsDimensions } from "../../../lib/formatAnalyticsDimensions";
 import { useRunGeoFeatures } from "../../../services/maps";
 import { getSelectedOrgUnitsWhenUsingMap } from "../../../lib/getAnalyticsFilters";
+import ThematicStylesTab from "./themanticLayer/ThematicStylesTab";
+import LegendControls from "./LegendControls";
 
 
 type MapMetaDataConfigModalProps = {
   themeLayerType: "Thematic Layer" | any;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
+  appliedLabels:string[];
+   setAppliedLabels:any;
+   selectedLabels:string[];
+   setSelectedLabels:any;
+   legendControllersKit:{
+    legendType:any;
+    setLegendType:any;
+    selectedLegendSet:any;
+    setSelectedLegendSet:any;
+    sampleLegends:any
+   }
 }
 
 export function MapMetaDataConfigModal({ 
   themeLayerType, 
   isOpen, 
-  onOpenChange 
+  onOpenChange ,
+  appliedLabels,
+  setAppliedLabels,
+  selectedLabels,
+  setSelectedLabels,
+  legendControllersKit
 }: MapMetaDataConfigModalProps) {
   const {fetchGeoFeatures,loading:isFetchGeoDataLoading} = useRunGeoFeatures()
   const { loading: orgUnitLoading, error: fetchOrgUnitError, data: orgUnitsData, fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData();
@@ -85,7 +103,7 @@ export function MapMetaDataConfigModal({
     { id: "period", label: "Period" },
     { id: "orgUnits", label: "Org Units" },
     // { id: "filter", label: "Filter" },
-    // { id: "style", label: "Style" }
+    { id: "style", label: "Style" }
   ];
 
   const handleAddLayer = async(e) => {
@@ -132,9 +150,33 @@ export function MapMetaDataConfigModal({
         );
       case "style":
         return (
-          <div className="py-4">
-            <p className="text-gray-500">Style configuration options will appear here.</p>
+          <div className="py-6 px-4 md:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Labels Section */}
+            <div className="bg-white rounded-2xl shadow-sm p-4 border border-gray-100">
+              <h2 className="text-lg font-semibold  text-gray-800">Labels</h2>
+              <ThematicStylesTab
+                appliedLabels={appliedLabels}
+                setAppliedLabels={setAppliedLabels}
+                selectedLabels={selectedLabels}
+                setSelectedLabels={setSelectedLabels}
+              />
+            </div>
+        
+            {/* Legends Section */}
+            <div className="bg-white rounded-2xl shadow-sm p-4 border border-gray-100">
+              <h2 className="text-lg font-semibold  text-gray-800">Legends</h2>
+              <LegendControls
+                legendType={legendControllersKit.legendType}
+                setLegendType={legendControllersKit.setLegendType}
+                selectedLegendSet={legendControllersKit.selectedLegendSet}
+                setSelectedLegendSet={legendControllersKit.setSelectedLegendSet}
+                sampleLegends={legendControllersKit.sampleLegends}
+              />
+            </div>
           </div>
+        </div>
+        
         );
       default:
         return null;
@@ -150,7 +192,7 @@ export function MapMetaDataConfigModal({
           <DialogTitle className="text-xl">Add new thematic layer</DialogTitle>
         </DialogHeader>
         
-        <form onSubmit={handleAddLayer}>
+        <form >
           {/* Tab Navigation */}
           <div className="border-b flex">
             {tabs.map((tab) => (
@@ -182,7 +224,7 @@ export function MapMetaDataConfigModal({
               Cancel
             </Button>
             <Button 
-              type="submit" 
+              onClick={(e)=>handleAddLayer(e)} 
               disabled={(isFetchAnalyticsDataLoading || isFetchGeoDataLoading)}
              // className={`mt-4 ${hasError ? 'opacity-50 cursor-not-allowed' : ''}`}
               className={`mt-4`}

@@ -78,8 +78,9 @@ const MyMapsTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
   // Handlers that log the key
   const handleView = (data:any) => {
     // clear existing analytics data
+    console.log("cyaze bro",data)
     setAnalyticsData([])
-  navigate(`/map/${data?.key}`)
+  navigate(`/map/${data?.key}/${data.value.mapName}`)
   };
 
   const engine = useDataEngine();

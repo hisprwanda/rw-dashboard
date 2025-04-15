@@ -6,7 +6,18 @@ export type MapSidebarProps = {
   currentBasemap: BasemapType;
   onBasemapChange: (basemap: BasemapType) => void;
   singleSavedMapData?:any;
-  mapId?:string
+  mapId?:string;
+  appliedLabels:string[];
+   setAppliedLabels:any;
+   selectedLabels:string[];
+   setSelectedLabels:any;
+   legendControllersKit:{
+    legendType:any;
+    setLegendType:any;
+    selectedLegendSet:any;
+    setSelectedLegendSet:any;
+    sampleLegends:any
+   }
 };
 // Basemap Configuration Type
 export type BasemapConfig = {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -10,7 +10,8 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 // Imported components
 import MapSidebar from './MapSideBar';
 import MapLegend from './MapLegend';
-import LegendControls from './LegendControls';
+import { MapLabels } from './MapLabels';
+
 
 import { BasemapType, ProcessedDistrict, Legend, LegendClass } from '../../../types/maps';
 import { BASEMAPS, sampleLegends } from '../constants';
@@ -22,6 +23,8 @@ import {
   createGeoJSON,
   onEachFeature
 } from '../../../lib/mapHelpers';
+import { useAuthorities } from '../../../context/AuthContext';
+import LegendControls from './LegendControls';
 
 // Fix for default marker icon
 let DefaultIcon = L.icon({
@@ -34,7 +37,6 @@ let DefaultIcon = L.icon({
 L.Marker.prototype.options.icon = DefaultIcon;
 
 // Map View Updater Component
-// This component will update the map view when center position or zoom changes
 const MapViewUpdater: React.FC<{
   center: [number, number],
   zoom: number,
@@ -73,6 +75,7 @@ type MapBodyProps = {
   singleSavedMapData?: any;
   mapId?: string;
   isHideSideBar?: boolean;
+  mapName?: string;
 }
 
 const MapBody: React.FC<MapBodyProps> = ({
@@ -81,7 +84,8 @@ const MapBody: React.FC<MapBodyProps> = ({
   metaMapData,
   singleSavedMapData,
   mapId,
-  isHideSideBar
+  isHideSideBar,
+  mapName
 }) => {
   // State management
   const [currentBasemap, setCurrentBasemap] = useState<BasemapType>('osm-light');
@@ -95,7 +99,10 @@ const MapBody: React.FC<MapBodyProps> = ({
   const [dataProcessed, setDataProcessed] = useState<boolean>(false);
   const [hasDataToDisplay, setHasDataToDisplay] = useState<boolean>(false);
   const [geoJsonData, setGeoJsonData] = useState<any>(null);
-
+  const { mapAnalyticsQueryTwo } = useAuthorities();
+  const [appliedLabels, setAppliedLabels] = useState<string[]>([]);
+  const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
+  
   // Main data processing effect
   useEffect(() => {
     console.log({ geoFeaturesData, analyticsMapData, metaMapData });
@@ -191,8 +198,16 @@ const MapBody: React.FC<MapBodyProps> = ({
     };
   };
 
+  const legendControllersKit = { 
+    legendType: legendType,
+    setLegendType: setLegendType,
+    selectedLegendSet: selectedLegendSet,
+    setSelectedLegendSet: setSelectedLegendSet,
+    sampleLegends: sampleLegends
+  };
+  
   return (
-    <div className="flex flex-1 h-full w-full bg-red-500">
+    <div className="flex flex-1 h-full w-full">
       {/* Sidebar */}
       {!isHideSideBar && (
         <MapSidebar 
@@ -201,21 +216,40 @@ const MapBody: React.FC<MapBodyProps> = ({
           onBasemapChange={setCurrentBasemap}
           singleSavedMapData={singleSavedMapData}
           mapId={mapId}
-        />
+          appliedLabels={appliedLabels}
+          setAppliedLabels={setAppliedLabels}
+          selectedLabels = {selectedLabels}
+          setSelectedLabels={setSelectedLabels}
+          legendControllersKit={legendControllersKit}
+        >
+        </MapSidebar>
       )}
 
       {/* Map Container */}
       <div className="flex-grow h-full">
         {/* Legend Controls */}
-        {!isHideSideBar && (
+        {/* {!isHideSideBar && (
           <>
             {districts.length > 0 && (
-              <p></p>
+              <LegendControls
+              legendType={legendType}
+              setLegendType={setLegendType}
+              selectedLegendSet={selectedLegendSet}
+              setSelectedLegendSet={setSelectedLegendSet}
+              sampleLegends={sampleLegends}
+            />
             )}
           </>
-        )}
+        )} */}
       
         <div className="h-full w-full relative">
+          {/* Map Title */}
+          {mapName && (
+            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[1000] text-center font-bold text-xl text-gray-800 bg-white bg-opacity-80 px-4 py-1 rounded shadow-md">
+              {mapName}
+            </div>
+          )}
+
           <MapContainer 
             center={centerPosition} 
             zoom={zoomLevel} 
@@ -241,8 +275,20 @@ const MapBody: React.FC<MapBodyProps> = ({
                 data={geoJsonData}
                 style={getStyleOne}
                 onEachFeature={(feature, layer) => 
-                  onEachFeature(feature, layer, analyticsMapData, valueMap)
+                  onEachFeature(feature, layer, analyticsMapData, valueMap, metaMapData, mapAnalyticsQueryTwo)
                 }
+              />
+            )}
+            
+             {/* Permanent Labels */}
+             {districts.length > 0 && geoJsonData && appliedLabels.length > 0 && (
+              <MapLabels
+                geoJsonData={geoJsonData}
+                appliedLabels={appliedLabels}
+                analyticsMapData={analyticsMapData}
+                valueMap={valueMap}
+                metaMapData={metaMapData}
+                mapAnalyticsQueryTwo={mapAnalyticsQueryTwo}
               />
             )}
           </MapContainer>
