@@ -24,12 +24,6 @@ export const LabelControls: React.FC<{
 
   return (
     <div className="bg-white p-3 rounded-md shadow-lg">
-      <div className="flex justify-between items-center mb-2">
-        <h3 className="font-bold">Show Labels</h3>
-        <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-          ×
-        </button>
-      </div>
       
       {labelOptions.map(option => (
         <div key={option.id} className="flex items-center mb-1">

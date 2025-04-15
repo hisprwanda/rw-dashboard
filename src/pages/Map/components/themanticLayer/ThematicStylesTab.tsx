@@ -34,11 +34,9 @@ const ThematicStylesTab: React.FC<ThematicStylesTabProps> = ({appliedLabels, set
   
   return (
     <div className="p-4">
-      <h2 className="text-lg font-bold mb-4">Thematic Styles</h2>
-      
+
       {/* Label Controls Section */}
       <div className="mb-6">
-        <h3 className="font-medium mb-2">Map Labels</h3>
         <button 
           onClick={(e) => {
             e.stopPropagation()
@@ -60,14 +58,7 @@ const ThematicStylesTab: React.FC<ThematicStylesTabProps> = ({appliedLabels, set
           />
         )}
         
-        {appliedLabels.length > 0 && (
-          <div className="mt-2 text-sm">
-            <p>Applied labels: {appliedLabels.map(label => {
-              const option = labelOptions.find(opt => opt.id === label);
-              return option ? option.label : label;
-            }).join(', ')}</p>
-          </div>
-        )}
+ 
       </div>
     </div>
   );
