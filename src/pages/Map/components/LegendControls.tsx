@@ -70,7 +70,7 @@ const LegendControls: React.FC<LegendControlsProps> = ({
             value="auto"
             checked={legendType === "auto"}
             onChange={() => setLegendType("auto")}
-            className="mr-1"
+            className="mb-4"
           />
           Automatic Legend
         </label> <br/>
