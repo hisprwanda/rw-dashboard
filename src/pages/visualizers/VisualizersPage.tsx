@@ -34,6 +34,7 @@ import { useToast } from "../../components/ui/use-toast";
 import { Maximize2 } from 'lucide-react';
 import i18n from '../../locales/index.js'
 import { useResetAnalyticsStatesToDefault } from '../../hooks/useResetAnalyticsStatesTDefault';
+import FilteringVisualsDragAndDrop from './Components/FilteringVisuals/FilteringVisualsDragAndDrop';
 
 function Visualizers() {
     const { id: visualId } = useParams();
@@ -228,7 +229,9 @@ function Visualizers() {
                                 </div>
 
                             </div>
+                            <FilteringVisualsDragAndDrop/>
                             <div className="h-[600px] flex items-center justify-center border border-gray-300 rounded-lg bg-gray-100" ref={visualizationRef}>
+                                
                                 {isFetchAnalyticsDataLoading ? (
                                     <Loading />
                                 ) : (
