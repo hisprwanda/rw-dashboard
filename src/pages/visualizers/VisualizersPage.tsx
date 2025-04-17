@@ -219,8 +219,9 @@ function Visualizers() {
                                         setSelectedChartType={setSelectedChartType}
                                     />
                                 </div>
-
-                                <div>
+                        {/* actions btn*/}
+                        <div>
+                        <div>
                                     <Button variant="secondary" text={"Export"} type="button" icon={<TiExport />} onClick={handleExportVisualization} />
                                 </div>
 
@@ -228,6 +229,8 @@ function Visualizers() {
                                     <Button variant="primary" text={visualId ? "Update" : "Save"} type="button" icon={<IoSaveOutline />} onClick={handleShowSaveVisualTypeForm} />
                                 </div>
 
+                        </div>
+                             
                             </div>
                             <FilteringVisualsDragAndDrop/>
                             <div className="h-[600px] flex items-center justify-center border border-gray-300 rounded-lg bg-gray-100" ref={visualizationRef}>
