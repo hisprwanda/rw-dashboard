@@ -30,11 +30,11 @@ const SelectChartType = ({ chartComponents, selectedChartType, setSelectedChartT
    
           <Dialog open={open} onOpenChange={setOpen} >
       <DialogTrigger asChild    >
-        <button className="flex items-center gap-2 p-2 border rounded-md bg-white hover:bg-gray-50">
+        <button className="flex items-center gap-2 p-1 border rounded-md bg-white hover:bg-gray-50">
           {selectedChart && (
             <>
-              <span className="h-5 w-5">{selectedChart.icon}</span>
               <span>{selectedChart.type}</span>
+              <span className="h-5 w-5">{selectedChart.icon}</span>
             </>
           )}
           {!selectedChart && "Select Chart Type"}

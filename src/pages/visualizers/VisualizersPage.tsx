@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Button from "../../components/Button";
 import { IoSaveOutline } from 'react-icons/io5';
 import { TiExport } from "react-icons/ti";
+import {FileActionMenu} from "./Components/FileActionMenu"
 import { useDataSourceData } from '../../services/DataSourceHooks';
 import { GenericModal, Loading } from "../../components";
 import { DataModal, OrganizationModal, PeriodModal } from './Components/MetaDataModals';
@@ -151,12 +152,8 @@ function Visualizers() {
 
     /// main return
     return (
-        <div className="min-h-screen bg-gray-50 p-4">
+        <div className="min-h-screen bg-gray-50 p-1">
 
-            <div>
-
-                {/* <h3>Test Total: {dataItemsData?.pager?.total}</h3> */}
-            </div>
             {(isFetchSingleVisualLoading || loading) ? <Loading /> :
                 <>
                     <div className="flex justify-between items-start">
@@ -209,28 +206,21 @@ function Visualizers() {
                         </Tabs>
 
                         {/* Visualization Area */}
-                        <div className="flex-grow bg-white shadow-md p-4 rounded-lg mx-4">
-                            <div className="flex justify-between mb-4 gap-1 ">
-                                <div className='' >
-                                  
+                        <div className="flex-grow bg-white shadow-md p-4 rounded-lg mx-4 bg-green-500 ">
+                            <div className="flex mb-1 gap-1 ">
+
                                     <SelectChartType
                                         chartComponents={chartComponents}
                                         selectedChartType={selectedChartType}
                                         setSelectedChartType={setSelectedChartType}
                                     />
-                                </div>
-                        {/* actions btn*/}
-                        <div>
-                        <div>
-                                    <Button variant="secondary" text={"Export"} type="button" icon={<TiExport />} onClick={handleExportVisualization} />
-                                </div>
+                                      <FileActionMenu 
+    visualId={visualId} 
+    handleExportVisualization={handleExportVisualization} 
+    handleShowSaveVisualTypeForm={handleShowSaveVisualTypeForm} 
+  />
+                               
 
-                                <div>
-                                    <Button variant="primary" text={visualId ? "Update" : "Save"} type="button" icon={<IoSaveOutline />} onClick={handleShowSaveVisualTypeForm} />
-                                </div>
-
-                        </div>
-                             
                             </div>
                             <FilteringVisualsDragAndDrop/>
                             <div className="h-[600px] flex items-center justify-center border border-gray-300 rounded-lg bg-gray-100" ref={visualizationRef}>
