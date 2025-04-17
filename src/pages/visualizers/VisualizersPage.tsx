@@ -212,7 +212,7 @@ function Visualizers() {
                         <div className="flex-grow bg-white shadow-md p-4 rounded-lg mx-4">
                             <div className="flex justify-between mb-4 gap-1 ">
                                 <div className='' >
-                                    {/* this co */}
+                                  
                                     <SelectChartType
                                         chartComponents={chartComponents}
                                         selectedChartType={selectedChartType}

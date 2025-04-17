@@ -1,46 +1,88 @@
 import React, { useState } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '../../../components/ui/dialog';
+import { Search } from 'lucide-react';
 
 const SelectChartType = ({ chartComponents, selectedChartType, setSelectedChartType }) => {
-    const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [open, setOpen] = useState(false);
 
-    // Filter chart components based on the search term
-    const filteredCharts = chartComponents.filter(chart => 
-        chart.type.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+  // Filter chart components based on the search term
+  const filteredCharts = chartComponents.filter(chart => 
+    chart.type.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-    return (
-        // make it fill it's containers
-        <div className='max-w-[800px] overflow-auto  flex gap-1' >
-            {/* Search Input */}
-            <input
-           
-                type="text"
-                placeholder="Search visual..."
-                className="block w-[250px] p-1 border rounded-md mb-2"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-            />
-    
-            
-            {/* make it fill it's containers */}
-            <div className="  overflow-x-auto">
-                <div className="flex gap-2">
-                    {filteredCharts.map(chart => (
-                        <div 
-                            key={chart.type} 
-                            className={`flex items-center p-2 border rounded-md cursor-pointer ${selectedChartType === chart.type ? 'bg-blue-100' : 'bg-white'}`} 
-                            onClick={() => setSelectedChartType(chart.type)}
-                        >
-                            <div className=" h-4 flex gap-1 items-center justify-center whitespace-nowrap ">
-                                {chart.icon} {chart.type}
-                            </div>
-                        
-                        </div>
-                    ))}
-                </div>
-            </div>
+  // Find the currently selected chart to display on the trigger button
+  const selectedChart = chartComponents.find(chart => chart.type === selectedChartType);
+
+  const handleSelectChart = (chartType) => {
+    setSelectedChartType(chartType);
+    setOpen(false);
+  };
+
+  return (
+   
+          <Dialog open={open} onOpenChange={setOpen} >
+      <DialogTrigger asChild    >
+        <button className="flex items-center gap-2 p-2 border rounded-md bg-white hover:bg-gray-50">
+          {selectedChart && (
+            <>
+              <span className="h-5 w-5">{selectedChart.icon}</span>
+              <span>{selectedChart.type}</span>
+            </>
+          )}
+          {!selectedChart && "Select Chart Type"}
+        </button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[800px]">
+        <DialogHeader>
+          <DialogTitle>Select Chart Type</DialogTitle>
+          <DialogDescription>
+            Choose the visualization that best fits your data.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="relative w-full mb-4">
+          <Search className="absolute left-2 top-2 h-4 w-4 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search visual..."
+            className="w-full pl-8 p-2 border rounded-md"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
-    );
+
+        <div className="grid grid-cols-3 gap-4 max-h-[400px] overflow-y-auto p-1">
+          {filteredCharts.map(chart => (
+            <div 
+              key={chart.type} 
+              className={`flex flex-col p-4 border rounded-md cursor-pointer transition-colors ${
+                selectedChartType === chart.type ? 'bg-blue-100 border-blue-300' : 'bg-white hover:bg-gray-50'
+              }`} 
+              onClick={() => handleSelectChart(chart.type)}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <div className="h-6 w-6">{chart.icon}</div>
+                <h3 className="font-medium">{chart.type}</h3>
+              </div>
+              {chart.description && (
+                <p className="text-sm text-gray-500">{chart.description}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      </DialogContent>
+    </Dialog>
+  
+  
+  );
 };
 
 export default SelectChartType;

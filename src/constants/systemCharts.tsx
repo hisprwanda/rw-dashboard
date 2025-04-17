@@ -104,7 +104,6 @@ export const chartComponents: ChartComponent = [
         description: 'A bar chart displaying data', 
         icon: <RxValue /> 
     },
-    // change icon later
     { 
         type: 'Radar', 
         component: LocalRadarChart, 
