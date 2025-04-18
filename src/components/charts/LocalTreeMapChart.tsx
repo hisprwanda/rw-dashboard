@@ -25,6 +25,7 @@ export const LocalTreeMapChart: React.FC<genericChartsProps> = ({
   data,
   visualTitleAndSubTitle,
   visualSettings,
+  metaDataLabels
 }) => {
 
   const { chartData, chartConfig, error } = useMemo(() => {
@@ -33,7 +34,7 @@ export const LocalTreeMapChart: React.FC<genericChartsProps> = ({
     }
 
     try {
-      const transformedData = transformDataForGenericChart(data, "tree");
+      const transformedData = transformDataForGenericChart(data, "tree",_,metaDataLabels);
       const config = generateChartConfig(data,visualSettings.visualColorPalette);
       return { chartData: transformedData, chartConfig: config, error: null };
     } catch (err) {

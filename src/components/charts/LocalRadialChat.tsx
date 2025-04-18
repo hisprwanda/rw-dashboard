@@ -11,6 +11,7 @@ export const LocalRadialChat: React.FC<genericChartsProps> = ({
   data,
   visualTitleAndSubTitle,
   visualSettings,
+  metaDataLabels
 }) => {
   const { chartData, chartConfig, error } = useMemo(() => {
     if (!isValidInputData(data)) {
@@ -18,7 +19,7 @@ export const LocalRadialChat: React.FC<genericChartsProps> = ({
     }
 
     try {
-      const transformedData = transformDataForGenericChart(data, "radial",visualSettings.visualColorPalette);
+      const transformedData = transformDataForGenericChart(data, "radial",visualSettings.visualColorPalette,metaDataLabels);
       const config = generateChartConfig(data,visualSettings.visualColorPalette);
       return { chartData: transformedData, chartConfig: config, error: null };
     } catch (err) {

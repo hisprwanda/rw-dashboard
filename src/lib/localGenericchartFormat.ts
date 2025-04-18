@@ -86,7 +86,7 @@ function combineDataByMonth(data:TransformedDataPoint[]):TransformedDataPoint[] 
     rows.forEach(row => {
       const dataElementId = row[0];
       const periodId = row[1];
-      const value = row[2];
+      const value =  parseInt(row[2]);
       
       const dataElementName = metadata.items[dataElementId].name;
       const periodName = metadata.items[periodId].name;

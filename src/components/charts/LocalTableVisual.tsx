@@ -7,6 +7,7 @@ export const LocalTableVisual: React.FC<genericChartsProps> = ({
     data,
     visualTitleAndSubTitle,
     visualSettings,
+    metaDataLabels
   }) => {
     const { chartData, error } = useMemo(() => {
       if (!isValidInputData(data)) {
@@ -14,7 +15,7 @@ export const LocalTableVisual: React.FC<genericChartsProps> = ({
       }
   
       try {
-        const transformedData = transformDataForGenericChart(data);
+        const transformedData = transformDataForGenericChart(data,_,_,metaDataLabels);
         return { chartData: transformedData, error: null };
       } catch (err) {
         return { chartData: [], error: (err as Error).message };

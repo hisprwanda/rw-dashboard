@@ -9,14 +9,14 @@ import {
 import { transformDataForGenericChart, generateChartConfig, isValidInputData } from "../../lib/localGenericchartFormat";
 import { genericChartsProps } from "../../types/visualSettingsTypes"
 
-export const LocalRowStackedChart: React.FC<genericChartsProps> = ({ data, visualTitleAndSubTitle, visualSettings }) => {
+export const LocalRowStackedChart: React.FC<genericChartsProps> = ({ data, visualTitleAndSubTitle, visualSettings,metaDataLabels }) => {
     const { chartData, chartConfig, error } = useMemo(() => {
         if (!isValidInputData(data)) {
             return { chartData: [], chartConfig: {}, error: "no data found" };
         }
 
         try {
-            const transformedData = transformDataForGenericChart(data);
+            const transformedData = transformDataForGenericChart(data,_,_,metaDataLabels);
             const config = generateChartConfig(data,visualSettings.visualColorPalette);
             return { chartData: transformedData, chartConfig: config, error: null };
         } catch (err) {

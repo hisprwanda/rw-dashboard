@@ -10,7 +10,7 @@ import { transformDataForGenericChart, generateChartConfig, isValidInputData } f
 import {genericChartsProps} from "../../types/visualSettingsTypes"
 
 
-export const LocalScatterCharts: React.FC<genericChartsProps> = ({ data ,visualTitleAndSubTitle,visualSettings }) => {
+export const LocalScatterCharts: React.FC<genericChartsProps> = ({ data ,visualTitleAndSubTitle,visualSettings,metaDataLabels }) => {
  
     // below is error handling checking if the data exists before passing it to the formmater function or to the graph
 
@@ -20,7 +20,7 @@ export const LocalScatterCharts: React.FC<genericChartsProps> = ({ data ,visualT
         }
 
         try {
-            const transformedData = transformDataForGenericChart(data);
+            const transformedData = transformDataForGenericChart(data,_,_,metaDataLabels);
             const config = generateChartConfig(data,visualSettings.visualColorPalette);
             return { chartData: transformedData, chartConfig: config, error: null };
         } catch (err) {

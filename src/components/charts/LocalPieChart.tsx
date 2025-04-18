@@ -12,6 +12,7 @@ export const LocalPieChart: React.FC<genericChartsProps> = ({
   data,
   visualTitleAndSubTitle,
   visualSettings,
+  metaDataLabels
 }) => {
   // Error handling to check if data exists before passing it to the formatter function or graph
   const { chartData, chartConfig, error } = useMemo(() => {
@@ -20,7 +21,7 @@ export const LocalPieChart: React.FC<genericChartsProps> = ({
     }
 
     try {
-      const transformedData = transformDataForGenericChart(data, "pie",visualSettings.visualColorPalette);
+      const transformedData = transformDataForGenericChart(data, "pie",visualSettings.visualColorPalette,metaDataLabels);
       const config = generateChartConfig(data,visualSettings.visualColorPalette);
       return { chartData: transformedData, chartConfig: config, error: null };
     } catch (err) {
