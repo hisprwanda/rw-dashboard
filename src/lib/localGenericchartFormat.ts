@@ -46,49 +46,99 @@ function combineDataByMonth(data:TransformedDataPoint[]):TransformedDataPoint[] 
   }
 
 
-export function transformDataForGenericChart(inputData: InputData,chartType?:"pie" | "radial" | "single" | "tree",selectedColorPalette?:visualColorPaletteTypes,metaDataLabels?:any): TransformedDataPoint[] | any {
+  export function transformDataForGenericChart(
+    inputData: InputData,
+    chartType?: "pie" | "radial" | "single" | "tree",
+    selectedColorPalette?: visualColorPaletteTypes,
+    metaDataLabels?: any
+  ): TransformedDataPoint[] | any {
     if (!isValidInputData(inputData)) {
-        throw new Error("Invalid input data structure");
+      throw new Error("Invalid input data structure");
     }
+    
     const rows = inputData.rows;
     console.log("data one", rows);
     console.log("metaDataLabels one", metaDataLabels);
-
-    // Sort rows by period (assuming YYYYMM format)
-    rows.sort((a, b) => a[1].localeCompare(b[1]));
-    console.log("data two", rows);
-    // Transform data
-    const transformedData = rows.map(row => {
-        // example of period data: 202311
-        const period = row[1];
-        console.log("period", period);
-        const givenPeriod = inputData.metaData.items[period].name
-        console.log("givenPeriod", givenPeriod);
-        const dataPoint: TransformedDataPoint = {
-          // key "month" is not correct naming, it should actually be named something like finalPeriod but bcz I have used it in many places, I keep it temporary. but later I will change it to
-            month: givenPeriod,
-        };
-        // Add the data value with the name from metaData (below is the how to get the name of selected data element)
-        const dataName = inputData.metaData.items[row[0]].name;
-        // adding data element name to data point object and it's corresponding value
-        dataPoint[dataName] = parseInt(row[2]);
-        return dataPoint;
-    });
-  console.log("transformedData 1",transformedData)
-     const finalTransformedData = combineDataByMonth(transformedData) as TransformedDataPoint[]
-     console.log("finalTransformedData 2",finalTransformedData)
-     if(chartType === "pie" || chartType === "radial"){
-        const result = transformDataNoneAxisData(finalTransformedData,selectedColorPalette)
-        return result
-     } else if(chartType === "tree"){
-          const result = convertDataForTreeMap(finalTransformedData)
-          return result
-     }else{
-      return finalTransformedData;
-     }
-
+  
+    // Use metaDataLabels if provided, otherwise use inputData.metaData
+    const metadata = metaDataLabels || inputData.metaData;
     
-}
+    // Step 1: Create a map to store data by period and data element
+    const dataMap = new Map();
+    
+    // Step 2: Get all periods from metadata
+    const allPeriods = metadata.dimensions.pe.map(periodId => {
+      return {
+        id: periodId,
+        name: metadata.items[periodId].name
+      };
+    });
+    
+    // Step 3: Get all data elements from metadata
+    const allDataElements = metadata.dimensions.dx.map(dataElementId => {
+      return {
+        id: dataElementId,
+        name: metadata.items[dataElementId].name
+      };
+    });
+    
+    // Step 4: First pass - process existing data from rows
+    rows.forEach(row => {
+      const dataElementId = row[0];
+      const periodId = row[1];
+      const value = row[2];
+      
+      const dataElementName = metadata.items[dataElementId].name;
+      const periodName = metadata.items[periodId].name;
+      
+      // Create a unique key for this period
+      const key = periodName;
+      
+      // If we haven't seen this period before, create an entry
+      if (!dataMap.has(key)) {
+        dataMap.set(key, { month: periodName });
+      }
+      
+      // Add the data element value to this period
+      const periodData = dataMap.get(key);
+      periodData[dataElementName] = value;
+    });
+    
+    // Step 5: Second pass - ensure all periods have entries for all data elements
+    allPeriods.forEach(period => {
+      const key = period.name;
+      
+      // If this period doesn't exist in our map, create it
+      if (!dataMap.has(key)) {
+        dataMap.set(key, { month: key });
+      }
+      
+      // Make sure all data elements exist for this period
+      const periodData = dataMap.get(key);
+      allDataElements.forEach(dataElement => {
+        if (periodData[dataElement.name] === undefined) {
+          periodData[dataElement.name] = null;
+        }
+      });
+    });
+    
+    // Convert the map to array
+    const transformedData = Array.from(dataMap.values());
+    
+    console.log("transformedData 1", transformedData);
+    const finalTransformedData = combineDataByMonth(transformedData) as TransformedDataPoint[];
+    console.log("finalTransformedData 2", finalTransformedData);
+    
+    if (chartType === "pie" || chartType === "radial") {
+      const result = transformDataNoneAxisData(finalTransformedData, selectedColorPalette);
+      return result;
+    } else if (chartType === "tree") {
+      const result = convertDataForTreeMap(finalTransformedData);
+      return result;
+    } else {
+      return finalTransformedData;
+    }
+  }
  
 export function generateChartConfig(inputData: InputData,selectedColorPalette?:visualColorPaletteTypes): ChartConfig {
 
