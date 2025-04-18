@@ -46,21 +46,24 @@ function combineDataByMonth(data:TransformedDataPoint[]):TransformedDataPoint[] 
   }
 
 
-export function transformDataForGenericChart(inputData: InputData,chartType?:"pie" | "radial" | "single" | "tree",selectedColorPalette?:visualColorPaletteTypes): TransformedDataPoint[] | any {
+export function transformDataForGenericChart(inputData: InputData,chartType?:"pie" | "radial" | "single" | "tree",selectedColorPalette?:visualColorPaletteTypes,metaDataLabels?:any): TransformedDataPoint[] | any {
     if (!isValidInputData(inputData)) {
         throw new Error("Invalid input data structure");
     }
     const rows = inputData.rows;
+    console.log("data one", rows);
+    console.log("metaDataLabels one", metaDataLabels);
+
     // Sort rows by period (assuming YYYYMM format)
     rows.sort((a, b) => a[1].localeCompare(b[1]));
-
+    console.log("data two", rows);
     // Transform data
     const transformedData = rows.map(row => {
         // example of period data: 202311
         const period = row[1];
-       console.log({period});
+        console.log("period", period);
         const givenPeriod = inputData.metaData.items[period].name
-
+        console.log("givenPeriod", givenPeriod);
         const dataPoint: TransformedDataPoint = {
           // key "month" is not correct naming, it should actually be named something like finalPeriod but bcz I have used it in many places, I keep it temporary. but later I will change it to
             month: givenPeriod,
@@ -71,9 +74,9 @@ export function transformDataForGenericChart(inputData: InputData,chartType?:"pi
         dataPoint[dataName] = parseInt(row[2]);
         return dataPoint;
     });
-
+  console.log("transformedData 1",transformedData)
      const finalTransformedData = combineDataByMonth(transformedData) as TransformedDataPoint[]
-
+     console.log("finalTransformedData 2",finalTransformedData)
      if(chartType === "pie" || chartType === "radial"){
         const result = transformDataNoneAxisData(finalTransformedData,selectedColorPalette)
         return result

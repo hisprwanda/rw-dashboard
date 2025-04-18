@@ -31,5 +31,6 @@ export interface VisualTitleAndSubtitleType {
   export interface genericChartsProps {
     data: any;
     visualTitleAndSubTitle:VisualTitleAndSubtitleType;
-    visualSettings:VisualSettingsTypes
+    visualSettings:VisualSettingsTypes;
+    metaDataLabels?:any
 }

@@ -1,4 +1,4 @@
-    import React, { useMemo } from "react";
+    import React, { useEffect, useMemo } from "react";
 import { useAuthorities } from '../../context/AuthContext';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Legend, Tooltip,LabelList } from "recharts";
 import {
@@ -10,8 +10,7 @@ import { transformDataForGenericChart, generateChartConfig, isValidInputData } f
 import {genericChartsProps} from "../../types/visualSettingsTypes"
 
 
-export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleAndSubTitle,visualSettings }) => {
-
+export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleAndSubTitle,visualSettings,metaDataLabels }) => {
  
     // below is error handling checking if the data exists before passing it to the formmater function or to the graph
 
@@ -21,7 +20,7 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleA
         }
 
         try {
-            const transformedData = transformDataForGenericChart(data);
+            const transformedData = transformDataForGenericChart(data,_,_,metaDataLabels);
             const config = generateChartConfig(data,visualSettings.visualColorPalette);
             return { chartData: transformedData, chartConfig: config, error: null };
         } catch (err) {

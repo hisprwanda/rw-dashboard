@@ -40,7 +40,7 @@ import FilteringVisualsDragAndDrop from './Components/FilteringVisuals/Filtering
 function Visualizers() {
     const { id: visualId } = useParams();
     const { data: systemInfo } = useSystemInfo();
-    const { subDataItemsData, setDataItemsDataPage, dataItemsDataPage, selectedDataSourceOption, setSelectedDataSourceOption, currentUserInfoAndOrgUnitsData, setCurrentUserInfoAndOrgUnitsData, dataItemsData, selectedDataSourceDetails, setSelectedDataSourceDetails, setSelectedDimensionItemType, analyticsData, isFetchAnalyticsDataLoading, selectedChartType, setSelectedChartType, setAnalyticsQuery, isUseCurrentUserOrgUnits, analyticsQuery, analyticsDimensions, setAnalyticsDimensions, setIsSetPredifinedUserOrgUnits, isSetPredifinedUserOrgUnits, selectedOrganizationUnits, setSelectedOrganizationUnits, setIsUseCurrentUserOrgUnits, selectedOrgUnits, setSelectedOrgUnits, selectedOrgUnitGroups, setSelectedOrgUnitGroups, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedLevel, setSelectedLevel, fetchAnalyticsData, setAnalyticsData, fetchAnalyticsDataError, setSelectedVisualTitleAndSubTitle, visualTitleAndSubTitle, visualSettings, setSelectedVisualSettings, setVisualsColorPalettes, selectedColorPalette, selectedDimensionItemType } = useAuthorities();
+    const { subDataItemsData, setDataItemsDataPage, metaDataLabels,setmetaDataLabels, selectedDataSourceOption, setSelectedDataSourceOption, currentUserInfoAndOrgUnitsData, setCurrentUserInfoAndOrgUnitsData, dataItemsData, selectedDataSourceDetails, setSelectedDataSourceDetails, setSelectedDimensionItemType, analyticsData, isFetchAnalyticsDataLoading, selectedChartType, setSelectedChartType, setAnalyticsQuery, isUseCurrentUserOrgUnits, analyticsQuery, analyticsDimensions, setAnalyticsDimensions, setIsSetPredifinedUserOrgUnits, isSetPredifinedUserOrgUnits, selectedOrganizationUnits, setSelectedOrganizationUnits, setIsUseCurrentUserOrgUnits, selectedOrgUnits, setSelectedOrgUnits, selectedOrgUnitGroups, setSelectedOrgUnitGroups, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedLevel, setSelectedLevel, fetchAnalyticsData, setAnalyticsData, fetchAnalyticsDataError, setSelectedVisualTitleAndSubTitle, visualTitleAndSubTitle, visualSettings, setSelectedVisualSettings, setVisualsColorPalettes, selectedColorPalette, selectedDimensionItemType } = useAuthorities();
     const { data: singleSavedVisualData, isError, loading: isFetchSingleVisualLoading } = useFetchSingleVisualData(visualId);
     const { loading: orgUnitLoading, error: fetchOrgUnitError, data: orgUnitsData, fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData();
     const { error: dataItemsFetchError, loading: isFetchCurrentInstanceDataItemsLoading, fetchCurrentInstanceData } = useDataItems();
@@ -61,7 +61,9 @@ function Visualizers() {
     const captureRef = useRef<HTMLDivElement>(null);
     const [isFullscreen, setIsFullscreen] = useState(false);
     const {resetOtherValuesToDefaultExceptDataSource,resetAnalyticsStatesToDefaultValues} = useResetAnalyticsStatesToDefault()
-
+useEffect(()=>{
+    console.log("metaDataLabels changed",metaDataLabels)
+},[metaDataLabels])
     //// data source options
     const dataSourceOptions = savedDataSource?.dataStore?.entries?.map((entry: any) => (
         <option key={entry?.key} value={entry?.key}>{entry?.value?.instanceName}</option>
@@ -102,7 +104,7 @@ function Visualizers() {
     // Function to render the selected chart
     const renderChart = () => {
         const SelectedChart = chartComponents.find(chart => chart.type === selectedChartType)?.component;
-        return SelectedChart ? <SelectedChart data={analyticsData} visualTitleAndSubTitle={visualTitleAndSubTitle} visualSettings={visualSettings} /> : null;
+        return SelectedChart ? <SelectedChart data={analyticsData} visualTitleAndSubTitle={visualTitleAndSubTitle} visualSettings={visualSettings} metaDataLabels={metaDataLabels} /> : null;
     };
 
     /// handle data source onchange
@@ -206,7 +208,7 @@ function Visualizers() {
                         </Tabs>
 
                         {/* Visualization Area */}
-                        <div className="flex-grow bg-white shadow-md p-4 rounded-lg mx-4 bg-green-500 ">
+                        <div className="flex-grow bg-white shadow-md  rounded-lg mx-4 bg-green-500 ">
                             <div className="flex mb-1 gap-1 ">
 
                                     <SelectChartType
@@ -223,12 +225,12 @@ function Visualizers() {
 
                             </div>
                             <FilteringVisualsDragAndDrop/>
-                            <div className="h-[600px] flex items-center justify-center border border-gray-300 rounded-lg bg-gray-100" ref={visualizationRef}>
+                            <div className=" flex items-center justify-center border border-gray-300 rounded-lg bg-gray-100" ref={visualizationRef}>
                                 
                                 {isFetchAnalyticsDataLoading ? (
                                     <Loading />
                                 ) : (
-                                    <div className="flex items-center justify-center w-full h-[600px]">
+                                    <div className="flex items-center justify-center w-full ">
                                         <div className="w-[100%] max-h-[100%]">
                                             {fetchAnalyticsDataError ?
                                                 <p className='text-center text-red-600 bg-red-100 p-4 rounded-lg shadow-sm border border-red-300'  >{fetchAnalyticsDataError?.message}</p> :

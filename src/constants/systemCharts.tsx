@@ -36,20 +36,20 @@ type ChartComponent = {
 }[];
 
 export const chartComponents: ChartComponent = [
-
+ 
     { 
         type: 'Column', 
         component: LocalBarChart, 
         description: 'A bar chart displaying data', 
         icon: <IoBarChartSharp /> 
     },
- 
     { 
         type: 'Table', 
         component: LocalTableVisual, 
         description: 'A bar chart displaying data', 
         icon: <FaTableCells /> 
     },
+
     { 
         type: 'Stacked Col', 
         component: LocalStackedBar, 
