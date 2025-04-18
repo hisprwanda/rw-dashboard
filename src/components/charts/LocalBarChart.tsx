@@ -1,18 +1,37 @@
-    import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import { useAuthorities } from '../../context/AuthContext';
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Legend, Tooltip,LabelList } from "recharts";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Legend, Tooltip, LabelList, ResponsiveContainer } from "recharts";
 import {
     ChartContainer,
     ChartTooltip,
     ChartTooltipContent,
 } from "../../components/ui/chart";
 import { transformDataForGenericChart, generateChartConfig, isValidInputData } from "../../lib/localGenericchartFormat";
-import {genericChartsProps} from "../../types/visualSettingsTypes"
+import { genericChartsProps } from "../../types/visualSettingsTypes"
 
+export const LocalBarChart: React.FC<genericChartsProps> = ({ data, visualTitleAndSubTitle, visualSettings, metaDataLabels }) => {
+    // Get dimensions for responsive adjustments
+    const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+    const chartRef = useRef<HTMLDivElement>(null);
 
-export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleAndSubTitle,visualSettings,metaDataLabels }) => {
- 
-    // below is error handling checking if the data exists before passing it to the formmater function or to the graph
+    useEffect(() => {
+        const handleResize = () => {
+            if (chartRef.current) {
+                const { width, height } = chartRef.current.getBoundingClientRect();
+                setDimensions({ width, height });
+            }
+        };
+
+        // Initial measurement
+        handleResize();
+        
+        // Listen for window resize
+        window.addEventListener('resize', handleResize);
+        
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
     const { chartData, chartConfig, error } = useMemo(() => {
         if (!isValidInputData(data)) {
@@ -20,13 +39,13 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleA
         }
 
         try {
-            const transformedData = transformDataForGenericChart(data,_,_,metaDataLabels);
-            const config = generateChartConfig(data,visualSettings.visualColorPalette);
+            const transformedData = transformDataForGenericChart(data, undefined, undefined, metaDataLabels);
+            const config = generateChartConfig(data, visualSettings.visualColorPalette);
             return { chartData: transformedData, chartConfig: config, error: null };
         } catch (err) {
             return { chartData: [], chartConfig: {}, error: (err as Error).message };
         }
-    }, [data,visualSettings]);
+    }, [data, visualSettings]);
 
     if (error || chartData.length === 0) {
         return (
@@ -36,54 +55,85 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data ,visualTitleA
         );
     }
 
-  console.log("chartData bar",chartData)
-
+    console.log("chartData bar", chartData);
 
     return (
-        <ChartContainer config={chartConfig}  style={{ backgroundColor: visualSettings.backgroundColor }} >
-             {visualTitleAndSubTitle.visualTitle && <h3 className="text-center text-lg font-bold text-gray-800 ">{visualTitleAndSubTitle.visualTitle}</h3> }  
-             {visualTitleAndSubTitle?.customSubTitle ?  <h4 className="text-center text-md font-medium text-gray-600 mt-1">{visualTitleAndSubTitle?.customSubTitle}</h4>  :   visualTitleAndSubTitle?.DefaultSubTitle?.length !== 0 && (
-  <div className="flex justify-center gap-1">
-    {visualTitleAndSubTitle?.DefaultSubTitle?.map((subTitle, index) => (
-      <h4 key={index} className="text-center text-md font-medium text-gray-600 mt-1">
-        {subTitle}
-        {index < visualTitleAndSubTitle?.DefaultSubTitle?.length - 1 && ","}
-      </h4>
-    ))}
-  </div>
-)}
-    
-            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                    dataKey="month"
-                    tickLine={false}
-                    tickMargin={10}
-                    axisLine={false}
-                    tickFormatter={(value) => value}
-                    tick={{ fill:visualSettings.XAxisSettings.color, fontSize: visualSettings.XAxisSettings.fontSize, fontWeight: 'bold' }} 
-                />
-                <YAxis 
-                  tick={{ fill:visualSettings.YAxisSettings.color, fontSize: visualSettings.YAxisSettings.fontSize, fontWeight: 'bold' }}
-                />
-                <Tooltip  content={<ChartTooltipContent className="bg-white"  />} />
-                <Legend />
-                {Object.keys(chartConfig).map((key) => (
-                    <Bar
-                        key={key}
-                        dataKey={key}
-                        fill={chartConfig[key].color}
-                        name={chartConfig[key].label}
+        <div ref={chartRef} className="w-full h-full">
+            <ChartContainer config={chartConfig} style={{ backgroundColor: visualSettings.backgroundColor, width: '100%', height: '100%' }}>
+                {visualTitleAndSubTitle.visualTitle && 
+                    <h3 className="text-center text-lg font-bold text-gray-800">{visualTitleAndSubTitle.visualTitle}</h3>
+                }
+                
+                {visualTitleAndSubTitle?.customSubTitle ? 
+                    <h4 className="text-center text-md font-medium text-gray-600 mt-1">{visualTitleAndSubTitle?.customSubTitle}</h4> 
+                    : 
+                    visualTitleAndSubTitle?.DefaultSubTitle?.length !== 0 && (
+                        <div className="flex justify-center gap-1">
+                            {visualTitleAndSubTitle?.DefaultSubTitle?.map((subTitle, index) => (
+                                <h4 key={index} className="text-center text-md font-medium text-gray-600 mt-1">
+                                    {subTitle}
+                                    {index < visualTitleAndSubTitle?.DefaultSubTitle?.length - 1 && ","}
+                                </h4>
+                            ))}
+                        </div>
+                    )
+                }
+                
+                <ResponsiveContainer width="100%" height={350}>
+                    <BarChart 
+                        data={chartData} 
+                        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                     >
-                          <LabelList
-                 dataKey={key}
-                position="center"
-                fill={visualSettings.fillColor}
-                style={{ fontSize: '12px', fontWeight: 'bold' }}
-              />
-                    </Bar>
-                ))}
-            </BarChart>
-        </ChartContainer>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis
+                            dataKey="month"
+                            tickLine={false}
+                            tickMargin={10}
+                            axisLine={false}
+                            tickFormatter={(value) => value}
+                            tick={{ 
+                                fill: visualSettings.XAxisSettings.color, 
+                                fontSize: visualSettings.XAxisSettings.fontSize, 
+                                fontWeight: 'bold' 
+                            }}
+                            // Handle long labels for small screens
+                            interval={dimensions.width < 500 ? 1 : 0}
+                            angle={dimensions.width < 600 ? -45 : 0}
+                            textAnchor={dimensions.width < 600 ? "end" : "middle"}
+                            height={dimensions.width < 600 ? 80 : 60}
+                        />
+                        <YAxis 
+                            tick={{ 
+                                fill: visualSettings.YAxisSettings.color, 
+                                fontSize: visualSettings.YAxisSettings.fontSize, 
+                                fontWeight: 'bold' 
+                            }}
+                        />
+                        <Tooltip content={<ChartTooltipContent className="bg-white" />} />
+                        <Legend />
+                        {Object.keys(chartConfig).map((key) => (
+                            <Bar
+                                key={key}
+                                dataKey={key}
+                                fill={chartConfig[key].color}
+                                name={chartConfig[key].label}
+                            >
+                                <LabelList
+                                    dataKey={key}
+                                    position="center"
+                                    fill={visualSettings.fillColor}
+                                    style={{ 
+                                        fontSize: dimensions.width < 500 ? '10px' : '12px', 
+                                        fontWeight: 'bold' 
+                                    }}
+                                    // Only show labels if space permits
+                                    content={dimensions.width < 400 ? null : undefined}
+                                />
+                            </Bar>
+                        ))}
+                    </BarChart>
+                </ResponsiveContainer>
+            </ChartContainer>
+        </div>
     );
 };
