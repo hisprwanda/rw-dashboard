@@ -47,6 +47,11 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data, visualTitleA
         }
     }, [data, visualSettings]);
 
+    // Calculate if we need to rotate labels based on the number of data points
+    const shouldRotateLabels = useMemo(() => {
+        return chartData.length > 5; // Start rotating when we have more than 5 items
+    }, [chartData]);
+
     if (error || chartData.length === 0) {
         return (
             <div className="flex items-center justify-center h-64 bg-gray-100 rounded-lg">
@@ -82,25 +87,30 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data, visualTitleA
                 <ResponsiveContainer width="100%" height={350}>
                     <BarChart 
                         data={chartData} 
-                        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                        margin={{ 
+                            top: 20, 
+                            right: 30, 
+                            left: 20, 
+                            // Increase bottom margin when labels are rotated
+                            bottom: shouldRotateLabels ? 80 : 20 
+                        }}
                     >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis
                             dataKey="month"
                             tickLine={false}
-                            tickMargin={10}
-                            axisLine={false}
+                            tickMargin={shouldRotateLabels ? 15 : 10}
+                            axisLine={true}
                             tickFormatter={(value) => value}
                             tick={{ 
                                 fill: visualSettings.XAxisSettings.color, 
                                 fontSize: visualSettings.XAxisSettings.fontSize, 
                                 fontWeight: 'bold' 
                             }}
-                            // Handle long labels for small screens
-                            interval={dimensions.width < 500 ? 1 : 0}
-                            angle={dimensions.width < 600 ? -45 : 0}
-                            textAnchor={dimensions.width < 600 ? "end" : "middle"}
-                            height={dimensions.width < 600 ? 80 : 60}
+                            // Always rotate when there are many labels
+                            angle={shouldRotateLabels ? -45 : 0}
+                            textAnchor={shouldRotateLabels ? "end" : "middle"}
+                            height={shouldRotateLabels ? 100 : 60}
                         />
                         <YAxis 
                             tick={{ 
@@ -120,14 +130,13 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data, visualTitleA
                             >
                                 <LabelList
                                     dataKey={key}
-                                    position="center"
-                                    fill={visualSettings.fillColor}
+                                    position="top"
+                                    fill={visualSettings.fillColor || "#000000"}
                                     style={{ 
-                                        fontSize: dimensions.width < 500 ? '10px' : '12px', 
+                                        fontSize: '12px', 
                                         fontWeight: 'bold' 
                                     }}
-                                    // Only show labels if space permits
-                                    content={dimensions.width < 400 ? null : undefined}
+                                    // Show values on top of bars
                                 />
                             </Bar>
                         ))}
