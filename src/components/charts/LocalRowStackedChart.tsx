@@ -51,7 +51,7 @@ export const LocalRowStackedChart: React.FC<genericChartsProps> = ({ data, visua
             <BarChart
                 data={chartData}
                 layout="vertical"
-                margin={{ top: 20, right: 30, left: 100, bottom: 5 }}
+    
                 height={chartData.length * 50 + 100}
             >
                 <CartesianGrid strokeDasharray="3 3" horizontal={false} />
