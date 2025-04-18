@@ -120,7 +120,9 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data, visualTitleA
                             }}
                         />
                         <Tooltip content={<ChartTooltipContent className="bg-white" />} />
-                        <Legend />
+                        <Legend 
+                        wrapperStyle={{paddingTop:10}}
+                         />
                         {Object.keys(chartConfig).map((key) => (
                             <Bar
                                 key={key}
@@ -130,7 +132,7 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data, visualTitleA
                             >
                                 <LabelList
                                     dataKey={key}
-                                    position="top"
+                                    // position="top"
                                     fill={visualSettings.fillColor || "#000000"}
                                     style={{ 
                                         fontSize: '12px', 
