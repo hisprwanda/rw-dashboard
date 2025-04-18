@@ -47,7 +47,7 @@ export const useResetAnalyticsStatesToDefault = ()=>{
             };
         });
         setVisualsColorPalettes(systemDefaultColorPalettes[0] || []);
-        setSelectedVisualSettings({ backgroundColor: '#ffffff', visualColorPalette: selectedColorPalette, fillColor: "#ffffff", XAxisSettings: { color: "#000000", fontSize: 12 }, YAxisSettings: { color: "#000000", fontSize: 12 } });
+        setSelectedVisualSettings({ backgroundColor: '#ffffff', visualColorPalette: selectedColorPalette, fillColor: "#000000", XAxisSettings: { color: "#000000", fontSize: 12 }, YAxisSettings: { color: "#000000", fontSize: 12 } });
         setSelectedDataSourceOption(currentInstanceId);
         if(isBeingUsedInMap)
         {
@@ -83,7 +83,7 @@ export const useResetAnalyticsStatesToDefault = ()=>{
             };
         });
         setVisualsColorPalettes(systemDefaultColorPalettes[0] || []);
-        setSelectedVisualSettings({ backgroundColor: '#ffffff', visualColorPalette: selectedColorPalette, fillColor: "#ffffff", XAxisSettings: { color: "#000000", fontSize: 12 }, YAxisSettings: { color: "#000000", fontSize: 12 } });
+        setSelectedVisualSettings({ backgroundColor: '#ffffff', visualColorPalette: selectedColorPalette, fillColor: "#000000", XAxisSettings: { color: "#000000", fontSize: 12 }, YAxisSettings: { color: "#000000", fontSize: 12 } });
 
     }
 

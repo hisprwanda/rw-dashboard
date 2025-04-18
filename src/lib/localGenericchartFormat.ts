@@ -63,10 +63,10 @@ function combineDataByMonth(data:TransformedDataPoint[]):TransformedDataPoint[] 
     // Use metaDataLabels if provided, otherwise use inputData.metaData
     const metadata = metaDataLabels || inputData.metaData;
     
-    // Step 1: Create a map to store data by period and data element
+    // Step 1: Create an ordered map to store data by period and preserve order
     const dataMap = new Map();
     
-    // Step 2: Get all periods from metadata
+    // Step 2: Get all periods from metadata in their original order
     const allPeriods = metadata.dimensions.pe.map(periodId => {
       return {
         id: periodId,
@@ -82,39 +82,29 @@ function combineDataByMonth(data:TransformedDataPoint[]):TransformedDataPoint[] 
       };
     });
     
-    // Step 4: First pass - process existing data from rows
+    // Step 4: Initialize the map with all periods in the correct order
+    allPeriods.forEach(period => {
+      dataMap.set(period.name, { month: period.name });
+    });
+    
+    // Step 5: Process existing data from rows
     rows.forEach(row => {
       const dataElementId = row[0];
       const periodId = row[1];
-      const value =  parseInt(row[2]);
+      const value = parseInt(row[2]) ;
       
       const dataElementName = metadata.items[dataElementId].name;
       const periodName = metadata.items[periodId].name;
       
-      // Create a unique key for this period
-      const key = periodName;
-      
-      // If we haven't seen this period before, create an entry
-      if (!dataMap.has(key)) {
-        dataMap.set(key, { month: periodName });
-      }
+      // Get the existing entry for this period
+      const periodData = dataMap.get(periodName);
       
       // Add the data element value to this period
-      const periodData = dataMap.get(key);
       periodData[dataElementName] = value;
     });
     
-    // Step 5: Second pass - ensure all periods have entries for all data elements
-    allPeriods.forEach(period => {
-      const key = period.name;
-      
-      // If this period doesn't exist in our map, create it
-      if (!dataMap.has(key)) {
-        dataMap.set(key, { month: key });
-      }
-      
-      // Make sure all data elements exist for this period
-      const periodData = dataMap.get(key);
+    // Step 6: Ensure all periods have entries for all data elements
+    dataMap.forEach((periodData, periodName) => {
       allDataElements.forEach(dataElement => {
         if (periodData[dataElement.name] === undefined) {
           periodData[dataElement.name] = null;
@@ -122,7 +112,7 @@ function combineDataByMonth(data:TransformedDataPoint[]):TransformedDataPoint[] 
       });
     });
     
-    // Convert the map to array
+    // Convert the map to array, maintaining the original order
     const transformedData = Array.from(dataMap.values());
     
     console.log("transformedData 1", transformedData);

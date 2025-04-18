@@ -84,7 +84,7 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data, visualTitleA
                     )
                 }
                 
-                <ResponsiveContainer width="100%" height={350}>
+                <ResponsiveContainer width="100%" height="100%">
                     <BarChart 
                         data={chartData} 
                         margin={{ 
@@ -132,8 +132,8 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data, visualTitleA
                             >
                                 <LabelList
                                     dataKey={key}
-                                    // position="top"
-                                    fill={visualSettings.fillColor || "#000000"}
+                                    position="top"
+                                    fill={visualSettings.fillColor }
                                     style={{ 
                                         fontSize: '12px', 
                                         fontWeight: 'bold' 
