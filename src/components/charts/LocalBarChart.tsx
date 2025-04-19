@@ -8,9 +8,16 @@ import {
 } from "../../components/ui/chart";
 import { transformDataForGenericChart, generateChartConfig, isValidInputData } from "../../lib/localGenericchartFormat";
 import { genericChartsProps } from "../../types/visualSettingsTypes"
-
+import {getDimensionItems, PeriodItem, TransformedMetadata, transformMetadataLabels} from "../../lib/formatMetaDataLabels";
 export const LocalBarChart: React.FC<genericChartsProps> = ({ data, visualTitleAndSubTitle, visualSettings, metaDataLabels }) => {
     // Get dimensions for responsive adjustments
+    useEffect(()=>{
+        const transformedMetaDataLabels = transformMetadataLabels(metaDataLabels);
+        console.log("transformedMetaDataLabels",transformedMetaDataLabels)
+        console.log("metaDataLabels changed",metaDataLabels)
+        console.log("visualTitleAndSubTitle has changed",visualTitleAndSubTitle)
+    },[metaDataLabels,visualTitleAndSubTitle])
+
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
     const chartRef = useRef<HTMLDivElement>(null);
 
@@ -33,19 +40,20 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data, visualTitleA
         };
     }, []);
 
-    const { chartData, chartConfig, error } = useMemo(() => {
+    const { chartData, chartConfig, error,transformedMetaDataLabels } = useMemo(() => {
         if (!isValidInputData(data)) {
             return { chartData: [], chartConfig: {}, error: "no data found" };
         }
 
         try {
+            const transformedMetaDataLabels:TransformedMetadata = transformMetadataLabels(metaDataLabels);
             const transformedData = transformDataForGenericChart(data, undefined, undefined, metaDataLabels);
             const config = generateChartConfig(data, visualSettings.visualColorPalette);
-            return { chartData: transformedData, chartConfig: config, error: null };
+            return { chartData: transformedData, chartConfig: config, error: null,transformedMetaDataLabels };
         } catch (err) {
             return { chartData: [], chartConfig: {}, error: (err as Error).message };
         }
-    }, [data, visualSettings]);
+    }, [data, visualSettings,metaDataLabels,visualTitleAndSubTitle]);
 
     // Calculate if we need to rotate labels based on the number of data points
     const shouldRotateLabels = useMemo(() => {
@@ -61,6 +69,13 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data, visualTitleA
     }
 
     console.log("chartData bar", chartData);
+    console.log("transformedMetaDataLabels 1",transformedMetaDataLabels)
+    const allPeriods = transformedMetaDataLabels ?  getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'periods') :  [];
+    const allOrganizationUnit = transformedMetaDataLabels ?  getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'orgUnits') :  [];
+    const allDataElements = transformedMetaDataLabels ?  getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'dataElements') :  [];
+    console.log("All periods 1",allPeriods)
+    console.log("All allOrganizationUnit 1",allOrganizationUnit)
+    console.log("All allDataElements 1",allDataElements)
 
     return (
         <div ref={chartRef} className="w-full h-full">
@@ -72,12 +87,12 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data, visualTitleA
                 {visualTitleAndSubTitle?.customSubTitle ? 
                     <h4 className="text-center text-md font-medium text-gray-600 mt-1">{visualTitleAndSubTitle?.customSubTitle}</h4> 
                     : 
-                    visualTitleAndSubTitle?.DefaultSubTitle?.length !== 0 && (
+                    visualTitleAndSubTitle?.DefaultSubTitle?.orgUnits?.length !== 0 && (
                         <div className="flex justify-center gap-1">
-                            {visualTitleAndSubTitle?.DefaultSubTitle?.map((subTitle, index) => (
+                            {visualTitleAndSubTitle?.DefaultSubTitle?.orgUnits?.map((orgUnit, index) => (
                                 <h4 key={index} className="text-center text-md font-medium text-gray-600 mt-1">
-                                    {subTitle}
-                                    {index < visualTitleAndSubTitle?.DefaultSubTitle?.length - 1 && ","}
+                                    {orgUnit?.name}
+                                    {index < visualTitleAndSubTitle?.DefaultSubTitle?.orgUnits?.length - 1 && ","}
                                 </h4>
                             ))}
                         </div>

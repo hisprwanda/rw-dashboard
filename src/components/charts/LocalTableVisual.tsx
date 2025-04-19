@@ -88,7 +88,12 @@ export const LocalTableVisual: React.FC<genericChartsProps> = ({
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-  
+       <div className="flex align-middle" >{visualTitleAndSubTitle?.DefaultSubTitle?.orgUnits?.map((orgUnit, index) => (
+                                <h4 key={index} className="text-center text-md font-medium text-gray-600">
+                                    {orgUnit?.name}
+                                    {index < visualTitleAndSubTitle?.DefaultSubTitle?.orgUnits?.length - 1 && ","}
+                                </h4>
+                            ))}</div> 
         {/* Scrollable Table Section */}
         <div className="max-h-[400px] overflow-auto border rounded-lg">
           <Table striped highlightOnHover withBorder withColumnBorders>

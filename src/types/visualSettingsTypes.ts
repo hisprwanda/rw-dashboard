@@ -1,7 +1,11 @@
 export interface VisualTitleAndSubtitleType {
-    visualTitle: string;
-    customSubTitle:string;
-    DefaultSubTitle: string[];
+    visualTitle?: string;
+    customSubTitle?:string;
+    DefaultSubTitle: {
+      periods:any[];
+      orgUnits:any[];
+      dataElements:any[];
+    };
   
   }
 

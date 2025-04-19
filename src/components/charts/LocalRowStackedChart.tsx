@@ -37,12 +37,12 @@ export const LocalRowStackedChart: React.FC<genericChartsProps> = ({ data, visua
             {visualTitleAndSubTitle.visualTitle && <h3 className="text-center text-lg font-bold text-gray-800">{visualTitleAndSubTitle.visualTitle}</h3>}
             {visualTitleAndSubTitle?.customSubTitle ? (
                 <h4 className="text-center text-md font-medium text-gray-600 mt-1">{visualTitleAndSubTitle?.customSubTitle}</h4>
-            ) : visualTitleAndSubTitle?.DefaultSubTitle?.length !== 0 && (
+            ) :    visualTitleAndSubTitle?.DefaultSubTitle?.orgUnits?.length !== 0 && (
                 <div className="flex justify-center gap-1">
-                    {visualTitleAndSubTitle?.DefaultSubTitle?.map((subTitle, index) => (
+                    {visualTitleAndSubTitle?.DefaultSubTitle?.orgUnits?.map((orgUnit, index) => (
                         <h4 key={index} className="text-center text-md font-medium text-gray-600 mt-1">
-                            {subTitle}
-                            {index < visualTitleAndSubTitle?.DefaultSubTitle?.length - 1 && ","}
+                            {orgUnit?.name}
+                            {index < visualTitleAndSubTitle?.DefaultSubTitle?.orgUnits?.length - 1 && ","}
                         </h4>
                     ))}
                 </div>
@@ -51,7 +51,6 @@ export const LocalRowStackedChart: React.FC<genericChartsProps> = ({ data, visua
             <BarChart
                 data={chartData}
                 layout="vertical"
-    
                 height={chartData.length * 50 + 100}
             >
                 <CartesianGrid strokeDasharray="3 3" horizontal={false} />

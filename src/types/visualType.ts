@@ -23,7 +23,13 @@ export const VisualDataSchema = z.object({
   visualTitleAndSubTitle: z.object({
     visualTitle: z.string().optional(),
     customSubTitle: z.string()?.optional(),
-    DefaultSubTitle: z.array(z.string()?.nullable()?.optional())?.optional(),
+    DefaultSubTitle: z
+    .object({
+      periods: z.array(z.any()),
+      orgUnits: z.array(z.any()),
+      dataElements: z.array(z.any()),
+    })
+    .optional(),
   }),
   visualSettings:  z.object({
     visualColorPalette: z.object({

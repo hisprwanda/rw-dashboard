@@ -62,10 +62,7 @@ function ReportPage() {
     setSelectedLevel,
     fetchAnalyticsData,
     setAnalyticsData,
-    fetchAnalyticsDataError,
-    setSelectedVisualTitleAndSubTitle,
-    visualTitleAndSubTitle,
-    visualSettings,
+    setMetaDataLabels,
     setSelectedVisualSettings,
     setVisualsColorPalettes,
     selectedColorPalette,
@@ -115,6 +112,7 @@ function ReportPage() {
       isCurrentInstance: true,
     })
     setAnalyticsData(null)
+    setMetaDataLabels({})
     setSelectedChartType(chartComponents[0]?.type)
     setAnalyticsQuery(null)
     setAnalyticsDimensions({ dx: [], pe: ["LAST_12_MONTHS"] })
@@ -129,14 +127,6 @@ function ReportPage() {
     setSelectedOrgUnitGroups([])
     setSelectedOrganizationUnitsLevels([])
     setSelectedLevel([])
-    setSelectedVisualTitleAndSubTitle((prev) => {
-      return {
-        ...prev,
-        visualTitle: "",
-        DefaultSubTitle: [defaultUserOrgUnit],
-        customSubTitle: "",
-      }
-    })
     setVisualsColorPalettes(systemDefaultColorPalettes[0] || [])
     setSelectedVisualSettings({
       backgroundColor: "#ffffff",
@@ -164,6 +154,7 @@ function ReportPage() {
       if (singleSavedVisualData && visualId) {
         keepUpWithSelectedDataSource()
         setAnalyticsData([])
+        setAnalyticsQuery(null)
         fetchAnalyticsData(formatAnalyticsDimensions(analyticsDimensions), selectedDataSourceDetails)
       }
     }, 500),

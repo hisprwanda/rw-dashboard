@@ -5,9 +5,6 @@ import { transformDataForGenericChart, generateChartConfig, isValidInputData } f
 import { genericChartsProps } from "../../types/visualSettingsTypes";
 import { useAuthorities } from "../../context/AuthContext";
 
-
-
-
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length > 0 && payload[0].payload) {
     const data = payload[0].payload;
@@ -61,17 +58,15 @@ export const LocalTreeMapChart: React.FC<genericChartsProps> = ({
         <h4 className="text-center text-md font-medium text-gray-600 mt-1">
           {visualTitleAndSubTitle.customSubTitle}
         </h4>
-      ) : (
-        visualTitleAndSubTitle?.DefaultSubTitle?.length !== 0 && (
+      ) :  visualTitleAndSubTitle?.DefaultSubTitle?.orgUnits?.length !== 0 && (
           <div className="flex justify-center gap-1">
-            {visualTitleAndSubTitle?.DefaultSubTitle?.map((subTitle, index) => (
-              <h4 key={index} className="text-center text-md font-medium text-gray-600 mt-1">
-                {subTitle}
-                {index < visualTitleAndSubTitle?.DefaultSubTitle?.length - 1 && ","}
-              </h4>
-            ))}
+              {visualTitleAndSubTitle?.DefaultSubTitle?.orgUnits?.map((orgUnit, index) => (
+                  <h4 key={index} className="text-center text-md font-medium text-gray-600 mt-1">
+                      {orgUnit?.name}
+                      {index < visualTitleAndSubTitle?.DefaultSubTitle?.orgUnits?.length - 1 && ","}
+                  </h4>
+              ))}
           </div>
-        )
       )}
 
       <ResponsiveContainer width="100%" height={400}>
@@ -90,7 +85,7 @@ export const LocalTreeMapChart: React.FC<genericChartsProps> = ({
 };
 
 const CustomizedContent = (props: any) => {
-  const { x, y, width, height, index, depth, name, colors, root,fontSize } = props;
+  const { x, y, width, height, index, depth, name, colors, root, fontSize } = props;
 
   const centerX = x + width / 2;
   const centerY = y + height / 2;
@@ -144,5 +139,3 @@ const CustomizedContent = (props: any) => {
     </g>
   );
 };
-
-

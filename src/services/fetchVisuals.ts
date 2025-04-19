@@ -75,6 +75,7 @@ export const useFetchSingleVisualData = (visualId: string) => {
     setSelectedOrganizationUnitsLevels,
     setSelectedLevel,
     setAnalyticsData,
+    setMetaDataLabels,
     setSelectedVisualTitleAndSubTitle,
     setSelectedVisualSettings,
     setSelectedColorPalette,
@@ -115,6 +116,7 @@ export const useFetchSingleVisualData = (visualId: string) => {
       };
       // clear existing analytics data
       setAnalyticsData([]);
+      setMetaDataLabels({});
       // run analytics with saved data
       fetchAnalyticsData({dimension:formatAnalyticsDimensions(dimensions),instance:currentInstanceDetails});
      // fetchAnalyticsData(formatAnalyticsDimensions(dimensions),currentInstanceDetails);
@@ -128,6 +130,7 @@ export const useFetchSingleVisualData = (visualId: string) => {
     } else if (dataSourceDetails) {
         // clear existing analytics data
       setAnalyticsData([]);
+      setMetaDataLabels({});
            // run analytics with saved data
       fetchAnalyticsData(
         formatAnalyticsDimensions(dimensions),
@@ -156,6 +159,7 @@ export const useFetchSingleVisualData = (visualId: string) => {
     fetchExternalUserInfoAndOrgUnitData,
     fetchAnalyticsData,
     setAnalyticsData,
+    setMetaDataLabels,
     setCurrentUserInfoAndOrgUnitsData,
     setSelectedDataSourceDetails
   ]);

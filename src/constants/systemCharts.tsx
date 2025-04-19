@@ -13,8 +13,6 @@ import { LocalSingleValue } from '../components/charts/LocalSingleValue';
 import { LocalTreeMapChart } from '../components/charts/LocalTreeMapChart';
 import { IoBarChartSharp, IoPieChart } from 'react-icons/io5';
 import { FaChartLine ,FaChartArea} from 'react-icons/fa';
-import { FaChartSimple } from 'react-icons/fa6';
-import {VisualSettingsTypes,VisualTitleAndSubtitleType} from "../types/visualSettingsTypes"
 import { FaTableCells } from "react-icons/fa6";
 import { VscListTree } from "react-icons/vsc";
 import { RxValue } from "react-icons/rx";

@@ -19,6 +19,7 @@ import { dimensionItemTypes } from "../constants/dimensionItemTypes";
 import { BackedSelectedItem, visualTypes } from "../types/visualType";
 import { currentInstanceId } from "../constants/currentInstanceInfo";
 import { getAnalyticsFilter, getSelectedOrgUnitsWhenUsingMap } from "../lib/getAnalyticsFilters";
+import { getDimensionItems, PeriodItem, transformMetadataLabels } from "../lib/formatMetaDataLabels";
 
 interface AuthContextProps {
   userDatails: {};
@@ -155,7 +156,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [selectedVisualsForDashboard, setSelectedVisualsForDashboard] = useState<string[]>([]);
   const [visualTitleAndSubTitle, setSelectedVisualTitleAndSubTitle] = useState<VisualTitleAndSubtitleType>({
     visualTitle: "",
-    DefaultSubTitle: [defaultUserOrgUnit],
+    DefaultSubTitle: {
+      periods:[],
+      orgUnits: [],
+      dataElements:[]
+    },
     customSubTitle:""
   })
 
@@ -179,21 +184,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setAuthorities(data.me.authorities);
     }
   }, [data]);
+    // update default title
+    useEffect(()=>{
+      console.log("setSelectedVisualTitleAndSubTitle fax",visualTitleAndSubTitle)
+    },[setSelectedVisualTitleAndSubTitle])
 
-  // test
-  useEffect(()=>{
-
-       if(currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName)
-       {
-      setSelectedVisualTitleAndSubTitle({
-          visualTitle:"",
-          DefaultSubTitle: [currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName],
-          customSubTitle:""
-        })
-
-       }
-  },[currentUserInfoAndOrgUnitsData || []])
-
+  
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading user authorities</div>;
 
@@ -306,8 +302,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setAnalyticsMapData(result?.myData)
         }else{
           setAnalyticsData(result?.myData);
-          setMetaDataLabels(result?.MetaDataLabels?.metaData
-          )
+          setMetaDataLabels(result?.MetaDataLabels?.metaData)
+          /// setting visual title and subtitle
+            const transformedMetaDataLabels = transformMetadataLabels(result?.MetaDataLabels?.metaData);
+              console.log("transformedMetaDataLabels 1",transformedMetaDataLabels)
+              const allPeriods = transformedMetaDataLabels ?  getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'periods') :  [];
+              const allOrganizationUnit = transformedMetaDataLabels ?  getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'orgUnits') :  [];
+              const allDataElements = transformedMetaDataLabels ?  getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'dataElements') :  [];
+              setSelectedVisualTitleAndSubTitle((prevState: VisualTitleAndSubtitleType) => ({
+                ...prevState,
+                DefaultSubTitle: {
+                    periods: allPeriods,
+                    orgUnits: allOrganizationUnit,
+                    dataElements: allDataElements
+                }
+            }));
+            
         }
       
         setAnalyticsQuery(analyticsQuery);
@@ -322,6 +332,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         });
 
         setAnalyticsData(response.data);
+      
         setAnalyticsQuery({ myData: { resource: 'analytics', params: queryParams } });
       }
     } catch (error) {
@@ -331,11 +342,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setIsFetchAnalyticsDataLoading(false);
     }
   }
-
-
-
-
   };
+
+
 
   const fetchSingleOrgUnitName = async (orgUnitId: string, instance: DataSourceFormFields) => {
     try {

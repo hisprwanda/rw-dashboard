@@ -97,18 +97,14 @@ export const LocalPieChart: React.FC<genericChartsProps> = ({
           {visualTitleAndSubTitle?.customSubTitle}
         </h4>
       ) : (
-        visualTitleAndSubTitle?.DefaultSubTitle?.length !== 0 && (
+        visualTitleAndSubTitle?.DefaultSubTitle?.orgUnits?.length !== 0 && (
           <div className="flex justify-center gap-1">
-            {visualTitleAndSubTitle?.DefaultSubTitle?.map((subTitle, index) => (
-              <h4
-                key={index}
-                className="text-center text-md font-medium text-gray-600 mt-1"
-              >
-                {subTitle}
-                {index < visualTitleAndSubTitle?.DefaultSubTitle?.length - 1 &&
-                  ","}
-              </h4>
-            ))}
+              {visualTitleAndSubTitle?.DefaultSubTitle?.orgUnits?.map((orgUnit, index) => (
+                  <h4 key={index} className="text-center text-md font-medium text-gray-600 mt-1">
+                      {orgUnit?.name}
+                      {index < visualTitleAndSubTitle?.DefaultSubTitle?.orgUnits?.length - 1 && ","}
+                  </h4>
+              ))}
           </div>
         )
       )}

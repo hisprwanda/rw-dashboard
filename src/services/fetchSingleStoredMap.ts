@@ -90,6 +90,7 @@ export const useFetchSingleMapData = (mapId: string) => {
     setSelectedOrganizationUnitsLevels,
     setSelectedLevel,
     setAnalyticsData,
+    setMetaDataLabels,
     setSelectedVisualTitleAndSubTitle,
     setSelectedVisualSettings,
     setSelectedColorPalette,
@@ -171,6 +172,7 @@ export const useFetchSingleMapData = (mapId: string) => {
             isCurrentInstance: true,
           };
           setAnalyticsData([]);
+          setMetaDataLabels({});
           await fetchGeoFeatures({ selectedOrgUnitsWhenUsingMap });
           await fetchAnalyticsData({
             dimension: formatAnalyticsDimensions(
@@ -188,6 +190,7 @@ export const useFetchSingleMapData = (mapId: string) => {
           setCurrentUserInfoAndOrgUnitsData(result);
         } else if (dataSourceDetails) {
           setAnalyticsData([]);
+          setMetaDataLabels({});
           await fetchGeoFeatures({ selectedOrgUnitsWhenUsingMap });
           await fetchAnalyticsData({
             dimension: formatAnalyticsDimensions(
@@ -223,6 +226,7 @@ export const useFetchSingleMapData = (mapId: string) => {
       fetchAnalyticsData,
       fetchGeoFeatures,
       setAnalyticsData,
+      setMetaDataLabels,
       setCurrentUserInfoAndOrgUnitsData,
       setSelectedDataSourceDetails,
     ]

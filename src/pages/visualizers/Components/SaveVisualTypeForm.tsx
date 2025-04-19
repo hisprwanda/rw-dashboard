@@ -68,12 +68,14 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
   }, [watchedValues]);
   // reset saved values
   useEffect(() => {
+    console.log("singleSavedVisualData now",singleSavedVisualData)
     if (visualId && singleSavedVisualData) {
         reset((prevValues) => ({
             ...prevValues,
             id: singleSavedVisualData?.dataStore?.id,
             visualName: singleSavedVisualData?.dataStore?.visualName || prevValues.visualName,
             backedSelectedItems: singleSavedVisualData?.dataStore?.backedSelectedItems || prevValues.backedSelectedItems,
+            visualTitleAndSubTitle: singleSavedVisualData?.dataStore?.visualTitleAndSubTitle || prevValues.visualTitleAndSubTitle,
             description: singleSavedVisualData?.dataStore?.description || prevValues.description,
             createdAt: singleSavedVisualData?.dataStore?.createdAt || prevValues.createdAt,
         }));
