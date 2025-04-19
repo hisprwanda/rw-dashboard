@@ -21,16 +21,11 @@ import { RxValue } from "react-icons/rx";
 import { TbChartRadar } from "react-icons/tb";
 import { PiChartScatterDuotone } from "react-icons/pi";
 import { GiRadialBalance } from "react-icons/gi";
-type ChartProps = {
-    data: any;
-    visualTitleAndSubTitle:VisualTitleAndSubtitleType;
-    visualSettings:VisualSettingsTypes
-
-};
+import { genericChartsProps } from '../types/visualSettingsTypes';
 
 type ChartComponent = {
     type: string;
-    component: React.FC<ChartProps>;
+    component: React.FC<genericChartsProps>;
     description: string;
     icon: JSX.Element;
 }[];

@@ -32,5 +32,5 @@ export interface VisualTitleAndSubtitleType {
     data: any;
     visualTitleAndSubTitle:VisualTitleAndSubtitleType;
     visualSettings:VisualSettingsTypes;
-    metaDataLabels?:any
+    metaDataLabels:any
 }

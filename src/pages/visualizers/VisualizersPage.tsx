@@ -1,7 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Button from "../../components/Button";
-import { IoSaveOutline } from 'react-icons/io5';
-import { TiExport } from "react-icons/ti";
 import {FileActionMenu} from "./Components/FileActionMenu"
 import { useDataSourceData } from '../../services/DataSourceHooks';
 import { GenericModal, Loading } from "../../components";
@@ -9,30 +7,19 @@ import { DataModal, OrganizationModal, PeriodModal } from './Components/MetaData
 import { useAuthorities } from '../../context/AuthContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
 import SelectChartType from './Components/SelectChartType';
-import { IoBarChartSharp } from "react-icons/io5";
-import { FaChartLine } from "react-icons/fa6";
 import SaveVisualTypeForm from './Components/SaveVisualTypeForm';
 import { useParams } from 'react-router-dom';
 import { useFetchSingleVisualData } from '../../services/fetchVisuals';
-import { unFormatAnalyticsDimensions, formatAnalyticsDimensions } from '../../lib/formatAnalyticsDimensions';
-import { formatCurrentUserSelectedOrgUnit, formatSelectedOrganizationUnit, formatOrgUnitGroup, formatOrgUnitLevels } from '../../lib/formatCurrentUserOrgUnit';
 import { useOrgUnitData } from '../../services/fetchOrgunitData';
 import { useDataItems } from '../../services/fetchDataItems';
 import { chartComponents } from "../../constants/systemCharts";
-import { IoIosOptions } from "react-icons/io";
 import GeneralChartsStyles from './Components/GeneralChartsOptions';
-import { NavigationMenuDemo } from './Components/ChartsMenu';
 import VisualSettings from './Components/VisualSettings';
-import { systemDefaultColorPalettes } from "../../constants/colorPalettes";
 import { useExternalDataItems } from '../../services/useExternalDataItems';
 import { useSystemInfo } from '../../services/fetchSystemInfo';
 import { useExternalOrgUnitData } from '../../services/fetchExternalOrgUnit';
 import { currentInstanceId } from '../../constants/currentInstanceInfo';
-import debounce from 'lodash/debounce';
-import { dimensionItemTypes } from '../../constants/dimensionItemTypes';
 import ExportModal from './Components/ExportModal';
-import { useToast } from "../../components/ui/use-toast";
-import { Maximize2 } from 'lucide-react';
 import i18n from '../../locales/index.js'
 import { useResetAnalyticsStatesToDefault } from '../../hooks/useResetAnalyticsStatesTDefault';
 import FilteringVisualsDragAndDrop from './Components/FilteringVisuals/FilteringVisualsDragAndDrop';
