@@ -21,6 +21,7 @@ import { currentInstanceId } from "../constants/currentInstanceInfo";
 import { getAnalyticsFilter, getSelectedOrgUnitsWhenUsingMap } from "../lib/getAnalyticsFilters";
 import { getDimensionItems, PeriodItem, transformMetadataLabels } from "../lib/formatMetaDataLabels";
 import { analyticsPayloadDeterminerTypes } from "../types/analyticsTypes";
+import { updateQueryParams } from "../lib/payloadFormatter";
 
 interface AuthContextProps {
   userDatails: {};
@@ -211,111 +212,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     selectedOrgUnitsWhenUsingMap?:string[]
   }
 
-  /**
- * Updates query parameters based on analytics payload determiner settings
- * @param {Object} queryParams - The original query parameters
- * @param {Object} analyticsPayloadDeterminer - The configuration for columns, rows, and filters
- * @returns {Object} Updated query parameters
- */
-/**
- * Updates query parameters based on analytics payload determiner settings
- * @param {Object} queryParams - The original query parameters
- * @param {Object} analyticsPayloadDeterminer - The configuration for columns, rows, and filters
- * @returns {Object} Updated query parameters
- */
-function updateQueryParams(queryParams, analyticsPayloadDeterminer) {
-  // Create a deep copy of queryParams to avoid mutating the original
-  const updatedQueryParams = JSON.parse(JSON.stringify(queryParams));
-  
-  // Extract existing dimension values by prefix
-  const dimensionMap = {};
-  if (updatedQueryParams.dimension) {
-    updatedQueryParams.dimension.forEach(dim => {
-      const [prefix] = dim.split(':');
-      dimensionMap[prefix] = dim;
-    });
-  }
-  
-  // Extract filter values by prefix
-  const filterMap = {};
-  if (updatedQueryParams.filter) {
-    if (Array.isArray(updatedQueryParams.filter)) {
-      updatedQueryParams.filter.forEach(filter => {
-        const [prefix] = filter.split(':');
-        filterMap[prefix] = filter;
-      });
-    } else {
-      const [prefix] = updatedQueryParams.filter.split(':');
-      filterMap[prefix] = updatedQueryParams.filter;
-    }
-  }
-  
-  // Helper function to map dimension names to their prefixes
-  const getDimensionPrefix = (name) => {
-    switch (name) {
-      case 'Data': return 'dx';
-      case 'Period': return 'pe';
-      case 'Organisation unit': return 'ou';
-      default: return name.toLowerCase();
-    }
-  };
-  
-  // Combine all available values
-  const allAvailableValues = {...dimensionMap, ...filterMap};
-  
-  // If Filter is empty, include all items in dimension
-  if (analyticsPayloadDeterminer.Filter.length === 0) {
-    // Initialize new dimension array
-    const newDimensions = [];
-    
-    // Add all items from Columns and Rows to dimension
-    [...analyticsPayloadDeterminer.Columns, ...analyticsPayloadDeterminer.Rows].forEach(item => {
-      const prefix = getDimensionPrefix(item);
-      // Use existing value if available, otherwise this would be an error case
-      if (allAvailableValues[prefix]) {
-        newDimensions.push(allAvailableValues[prefix]);
-      }
-    });
-    
-    updatedQueryParams.dimension = newDimensions;
-    // Remove filter property
-    delete updatedQueryParams.filter;
-  } else {
-    // Initialize new arrays
-    const newDimensions = [];
-    const newFilters = [];
-    
-    // Process columns and rows (these go to dimension)
-    [...analyticsPayloadDeterminer.Columns, ...analyticsPayloadDeterminer.Rows].forEach(item => {
-      const prefix = getDimensionPrefix(item);
-      if (allAvailableValues[prefix]) {
-        newDimensions.push(allAvailableValues[prefix]);
-      }
-    });
-    
-    // Process filter items
-    analyticsPayloadDeterminer.Filter.forEach(item => {
-      const prefix = getDimensionPrefix(item);
-      if (allAvailableValues[prefix]) {
-        newFilters.push(allAvailableValues[prefix]);
-      }
-    });
-    
-    // Update dimension array
-    updatedQueryParams.dimension = newDimensions;
-    
-    // Update filter (could be a string or array based on your examples)
-    if (newFilters.length === 1) {
-      updatedQueryParams.filter = newFilters[0];
-    } else if (newFilters.length > 1) {
-      updatedQueryParams.filter = newFilters;
-    } else {
-      delete updatedQueryParams.filter;
-    }
-  }
-  
-  return updatedQueryParams;
-}
+
   const fetchAnalyticsData = async ({dimension,instance,isAnalyticsApiUsedInMap,selectedPeriodsOnMap = [],selectedOrgUnitsWhenUsingMap = []}:fetchAnalyticsDataProps ):Promise<void> => {
     const orgUnitIds = selectedOrganizationUnits?.map((unit: any) => unit)?.join(';');
     const orgUnitLevelIds = selectedOrganizationUnitsLevels?.map((unit: any) => `LEVEL-${unit}`)?.join(';');
@@ -387,8 +284,6 @@ function updateQueryParams(queryParams, analyticsPayloadDeterminer) {
         skipData: true,
         includeMetadataDetails: true
       }
-
-      
 
       if (instance.isCurrentInstance) {
         // Internal request via engine.query
