@@ -114,8 +114,8 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const initialState: analyticsPayloadDeterminerTypes = {
     Columns: ["Data"],
-    Rows: ["Organisation unit"],
-    Filter: ["Period"],
+    Rows: ["Period"],
+    Filter: ["Organisation unit"],
   };
   const { data, loading, error } = useDataQuery(query);
     const [analyticsPayloadDeterminer, setAnalyticsPayloadDeterminer] = useState<analyticsPayloadDeterminerTypes>(initialState);
@@ -210,6 +210,88 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     selectedPeriodsOnMap?:string[];
     selectedOrgUnitsWhenUsingMap?:string[]
   }
+
+  /**
+ * Updates query parameters based on analytics payload determiner settings
+ * @param {Object} queryParams - The original query parameters
+ * @param {Object} analyticsPayloadDeterminer - The configuration for columns, rows, and filters
+ * @returns {Object} Updated query parameters
+ */
+function updateQueryParams(queryParams, analyticsPayloadDeterminer) {
+  // Create a deep copy of queryParams to avoid mutating the original
+  const updatedQueryParams = JSON.parse(JSON.stringify(queryParams));
+  
+  // Initialize dimension array if it doesn't exist
+  if (!updatedQueryParams.dimension) {
+    updatedQueryParams.dimension = [];
+  }
+  
+  // Extract existing dimension prefixes
+  const dimensionPrefixes = {};
+  updatedQueryParams.dimension.forEach(dim => {
+    const [prefix] = dim.split(':');
+    dimensionPrefixes[prefix] = dim;
+  });
+  
+  // Helper function to map dimension names to their prefixes
+  const getDimensionPrefix = (name) => {
+    switch (name) {
+      case 'Data': return 'dx';
+      case 'Period': return 'pe';
+      case 'Organisation unit': return 'ou';
+      default: return name.toLowerCase();
+    }
+  };
+  
+  // Process all items from Columns and Rows to be included in dimension
+  const columnsAndRows = [...analyticsPayloadDeterminer.Columns, ...analyticsPayloadDeterminer.Rows];
+  
+  // If Filter is empty, include all items in dimension
+  if (analyticsPayloadDeterminer.Filter.length === 0) {
+    // Remove filter property
+    delete updatedQueryParams.filter;
+    
+    // Add all items to dimension
+    columnsAndRows.forEach(item => {
+      const prefix = getDimensionPrefix(item);
+      // Avoid duplicates and preserve original values
+      if (!dimensionPrefixes[prefix]) {
+        // If we don't have a value for this prefix, use a default
+        updatedQueryParams.dimension.push(`${prefix}:USER_ORGUNIT`);
+      }
+    });
+  } else {
+    // Process items to be included in filter
+    const filterItems = [];
+    const dimensionItems = [];
+    
+    // Determine which items go to dimension and which to filter
+    const allItems = [...columnsAndRows, ...analyticsPayloadDeterminer.Filter];
+    
+    allItems.forEach(item => {
+      const prefix = getDimensionPrefix(item);
+      const value = dimensionPrefixes[prefix] || `${prefix}:USER_ORGUNIT`;
+      
+      if (analyticsPayloadDeterminer.Filter.includes(item)) {
+        filterItems.push(value);
+      } else {
+        dimensionItems.push(value);
+      }
+    });
+    
+    // Update dimension array with only non-filter items
+    updatedQueryParams.dimension = dimensionItems;
+    
+    // Update filter (could be a string or array based on your examples)
+    if (filterItems.length === 1) {
+      updatedQueryParams.filter = filterItems[0];
+    } else if (filterItems.length > 1) {
+      updatedQueryParams.filter = filterItems;
+    }
+  }
+  
+  return updatedQueryParams;
+}
   const fetchAnalyticsData = async ({dimension,instance,isAnalyticsApiUsedInMap,selectedPeriodsOnMap = [],selectedOrgUnitsWhenUsingMap = []}:fetchAnalyticsDataProps ):Promise<void> => {
     const orgUnitIds = selectedOrganizationUnits?.map((unit: any) => unit)?.join(';');
     const orgUnitLevelIds = selectedOrganizationUnitsLevels?.map((unit: any) => `LEVEL-${unit}`)?.join(';');
@@ -245,19 +327,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   
  
-      const queryParams = isAnalyticsApiUsedInMap ? {
+      let queryParams = isAnalyticsApiUsedInMap ? {
         dimension,
         filter,
         displayProperty: 'NAME',
         skipData: false,
         skipMeta: true
-      } : {
+      } : 
+      // this value is the one that payload determine
+      {
         dimension,
         filter,
         displayProperty: 'NAME',
         includeNumDen: true,
       } 
-
+       queryParams = updateQueryParams(queryParams, analyticsPayloadDeterminer)
+      console.log("xyzxyz",queryParams)
+      ///// function to modify queryParams based on analyticsPayloadDeterminer
+      console.log("queryParams",queryParams)
       const queryParamsForMetaDataLabels = {
         dimension,
         filter,
@@ -297,7 +384,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             params: queryParamsTwo,
           },
         };
-
+  
         const result = await engine.query(analyticsQuery);
         if(isAnalyticsApiUsedInMap)
         {

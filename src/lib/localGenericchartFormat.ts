@@ -9,7 +9,7 @@ export interface InputData {
 }
 
 export interface TransformedDataPoint {
-    period: string;
+    period: string;              // always holds the category label (e.g., period, org unit)
     [key: string]: number | string | null;
 }
 
@@ -22,7 +22,7 @@ export function isValidInputData(data: any): data is InputData {
     );
 }
 
-// Combines entries with the same period, merging their data
+// Combines entries with the same period (category), merging their data
 function combineDataByPeriod(data: TransformedDataPoint[]): TransformedDataPoint[] {
     return Object.values(
         data.reduce((acc: Record<string, TransformedDataPoint>, current: TransformedDataPoint) => {
@@ -47,55 +47,64 @@ export function transformDataForGenericChart(
         throw new Error("Invalid input data structure");
     }
 
-    const metadata = inputData.metaData;
-    const headers = inputData.headers;
-    const rows = inputData.rows;
+    const { headers, metaData: metadata, rows } = inputData;
 
+    // Determine data-element (dx) and category dimension (first other meta header)
     const dxIndex = headers.findIndex(h => h.name === 'dx');
-    const peIndex = headers.findIndex(h => h.name === 'pe');
+    const categoryHeader = headers.find(h => h.meta && h.name !== 'dx');
+    if (!categoryHeader) {
+        throw new Error('No category dimension (pe, ou, co, etc.) found');
+    }
+    const categoryDimName = categoryHeader.name;                // e.g. 'pe' or 'ou'
+    const categoryIndex = headers.findIndex(h => h.name === categoryDimName);
     const valueIndex = headers.findIndex(h => h.name === 'value');
 
-    if (dxIndex < 0 || peIndex < 0 || valueIndex < 0) {
-        throw new Error('Required headers (dx, pe, value) are missing');
+    if (dxIndex < 0 || categoryIndex < 0 || valueIndex < 0) {
+        throw new Error('Required headers (dx, value, and a category) are missing');
     }
 
-    const allPeriods = metadata.dimensions.pe.map((periodId: string) => ({
-        id: periodId,
-        name: metadata.items[periodId].name
+    // Build all category entries in order
+    const allCategories = metadata.dimensions[categoryDimName].map((id: string) => ({
+        id,
+        name: metadata.items[id].name
     }));
 
+    // Build all data-element entries
     const allDataElements = metadata.dimensions.dx.map((dxId: string) => ({
         id: dxId,
         name: metadata.items[dxId].name
     }));
 
+    // Initialize map: categoryName -> { period: categoryName, [dataElementName]: null }
     const dataMap = new Map<string, TransformedDataPoint>();
-    allPeriods.forEach(period => {
-        const entry: TransformedDataPoint = { period: period.name };
+    allCategories.forEach(cat => {
+        const entry: TransformedDataPoint = { period: cat.name };
         allDataElements.forEach(de => {
             entry[de.name] = null;
         });
-        dataMap.set(period.name, entry);
+        dataMap.set(cat.name, entry);
     });
 
+    // Populate actual values from rows
     rows.forEach(row => {
         const dxId = row[dxIndex];
-        const peId = row[peIndex];
+        const catId = row[categoryIndex];
         const rawValue = row[valueIndex];
         const numericValue = rawValue !== '' ? Number(rawValue) : null;
 
         const dataElementName = metadata.items[dxId]?.name;
-        const periodName = metadata.items[peId]?.name;
-        if (!dataElementName || !periodName) return;
+        const categoryName = metadata.items[catId]?.name;
+        if (!dataElementName || !categoryName) return;
 
-        const periodEntry = dataMap.get(periodName);
-        if (periodEntry) {
-            periodEntry[dataElementName] = numericValue;
+        const entry = dataMap.get(categoryName);
+        if (entry) {
+            entry[dataElementName] = numericValue;
         }
     });
 
-    const transformedData = allPeriods.map(p => dataMap.get(p.name)!);
-    const finalData = combineDataByPeriod(transformedData);
+    // Convert map -> array preserving order, then combine duplicates
+    const initialData = allCategories.map(c => dataMap.get(c.name)!);
+    const finalData = combineDataByPeriod(initialData);
 
     if (chartType === "pie" || chartType === "radial") {
         return transformDataNoneAxisData(finalData, selectedColorPalette);
@@ -115,13 +124,12 @@ export function generateChartConfig(
     }
 
     const config: ChartConfig = {};
-    const dataItems = inputData.metaData.dimensions.dx;
-    dataItems.forEach((item: string, index: number) => {
-        const name = inputData.metaData.items[item].name;
-        const color =
-            selectedColorPalette?.itemsBackgroundColors.every(c => c.startsWith("hsl"))
-                ? selectedColorPalette.itemsBackgroundColors[index] || `hsl(var(--chart-${index + 1}))`
-                : selectedColorPalette?.itemsBackgroundColors[index] || selectedColorPalette?.itemsBackgroundColors[0];
+    inputData.metaData.dimensions.dx.forEach((dxId: string, index: number) => {
+        const name = inputData.metaData.items[dxId].name;
+        const palette = selectedColorPalette?.itemsBackgroundColors || [];
+        const color = palette.every(c => c.startsWith("hsl"))
+            ? palette[index] || `hsl(var(--chart-${index + 1}))`
+            : palette[index] || palette[0];
         config[name] = { label: name, color };
     });
 
@@ -133,7 +141,7 @@ function transformDataNoneAxisData(
     selectedColorPalette?: visualColorPaletteTypes
 ) {
     const totals: Record<string, number> = {};
-    const colorCount = selectedColorPalette?.itemsBackgroundColors.length || 0;
+    const palette = selectedColorPalette?.itemsBackgroundColors || [];
 
     data.forEach(entry => {
         for (const key in entry) {
@@ -144,10 +152,10 @@ function transformDataNoneAxisData(
         }
     });
 
-    return Object.entries(totals).map(([name, total], index) => ({
+    return Object.entries(totals).map(([name, total], idx) => ({
         name,
         total,
-        fill: selectedColorPalette?.itemsBackgroundColors[index % colorCount]
+        fill: palette[idx % palette.length]
     }));
 }
 
@@ -163,20 +171,20 @@ type TreemapDataType = {
 
 const convertDataForTreeMap = (data: PeriodDataInput[]): TreemapDataType[] => {
     if (!Array.isArray(data) || data.length === 0) return [];
-    
-    const validData = data.filter(
-        item => item && typeof item.period === 'string'
-    );
+
+    const validData = data.filter(item => typeof item.period === 'string');
     if (validData.length === 0) return [];
 
     const categories = Object.keys(validData[0]).filter(key => key !== 'period');
-    return categories.map(category => ({
-        name: category,
-        children: validData
-            .map(item => {
-                const size = Number(item[category]);
-                return { name: item.period, size: isNaN(size) ? 0 : size };
-            })
-            .filter(child => child.size > 0)
-    })).filter(cat => cat.children.length > 0);
+    return categories
+        .map(cat => ({
+            name: cat,
+            children: validData
+                .map(item => {
+                    const size = Number(item[cat]);
+                    return { name: item.period, size: isNaN(size) ? 0 : size };
+                })
+                .filter(child => child.size > 0)
+        }))
+        .filter(c => c.children.length > 0);
 };
