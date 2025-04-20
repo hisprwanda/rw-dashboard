@@ -2,34 +2,26 @@ import { useEffect, useState } from "react";
 import { IoIosTime } from "react-icons/io";
 import { RiOrganizationChart } from "react-icons/ri";
 import { AiOutlineDatabase } from "react-icons/ai";
+import { AnalyticsFilteringBoxTypes,analyticsPayloadDeterminerTypes } from "../../../../types/analyticsTypes";
+import { useAuthorities } from "../../../../context/AuthContext";
 
-type BoxType = "Columns" | "Rows" | "Filter";
 
-type DragDropState = {
-  Columns: string[];
-  Rows: string[];
-  Filter: string[];
-};
 
-const initialState: DragDropState = {
-  Columns: ["Data"],
-  Rows: ["Organisation unit"],
-  Filter: ["Period"],
-};
+
 
 const FilteringVisualsDragAndDrop = () => {
-  const [payload, setPayload] = useState<DragDropState>(initialState);
+  const {analyticsPayloadDeterminer,setAnalyticsPayloadDeterminer} = useAuthorities()
   const [draggingItem, setDraggingItem] = useState<string | null>(null);
-  const [sourceBox, setSourceBox] = useState<BoxType | null>(null);
+  const [sourceBox, setSourceBox] = useState<AnalyticsFilteringBoxTypes | null>(null);
 
   useEffect(() => {
-    console.log("payload changed", payload);
-  }, [payload]);
+    console.log("analyticsPayloadDeterminer changed x", analyticsPayloadDeterminer);
+  }, [analyticsPayloadDeterminer]);
 
-  const handleDrop = (box: BoxType) => {
+  const handleDrop = (box: AnalyticsFilteringBoxTypes) => {
     if (!draggingItem || !sourceBox || box === sourceBox) return;
 
-    setPayload((prev) => {
+    setAnalyticsPayloadDeterminer((prev) => {
       const newState = { ...prev };
       newState[sourceBox] = newState[sourceBox].filter((i) => i !== draggingItem);
       newState[box] = [...newState[box], draggingItem];
@@ -40,7 +32,7 @@ const FilteringVisualsDragAndDrop = () => {
     setSourceBox(null);
   };
 
-  const renderBox = (title: BoxType, isRight = false) => (
+  const renderBox = (title: AnalyticsFilteringBoxTypes, isRight = false) => (
     <div
       className={`${isRight ? "ml-auto" : ""} min-w-[200px]`}
       onDragOver={(e) => e.preventDefault()}
@@ -54,7 +46,7 @@ const FilteringVisualsDragAndDrop = () => {
 
   {/* second column takes up the remaining space */}
   <div className="w-full bg-white border border-gray-300 rounded-md min-h-[20px] p-1">
-    {payload[title].map((item) => (
+    {analyticsPayloadDeterminer[title].map((item) => (
       <div
         key={item}
         className="inline-flex items-center gap-1 bg-teal-50 border border-teal-200 text-teal-800  rounded-md text-sm shadow-sm mt-1 mr-1 cursor-move"

@@ -48,12 +48,7 @@ function Visualizers() {
     const captureRef = useRef<HTMLDivElement>(null);
     const [isFullscreen, setIsFullscreen] = useState(false);
     const {resetOtherValuesToDefaultExceptDataSource,resetAnalyticsStatesToDefaultValues} = useResetAnalyticsStatesToDefault()
-   
 
-    useEffect(()=>{
-        console.log("visualTitleAndSubTitle 22",visualTitleAndSubTitle)
-        console.log("metaDataLabels 000",metaDataLabels)
-    },[visualTitleAndSubTitle])
     //// data source options
     const dataSourceOptions = savedDataSource?.dataStore?.entries?.map((entry: any) => (
         <option key={entry?.key} value={entry?.key}>{entry?.value?.instanceName}</option>

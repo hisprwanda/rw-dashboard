@@ -20,6 +20,7 @@ import { BackedSelectedItem, visualTypes } from "../types/visualType";
 import { currentInstanceId } from "../constants/currentInstanceInfo";
 import { getAnalyticsFilter, getSelectedOrgUnitsWhenUsingMap } from "../lib/getAnalyticsFilters";
 import { getDimensionItems, PeriodItem, transformMetadataLabels } from "../lib/formatMetaDataLabels";
+import { analyticsPayloadDeterminerTypes } from "../types/analyticsTypes";
 
 interface AuthContextProps {
   userDatails: {};
@@ -89,7 +90,9 @@ interface AuthContextProps {
             metaMapData:any;
              setMetaMapData:any;
              metaDataLabels:any;
-              setMetaDataLabels:any
+              setMetaDataLabels:any;
+              analyticsPayloadDeterminer:analyticsPayloadDeterminerTypes;
+              setAnalyticsPayloadDeterminer:any
  
 }
 
@@ -109,9 +112,13 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const {apiVersion } = useConfig()
-
+  const initialState: analyticsPayloadDeterminerTypes = {
+    Columns: ["Data"],
+    Rows: ["Organisation unit"],
+    Filter: ["Period"],
+  };
   const { data, loading, error } = useDataQuery(query);
+    const [analyticsPayloadDeterminer, setAnalyticsPayloadDeterminer] = useState<analyticsPayloadDeterminerTypes>(initialState);
   const [isExportingDashboardAsPPTX, setIsExportingDashboardAsPPTX] = useState<boolean>(false);
   const {  data:systemInfo } = useSystemInfo();
   const [authorities, setAuthorities] = useState<string[]>([]);
@@ -386,7 +393,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
 
   return (
-    <AuthContext.Provider value={{metaDataLabels,setMetaDataLabels,geoFeaturesQuery, mapAnalyticsQueryTwo,analyticsMapData,setGeoFeaturesQuery,setMapAnalyticsQueryTwo,geoFeaturesData,metaMapData,setAnalyticsMapData,setGeoFeaturesData,setMetaMapData, isExportingDashboardAsPPTX,setIsExportingDashboardAsPPTX,setSubDataItemsData,subDataItemsData,backedSelectedItems,setBackedSelectedItems,dataItemsDataPage,setDataItemsDataPage,selectedDimensionItemType,setSelectedDimensionItemType,selectedDataSourceOption,setSelectedDataSourceOption,currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData,selectedDataSourceDetails,setSelectedDataSourceDetails,dataItemsData,setDataItemsData,setVisualsColorPalettes,visualsColorPalettes, selectedColorPalette,setSelectedColorPalette ,visualSettings,setSelectedVisualSettings,fetchSingleOrgUnitName,visualTitleAndSubTitle,setSelectedVisualTitleAndSubTitle,  selectedVisualsForDashboard, setSelectedVisualsForDashboard,setAnalyticsData,setAnalyticsQuery,selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery,selectedChartType,setSelectedChartType}}>
+    <AuthContext.Provider value={{analyticsPayloadDeterminer,setAnalyticsPayloadDeterminer,metaDataLabels,setMetaDataLabels,geoFeaturesQuery, mapAnalyticsQueryTwo,analyticsMapData,setGeoFeaturesQuery,setMapAnalyticsQueryTwo,geoFeaturesData,metaMapData,setAnalyticsMapData,setGeoFeaturesData,setMetaMapData, isExportingDashboardAsPPTX,setIsExportingDashboardAsPPTX,setSubDataItemsData,subDataItemsData,backedSelectedItems,setBackedSelectedItems,dataItemsDataPage,setDataItemsDataPage,selectedDimensionItemType,setSelectedDimensionItemType,selectedDataSourceOption,setSelectedDataSourceOption,currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData,selectedDataSourceDetails,setSelectedDataSourceDetails,dataItemsData,setDataItemsData,setVisualsColorPalettes,visualsColorPalettes, selectedColorPalette,setSelectedColorPalette ,visualSettings,setSelectedVisualSettings,fetchSingleOrgUnitName,visualTitleAndSubTitle,setSelectedVisualTitleAndSubTitle,  selectedVisualsForDashboard, setSelectedVisualsForDashboard,setAnalyticsData,setAnalyticsQuery,selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery,selectedChartType,setSelectedChartType}}>
       {children}
     </AuthContext.Provider>
   );
