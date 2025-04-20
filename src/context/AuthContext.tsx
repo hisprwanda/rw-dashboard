@@ -217,21 +217,38 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
  * @param {Object} analyticsPayloadDeterminer - The configuration for columns, rows, and filters
  * @returns {Object} Updated query parameters
  */
+/**
+ * Updates query parameters based on analytics payload determiner settings
+ * @param {Object} queryParams - The original query parameters
+ * @param {Object} analyticsPayloadDeterminer - The configuration for columns, rows, and filters
+ * @returns {Object} Updated query parameters
+ */
 function updateQueryParams(queryParams, analyticsPayloadDeterminer) {
   // Create a deep copy of queryParams to avoid mutating the original
   const updatedQueryParams = JSON.parse(JSON.stringify(queryParams));
   
-  // Initialize dimension array if it doesn't exist
-  if (!updatedQueryParams.dimension) {
-    updatedQueryParams.dimension = [];
+  // Extract existing dimension values by prefix
+  const dimensionMap = {};
+  if (updatedQueryParams.dimension) {
+    updatedQueryParams.dimension.forEach(dim => {
+      const [prefix] = dim.split(':');
+      dimensionMap[prefix] = dim;
+    });
   }
   
-  // Extract existing dimension prefixes
-  const dimensionPrefixes = {};
-  updatedQueryParams.dimension.forEach(dim => {
-    const [prefix] = dim.split(':');
-    dimensionPrefixes[prefix] = dim;
-  });
+  // Extract filter values by prefix
+  const filterMap = {};
+  if (updatedQueryParams.filter) {
+    if (Array.isArray(updatedQueryParams.filter)) {
+      updatedQueryParams.filter.forEach(filter => {
+        const [prefix] = filter.split(':');
+        filterMap[prefix] = filter;
+      });
+    } else {
+      const [prefix] = updatedQueryParams.filter.split(':');
+      filterMap[prefix] = updatedQueryParams.filter;
+    }
+  }
   
   // Helper function to map dimension names to their prefixes
   const getDimensionPrefix = (name) => {
@@ -243,50 +260,57 @@ function updateQueryParams(queryParams, analyticsPayloadDeterminer) {
     }
   };
   
-  // Process all items from Columns and Rows to be included in dimension
-  const columnsAndRows = [...analyticsPayloadDeterminer.Columns, ...analyticsPayloadDeterminer.Rows];
+  // Combine all available values
+  const allAvailableValues = {...dimensionMap, ...filterMap};
   
   // If Filter is empty, include all items in dimension
   if (analyticsPayloadDeterminer.Filter.length === 0) {
+    // Initialize new dimension array
+    const newDimensions = [];
+    
+    // Add all items from Columns and Rows to dimension
+    [...analyticsPayloadDeterminer.Columns, ...analyticsPayloadDeterminer.Rows].forEach(item => {
+      const prefix = getDimensionPrefix(item);
+      // Use existing value if available, otherwise this would be an error case
+      if (allAvailableValues[prefix]) {
+        newDimensions.push(allAvailableValues[prefix]);
+      }
+    });
+    
+    updatedQueryParams.dimension = newDimensions;
     // Remove filter property
     delete updatedQueryParams.filter;
-    
-    // Add all items to dimension
-    columnsAndRows.forEach(item => {
-      const prefix = getDimensionPrefix(item);
-      // Avoid duplicates and preserve original values
-      if (!dimensionPrefixes[prefix]) {
-        // If we don't have a value for this prefix, use a default
-        updatedQueryParams.dimension.push(`${prefix}:USER_ORGUNIT`);
-      }
-    });
   } else {
-    // Process items to be included in filter
-    const filterItems = [];
-    const dimensionItems = [];
+    // Initialize new arrays
+    const newDimensions = [];
+    const newFilters = [];
     
-    // Determine which items go to dimension and which to filter
-    const allItems = [...columnsAndRows, ...analyticsPayloadDeterminer.Filter];
-    
-    allItems.forEach(item => {
+    // Process columns and rows (these go to dimension)
+    [...analyticsPayloadDeterminer.Columns, ...analyticsPayloadDeterminer.Rows].forEach(item => {
       const prefix = getDimensionPrefix(item);
-      const value = dimensionPrefixes[prefix] || `${prefix}:USER_ORGUNIT`;
-      
-      if (analyticsPayloadDeterminer.Filter.includes(item)) {
-        filterItems.push(value);
-      } else {
-        dimensionItems.push(value);
+      if (allAvailableValues[prefix]) {
+        newDimensions.push(allAvailableValues[prefix]);
       }
     });
     
-    // Update dimension array with only non-filter items
-    updatedQueryParams.dimension = dimensionItems;
+    // Process filter items
+    analyticsPayloadDeterminer.Filter.forEach(item => {
+      const prefix = getDimensionPrefix(item);
+      if (allAvailableValues[prefix]) {
+        newFilters.push(allAvailableValues[prefix]);
+      }
+    });
+    
+    // Update dimension array
+    updatedQueryParams.dimension = newDimensions;
     
     // Update filter (could be a string or array based on your examples)
-    if (filterItems.length === 1) {
-      updatedQueryParams.filter = filterItems[0];
-    } else if (filterItems.length > 1) {
-      updatedQueryParams.filter = filterItems;
+    if (newFilters.length === 1) {
+      updatedQueryParams.filter = newFilters[0];
+    } else if (newFilters.length > 1) {
+      updatedQueryParams.filter = newFilters;
+    } else {
+      delete updatedQueryParams.filter;
     }
   }
   
@@ -341,8 +365,8 @@ function updateQueryParams(queryParams, analyticsPayloadDeterminer) {
         displayProperty: 'NAME',
         includeNumDen: true,
       } 
-       queryParams = updateQueryParams(queryParams, analyticsPayloadDeterminer)
-      console.log("xyzxyz",queryParams)
+     queryParams = updateQueryParams(queryParams, analyticsPayloadDeterminer)
+      console.log("xyzxyz11",queryParams)
       ///// function to modify queryParams based on analyticsPayloadDeterminer
       console.log("queryParams",queryParams)
       const queryParamsForMetaDataLabels = {
