@@ -58,7 +58,7 @@ export const LocalRowStackedChart: React.FC<genericChartsProps> = ({ data, visua
         
         // Calculate based on the longest label
         const maxLabelLength = Math.max(...chartData.map(item => 
-            item.month ? item.month.toString().length : 0
+            item.period ? item.period.toString().length : 0
         ));
         
         // Base width + additional width per character
@@ -106,7 +106,7 @@ export const LocalRowStackedChart: React.FC<genericChartsProps> = ({ data, visua
                             }} 
                         />
                         <YAxis
-                            dataKey="month"
+                            dataKey="period"
                             type="category"
                             tickLine={false}
                             axisLine={false}

@@ -1,9 +1,6 @@
 import { useAuthorities } from '../context/AuthContext';
 import { ChartConfig } from "../components/ui/chart";
-import {visualColorPaletteTypes} from "../types/visualSettingsTypes"
-
-
-
+import { visualColorPaletteTypes } from "../types/visualSettingsTypes";
 
 export interface InputData {
     headers: any[];
@@ -12,8 +9,8 @@ export interface InputData {
 }
 
 export interface TransformedDataPoint {
-    month: string;
-    [key: string]: number | string;
+    period: string;
+    [key: string]: number | string | null;
 }
 
 export function isValidInputData(data: any): data is InputData {
@@ -21,209 +18,165 @@ export function isValidInputData(data: any): data is InputData {
         data &&
         Array.isArray(data.headers) &&
         data.metaData &&
-        Array.isArray(data.rows) &&
-        data.rows.length > 0
+        Array.isArray(data.rows)
     );
 }
 
-
-
-function combineDataByMonth(data:TransformedDataPoint[]):TransformedDataPoint[] {
+// Combines entries with the same period, merging their data
+function combineDataByPeriod(data: TransformedDataPoint[]): TransformedDataPoint[] {
     return Object.values(
-      data.reduce((acc:any, current:any) => {
-        const { month, ...rest } = current;
-        
-        // If the month already exists, combine the data
-        if (!acc[month]) {
-          acc[month] = { month, ...rest };
-        } else {
-          acc[month] = { ...acc[month], ...rest };
-        }
-        
-        return acc;
-      }, {})
+        data.reduce((acc: Record<string, TransformedDataPoint>, current: TransformedDataPoint) => {
+            const { period, ...rest } = current;
+            if (!acc[period]) {
+                acc[period] = { period, ...rest };
+            } else {
+                acc[period] = { ...acc[period], ...rest };
+            }
+            return acc;
+        }, {})
     );
-  }
+}
 
-
-  export function transformDataForGenericChart(
+export function transformDataForGenericChart(
     inputData: InputData,
     chartType?: "pie" | "radial" | "single" | "tree",
     selectedColorPalette?: visualColorPaletteTypes,
     metaDataLabels?: any
-  ): TransformedDataPoint[] | any {
+): TransformedDataPoint[] | any {
     if (!isValidInputData(inputData)) {
-      throw new Error("Invalid input data structure");
+        throw new Error("Invalid input data structure");
     }
-    
+
+    const metadata = inputData.metaData;
+    const headers = inputData.headers;
     const rows = inputData.rows;
-    console.log("data one", rows);
-    console.log("metaDataLabels one", metaDataLabels);
-  
-    // Use metaDataLabels if provided, otherwise use inputData.metaData
-    const metadata = metaDataLabels || inputData.metaData;
-    
-    // Step 1: Create an ordered map to store data by period and preserve order
-    const dataMap = new Map();
-    
-    // Step 2: Get all periods from metadata in their original order
-    const allPeriods = metadata.dimensions.pe.map(periodId => {
-      return {
+
+    const dxIndex = headers.findIndex(h => h.name === 'dx');
+    const peIndex = headers.findIndex(h => h.name === 'pe');
+    const valueIndex = headers.findIndex(h => h.name === 'value');
+
+    if (dxIndex < 0 || peIndex < 0 || valueIndex < 0) {
+        throw new Error('Required headers (dx, pe, value) are missing');
+    }
+
+    const allPeriods = metadata.dimensions.pe.map((periodId: string) => ({
         id: periodId,
         name: metadata.items[periodId].name
-      };
-    });
-    
-    // Step 3: Get all data elements from metadata
-    const allDataElements = metadata.dimensions.dx.map(dataElementId => {
-      return {
-        id: dataElementId,
-        name: metadata.items[dataElementId].name
-      };
-    });
-    
-    // Step 4: Initialize the map with all periods in the correct order
+    }));
+
+    const allDataElements = metadata.dimensions.dx.map((dxId: string) => ({
+        id: dxId,
+        name: metadata.items[dxId].name
+    }));
+
+    const dataMap = new Map<string, TransformedDataPoint>();
     allPeriods.forEach(period => {
-      dataMap.set(period.name, { month: period.name });
+        const entry: TransformedDataPoint = { period: period.name };
+        allDataElements.forEach(de => {
+            entry[de.name] = null;
+        });
+        dataMap.set(period.name, entry);
     });
-    
-    // Step 5: Process existing data from rows
+
     rows.forEach(row => {
-      const dataElementId = row[0];
-      const periodId = row[1];
-      const value = parseInt(row[2]) ;
-      
-      const dataElementName = metadata.items[dataElementId].name;
-      const periodName = metadata.items[periodId].name;
-      
-      // Get the existing entry for this period
-      const periodData = dataMap.get(periodName);
-      
-      // Add the data element value to this period
-      periodData[dataElementName] = value;
-    });
-    
-    // Step 6: Ensure all periods have entries for all data elements
-    dataMap.forEach((periodData, periodName) => {
-      allDataElements.forEach(dataElement => {
-        if (periodData[dataElement.name] === undefined) {
-          periodData[dataElement.name] = null;
+        const dxId = row[dxIndex];
+        const peId = row[peIndex];
+        const rawValue = row[valueIndex];
+        const numericValue = rawValue !== '' ? Number(rawValue) : null;
+
+        const dataElementName = metadata.items[dxId]?.name;
+        const periodName = metadata.items[peId]?.name;
+        if (!dataElementName || !periodName) return;
+
+        const periodEntry = dataMap.get(periodName);
+        if (periodEntry) {
+            periodEntry[dataElementName] = numericValue;
         }
-      });
     });
-    
-    // Convert the map to array, maintaining the original order
-    const transformedData = Array.from(dataMap.values());
-    
-    console.log("transformedData 1", transformedData);
-    const finalTransformedData = combineDataByMonth(transformedData) as TransformedDataPoint[];
-    console.log("finalTransformedData 2", finalTransformedData);
-    
+
+    const transformedData = allPeriods.map(p => dataMap.get(p.name)!);
+    const finalData = combineDataByPeriod(transformedData);
+
     if (chartType === "pie" || chartType === "radial") {
-      const result = transformDataNoneAxisData(finalTransformedData, selectedColorPalette);
-      return result;
+        return transformDataNoneAxisData(finalData, selectedColorPalette);
     } else if (chartType === "tree") {
-      const result = convertDataForTreeMap(finalTransformedData);
-      return result;
-    } else {
-      return finalTransformedData;
+        return convertDataForTreeMap(finalData);
     }
-  }
- 
-export function generateChartConfig(inputData: InputData,selectedColorPalette?:visualColorPaletteTypes): ChartConfig {
 
-
-  console.log("Selected color palette:", selectedColorPalette);
-
-  if (!isValidInputData(inputData)) {
-    throw new Error("Invalid input data structure");
-  }
-
-  const config: ChartConfig = {};
-  const dataItems = inputData.metaData.dimensions.dx;
-  dataItems.forEach((item: string, index: number) => {
-    const name = inputData.metaData.items[item].name;
-
-    // Determine color based on the format of selectedColorPalette
-    const color =
-      selectedColorPalette.itemsBackgroundColors.every(color => color.startsWith("hsl")) // Check if all are HSL
-        ? selectedColorPalette.itemsBackgroundColors[index] || `hsl(var(--chart-${index + 1}))`
-        : selectedColorPalette.itemsBackgroundColors[index] || selectedColorPalette.itemsBackgroundColors[0]; // Use first color as fallback for HEX or RGB
-
-    config[name] = {
-      label: name,
-      color,
-    };
-  });
-
-  return config;
+    return finalData;
 }
 
+export function generateChartConfig(
+    inputData: InputData,
+    selectedColorPalette?: visualColorPaletteTypes
+): ChartConfig {
+    if (!isValidInputData(inputData)) {
+        throw new Error("Invalid input data structure");
+    }
 
-
-
-////// other formats
-function transformDataNoneAxisData(data:TransformedDataPoint[],selectedColorPalette?:visualColorPaletteTypes) {
-
-    const totals = {};
-    const colorCount = selectedColorPalette.itemsBackgroundColors.length; // Number of available colors
-
-  
-    // Calculate totals for each disease dynamically
-    data.forEach((entry) => {
-      for (const key in entry) {
-        if (key !== "month") {
-          totals[key] = (totals[key] || 0) + entry[key];
-        }
-      }
+    const config: ChartConfig = {};
+    const dataItems = inputData.metaData.dimensions.dx;
+    dataItems.forEach((item: string, index: number) => {
+        const name = inputData.metaData.items[item].name;
+        const color =
+            selectedColorPalette?.itemsBackgroundColors.every(c => c.startsWith("hsl"))
+                ? selectedColorPalette.itemsBackgroundColors[index] || `hsl(var(--chart-${index + 1}))`
+                : selectedColorPalette?.itemsBackgroundColors[index] || selectedColorPalette?.itemsBackgroundColors[0];
+        config[name] = { label: name, color };
     });
-  
-    // Transform the totals into the desired array format with dynamic colors
-    const transformedData = Object.entries(totals).map(([name, total], index) => ({
-      name,
-      total,
-      fill: selectedColorPalette.itemsBackgroundColors[index % colorCount], // Assign colors cyclically
-    }));
-  
-    return transformedData;
-  }
 
-  ///////// tree map
-type InputDataType = {
-  month: string;
-  [key: string]: string | number | undefined | null;
+    return config;
+}
+
+function transformDataNoneAxisData(
+    data: TransformedDataPoint[],
+    selectedColorPalette?: visualColorPaletteTypes
+) {
+    const totals: Record<string, number> = {};
+    const colorCount = selectedColorPalette?.itemsBackgroundColors.length || 0;
+
+    data.forEach(entry => {
+        for (const key in entry) {
+            if (key !== "period") {
+                const val = Number(entry[key]);
+                totals[key] = (totals[key] || 0) + (isNaN(val) ? 0 : val);
+            }
+        }
+    });
+
+    return Object.entries(totals).map(([name, total], index) => ({
+        name,
+        total,
+        fill: selectedColorPalette?.itemsBackgroundColors[index % colorCount]
+    }));
+}
+
+type PeriodDataInput = {
+    period: string;
+    [key: string]: string | number | undefined | null;
 };
 
 type TreemapDataType = {
-  name: string;
-  children: { name: string; size: number }[];
+    name: string;
+    children: { name: string; size: number }[];
 };
 
-const convertDataForTreeMap = (data: InputDataType[]): TreemapDataType[] => {
-  if (!Array.isArray(data) || data.length === 0) {
-    console.error('Input data is empty or not an array');
-    return [];
-  }
+const convertDataForTreeMap = (data: PeriodDataInput[]): TreemapDataType[] => {
+    if (!Array.isArray(data) || data.length === 0) return [];
+    
+    const validData = data.filter(
+        item => item && typeof item.period === 'string'
+    );
+    if (validData.length === 0) return [];
 
-  const validData = data.filter(item => 
-    typeof item === 'object' && item !== null && 'month' in item && typeof item.month === 'string'
-  );
-
-  if (validData.length === 0) {
-    console.error('No valid data entries found');
-    return [];
-  }
-
-  const categories = Object.keys(validData[0]).filter(key => key !== 'month');
-
-  return categories.map(category => ({
-    name: category,
-    children: validData.map(item => {
-      const size = Number(item[category]);
-      return {
-        name: item.month,
-        size: isNaN(size) ? 0 : size
-      };
-    }).filter(child => child.size > 0)
-  })).filter(category => category.children.length > 0);
+    const categories = Object.keys(validData[0]).filter(key => key !== 'period');
+    return categories.map(category => ({
+        name: category,
+        children: validData
+            .map(item => {
+                const size = Number(item[category]);
+                return { name: item.period, size: isNaN(size) ? 0 : size };
+            })
+            .filter(child => child.size > 0)
+    })).filter(cat => cat.children.length > 0);
 };

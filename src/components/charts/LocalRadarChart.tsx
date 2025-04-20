@@ -57,7 +57,7 @@ export const LocalRadarChart: React.FC<genericChartsProps> = ({ data,visualSetti
               cursor={false}
               content={<ChartTooltipContent indicator="line" className="bg-white"  />}
             />
-            <PolarAngleAxis dataKey="month"  
+            <PolarAngleAxis dataKey="period"  
              tick={{ fill:visualSettings.fillColor, fontSize: visualSettings.XAxisSettings.fontSize, fontWeight: 'bold' }} 
             />
             <PolarGrid   />

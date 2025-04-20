@@ -86,7 +86,7 @@ export const LocalScatterCharts: React.FC<genericChartsProps> = ({ data, visualT
                     <ScatterChart data={chartData}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis
-                            dataKey="month"
+                            dataKey="period"
                             tickLine={false}
                             tickMargin={shouldRotateLabels ? 15 : 10}
                             axisLine={true}

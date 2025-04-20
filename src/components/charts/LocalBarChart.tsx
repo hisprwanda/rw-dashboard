@@ -100,13 +100,10 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({ data, visualTitleA
                 }
                 
                 <ResponsiveContainer width="100%" height="100%">
-                    <BarChart 
-                        data={chartData} 
-                      
-                    >
+                    <BarChart    data={chartData} >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis
-                            dataKey="month"
+                            dataKey="period"
                             tickLine={false}
                             tickMargin={shouldRotateLabels ? 15 : 10}
                             axisLine={true}
