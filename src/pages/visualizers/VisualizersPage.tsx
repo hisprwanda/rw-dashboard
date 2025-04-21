@@ -93,7 +93,7 @@ function Visualizers() {
     // Function to render the selected chart
     const renderChart = () => {
         const SelectedChart = chartComponents.find(chart => chart.type === selectedChartType)?.component;
-        return SelectedChart ? <SelectedChart data={analyticsData} visualTitleAndSubTitle={visualTitleAndSubTitle} visualSettings={visualSettings} metaDataLabels={metaDataLabels} /> : null;
+        return SelectedChart ? <SelectedChart data={analyticsData} visualTitleAndSubTitle={visualTitleAndSubTitle} visualSettings={visualSettings} metaDataLabels={metaDataLabels} analyticsPayloadDeterminer={analyticsPayloadDeterminer}  /> : null;
     };
 
     /// handle data source onchange
@@ -244,8 +244,8 @@ function Visualizers() {
                                 {isFetchAnalyticsDataLoading ? (
                                     <Loading />
                                 ) : (
-                                    <div className="flex items-center justify-center w-full ">
-                                        <div className="w-[100%] max-h-[100%]">
+                                    <div className="flex items-center justify-center w-full  ">
+                                        <div className="w-[100%] max-h-[100px]   ">
                                             {fetchAnalyticsDataError ?
                                                 <p className='text-center text-red-600 bg-red-100 p-4 rounded-lg shadow-sm border border-red-300'  >{fetchAnalyticsDataError?.message}</p> :
                                                 renderChart()}

@@ -1,3 +1,5 @@
+import { analyticsPayloadDeterminerTypes } from "./analyticsTypes";
+
 export interface VisualTitleAndSubtitleType {
     visualTitle?: string;
     customSubTitle?:string;
@@ -36,5 +38,6 @@ export interface VisualTitleAndSubtitleType {
     data: any;
     visualTitleAndSubTitle:VisualTitleAndSubtitleType;
     visualSettings:VisualSettingsTypes;
-    metaDataLabels:any
+    metaDataLabels:any;
+    analyticsPayloadDeterminer:analyticsPayloadDeterminerTypes
 }
