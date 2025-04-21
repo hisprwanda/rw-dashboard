@@ -1,10 +1,14 @@
 import { useState, useCallback } from 'react';
 import { useDataEngine } from '@dhis2/app-runtime';
 import { useAuthorities } from '../context/AuthContext';
+import { analyticsPayloadDeterminerTypes } from '../types/analyticsTypes';
+import { updateQueryParams } from '../lib/payloadFormatter';
 /// use this if current instance is true
-export const useFetchSingleChartApi = (query: any) => {
+export const useFetchSingleChartApi = (query: any,analyticsPayloadDeterminer:analyticsPayloadDeterminerTypes) => {
 
-  
+  console.log("hello test dashb query",query)
+  console.log("hello test dashb analyticsPayloadDeterminer",analyticsPayloadDeterminer)
+
     if (!query) {
 
         return { data: null, loading: false, error: "Invalid query", isError: true, refetch: null };
@@ -13,14 +17,21 @@ export const useFetchSingleChartApi = (query: any) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [data, setData] = useState(null);
-
+    const updateParams = updateQueryParams(query?.myData?.params,analyticsPayloadDeterminer)
+    const updatedQuery = {
+        ...query,
+        myData: {
+          ...query.myData,
+          params: updateParams
+        }
+      }
     // Function to fetch data, only called when explicitly invoked
     const runSavedSingleVisualAnalytics = useCallback(async () => {
         setLoading(true);
         setError(null);
         try {
      
-            const result = await engine.query(query);
+            const result = await engine.query(updatedQuery);
         
             setData(result?.myData);
         } catch (err) {

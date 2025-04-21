@@ -553,6 +553,8 @@ const MemoizedGridLayout = React.memo(({
              visualSettings={widget.visualSettings} 
              dataSourceId={widget.dataSourceId} 
              visualTitleAndSubTitle={widget.visualTitleAndSubTitle} 
+             analyticsPayloadDeterminer={widget.analyticsPayloadDeterminer}
+
            />
          ) : (
             <div className="h-full w-full"  >
