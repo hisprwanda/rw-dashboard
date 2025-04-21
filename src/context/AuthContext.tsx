@@ -209,11 +209,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     instance:DataSourceFormFields;
     isAnalyticsApiUsedInMap?:boolean;
     selectedPeriodsOnMap?:string[];
-    selectedOrgUnitsWhenUsingMap?:string[]
+    selectedOrgUnitsWhenUsingMap?:string[];
+    analyticsPayloadDeterminer?:analyticsPayloadDeterminerTypes;
   }
 
 
-  const fetchAnalyticsData = async ({dimension,instance,isAnalyticsApiUsedInMap,selectedPeriodsOnMap = [],selectedOrgUnitsWhenUsingMap = []}:fetchAnalyticsDataProps ):Promise<void> => {
+  const fetchAnalyticsData = async ({dimension,instance,isAnalyticsApiUsedInMap,selectedPeriodsOnMap = [],selectedOrgUnitsWhenUsingMap = [],analyticsPayloadDeterminer}:fetchAnalyticsDataProps ):Promise<void> => {
     const orgUnitIds = selectedOrganizationUnits?.map((unit: any) => unit)?.join(';');
     const orgUnitLevelIds = selectedOrganizationUnitsLevels?.map((unit: any) => `LEVEL-${unit}`)?.join(';');
     const orgUnitGroupIds = selectedOrgUnitGroups?.map((item: any) => `OU_GROUP-${item}`)?.join(';'); 

@@ -187,6 +187,7 @@ const mapsOptions = allSavedMaps?.dataStore?.entries?.map((entry: any) => (
                 visualName: visual.value.visualName,
                 visualQuery: visual.value.query,
                 visualType: visual.value.visualType,
+                analyticsPayloadDeterminer: visual.value.analyticsPayloadDeterminer,
                 visualSettings: visual.value.visualSettings,
                 visualTitleAndSubTitle: visual.value.visualTitleAndSubTitle,
                 dataSourceId: visual.value.dataSourceId
@@ -227,7 +228,8 @@ const mapsOptions = allSavedMaps?.dataStore?.entries?.map((entry: any) => (
                     ...layoutItem, 
                     visualName: existingVisual.visualName, 
                     visualQuery: existingVisual.visualQuery, 
-                    visualType: existingVisual.visualType, 
+                    visualType: existingVisual.visualType,
+                    analyticsPayloadDeterminer: existingVisual.analyticsPayloadDeterminer, 
                     visualSettings: existingVisual.visualSettings,
                     visualTitleAndSubTitle: existingVisual.visualTitleAndSubTitle, 
                     dataSourceId: existingVisual.dataSourceId 

@@ -21,7 +21,7 @@ const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsSh
 
   const {
     analyticsDimensions,
-    setAnalyticsDimensions,
+    analyticsPayloadDeterminer,
     fetchAnalyticsData,
     fetchAnalyticsDataError,
     isFetchAnalyticsDataLoading,
@@ -111,7 +111,8 @@ const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsSh
       // Continue with analytics fetch
       await fetchAnalyticsData({
         dimension: formatAnalyticsDimensions(analyticsDimensions),
-        instance: selectedDataSourceDetails
+        instance: selectedDataSourceDetails,
+        analyticsPayloadDeterminer
       });
       setIsShowOrganizationUnit(false);
     } catch (error) {

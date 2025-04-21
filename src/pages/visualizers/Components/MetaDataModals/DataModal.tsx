@@ -226,6 +226,7 @@ const DataModal: React.FC<DataModalProps> = ({
     analyticsDimensions,
     setAnalyticsDimensions,
     fetchAnalyticsData,
+    analyticsPayloadDeterminer,
     isFetchAnalyticsDataLoading,
     selectedDataSourceDetails,
     backedSelectedItems,setBackedSelectedItems
@@ -419,7 +420,7 @@ const DataModal: React.FC<DataModalProps> = ({
   };
   
   const handleUpdate = async () => {
-    await fetchAnalyticsData({dimension:formatAnalyticsDimensions(analyticsDimensions),instance:selectedDataSourceDetails});
+    await fetchAnalyticsData({dimension:formatAnalyticsDimensions(analyticsDimensions),instance:selectedDataSourceDetails,analyticsPayloadDeterminer});
     setIsShowDataModal(false);
     setDataItemsDataPage(1);
   };

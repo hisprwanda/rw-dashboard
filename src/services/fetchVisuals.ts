@@ -81,6 +81,7 @@ export const useFetchSingleVisualData = (visualId: string) => {
     setSelectedColorPalette,
     setBackedSelectedItems,
     fetchAnalyticsData,
+    setAnalyticsPayloadDeterminer,
     selectedDimensionItemType,
     setCurrentUserInfoAndOrgUnitsData
   } = useAuthorities();

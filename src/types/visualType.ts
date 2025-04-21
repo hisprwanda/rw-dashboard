@@ -53,6 +53,11 @@ export const VisualDataSchema = z.object({
     .refine((data) => Object.keys(data).length > 0, {
       message: "Query object cannot be empty",
     }), 
+    analyticsPayloadDeterminer:z.object({
+      Columns: z.array(z.string()),
+      Rows: z.array(z.string()),
+      Filter: z.array(z.string()),
+    }),
   dataSourceId: z.string().nonempty({ message: "Data source ID is required" }),
   createdBy: z.object({
     name: z.string(),

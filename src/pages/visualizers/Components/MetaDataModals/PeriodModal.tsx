@@ -174,6 +174,7 @@ const PeriodPicker: React.FC<PeriodPickerProps> = ({
     analyticsDimensions,
     setAnalyticsDimensions,
     fetchAnalyticsData,
+    analyticsPayloadDeterminer,
     isFetchAnalyticsDataLoading,
     selectedDataSourceDetails,
   } = useAuthorities()
@@ -524,7 +525,7 @@ const PeriodPicker: React.FC<PeriodPickerProps> = ({
     if (isAnalyticsDataHardCoded) {
       analyticsDimensions.dx = dimensionDataHardCoded
     }
-    const checking = await fetchAnalyticsData({dimension:formatAnalyticsDimensions(analyticsDimensions), instance:selectedDataSourceDetails})
+    const checking = await fetchAnalyticsData({dimension:formatAnalyticsDimensions(analyticsDimensions), instance:selectedDataSourceDetails,analyticsPayloadDeterminer})
     console.log("period modal fetched analytics", checking)
     setDataSubmitted?.(true)
     setIsShowPeriod && setIsShowPeriod(false)

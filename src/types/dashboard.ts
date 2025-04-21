@@ -25,6 +25,11 @@ export const DashboardSchema = z.object({
       visualName: z.string(),
       visualQuery: z.any(),
       visualType: z.string(),
+      analyticsPayloadDeterminer:z.object({
+        Columns: z.array(z.string()),
+        Rows: z.array(z.string()),
+        Filter: z.array(z.string()),
+      }),
       dataSourceId: z
         .string()
         .nonempty({ message: "Data source ID is required" }),
