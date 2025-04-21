@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { Layout } from "react-grid-layout";
+import { analyticsPayloadDeterminerTypes } from "./analyticsTypes";
 
 // Schema definition using zod
 export const DashboardSchema = z.object({
@@ -33,10 +34,16 @@ export const DashboardSchema = z.object({
       dataSourceId: z
         .string()
         .nonempty({ message: "Data source ID is required" }),
-      visualTitleAndSubTitle: z.object({
+      visualTitleAndSubTitle:z.object({
         visualTitle: z.string().optional(),
         customSubTitle: z.string()?.optional(),
-        DefaultSubTitle: z.array(z.string())?.optional(),
+        DefaultSubTitle: z
+        .object({
+          periods: z.array(z.any()),
+          orgUnits: z.array(z.any()),
+          dataElements: z.array(z.any()),
+        })
+        .optional(),
       }),
       visualSettings: z.object({
         visualColorPalette: z.object({
@@ -119,4 +126,5 @@ export interface ExtendedLayout extends Layout {
   mapAnalyticsQueryOneQuery?: any;
   mapAnalyticsQueryTwo?: any;
   isMapItem?: boolean;
+  analyticsPayloadDeterminer:analyticsPayloadDeterminerTypes
 }

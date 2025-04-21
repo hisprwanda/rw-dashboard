@@ -407,6 +407,7 @@ useEffect(()=>{
                           visualType={item.visualType}
                           visualSettings={item.visualSettings}
                           visualTitleAndSubTitle={item.visualTitleAndSubTitle}
+                          analyticsPayloadDeterminer={item.analyticsPayloadDeterminer}
                         />
                       ) : (
                         <div  className=" h-[calc(100vh-50px)] " >
