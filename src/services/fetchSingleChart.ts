@@ -6,9 +6,6 @@ import { updateQueryParams } from '../lib/payloadFormatter';
 /// use this if current instance is true
 export const useFetchSingleChartApi = (query: any,analyticsPayloadDeterminer:analyticsPayloadDeterminerTypes) => {
 
-  console.log("hello test dashb query",query)
-  console.log("hello test dashb analyticsPayloadDeterminer",analyticsPayloadDeterminer)
-
     if (!query) {
 
         return { data: null, loading: false, error: "Invalid query", isError: true, refetch: null };

@@ -23,11 +23,12 @@ import ExportModal from './Components/ExportModal';
 import i18n from '../../locales/index.js'
 import { useResetAnalyticsStatesToDefault } from '../../hooks/useResetAnalyticsStatesTDefault';
 import FilteringVisualsDragAndDrop from './Components/FilteringVisuals/FilteringVisualsDragAndDrop';
-
+import { GrUpdate } from "react-icons/gr";
+import { formatAnalyticsDimensions } from '../../lib/formatAnalyticsDimensions';
 function Visualizers() {
     const { id: visualId } = useParams();
     const { data: systemInfo } = useSystemInfo();
-    const { subDataItemsData, setDataItemsDataPage, metaDataLabels, selectedDataSourceOption, setSelectedDataSourceOption, currentUserInfoAndOrgUnitsData, setCurrentUserInfoAndOrgUnitsData, dataItemsData, selectedDataSourceDetails, setSelectedDataSourceDetails, setSelectedDimensionItemType, analyticsData, isFetchAnalyticsDataLoading, selectedChartType, setSelectedChartType, setAnalyticsQuery, isUseCurrentUserOrgUnits, analyticsQuery, analyticsDimensions, setAnalyticsDimensions, setIsSetPredifinedUserOrgUnits, isSetPredifinedUserOrgUnits, selectedOrganizationUnits, setSelectedOrganizationUnits, setIsUseCurrentUserOrgUnits,  fetchAnalyticsDataError, visualTitleAndSubTitle, visualSettings, setSelectedVisualSettings, setVisualsColorPalettes, selectedColorPalette, selectedDimensionItemType } = useAuthorities();
+    const {fetchAnalyticsData,analyticsPayloadDeterminer, subDataItemsData, setDataItemsDataPage, metaDataLabels, selectedDataSourceOption, setSelectedDataSourceOption, currentUserInfoAndOrgUnitsData, setCurrentUserInfoAndOrgUnitsData, dataItemsData, selectedDataSourceDetails, setSelectedDataSourceDetails, setSelectedDimensionItemType, analyticsData, isFetchAnalyticsDataLoading, selectedChartType, setSelectedChartType, setAnalyticsQuery, isUseCurrentUserOrgUnits, analyticsQuery, analyticsDimensions, setAnalyticsDimensions, setIsSetPredifinedUserOrgUnits, isSetPredifinedUserOrgUnits, selectedOrganizationUnits, setSelectedOrganizationUnits, setIsUseCurrentUserOrgUnits,  fetchAnalyticsDataError, visualTitleAndSubTitle, visualSettings, setSelectedVisualSettings, setVisualsColorPalettes, selectedColorPalette, selectedDimensionItemType } = useAuthorities();
     const { data: singleSavedVisualData, isError, loading: isFetchSingleVisualLoading } = useFetchSingleVisualData(visualId);
     const { loading: orgUnitLoading, error: fetchOrgUnitError, data: orgUnitsData, fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData();
     const { error: dataItemsFetchError, loading: isFetchCurrentInstanceDataItemsLoading, fetchCurrentInstanceData } = useDataItems();
@@ -128,6 +129,11 @@ function Visualizers() {
 
     };
 
+    // run analytics
+    const handleRunAnalytics = async() => {
+            await fetchAnalyticsData({dimension:formatAnalyticsDimensions(analyticsDimensions),instance:selectedDataSourceDetails,analyticsPayloadDeterminer});
+    }
+
     /// fetch current user and Organization unit
     const fetchCurrentUserAndOrgUnitData = async () => {
         const result = await fetchCurrentUserInfoAndOrgUnitData();
@@ -199,6 +205,26 @@ function Visualizers() {
                         <div className="flex-grow bg-white shadow-md  rounded-lg mx-4 bg-green-500 ">
                             <div className="flex mb-1 gap-1 ">
 
+                            <button
+  className="
+    inline-flex        
+    items-center      
+    gap-2              
+    border border-gray-300
+    rounded-md
+    bg-white hover:bg-gray-50
+    text-blue-600       
+    transition-colors     
+    duration-150
+    ease-in-out
+    px-3 py-1 font-bold
+  "
+  onClick={handleRunAnalytics}
+    disabled={isFetchAnalyticsDataLoading}
+>
+  <span>Update</span>
+  <GrUpdate  />
+</button>
                                     <SelectChartType
                                         chartComponents={chartComponents}
                                         selectedChartType={selectedChartType}
