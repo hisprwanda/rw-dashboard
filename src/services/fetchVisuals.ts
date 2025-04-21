@@ -192,6 +192,7 @@ export const useFetchSingleVisualData = (visualId: string) => {
     // Update all visual related states (like settings)
     setSelectedChartType(data.dataStore?.visualType);
     setAnalyticsQuery(data.dataStore?.query);
+    setAnalyticsPayloadDeterminer(data.dataStore?.analyticsPayloadDeterminer);
     setSelectedOrganizationUnits(
       formatSelectedOrganizationUnit(data.dataStore?.query?.myData?.params?.filter)
     );
@@ -221,6 +222,7 @@ export const useFetchSingleVisualData = (visualId: string) => {
     setSelectedDataSourceOption,
     setSelectedChartType,
     setAnalyticsQuery,
+    setAnalyticsPayloadDeterminer,
     setSelectedOrganizationUnits,
     setIsSetPredifinedUserOrgUnits,
     setSelectedOrgUnits,

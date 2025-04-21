@@ -11,7 +11,7 @@ type resetAnalyticsStatesToDefaultValuesParams = {
 
 
 export const useResetAnalyticsStatesToDefault = ()=>{
-  const {  setGeoFeaturesData,setAnalyticsMapData,setMetaMapData, selectedColorPalette,currentUserInfoAndOrgUnitsData, setSelectedDataSourceOption,setSelectedVisualSettings,setVisualsColorPalettes,setIsUseCurrentUserOrgUnits,setSelectedOrganizationUnits,setSelectedOrgUnits,setSelectedOrgUnitGroups,setSelectedOrganizationUnitsLevels,setSelectedLevel,setIsSetPredifinedUserOrgUnits,setAnalyticsDimensions,setSelectedChartType,setSelectedDimensionItemType,setSelectedDataSourceDetails,setAnalyticsData,setMetaDataLabels,setAnalyticsQuery} =   useAuthorities()
+  const { setAnalyticsPayloadDeterminer, setGeoFeaturesData,setAnalyticsMapData,setMetaMapData, selectedColorPalette,currentUserInfoAndOrgUnitsData, setSelectedDataSourceOption,setSelectedVisualSettings,setVisualsColorPalettes,setIsUseCurrentUserOrgUnits,setSelectedOrganizationUnits,setSelectedOrgUnits,setSelectedOrgUnitGroups,setSelectedOrganizationUnitsLevels,setSelectedLevel,setIsSetPredifinedUserOrgUnits,setAnalyticsDimensions,setSelectedChartType,setSelectedDimensionItemType,setSelectedDataSourceDetails,setAnalyticsData,setMetaDataLabels,setAnalyticsQuery} =   useAuthorities()
   const { data: systemInfo } = useSystemInfo();
   const defaultUserOrgUnit = currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName;
  
@@ -32,7 +32,11 @@ export const useResetAnalyticsStatesToDefault = ()=>{
             is_USER_ORGUNIT_CHILDREN: false,
             is_USER_ORGUNIT_GRANDCHILDREN: false
         });
-       
+        setAnalyticsPayloadDeterminer({
+            Columns: ["Data"],
+            Rows: ["Period"],
+            Filter: ["Organisation unit"],
+          })
         setIsUseCurrentUserOrgUnits(true);
         setSelectedOrganizationUnits([]);
         setSelectedOrgUnits([]);
@@ -62,6 +66,11 @@ export const useResetAnalyticsStatesToDefault = ()=>{
             is_USER_ORGUNIT_CHILDREN: false,
             is_USER_ORGUNIT_GRANDCHILDREN: false
         });
+        setAnalyticsPayloadDeterminer({
+            Columns: ["Data"],
+            Rows: ["Period"],
+            Filter: ["Organisation unit"],
+          })
         setIsUseCurrentUserOrgUnits(true);
         setSelectedOrganizationUnits([]);
         setSelectedOrgUnits([]);

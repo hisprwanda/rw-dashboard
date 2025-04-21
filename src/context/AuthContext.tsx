@@ -214,140 +214,251 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }
 
 
-  const fetchAnalyticsData = async ({dimension,instance,isAnalyticsApiUsedInMap,selectedPeriodsOnMap = [],selectedOrgUnitsWhenUsingMap = [],analyticsPayloadDeterminer}:fetchAnalyticsDataProps ):Promise<void> => {
-    const orgUnitIds = selectedOrganizationUnits?.map((unit: any) => unit)?.join(';');
-    const orgUnitLevelIds = selectedOrganizationUnitsLevels?.map((unit: any) => `LEVEL-${unit}`)?.join(';');
-    const orgUnitGroupIds = selectedOrgUnitGroups?.map((item: any) => `OU_GROUP-${item}`)?.join(';'); 
-
-    const filter =  getAnalyticsFilter({
-      isAnalyticsApiUsedInMap,
-      selectedPeriodsOnMap,
-      isUseCurrentUserOrgUnits,
-      isSetPredifinedUserOrgUnits,
-      orgUnitIds,
-      orgUnitLevelIds,
-      orgUnitGroupIds,
-    });
-
-    ///// before running api check if all required states have valid data
-    if (isAnalyticsApiUsedInMap ? 
-      ( dimension.some(item => item.startsWith("dx:") && item.split(":")[1].trim()) &&
-    filter.startsWith("pe:") && filter.split(":")[1].trim()) : 
-    ( dimension.some(item => item.startsWith("dx:") && item.split(":")[1].trim()) &&
-    dimension.some(item => item.startsWith("pe:") && item.split(":")[1].trim()) &&
-   filter.startsWith("ou:") && filter.split(":")[1].trim())
-      
-  ){
+  const fetchAnalyticsData = async ({
+    dimension,
+    instance,
+    isAnalyticsApiUsedInMap,
+    selectedPeriodsOnMap = [],
+    selectedOrgUnitsWhenUsingMap = [],
+    analyticsPayloadDeterminer
+  }: fetchAnalyticsDataProps): Promise<void> => {
     try {
+      // Prepare organization unit parameters
+      const orgUnitIds = selectedOrganizationUnits?.map((unit: any) => unit)?.join(';');
+      const orgUnitLevelIds = selectedOrganizationUnitsLevels?.map((unit: any) => `LEVEL-${unit}`)?.join(';');
+      const orgUnitGroupIds = selectedOrgUnitGroups?.map((item: any) => `OU_GROUP-${item}`)?.join(';'); 
+  
+      // Get analytics filter
+      const filter = getAnalyticsFilter({
+        isAnalyticsApiUsedInMap,
+        selectedPeriodsOnMap,
+        isUseCurrentUserOrgUnits,
+        isSetPredifinedUserOrgUnits,
+        orgUnitIds,
+        orgUnitLevelIds,
+        orgUnitGroupIds,
+      });
+  
+      // Validate required data before proceeding
+      const isDxDimensionValid = dimension.some(item => item.startsWith("dx:") && item.split(":")[1].trim());
+      const isPeValid = isAnalyticsApiUsedInMap 
+        ? filter.startsWith("pe:") && filter.split(":")[1].trim() 
+        : dimension.some(item => item.startsWith("pe:") && item.split(":")[1].trim());
+      const isOuValid = !isAnalyticsApiUsedInMap 
+        ? filter.startsWith("ou:") && filter.split(":")[1].trim()
+        : true;
+      
+      if (!(isDxDimensionValid && isPeValid && isOuValid)) {
+        console.error("Invalid analytics parameters");
+        return;
+      }
+  
+      // Set loading state
       setIsFetchAnalyticsDataLoading(true);
       setFetchAnalyticsDataError(null);
-
-
-    if(isAnalyticsApiUsedInMap)
-    {
-      dimension.push(selectedOrgUnitsWhenUsingMap) 
-    }
   
- 
-      let queryParams = isAnalyticsApiUsedInMap ? {
-        dimension,
-        filter,
-        displayProperty: 'NAME',
-        skipData: false,
-        skipMeta: true
-      } : 
-      // this value is the one that payload determine
-      {
-        dimension,
+      // Update dimensions for map if needed
+      const updatedDimension = [...dimension];
+      if (isAnalyticsApiUsedInMap) {
+        updatedDimension.push(selectedOrgUnitsWhenUsingMap);
+      }
+  
+      // Create original analytics query
+      const originalAnalyticsQuery = {
+        dimension: updatedDimension,
         filter,
         displayProperty: 'NAME',
         includeNumDen: true,
-      } 
-     queryParams = updateQueryParams(queryParams, analyticsPayloadDeterminer)
-      console.log("xyzxyz11",queryParams)
-      ///// function to modify queryParams based on analyticsPayloadDeterminer
-      console.log("queryParams",queryParams)
+      };
+    console.log("test 1",originalAnalyticsQuery)
+      // Transform query for API execution, but not for storage
+      const transformedQueryBasedOnPayloadDeterminer = updateQueryParams(originalAnalyticsQuery, analyticsPayloadDeterminer);
+      
+      // Determine query parameters based on use case (for API execution)
+      const queryParams = isAnalyticsApiUsedInMap 
+        ? {
+            dimension: updatedDimension,
+            filter,
+            displayProperty: 'NAME',
+            skipData: false,
+            skipMeta: true
+          } 
+        : transformedQueryBasedOnPayloadDeterminer;
+        console.log("test 2",queryParams)
+      // Metadata query parameters
       const queryParamsForMetaDataLabels = {
-        dimension,
+        dimension: updatedDimension,
         filter,
         displayProperty: "NAME",
         includeNumDen: true,
         skipMeta: false,
         skipData: true,
-       includeMetadataDetails: true,
-      }
-    
-      const queryParamsTwo = {
-        dimension,
+        includeMetadataDetails: true,
+      };
+  
+      // Map-specific metadata query parameters
+      const mapMetadataQueryParams = {
+        dimension: updatedDimension,
         filter,
         displayProperty: 'NAME',
         skipMeta: false,
         skipData: true,
         includeMetadataDetails: true
-      }
-
+      };
+  
       if (instance.isCurrentInstance) {
         // Internal request via engine.query
-        const analyticsQuery =  {
+        // Create query objects for execution
+        const queryForExecution = {
           myData: {
             resource: 'analytics',
-            params: queryParams,
+            params: queryParams, // Use transformed params for execution
           },
           MetaDataLabels: {
             resource: 'analytics',
             params: queryParamsForMetaDataLabels,
           },
         };
-        const analyticsQueryTwo =  {
+  
+        // Execute the query
+        const result = await engine.query(queryForExecution);
+  
+        // Store original query in state (not the transformed one)
+        const analyticsQueryForStorage = {
           myData: {
             resource: 'analytics',
-            params: queryParamsTwo,
+            params: originalAnalyticsQuery, // Use original params for storage
+          },
+          MetaDataLabels: {
+            resource: 'analytics',
+            params: queryParamsForMetaDataLabels,
           },
         };
+        console.log("test 3",analyticsQueryForStorage?.myData?.params)
+        setAnalyticsQuery(analyticsQueryForStorage);
   
-        const result = await engine.query(analyticsQuery);
-        if(isAnalyticsApiUsedInMap)
-        {
-          const resultTwo = await engine.query(analyticsQueryTwo);
-          setMetaMapData(resultTwo?.myData)
-        }
-        if(isAnalyticsApiUsedInMap)
-        {
-          setAnalyticsMapData(result?.myData)
-        }else{
+        if (isAnalyticsApiUsedInMap) {
+          // Additional query for map data
+          const analyticsQueryTwoForExecution = {
+            myData: {
+              resource: 'analytics',
+              params: mapMetadataQueryParams,
+            },
+          };
+          
+          const resultTwo = await engine.query(analyticsQueryTwoForExecution);
+          
+          // Store original query for map
+          const mapAnalyticsQueryForStorage = {
+            myData: {
+              resource: 'analytics',
+              params: originalAnalyticsQuery, // Use original params for storage
+            },
+          };
+          setMapAnalyticsQueryTwo(mapAnalyticsQueryForStorage);
+          
+          setMetaMapData(resultTwo?.myData);
+          setAnalyticsMapData(result?.myData);
+        } else {
+          // Process regular analytics data
           setAnalyticsData(result?.myData);
-          setMetaDataLabels(result?.MetaDataLabels?.metaData)
-          /// setting visual title and subtitle
-            const transformedMetaDataLabels = transformMetadataLabels(result?.MetaDataLabels?.metaData);
-              console.log("transformedMetaDataLabels 1",transformedMetaDataLabels)
-              const allPeriods = transformedMetaDataLabels ?  getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'periods') :  [];
-              const allOrganizationUnit = transformedMetaDataLabels ?  getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'orgUnits') :  [];
-              const allDataElements = transformedMetaDataLabels ?  getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'dataElements') :  [];
-              setSelectedVisualTitleAndSubTitle((prevState: VisualTitleAndSubtitleType) => ({
-                ...prevState,
-                DefaultSubTitle: {
-                    periods: allPeriods,
-                    orgUnits: allOrganizationUnit,
-                    dataElements: allDataElements
-                }
-            }));
+          setMetaDataLabels(result?.MetaDataLabels?.metaData);
+          
+          // Update visual title and subtitle
+          if (result?.MetaDataLabels?.metaData) {
+            const transformedMetaDataLabels = transformMetadataLabels(result.MetaDataLabels.metaData);
             
+            const allPeriods = transformedMetaDataLabels ? getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'periods') : [];
+            const allOrganizationUnit = transformedMetaDataLabels ? getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'orgUnits') : [];
+            const allDataElements = transformedMetaDataLabels ? getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'dataElements') : [];
+            
+            setSelectedVisualTitleAndSubTitle((prevState: VisualTitleAndSubtitleType) => ({
+              ...prevState,
+              DefaultSubTitle: {
+                periods: allPeriods,
+                orgUnits: allOrganizationUnit,
+                dataElements: allDataElements
+              }
+            }));
+          }
         }
-      
-        setAnalyticsQuery(analyticsQuery);
-        setMapAnalyticsQueryTwo(analyticsQueryTwo)
       } else {
         // External request via axios
-        const response = await axios.get(`${instance.url}/api/analytics`, {
-          headers: {
-            Authorization: `ApiToken ${instance.token}`,
-          },
-          params: queryParams,
-        });
-
-        setAnalyticsData(response.data);
-      
-        setAnalyticsQuery({ myData: { resource: 'analytics', params: queryParams } });
+        try {
+          // Main data request - use transformed params for execution
+          const response = await axios.get(`${instance.url}/api/analytics`, {
+            headers: {
+              Authorization: `ApiToken ${instance.token}`,
+            },
+            params: queryParams, // Use transformed params for API call
+          });
+  
+          // Store original query in state (not the transformed one)
+          const analyticsQueryForStorage = {
+            myData: { 
+              resource: 'analytics', 
+              params: originalAnalyticsQuery // Use original params for storage
+            },
+            MetaDataLabels: {
+              resource: 'analytics',
+              params: queryParamsForMetaDataLabels,
+            }
+          };
+          
+          setAnalyticsQuery(analyticsQueryForStorage);
+          setAnalyticsData(response.data);
+  
+          // Get metadata for labels if not using map
+          if (!isAnalyticsApiUsedInMap) {
+            const metadataResponse = await axios.get(`${instance.url}/api/analytics`, {
+              headers: {
+                Authorization: `ApiToken ${instance.token}`,
+              },
+              params: queryParamsForMetaDataLabels,
+            });
+            
+            setMetaDataLabels(metadataResponse.data?.metaData);
+            
+            // Process metadata for visual elements
+            const transformedMetaDataLabels = transformMetadataLabels(metadataResponse.data?.metaData);
+            
+            const allPeriods = transformedMetaDataLabels ? getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'periods') : [];
+            const allOrganizationUnit = transformedMetaDataLabels ? getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'orgUnits') : [];
+            const allDataElements = transformedMetaDataLabels ? getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'dataElements') : [];
+            
+            setSelectedVisualTitleAndSubTitle((prevState: VisualTitleAndSubtitleType) => ({
+              ...prevState,
+              DefaultSubTitle: {
+                periods: allPeriods,
+                orgUnits: allOrganizationUnit,
+                dataElements: allDataElements
+              }
+            }));
+          } else {
+            // Additional map-specific metadata request
+            const mapMetadataResponse = await axios.get(`${instance.url}/api/analytics`, {
+              headers: {
+                Authorization: `ApiToken ${instance.token}`,
+              },
+              params: mapMetadataQueryParams,
+            });
+            
+            // Store original query for map
+            const mapAnalyticsQueryForStorage = {
+              myData: {
+                resource: 'analytics',
+                params: originalAnalyticsQuery, // Use original params for storage
+              },
+            };
+            
+            setMapAnalyticsQueryTwo(mapAnalyticsQueryForStorage);
+            setMetaMapData(mapMetadataResponse.data);
+            setAnalyticsMapData(response.data);
+          }
+        } catch (error) {
+          console.error("Error in external API request:", error);
+          throw error; // Rethrow to be caught by outer try/catch
+        }
       }
     } catch (error) {
       setFetchAnalyticsDataError(error);
@@ -355,10 +466,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } finally {
       setIsFetchAnalyticsDataLoading(false);
     }
-  }
   };
-
-
 
   const fetchSingleOrgUnitName = async (orgUnitId: string, instance: DataSourceFormFields) => {
     try {

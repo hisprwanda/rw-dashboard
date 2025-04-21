@@ -72,6 +72,9 @@ function Visualizers() {
         }
 
     }, [isSetPredifinedUserOrgUnits]);
+    useEffect(()=>{
+        console.log("singleSavedVisualData xcy",singleSavedVisualData)
+    },[singleSavedVisualData])
 
     const handleShowSaveVisualTypeForm = () => {
         setIsShowSaveVisualTypeForm(true);

@@ -11,98 +11,121 @@
  * @returns {Object} Updated query parameters
  */
 export function updateQueryParams(queryParams, analyticsPayloadDeterminer) {
-    // Create a deep copy of queryParams to avoid mutating the original
-    const updatedQueryParams = JSON.parse(JSON.stringify(queryParams));
-    
-    // Extract existing dimension values by prefix
-    const dimensionMap = {};
-    if (updatedQueryParams.dimension) {
-      updatedQueryParams.dimension.forEach(dim => {
+  // Create a deep copy of queryParams to avoid mutating the original
+  const updatedQueryParams = JSON.parse(JSON.stringify(queryParams || {}));
+  
+  // Extract existing dimension values by prefix
+  const dimensionMap = {};
+  if (updatedQueryParams.dimension) {
+    updatedQueryParams.dimension.forEach(dim => {
+      if (dim) {
         const [prefix] = dim.split(':');
-        dimensionMap[prefix] = dim;
-      });
-    }
-    
-    // Extract filter values by prefix
-    const filterMap = {};
-    if (updatedQueryParams.filter) {
-      if (Array.isArray(updatedQueryParams.filter)) {
-        updatedQueryParams.filter.forEach(filter => {
+        if (prefix) dimensionMap[prefix] = dim;
+      }
+    });
+  }
+  
+  // Extract filter values by prefix
+  const filterMap = {};
+  if (updatedQueryParams.filter) {
+    if (Array.isArray(updatedQueryParams.filter)) {
+      updatedQueryParams.filter.forEach(filter => {
+        if (filter) {
           const [prefix] = filter.split(':');
-          filterMap[prefix] = filter;
-        });
-      } else {
-        const [prefix] = updatedQueryParams.filter.split(':');
-        filterMap[prefix] = updatedQueryParams.filter;
-      }
+          if (prefix) filterMap[prefix] = filter;
+        }
+      });
+    } else if (typeof updatedQueryParams.filter === 'string') {
+      const [prefix] = updatedQueryParams.filter.split(':');
+      if (prefix) filterMap[prefix] = updatedQueryParams.filter;
     }
-    
-    // Helper function to map dimension names to their prefixes
-    const getDimensionPrefix = (name) => {
-      switch (name) {
-        case 'Data': return 'dx';
-        case 'Period': return 'pe';
-        case 'Organisation unit': return 'ou';
-        default: return name.toLowerCase();
-      }
-    };
-    
-    // Combine all available values
-    const allAvailableValues = {...dimensionMap, ...filterMap};
-    
-    // If Filter is empty, include all items in dimension
-    if (analyticsPayloadDeterminer.Filter.length === 0) {
-      // Initialize new dimension array
-      const newDimensions = [];
-      
-      // Add all items from Columns and Rows to dimension
-      [...analyticsPayloadDeterminer.Columns, ...analyticsPayloadDeterminer.Rows].forEach(item => {
-        const prefix = getDimensionPrefix(item);
-        // Use existing value if available, otherwise this would be an error case
-        if (allAvailableValues[prefix]) {
-          newDimensions.push(allAvailableValues[prefix]);
-        }
-      });
-      
-      updatedQueryParams.dimension = newDimensions;
-      // Remove filter property
-      delete updatedQueryParams.filter;
-    } else {
-      // Initialize new arrays
-      const newDimensions = [];
-      const newFilters = [];
-      
-      // Process columns and rows (these go to dimension)
-      [...analyticsPayloadDeterminer.Columns, ...analyticsPayloadDeterminer.Rows].forEach(item => {
-        const prefix = getDimensionPrefix(item);
-        if (allAvailableValues[prefix]) {
-          newDimensions.push(allAvailableValues[prefix]);
-        }
-      });
-      
-      // Process filter items
-      analyticsPayloadDeterminer.Filter.forEach(item => {
-        const prefix = getDimensionPrefix(item);
-        if (allAvailableValues[prefix]) {
-          newFilters.push(allAvailableValues[prefix]);
-        }
-      });
-      
-      // Update dimension array
-      updatedQueryParams.dimension = newDimensions;
-      
-      // Update filter (could be a string or array based on your examples)
-      if (newFilters.length === 1) {
-        updatedQueryParams.filter = newFilters[0];
-      } else if (newFilters.length > 1) {
-        updatedQueryParams.filter = newFilters;
-      } else {
-        delete updatedQueryParams.filter;
-      }
+  }
+  
+  // Helper function to map dimension names to their prefixes
+  const getDimensionPrefix = (name) => {
+    if (!name) return '';
+    switch (name) {
+      case 'Data': return 'dx';
+      case 'Period': return 'pe';
+      case 'Organisation unit': return 'ou';
+      default: return name.toLowerCase();
     }
-    
+  };
+  
+  // Combine all available values
+  const allAvailableValues = {...dimensionMap, ...filterMap};
+  
+  // Check if analyticsPayloadDeterminer and its properties exist
+  if (!analyticsPayloadDeterminer || !analyticsPayloadDeterminer.Filter) {
+    // If analyticsPayloadDeterminer is missing or invalid, just return the original params
     return updatedQueryParams;
   }
+  
+  const columns = Array.isArray(analyticsPayloadDeterminer.Columns) ? analyticsPayloadDeterminer.Columns : [];
+  const rows = Array.isArray(analyticsPayloadDeterminer.Rows) ? analyticsPayloadDeterminer.Rows : [];
+  const filters = Array.isArray(analyticsPayloadDeterminer.Filter) ? analyticsPayloadDeterminer.Filter : [];
+  
+  // If Filter is empty, include all items in dimension
+  if (filters.length === 0) {
+    // Initialize new dimension array
+    const newDimensions = [];
+    
+    // Add all items from Columns and Rows to dimension
+    [...columns, ...rows].forEach(item => {
+      if (item) {
+        const prefix = getDimensionPrefix(item);
+        // Use existing value if available
+        if (prefix && allAvailableValues[prefix]) {
+          newDimensions.push(allAvailableValues[prefix]);
+        }
+      }
+    });
+    
+    updatedQueryParams.dimension = newDimensions.length > 0 ? newDimensions : updatedQueryParams.dimension;
+    // Remove filter property
+    delete updatedQueryParams.filter;
+  } else {
+    // Initialize new arrays
+    const newDimensions = [];
+    const newFilters = [];
+    
+    // Process columns and rows (these go to dimension)
+    [...columns, ...rows].forEach(item => {
+      if (item) {
+        const prefix = getDimensionPrefix(item);
+        if (prefix && allAvailableValues[prefix]) {
+          newDimensions.push(allAvailableValues[prefix]);
+        }
+      }
+    });
+    
+    // Process filter items
+    filters.forEach(item => {
+      if (item) {
+        const prefix = getDimensionPrefix(item);
+        if (prefix && allAvailableValues[prefix]) {
+          newFilters.push(allAvailableValues[prefix]);
+        }
+      }
+    });
+    
+    // Update dimension array if we have dimensions
+    if (newDimensions.length > 0) {
+      updatedQueryParams.dimension = newDimensions;
+    }
+    
+    // Update filter (could be a string or array based on your examples)
+    if (newFilters.length === 1) {
+      updatedQueryParams.filter = newFilters[0];
+    } else if (newFilters.length > 1) {
+      updatedQueryParams.filter = newFilters;
+    } else {
+      delete updatedQueryParams.filter;
+    }
+  }
+  
+  return updatedQueryParams;
+}
   
   /**
    * Reverses the queryParams transformation, converting updated params back to original format
