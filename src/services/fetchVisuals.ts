@@ -75,11 +75,13 @@ export const useFetchSingleVisualData = (visualId: string) => {
     setSelectedOrganizationUnitsLevels,
     setSelectedLevel,
     setAnalyticsData,
+    setMetaDataLabels,
     setSelectedVisualTitleAndSubTitle,
     setSelectedVisualSettings,
     setSelectedColorPalette,
     setBackedSelectedItems,
     fetchAnalyticsData,
+    setAnalyticsPayloadDeterminer,
     selectedDimensionItemType,
     setCurrentUserInfoAndOrgUnitsData
   } = useAuthorities();
@@ -115,6 +117,7 @@ export const useFetchSingleVisualData = (visualId: string) => {
       };
       // clear existing analytics data
       setAnalyticsData([]);
+      setMetaDataLabels({});
       // run analytics with saved data
       fetchAnalyticsData({dimension:formatAnalyticsDimensions(dimensions),instance:currentInstanceDetails});
      // fetchAnalyticsData(formatAnalyticsDimensions(dimensions),currentInstanceDetails);
@@ -128,6 +131,7 @@ export const useFetchSingleVisualData = (visualId: string) => {
     } else if (dataSourceDetails) {
         // clear existing analytics data
       setAnalyticsData([]);
+      setMetaDataLabels({});
            // run analytics with saved data
       fetchAnalyticsData(
         formatAnalyticsDimensions(dimensions),
@@ -156,6 +160,7 @@ export const useFetchSingleVisualData = (visualId: string) => {
     fetchExternalUserInfoAndOrgUnitData,
     fetchAnalyticsData,
     setAnalyticsData,
+    setMetaDataLabels,
     setCurrentUserInfoAndOrgUnitsData,
     setSelectedDataSourceDetails
   ]);
@@ -187,6 +192,7 @@ export const useFetchSingleVisualData = (visualId: string) => {
     // Update all visual related states (like settings)
     setSelectedChartType(data.dataStore?.visualType);
     setAnalyticsQuery(data.dataStore?.query);
+    setAnalyticsPayloadDeterminer(data.dataStore?.analyticsPayloadDeterminer);
     setSelectedOrganizationUnits(
       formatSelectedOrganizationUnit(data.dataStore?.query?.myData?.params?.filter)
     );
@@ -216,6 +222,7 @@ export const useFetchSingleVisualData = (visualId: string) => {
     setSelectedDataSourceOption,
     setSelectedChartType,
     setAnalyticsQuery,
+    setAnalyticsPayloadDeterminer,
     setSelectedOrganizationUnits,
     setIsSetPredifinedUserOrgUnits,
     setSelectedOrgUnits,

@@ -21,7 +21,7 @@ interface SaveVisualTypeFormProps {
 }
 
 const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleSavedVisualData,setIsShowSaveVisualTypeForm ,selectedDataSourceId}) => {
-  const {selectedDataSourceOption,setSelectedDataSourceOption,visualSettings, analyticsQuery,userDatails,selectedChartType,selectedOrgUnits,selectedLevel, visualTitleAndSubTitle ,backedSelectedItems} = useAuthorities();
+  const {selectedDataSourceOption,setSelectedDataSourceOption,analyticsPayloadDeterminer,visualSettings, analyticsQuery,userDatails,selectedChartType,selectedOrgUnits,selectedLevel, visualTitleAndSubTitle ,backedSelectedItems} = useAuthorities();
   const {data:allSavedVisuals,loading,isError}  = useFetchVisualsData()
   const navigate = useNavigate();
    const { toast } = useToast();
@@ -40,7 +40,7 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
       visualTitleAndSubTitle:visualTitleAndSubTitle,  
       visualSettings:visualSettings,
       query: analyticsQuery,
-      
+      analyticsPayloadDeterminer:analyticsPayloadDeterminer,
       dataSourceId: selectedDataSourceOption, 
       createdBy:{
         name:userDatails?.me?.displayName,
@@ -68,12 +68,14 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleS
   }, [watchedValues]);
   // reset saved values
   useEffect(() => {
+    console.log("singleSavedVisualData now",singleSavedVisualData)
     if (visualId && singleSavedVisualData) {
         reset((prevValues) => ({
             ...prevValues,
             id: singleSavedVisualData?.dataStore?.id,
             visualName: singleSavedVisualData?.dataStore?.visualName || prevValues.visualName,
             backedSelectedItems: singleSavedVisualData?.dataStore?.backedSelectedItems || prevValues.backedSelectedItems,
+            visualTitleAndSubTitle: singleSavedVisualData?.dataStore?.visualTitleAndSubTitle || prevValues.visualTitleAndSubTitle,
             description: singleSavedVisualData?.dataStore?.description || prevValues.description,
             createdAt: singleSavedVisualData?.dataStore?.createdAt || prevValues.createdAt,
         }));

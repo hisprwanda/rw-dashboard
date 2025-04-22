@@ -21,7 +21,7 @@ const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsSh
 
   const {
     analyticsDimensions,
-    setAnalyticsDimensions,
+    analyticsPayloadDeterminer,
     fetchAnalyticsData,
     fetchAnalyticsDataError,
     isFetchAnalyticsDataLoading,
@@ -98,49 +98,6 @@ const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsSh
     }
   }, [selectedLevel, orgUnitLevels, setSelectedOrganizationUnitsLevels]);
 
-  // Function to fetch and update organization names for selectedOrganizationUnits
-  const updateDefaultSubTitle = async () => {
-    if (selectedOrganizationUnits.length > 0) {
-      try {
-        // Fetch organization names in parallel with error handling for each promise
-        const orgNames = await Promise.all(
-          selectedOrganizationUnits.map(async (orgUnitId) => {
-            try {
-              // Try to fetch the org unit name
-              return await fetchSingleOrgUnitName(orgUnitId, selectedDataSourceDetails);
-            } catch (error) {
-              // If fetching fails, return the ID as a fallback
-              console.warn(`Failed to fetch name for org unit ${orgUnitId}:`, error);
-              return `Org Unit (${orgUnitId})`;
-            }
-          })
-        );
-
-        // Update DefaultSubTitle with fetched organization names
-        setSelectedVisualTitleAndSubTitle((prevState) => ({
-          ...prevState,
-          DefaultSubTitle: orgNames.filter(name => name), // Filter out any undefined/null values
-        }));
-      } catch (error) {
-        console.error("Error updating organization names:", error);
-        // Set a fallback subtitle indicating there was an error
-        setSelectedVisualTitleAndSubTitle((prevState) => ({
-          ...prevState,
-          DefaultSubTitle: selectedOrganizationUnits.map(id => `Org Unit (${id})`),
-        }));
-      }
-    } else {
-      // Clear DefaultSubTitle if no selected organization units
-      setSelectedVisualTitleAndSubTitle((prevState) => ({
-        ...prevState,
-        DefaultSubTitle: [],
-      }));
-    }
-  };
-
-  useEffect(() => {
-    updateDefaultSubTitle();
-  }, [selectedOrganizationUnits, selectedOrgUnits]);
 
   /// handle deselect
   function handleDeselect() {
@@ -154,7 +111,8 @@ const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsSh
       // Continue with analytics fetch
       await fetchAnalyticsData({
         dimension: formatAnalyticsDimensions(analyticsDimensions),
-        instance: selectedDataSourceDetails
+        instance: selectedDataSourceDetails,
+        analyticsPayloadDeterminer
       });
       setIsShowOrganizationUnit(false);
     } catch (error) {
@@ -295,4 +253,4 @@ const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsSh
   );
 };
 
-export default OrganisationUnitSelect;
+export default OrganisationUnitSelect

@@ -1,11 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { CircularLoader, NoticeBox } from '@dhis2/ui'; // Use NoticeBox for better error display
-import { chartComponents } from '../../../constants/systemCharts';
-import { VisualSettingsTypes, VisualTitleAndSubtitleType } from '../../../types/visualSettingsTypes';
-import { currentInstanceId } from '../../../constants/currentInstanceInfo';
-import { useDataSourceData } from '../../../services/DataSourceHooks';
-import { useFetchSingleChartApi } from '../../../services/fetchSingleChart';
-import { useExternalAnalyticsData } from '../../../services/useFetchExternalAnalytics';
 import { useFetchSavedGeoFeatureByQuery } from '../../../services/maps';
 import MapBody from './MapBody';
 

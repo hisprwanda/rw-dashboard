@@ -19,7 +19,7 @@ import i18n from '../../../locales/index.js'
 
 
 const VisualizerTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
-  const {setAnalyticsData} = useAuthorities();
+  const {setAnalyticsData,setMetaDataLabels} = useAuthorities();
     const navigate = useNavigate();
     const {refetch}  = useFetchVisualsData()
     const [isShowDeleteVisual,setIsShowDeleteVisual] = useState<boolean>(false)
@@ -71,6 +71,7 @@ const VisualizerTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
   const handleView = (data:any) => {
     // clear existing analytics data
     setAnalyticsData([])
+    setMetaDataLabels({})
   navigate(`/visualizers/${data?.key}`)
   };
 

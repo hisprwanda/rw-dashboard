@@ -11,7 +11,7 @@ type resetAnalyticsStatesToDefaultValuesParams = {
 
 
 export const useResetAnalyticsStatesToDefault = ()=>{
-  const {  setGeoFeaturesData,setAnalyticsMapData,setMetaMapData, selectedColorPalette,currentUserInfoAndOrgUnitsData, setSelectedDataSourceOption,setSelectedVisualSettings,setVisualsColorPalettes,setIsUseCurrentUserOrgUnits,setSelectedOrganizationUnits,setSelectedOrgUnits,setSelectedOrgUnitGroups,setSelectedOrganizationUnitsLevels,setSelectedLevel,setSelectedVisualTitleAndSubTitle,setIsSetPredifinedUserOrgUnits,setAnalyticsDimensions,setSelectedChartType,setSelectedDimensionItemType,setSelectedDataSourceDetails,setAnalyticsData,setAnalyticsQuery} =   useAuthorities()
+  const { setAnalyticsPayloadDeterminer, setGeoFeaturesData,setAnalyticsMapData,setMetaMapData, selectedColorPalette,currentUserInfoAndOrgUnitsData, setSelectedDataSourceOption,setSelectedVisualSettings,setVisualsColorPalettes,setIsUseCurrentUserOrgUnits,setSelectedOrganizationUnits,setSelectedOrgUnits,setSelectedOrgUnitGroups,setSelectedOrganizationUnitsLevels,setSelectedLevel,setIsSetPredifinedUserOrgUnits,setAnalyticsDimensions,setSelectedChartType,setSelectedDimensionItemType,setSelectedDataSourceDetails,setAnalyticsData,setMetaDataLabels,setAnalyticsQuery} =   useAuthorities()
   const { data: systemInfo } = useSystemInfo();
   const defaultUserOrgUnit = currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName;
  
@@ -23,6 +23,7 @@ export const useResetAnalyticsStatesToDefault = ()=>{
             isCurrentInstance: true,
         });
         setAnalyticsData(null);
+        setMetaDataLabels({})
         setSelectedChartType(chartComponents[0]?.type);
         setAnalyticsQuery(null);
         setAnalyticsDimensions({ dx: [], pe: ['LAST_12_MONTHS'] });
@@ -31,23 +32,19 @@ export const useResetAnalyticsStatesToDefault = ()=>{
             is_USER_ORGUNIT_CHILDREN: false,
             is_USER_ORGUNIT_GRANDCHILDREN: false
         });
-       
+        setAnalyticsPayloadDeterminer({
+            Columns: ["Data"],
+            Rows: ["Period"],
+            Filter: ["Organisation unit"],
+          })
         setIsUseCurrentUserOrgUnits(true);
         setSelectedOrganizationUnits([]);
         setSelectedOrgUnits([]);
         setSelectedOrgUnitGroups([]);
         setSelectedOrganizationUnitsLevels([]);
         setSelectedLevel([]);
-        setSelectedVisualTitleAndSubTitle((prev) => {
-            return {
-                ...prev,
-                visualTitle: "",
-                DefaultSubTitle: [defaultUserOrgUnit],
-                customSubTitle: ""
-            };
-        });
         setVisualsColorPalettes(systemDefaultColorPalettes[0] || []);
-        setSelectedVisualSettings({ backgroundColor: '#ffffff', visualColorPalette: selectedColorPalette, fillColor: "#ffffff", XAxisSettings: { color: "#000000", fontSize: 12 }, YAxisSettings: { color: "#000000", fontSize: 12 } });
+        setSelectedVisualSettings({ backgroundColor: '#ffffff', visualColorPalette: selectedColorPalette, fillColor: "#000000", XAxisSettings: { color: "#000000", fontSize: 12 }, YAxisSettings: { color: "#000000", fontSize: 12 } });
         setSelectedDataSourceOption(currentInstanceId);
         if(isBeingUsedInMap)
         {
@@ -60,6 +57,7 @@ export const useResetAnalyticsStatesToDefault = ()=>{
     function resetOtherValuesToDefaultExceptDataSource() {
         setSelectedDimensionItemType(dimensionItemTypes[0]);
         setAnalyticsData(null);
+        setMetaDataLabels({})
         setSelectedChartType(chartComponents[0]?.type);
         setAnalyticsQuery(null);
         setAnalyticsDimensions({ dx: [], pe: ['LAST_12_MONTHS'] });
@@ -68,22 +66,19 @@ export const useResetAnalyticsStatesToDefault = ()=>{
             is_USER_ORGUNIT_CHILDREN: false,
             is_USER_ORGUNIT_GRANDCHILDREN: false
         });
+        setAnalyticsPayloadDeterminer({
+            Columns: ["Data"],
+            Rows: ["Period"],
+            Filter: ["Organisation unit"],
+          })
         setIsUseCurrentUserOrgUnits(true);
         setSelectedOrganizationUnits([]);
         setSelectedOrgUnits([]);
         setSelectedOrgUnitGroups([]);
         setSelectedOrganizationUnitsLevels([]);
         setSelectedLevel([]);
-        setSelectedVisualTitleAndSubTitle((prev) => {
-            return {
-                ...prev,
-                visualTitle: "",
-                DefaultSubTitle: [defaultUserOrgUnit],
-                customSubTitle: ""
-            };
-        });
         setVisualsColorPalettes(systemDefaultColorPalettes[0] || []);
-        setSelectedVisualSettings({ backgroundColor: '#ffffff', visualColorPalette: selectedColorPalette, fillColor: "#ffffff", XAxisSettings: { color: "#000000", fontSize: 12 }, YAxisSettings: { color: "#000000", fontSize: 12 } });
+        setSelectedVisualSettings({ backgroundColor: '#ffffff', visualColorPalette: selectedColorPalette, fillColor: "#000000", XAxisSettings: { color: "#000000", fontSize: 12 }, YAxisSettings: { color: "#000000", fontSize: 12 } });
 
     }
 

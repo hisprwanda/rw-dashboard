@@ -6,11 +6,14 @@ import {
 } from "../ui/chart";
 import { transformDataForGenericChart, generateChartConfig, isValidInputData } from "../../lib/localGenericchartFormat";
 import { genericChartsProps } from "../../types/visualSettingsTypes";
+import { VisualHeading } from "./VisualHeading";
 
 export const LocalRadialChat: React.FC<genericChartsProps> = ({
   data,
   visualTitleAndSubTitle,
   visualSettings,
+  metaDataLabels,
+  analyticsPayloadDeterminer
 }) => {
   const { chartData, chartConfig, error } = useMemo(() => {
     if (!isValidInputData(data)) {
@@ -18,7 +21,7 @@ export const LocalRadialChat: React.FC<genericChartsProps> = ({
     }
 
     try {
-      const transformedData = transformDataForGenericChart(data, "radial",visualSettings.visualColorPalette);
+      const transformedData = transformDataForGenericChart(data, "radial",visualSettings.visualColorPalette,metaDataLabels);
       const config = generateChartConfig(data,visualSettings.visualColorPalette);
       return { chartData: transformedData, chartConfig: config, error: null };
     } catch (err) {
@@ -48,22 +51,7 @@ export const LocalRadialChat: React.FC<genericChartsProps> = ({
         <h4 className="text-center text-md font-medium text-gray-600 mt-1">
           {visualTitleAndSubTitle?.customSubTitle}
         </h4>
-      ) : (
-        visualTitleAndSubTitle?.DefaultSubTitle?.length !== 0 && (
-          <div className="flex justify-center gap-1">
-            {visualTitleAndSubTitle?.DefaultSubTitle?.map((subTitle, index) => (
-              <h4
-                key={index}
-                className="text-center text-md font-medium text-gray-600 mt-1"
-              >
-                {subTitle}
-                {index < visualTitleAndSubTitle?.DefaultSubTitle?.length - 1 &&
-                  ","}
-              </h4>
-            ))}
-          </div>
-        )
-      )}
+      ) :   <VisualHeading analyticsPayloadDeterminer={analyticsPayloadDeterminer}  visualTitleAndSubTitle={visualTitleAndSubTitle} />}
 
       <RadialBarChart
         data={chartData}

@@ -8,9 +8,10 @@ import {
 } from "../../components/ui/chart";
 import { transformDataForGenericChart, generateChartConfig, isValidInputData } from "../../lib/localGenericchartFormat";
 import {genericChartsProps} from "../../types/visualSettingsTypes"
+import { VisualHeading } from "./VisualHeading";
 
 
-export const LocalRadarChart: React.FC<genericChartsProps> = ({ data,visualSettings,visualTitleAndSubTitle }) => {
+export const LocalRadarChart: React.FC<genericChartsProps> = ({ data,visualSettings,visualTitleAndSubTitle,metaDataLabels,analyticsPayloadDeterminer }) => {
 
     // below is error handling checking if the data exists before passing it to the formmater function or to the graph
 
@@ -20,7 +21,7 @@ export const LocalRadarChart: React.FC<genericChartsProps> = ({ data,visualSetti
         }
 
         try {
-            const transformedData = transformDataForGenericChart(data);
+            const transformedData = transformDataForGenericChart(data,_,_,metaDataLabels);
             const config = generateChartConfig(data,visualSettings.visualColorPalette);
             return { chartData: transformedData, chartConfig: config, error: null };
         } catch (err) {
@@ -40,23 +41,16 @@ export const LocalRadarChart: React.FC<genericChartsProps> = ({ data,visualSetti
         <ChartContainer config={chartConfig} style={{ backgroundColor: visualSettings.backgroundColor }} >
              {visualTitleAndSubTitle.visualTitle && <h3 className="text-center text-lg font-bold text-gray-800 ">{visualTitleAndSubTitle.visualTitle}</h3> }  
                
-             {visualTitleAndSubTitle?.customSubTitle ?  <h4 className="text-center text-md font-medium text-gray-600 mt-1">{visualTitleAndSubTitle?.customSubTitle}</h4>  :   visualTitleAndSubTitle?.DefaultSubTitle?.length !== 0 && (
-  <div className="flex justify-center gap-1">
-    {visualTitleAndSubTitle?.DefaultSubTitle?.map((subTitle, index) => (
-      <h4 key={index} className="text-center text-md font-medium text-gray-600 mt-1">
-        {subTitle}
-        {index < visualTitleAndSubTitle?.DefaultSubTitle?.length - 1 && ","}
-      </h4>
-    ))}
-  </div>
-)}
+             {visualTitleAndSubTitle?.customSubTitle ?  <h4 className="text-center text-md font-medium text-gray-600 mt-1">{visualTitleAndSubTitle?.customSubTitle}</h4>  : 
+         <VisualHeading analyticsPayloadDeterminer={analyticsPayloadDeterminer}  visualTitleAndSubTitle={visualTitleAndSubTitle} />
+                     }
     
             <RadarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent indicator="line" className="bg-white"  />}
             />
-            <PolarAngleAxis dataKey="month"  
+            <PolarAngleAxis dataKey="period"  
              tick={{ fill:visualSettings.fillColor, fontSize: visualSettings.XAxisSettings.fontSize, fontWeight: 'bold' }} 
             />
             <PolarGrid   />
