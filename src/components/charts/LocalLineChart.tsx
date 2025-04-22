@@ -8,8 +8,9 @@ import {
 } from "../../components/ui/chart";
 import { transformDataForGenericChart, generateChartConfig, isValidInputData } from "../../lib/localGenericchartFormat";
 import { genericChartsProps } from "../../types/visualSettingsTypes"
+import { VisualHeading } from "./VisualHeading";
 
-export const LocalLineChart: React.FC<genericChartsProps> = ({ data, visualSettings, visualTitleAndSubTitle, metaDataLabels }) => {
+export const LocalLineChart: React.FC<genericChartsProps> = ({ data, visualSettings, visualTitleAndSubTitle, metaDataLabels ,analyticsPayloadDeterminer}) => {
     // Get dimensions for responsive adjustments
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
     const chartRef = useRef<HTMLDivElement>(null);
@@ -67,16 +68,8 @@ export const LocalLineChart: React.FC<genericChartsProps> = ({ data, visualSetti
                 {visualTitleAndSubTitle.visualTitle && <h3 className="text-center text-lg font-bold text-gray-800">{visualTitleAndSubTitle.visualTitle}</h3>}  
                 {visualTitleAndSubTitle?.customSubTitle ? 
                     <h4 className="text-center text-md font-medium text-gray-600 mt-1">{visualTitleAndSubTitle?.customSubTitle}</h4> : 
-                    visualTitleAndSubTitle?.DefaultSubTitle?.orgUnits?.length !== 0 && (
-                        <div className="flex justify-center gap-1">
-                            {visualTitleAndSubTitle?.DefaultSubTitle?.orgUnits?.map((orgUnit, index) => (
-                                <h4 key={index} className="text-center text-md font-medium text-gray-600 mt-1">
-                                    {orgUnit?.name}
-                                    {index < visualTitleAndSubTitle?.DefaultSubTitle?.orgUnits?.length - 1 && ","}
-                                </h4>
-                            ))}
-                        </div>
-                    )
+                   <VisualHeading analyticsPayloadDeterminer={analyticsPayloadDeterminer}  visualTitleAndSubTitle={visualTitleAndSubTitle} />
+                        
                 }
                 
                 <ResponsiveContainer width="100%" height="100%">

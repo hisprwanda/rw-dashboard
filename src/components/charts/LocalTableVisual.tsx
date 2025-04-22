@@ -2,12 +2,14 @@ import React, { useState, useMemo } from "react";
 import { Table, Input } from "@mantine/core";  // Mantine components for table and input
 import { transformDataForGenericChart, generateChartConfig, isValidInputData } from "../../lib/localGenericchartFormat";
 import { genericChartsProps } from "../../types/visualSettingsTypes";
+import { VisualHeading } from "./VisualHeading";
 
 export const LocalTableVisual: React.FC<genericChartsProps> = ({
     data,
     visualTitleAndSubTitle,
     visualSettings,
-    metaDataLabels
+    metaDataLabels,
+    analyticsPayloadDeterminer
   }) => {
     const { chartData, error } = useMemo(() => {
       if (!isValidInputData(data)) {
@@ -88,12 +90,12 @@ export const LocalTableVisual: React.FC<genericChartsProps> = ({
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-       <div className="flex align-middle" >{visualTitleAndSubTitle?.DefaultSubTitle?.orgUnits?.map((orgUnit, index) => (
-                                <h4 key={index} className="text-center text-md font-medium text-gray-600">
-                                    {orgUnit?.name}
-                                    {index < visualTitleAndSubTitle?.DefaultSubTitle?.orgUnits?.length - 1 && ","}
-                                </h4>
-                            ))}</div> 
+      {visualTitleAndSubTitle.visualTitle && <h3 className="text-center text-lg font-bold text-gray-800">{visualTitleAndSubTitle.visualTitle}</h3>}  
+                     {visualTitleAndSubTitle?.customSubTitle ?  
+                         <h4 className="text-center text-md font-medium text-gray-600 mt-1">{visualTitleAndSubTitle?.customSubTitle}</h4>
+                          :   
+                               <VisualHeading analyticsPayloadDeterminer={analyticsPayloadDeterminer}  visualTitleAndSubTitle={visualTitleAndSubTitle} />
+                     }
         {/* Scrollable Table Section */}
         <div className="max-h-[400px] overflow-auto border rounded-lg">
           <Table striped highlightOnHover withBorder withColumnBorders>

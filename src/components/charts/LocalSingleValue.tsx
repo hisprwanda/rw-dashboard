@@ -71,7 +71,8 @@ export const LocalSingleValue: React.FC<genericChartsProps> = ({
             className="rounded-lg shadow-md p-6 min-w-4 text-center"
           >
             <h3 className="text-xl font-semibold mb-2">{item.name}</h3>
-            <p className="text-3xl font-bold">{item.total}</p>
+            <p className="text-3xl font-bold">{item.total.toLocaleString()}</p>
+
           </article>
         ))}
       </div>
