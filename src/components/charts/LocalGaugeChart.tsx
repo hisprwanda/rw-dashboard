@@ -49,38 +49,31 @@ export const LocalGaugeChart: React.FC<genericChartsProps> = ({
 
   // Colors for the gauge
   const gaugeColors = [
-    visualSettings.visualColorPalette?.length > 0 ? visualSettings.visualColorPalette[0] : "#3b82f6", // Primary color from palette or default blue
+    visualSettings.backgroundColor || "#8bc34a", // Use backgroundColor for the filled part
     "#e5e7eb" // Light gray for the empty section
   ];
   
-  return (
-    <ChartContainer
-      config={chartConfig}
-      style={{ backgroundColor: visualSettings.backgroundColor }}
-    >
-      {visualTitleAndSubTitle.visualTitle && (
-        <h3 className="text-center text-lg font-bold text-gray-800">
-          {visualTitleAndSubTitle.visualTitle}
-        </h3>
-      )}
-      {visualTitleAndSubTitle?.customSubTitle ? (
-        <h4 className="text-center text-md font-medium text-gray-600 mt-1">
-          {visualTitleAndSubTitle?.customSubTitle}
-        </h4>
-      ) : <VisualHeading analyticsPayloadDeterminer={analyticsPayloadDeterminer} visualTitleAndSubTitle={visualTitleAndSubTitle} />}
+  // Size calculations based on fontSize
+  const baseFontSize = parseInt(visualSettings.XAxisSettings?.fontSize || "16px", 10);
+  const chartSize = Math.max(300, baseFontSize * 15); // Scale chart size with font size
+  const innerRadius = chartSize * 0.35;
+  const outerRadius = chartSize * 0.45;
 
-      <div className="flex flex-col items-center justify-center h-full relative">
-        <PieChart width={200} height={200}>
+  return (
+    <ChartContainer config={chartConfig}>
+
+      <div className="flex flex-col items-center justify-center w-full h-full">
+        <PieChart width={chartSize} height={chartSize/2 + 50}>
           <Pie
             data={gaugeData}
             dataKey="value"
             nameKey="name"
             cx="50%"
-            cy="50%"
+            cy="100%"
             startAngle={180}
             endAngle={0}
-            innerRadius={60}
-            outerRadius={80}
+            innerRadius={innerRadius}
+            outerRadius={outerRadius}
             paddingAngle={0}
             cornerRadius={0}
           >
@@ -91,17 +84,18 @@ export const LocalGaugeChart: React.FC<genericChartsProps> = ({
           <Tooltip content={<ChartTooltipContent hideLabel nameKey="name" className="bg-white" />} />
         </PieChart>
         
-        <div className="absolute flex flex-col items-center justify-center">
-          <p
-            className="text-3xl font-bold"
-            style={{
-              color: visualSettings.fillColor || "#1f2937",
-              fontSize: visualSettings.XAxisSettings?.fontSize || "1.5rem"
-            }}
-          >
-            {percentage.toFixed(1)}%
-          </p>
-          <p className="text-sm text-gray-500 mt-1">{firstItem?.name || "Value"}</p>
+        <div className="flex flex-col items-center">
+          <div className="text-center">
+            <p
+              className="font-bold"
+              style={{
+                color: visualSettings.fillColor || "#1f2937",
+                fontSize: visualSettings.XAxisSettings?.fontSize || "24px"
+              }}
+            >
+              {percentage.toFixed(1)}
+            </p>
+          </div>
         </div>
       </div>
     </ChartContainer>
