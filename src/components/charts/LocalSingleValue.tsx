@@ -1,35 +1,29 @@
 import React, { useMemo } from "react";
 import { useAuthorities } from "../../context/AuthContext";
-import { Pie, PieChart, Tooltip, Cell, Legend } from "recharts";
-import {
-  ChartContainer,
-  ChartTooltipContent,
-} from "../../components/ui/chart";
+import { ChartContainer } from "../../components/ui/chart";
 import { transformDataForGenericChart, generateChartConfig, isValidInputData } from "../../lib/localGenericchartFormat";
 import { genericChartsProps } from "../../types/visualSettingsTypes";
-import { VisualHeading } from "./VisualHeading";
 
-export const LocalSingleValue: React.FC<genericChartsProps> = ({
-  data,
-  visualTitleAndSubTitle,
-  visualSettings,
-  metaDataLabels,
-  analyticsPayloadDeterminer
+export const LocalSingleValue: React.FC<genericChartsProps> = ({ 
+  data, 
+  visualTitleAndSubTitle, 
+  visualSettings, 
+  metaDataLabels, 
+  analyticsPayloadDeterminer 
 }) => {
   // Error handling to check if data exists before passing it to the formatter function or graph
   const { chartData, chartConfig, error } = useMemo(() => {
     if (!isValidInputData(data)) {
       return { chartData: [], chartConfig: {}, error: "No data found" };
     }
-
     try {
-      const transformedData = transformDataForGenericChart(data, "pie",visualSettings.visualColorPalette,metaDataLabels);
-      const config = generateChartConfig(data,visualSettings.visualColorPalette);
+      const transformedData = transformDataForGenericChart(data, "pie", visualSettings.visualColorPalette, metaDataLabels);
+      const config = generateChartConfig(data, visualSettings.visualColorPalette);
       return { chartData: transformedData, chartConfig: config, error: null };
     } catch (err) {
       return { chartData: [], chartConfig: {}, error: (err as Error).message };
     }
-  }, [data,visualSettings]);
+  }, [data, visualSettings, metaDataLabels]);
 
   if (error || chartData.length === 0) {
     return (
@@ -39,42 +33,30 @@ export const LocalSingleValue: React.FC<genericChartsProps> = ({
     );
   }
 
-  console.log("mockup single data", chartData);
-  console.log("mockup config", chartConfig);
+  // Extract only the first item from chartData
+  const firstItem = chartData[0];
 
   return (
-    <ChartContainer
-      config={chartConfig}
-      style={{ backgroundColor: visualSettings.backgroundColor }}
-    >
-      {visualTitleAndSubTitle.visualTitle && (
-        <h3 className="text-center text-lg font-bold text-gray-800 ">
-          {visualTitleAndSubTitle.visualTitle}
-        </h3>
-      )}
-      {visualTitleAndSubTitle?.customSubTitle ? (
-        <h4 className="text-center text-md font-medium text-gray-600 mt-1">
-          {visualTitleAndSubTitle?.customSubTitle}
-        </h4>
-      ) : 
-      <VisualHeading analyticsPayloadDeterminer={analyticsPayloadDeterminer}  visualTitleAndSubTitle={visualTitleAndSubTitle} />
-      }
-      
-      <div
-        className="flex flex-wrap justify-center items-center gap-6 p-4 h-full w-full"
-        style={{ minHeight: "100%", height: "100%" }}
-      >
-        {chartData?.map((item: { name: string; total: number; fill: string }, index: number) => (
-          <article
-            key={index}
-            style={{ backgroundColor: item.fill, color: visualSettings.fillColor }}
-            className="rounded-lg shadow-md p-6 min-w-4 text-center"
+    <ChartContainer config={chartConfig} style={{ backgroundColor: visualSettings.backgroundColor }}>
+      <div className="flex justify-center items-center h-full w-full">
+        {firstItem && (
+          <article 
+            style={{ 
+              backgroundColor: visualSettings.backgroundColor, 
+            }}
+            className="rounded-lg shadow-md p-6 flex flex-col justify-center items-center h-full w-full"
           >
-            <h3 className="text-xl font-semibold mb-2">{item.name}</h3>
-            <p className="text-3xl font-bold">{item.total.toLocaleString()}</p>
-
+            <p 
+              style={{ 
+                color: visualSettings.fillColor, 
+                fontSize: visualSettings.XAxisSettings.fontSize, 
+                fontWeight: 'bold' 
+              }}
+            >
+              {firstItem.total.toLocaleString()}
+            </p>
           </article>
-        ))}
+        )}
       </div>
     </ChartContainer>
   );

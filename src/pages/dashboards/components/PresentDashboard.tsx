@@ -386,8 +386,8 @@ useEffect(()=>{
                 >
                   <div className="w-full">
                     <h4 
-                      className={`text-xl font-medium text-center ${
-                        (!isFullscreen || showControls) ? "text-gray-400" : "text-gray-400"
+                      className={`text-xl font-medium text-center bg-white ${
+                        (!isFullscreen || showControls) ? "text-black" : "text-gray-400"
                       }`}
                     >
                       {index + 1}. {item.visualName || item.mapName}
