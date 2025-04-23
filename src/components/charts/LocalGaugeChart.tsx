@@ -1,9 +1,29 @@
 import React, { useMemo } from "react";
-import { PieChart, Pie, Cell, Tooltip } from "recharts";
+import { PieChart, Pie, Cell, Tooltip, Text } from "recharts";
 import { ChartContainer, ChartTooltipContent } from "../../components/ui/chart";
 import { transformDataForGenericChart, generateChartConfig, isValidInputData } from "../../lib/localGenericchartFormat";
 import { genericChartsProps } from "../../types/visualSettingsTypes";
 import { VisualHeading } from "./VisualHeading";
+
+// Custom component to render the percentage text in the center of the gauge
+const CustomLabel = ({ viewBox, value, fillColor, fontSize }) => {
+  const { cx, cy } = viewBox;
+  return (
+    <text 
+      x={cx} 
+      y={cy - 20} 
+      textAnchor="middle" 
+      dominantBaseline="middle"
+      className="font-bold"
+      style={{ 
+        fill: fillColor || "#1f2937",
+        fontSize: fontSize || "24px"
+      }}
+    >
+      {value.toFixed(1)}
+    </text>
+  );
+};
 
 export const LocalGaugeChart: React.FC<genericChartsProps> = ({
   data,
@@ -61,9 +81,8 @@ export const LocalGaugeChart: React.FC<genericChartsProps> = ({
 
   return (
     <ChartContainer config={chartConfig}>
-
       <div className="flex flex-col items-center justify-center w-full h-full">
-        <PieChart width={chartSize} height={chartSize/2 + 50}>
+        <PieChart width={chartSize} height={chartSize/1.5}>
           <Pie
             data={gaugeData}
             dataKey="value"
@@ -76,27 +95,29 @@ export const LocalGaugeChart: React.FC<genericChartsProps> = ({
             outerRadius={outerRadius}
             paddingAngle={0}
             cornerRadius={0}
+            label={false}
           >
             {gaugeData.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={gaugeColors[index]} />
             ))}
           </Pie>
           <Tooltip content={<ChartTooltipContent hideLabel nameKey="name" className="bg-white" />} />
+          
+          {/* Custom label component to position the percentage value inside the gauge */}
+          <text
+            x="50%"
+            y="85%"
+            textAnchor="middle"
+            dominantBaseline="middle"
+            className="font-bold"
+            style={{
+              fill: visualSettings.fillColor || "#1f2937",
+              fontSize: visualSettings.XAxisSettings?.fontSize || "24px"
+            }}
+          >
+            {percentage.toFixed(1)}
+          </text>
         </PieChart>
-        
-        <div className="flex flex-col items-center">
-          <div className="text-center">
-            <p
-              className="font-bold"
-              style={{
-                color: visualSettings.fillColor || "#1f2937",
-                fontSize: visualSettings.XAxisSettings?.fontSize || "24px"
-              }}
-            >
-              {percentage.toFixed(1)}
-            </p>
-          </div>
-        </div>
       </div>
     </ChartContainer>
   );
