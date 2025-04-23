@@ -20,6 +20,7 @@ import { TbChartRadar } from "react-icons/tb";
 import { PiChartScatterDuotone } from "react-icons/pi";
 import { GiRadialBalance } from "react-icons/gi";
 import { genericChartsProps } from '../types/visualSettingsTypes';
+import LocalGaugeChart from '../components/charts/LocalGaugeChart';
 
 type ChartComponent = {
     type: string;
@@ -33,6 +34,12 @@ export const chartComponents: ChartComponent = [
     { 
         type: 'Column', 
         component: LocalBarChart, 
+        description: 'A bar chart displaying data', 
+        icon: <IoBarChartSharp /> 
+    },
+    { 
+        type: 'Gauge', 
+        component: LocalGaugeChart, 
         description: 'A bar chart displaying data', 
         icon: <IoBarChartSharp /> 
     },
