@@ -21,7 +21,8 @@ import {
   parseCoordinates,
   getColorForValue,
   createGeoJSON,
-  onEachFeature
+  onEachFeature,
+  syncOrganizationUnits
 } from '../../../lib/mapHelpers';
 import { useAuthorities } from '../../../context/AuthContext';
 import LegendControls from './LegendControls';
@@ -104,36 +105,48 @@ const MapBody: React.FC<MapBodyProps> = ({
   const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   
   // Main data processing effect
-  useEffect(() => {
-    console.log({ geoFeaturesData, analyticsMapData, metaMapData });
+useEffect(() => {
+  console.log({ geoFeaturesData, analyticsMapData, metaMapData });
+  
+  setDataProcessed(true);
+  
+  // Data validation checks
+  if (!geoFeaturesData?.length || !analyticsMapData?.rows || !metaMapData) {
+    console.log("Insufficient map data");
+    return;
+  }
+  
+  try {
+    // Sync organization units if needed
+    const updatedMetaMapData = syncOrganizationUnits(analyticsMapData, geoFeaturesData, metaMapData);
     
-    setDataProcessed(true);
+    // Data processing logic
+    const dataValues = new Map<string, string>();
     
-    // Data validation checks
-    if (!geoFeaturesData?.length || !analyticsMapData?.rows || !metaMapData) {
-      console.log("Insufficient map data");
-      return;
-    }
+    analyticsMapData.rows.forEach(row => {
+      if (row && row.length >= 3) {
+        const identifier = row[1];
+        const value = row[2];
+        dataValues.set(identifier, value);
+      }
+    });
     
-    try {
-      // Data processing logic
-      const dataValues = new Map<string, string>();
-      
-      analyticsMapData.rows.forEach(row => {
-        if (row && row.length >= 3) {
-          const identifier = row[1];
-          const value = row[2];
-          dataValues.set(identifier, value);
+    setValueMap(dataValues);
+    
+    // Process districts with validation
+    const processedDistricts = geoFeaturesData
+      .map(district => {
+        // Skip if missing essential data
+        if (!district?.co || !district?.id || !district?.na) {
+          console.warn(`District missing essential data:`, district);
+          return null;
         }
-      });
-      
-      setValueMap(dataValues);
-      
-      const processedDistricts = geoFeaturesData
-        .map(district => {
-          if (!district?.co || !district?.id || !district?.na) return null;
-          
+        
+        try {
+          // Parse coordinates with enhanced function
           const coordinates = parseCoordinates(district.co);
+          
+          // Get value if available
           const value = dataValues.get(district.id) 
             ? parseFloat(dataValues.get(district.id)!)
             : null;
@@ -146,37 +159,43 @@ const MapBody: React.FC<MapBodyProps> = ({
             code: district.code || "",
             region: district.pn || ""
           };
-        })
-        .filter(Boolean) as ProcessedDistrict[];
+        } catch (error) {
+          console.error(`Error processing district ${district.na}:`, error);
+          return null;
+        }
+      })
+      .filter(Boolean) as ProcessedDistrict[];
+    
+    console.log(`Processed ${processedDistricts.length} districts successfully`);
+    setDistricts(processedDistricts);
+    
+    // Generate GeoJSON with improved function
+    const generatedGeoJson = createGeoJSON(processedDistricts);
+    setGeoJsonData(generatedGeoJson);
+    
+    // Calculate center and set zoom
+    if (processedDistricts.length > 0) {
+      const center = calculateMapCenter(processedDistricts);
+      setCenterPosition(center);
       
-      setDistricts(processedDistricts);
+      // Set zoom level appropriately
+      setZoomLevel(5); // Using a more reasonable default zoom level
       
-      // Generate GeoJSON data
-      const generatedGeoJson = createGeoJSON(processedDistricts);
-      setGeoJsonData(generatedGeoJson);
-      
-      // Calculate center and set zoom
-      if (processedDistricts.length > 0) {
-        const center = calculateMapCenter(processedDistricts);
-        setCenterPosition(center);
-        
-        // Set a higher zoom level when we have specific coordinates
-        setZoomLevel(19);
-        
-        const legend = generateAutoLegend(processedDistricts);
-        setAutoLegend(legend);
-      } else {
-        // Default values when no districts are available
-        setCenterPosition([0, 28]);
-        setZoomLevel(2);
-      }
-      
-      const districtsWithData = processedDistricts.filter(d => d.value !== null);
-      setHasDataToDisplay(districtsWithData.length > 0);
-    } catch (error) {
-      console.error("Error processing map data:", error);
+      const legend = generateAutoLegend(processedDistricts);
+      setAutoLegend(legend);
+    } else {
+      // Default values when no districts are available
+      setCenterPosition([0, 28]);
+      setZoomLevel(2);
+      console.warn("No valid districts processed");
     }
-  }, [geoFeaturesData, analyticsMapData, metaMapData]);
+    
+    const districtsWithData = processedDistricts.filter(d => d.value !== null);
+    setHasDataToDisplay(districtsWithData.length > 0);
+  } catch (error) {
+    console.error("Error processing map data:", error);
+  }
+}, [geoFeaturesData, analyticsMapData, metaMapData]);
 
   // Style function for GeoJSON
   const getStyleOne = (feature: any) => {
@@ -227,21 +246,7 @@ const MapBody: React.FC<MapBodyProps> = ({
 
       {/* Map Container */}
       <div className="flex-grow h-full">
-        {/* Legend Controls */}
-        {/* {!isHideSideBar && (
-          <>
-            {districts.length > 0 && (
-              <LegendControls
-              legendType={legendType}
-              setLegendType={setLegendType}
-              selectedLegendSet={selectedLegendSet}
-              setSelectedLegendSet={setSelectedLegendSet}
-              sampleLegends={sampleLegends}
-            />
-            )}
-          </>
-        )} */}
-      
+       
         <div className="h-full w-full relative">
           {/* Map Title */}
           {mapName && (
@@ -271,14 +276,15 @@ const MapBody: React.FC<MapBodyProps> = ({
             
             {/* District Layer */}
             {districts.length > 0 && geoJsonData && (
-              <GeoJSON 
-                data={geoJsonData}
-                style={getStyleOne}
-                onEachFeature={(feature, layer) => 
-                  onEachFeature(feature, layer, analyticsMapData, valueMap, metaMapData, mapAnalyticsQueryTwo)
-                }
-              />
-            )}
+  <GeoJSON 
+    key={`geojson-layer-${districts.length}`} // Add a key to force re-render when data changes
+    data={geoJsonData}
+    style={getStyleOne}
+    onEachFeature={(feature, layer) => 
+      onEachFeature(feature, layer, analyticsMapData, valueMap, metaMapData, mapAnalyticsQueryTwo)
+    }
+  />
+)}
             
              {/* Permanent Labels */}
              {districts.length > 0 && geoJsonData && appliedLabels.length > 0 && (
