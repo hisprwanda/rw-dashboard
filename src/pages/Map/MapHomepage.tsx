@@ -15,12 +15,13 @@ const MapHomepage: React.FC = () => {
   const {data:singleSavedMapData,error,isError,loading,isFetchCurrentInstanceDataItemsLoading,isFetchExternalInstanceDataItemsLoading,isHandleDataSourceChangeLoading} = useFetchSingleMapData(mapId)
   const {loading:isFetchingGeoFeaturesLoading} = useRunGeoFeatures()
     // update if current user organization is selected
-    useEffect(() => {
-      if (singleSavedMapData) {
-          const isAnyTrue = Object.values(isSetPredifinedUserOrgUnits).some(value => value === true);
-          setIsUseCurrentUserOrgUnits(isAnyTrue);
-      }
-  }, [isSetPredifinedUserOrgUnits]);
+  //   useEffect(() => {
+  //     console.log("isSetPredifinedUserOrgUnits in map ",isSetPredifinedUserOrgUnits )
+  //     if (singleSavedMapData) {
+  //         const isAnyTrue = Object.values(isSetPredifinedUserOrgUnits).some(value => value === true);
+  //         setIsUseCurrentUserOrgUnits(isAnyTrue);
+  //     }
+  // }, [isSetPredifinedUserOrgUnits]);
 
   if(loading || isFetchAnalyticsDataLoading || isFetchingGeoFeaturesLoading)
   {

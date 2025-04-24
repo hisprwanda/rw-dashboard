@@ -238,9 +238,7 @@ export const useFetchSingleVisualData = (visualId: string) => {
     const selectedOrganizationUnits = formatSelectedOrganizationUnit(
       data.dataStore?.query?.myData?.params?.filter
     );
-    const isSetPredifinedUserOrgUnits = formatCurrentUserSelectedOrgUnit(
-      data.dataStore?.query?.myData?.params?.filter
-    );
+    const isSetPredifinedUserOrgUnits = formatCurrentUserSelectedOrgUnit(data.dataStore?.query?.myData?.params?.filter);
     const isAnyTrue = Object.values(isSetPredifinedUserOrgUnits).some(value => value === true);
     const selectedOrgUnitGroups = formatOrgUnitGroup(
       data.dataStore?.query?.myData?.params?.filter

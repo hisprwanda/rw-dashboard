@@ -97,6 +97,7 @@ export const useFetchSingleMapData = (mapId: string) => {
     setSelectedVisualSettings,
     setSelectedColorPalette,
     setBackedSelectedItems,
+    setIsUseCurrentUserOrgUnits,
     fetchAnalyticsData,
     selectedDimensionItemType,
     setCurrentUserInfoAndOrgUnitsData,
@@ -300,8 +301,9 @@ export const useFetchSingleMapData = (mapId: string) => {
     const selectedOrganizationUnitsLevels =
       formatOrgUnitLevels(selectedOrgUnit);
     const selectedOrgUnitGroups = formatOrgUnitGroup(selectedOrgUnit);
-    const isSetPredifinedUserOrgUnits =
-      formatCurrentUserSelectedOrgUnit(selectedOrgUnit);
+    const isSetPredifinedUserOrgUnits =formatCurrentUserSelectedOrgUnit(selectedOrgUnit);
+    const isAnyTrue = Object.values(isSetPredifinedUserOrgUnits).some(value => value === true);
+    setIsUseCurrentUserOrgUnits(isAnyTrue);
     handleDataSourceChange({
       dataSourceId: savedDataSourceId,
       dimensions,
@@ -329,6 +331,7 @@ export const useFetchSingleMapData = (mapId: string) => {
     setSelectedColorPalette,
     setSelectedVisualSettings,
     setBackedSelectedItems,
+    setIsUseCurrentUserOrgUnits
   ]);
 
   return {
