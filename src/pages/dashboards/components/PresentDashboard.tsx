@@ -381,7 +381,7 @@ useEffect(()=>{
                   className="flex-[0_0_auto] min-w-0 w-full h-full flex items-center"
                   style={{ 
                     width: `${100 / slidesToShow}%`, 
-                    backgroundColor: item.visualSettings?.backgroundColor || item.backgroundColor || '#ffffff' 
+                    backgroundColor: item.visualType === "Gauge" ? '#ffffff' : (item.visualSettings?.backgroundColor || item.backgroundColor || '#ffffff')
                   }}
                 >
                   <div className="w-full">
@@ -396,7 +396,7 @@ useEffect(()=>{
                     <div 
                       className="h-full" 
                       style={{
-                        backgroundColor: item.visualSettings?.backgroundColor || item.backgroundColor || 'transparent'
+                        backgroundColor: item.visualType === "Gauge" ? '#ffffff' : (item.visualSettings?.backgroundColor || item.backgroundColor || 'transparent')
                       }} 
                     >
                       {/* Render either Visual Item or Map Item */}
