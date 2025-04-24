@@ -28,7 +28,7 @@ import { formatAnalyticsDimensions } from '../../lib/formatAnalyticsDimensions';
 function Visualizers() {
     const { id: visualId } = useParams();
     const { data: systemInfo } = useSystemInfo();
-    const {fetchAnalyticsData,analyticsPayloadDeterminer, subDataItemsData, setDataItemsDataPage, metaDataLabels, selectedDataSourceOption, setSelectedDataSourceOption, currentUserInfoAndOrgUnitsData, setCurrentUserInfoAndOrgUnitsData, dataItemsData, selectedDataSourceDetails, setSelectedDataSourceDetails, setSelectedDimensionItemType, analyticsData, isFetchAnalyticsDataLoading, selectedChartType, setSelectedChartType, setAnalyticsQuery, isUseCurrentUserOrgUnits, analyticsQuery, analyticsDimensions, setAnalyticsDimensions, setIsSetPredifinedUserOrgUnits, isSetPredifinedUserOrgUnits, selectedOrganizationUnits, setSelectedOrganizationUnits, setIsUseCurrentUserOrgUnits,  fetchAnalyticsDataError, visualTitleAndSubTitle, visualSettings, setSelectedVisualSettings, setVisualsColorPalettes, selectedColorPalette, selectedDimensionItemType } = useAuthorities();
+    const {fetchAnalyticsData,analyticsPayloadDeterminer, subDataItemsData, setDataItemsDataPage, metaDataLabels, selectedDataSourceOption, setSelectedDataSourceOption, currentUserInfoAndOrgUnitsData, setCurrentUserInfoAndOrgUnitsData, dataItemsData, selectedDataSourceDetails, setSelectedDataSourceDetails, setSelectedDimensionItemType, analyticsData, isFetchAnalyticsDataLoading, selectedChartType, setSelectedChartType, setAnalyticsQuery, isUseCurrentUserOrgUnits, analyticsQuery, analyticsDimensions, setAnalyticsDimensions, setIsSetPredifinedUserOrgUnits, isSetPredifinedUserOrgUnits, selectedOrganizationUnits,selectedOrganizationUnitsLevels,selectedOrgUnitGroups, setSelectedOrganizationUnits, setIsUseCurrentUserOrgUnits,  fetchAnalyticsDataError, visualTitleAndSubTitle, visualSettings, setSelectedVisualSettings, setVisualsColorPalettes, selectedColorPalette, selectedDimensionItemType } = useAuthorities();
     const { data: singleSavedVisualData, isError, loading: isFetchSingleVisualLoading } = useFetchSingleVisualData(visualId);
     const { loading: orgUnitLoading, error: fetchOrgUnitError, data: orgUnitsData, fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData();
     const { error: dataItemsFetchError, loading: isFetchCurrentInstanceDataItemsLoading, fetchCurrentInstanceData } = useDataItems();
@@ -131,7 +131,13 @@ function Visualizers() {
 
     // run analytics
     const handleRunAnalytics = async() => {
-            await fetchAnalyticsData({dimension:formatAnalyticsDimensions(analyticsDimensions),instance:selectedDataSourceDetails,analyticsPayloadDeterminer});
+            await fetchAnalyticsData({dimension:formatAnalyticsDimensions(analyticsDimensions),instance:selectedDataSourceDetails,analyticsPayloadDeterminer,
+                selectedOrganizationUnits,
+                selectedOrgUnitGroups,
+                selectedOrganizationUnitsLevels,
+                isUseCurrentUserOrgUnits,
+                isSetPredifinedUserOrgUnits
+            });
     }
 
     /// fetch current user and Organization unit

@@ -32,6 +32,7 @@ const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsSh
     selectedOrganizationUnitsLevels,
     setSelectedOrganizationUnitsLevels,
     setSelectedOrgUnitGroups,
+    selectedOrgUnitGroups,
     isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits,
     selectedOrgUnits,
     setSelectedOrgUnits,
@@ -112,7 +113,13 @@ const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsSh
       await fetchAnalyticsData({
         dimension: formatAnalyticsDimensions(analyticsDimensions),
         instance: selectedDataSourceDetails,
-        analyticsPayloadDeterminer
+        analyticsPayloadDeterminer,
+        selectedOrganizationUnits,
+        selectedOrgUnitGroups,
+        selectedOrganizationUnitsLevels,
+        isUseCurrentUserOrgUnits,
+        isSetPredifinedUserOrgUnits
+
       });
       setIsShowOrganizationUnit(false);
     } catch (error) {
