@@ -85,13 +85,35 @@ export const calculateMapCenter = (districts: ProcessedDistrict[]): [number, num
 };
 
 // Parse coordinates string to GeoJSON format
-export const parseCoordinates = (coordinatesString: string): number[][][] => {
+export const parseCoordinates = (coordinatesString: string): any => {
   try {
-    const cleanString = coordinatesString
-      .replace(/\]\]\]\]$/, ']]]')
-      .replace(/\[\[\[/, '[[[');
+    // Parse the original string without modifying it
+    const parsed = JSON.parse(coordinatesString);
     
-    return JSON.parse(cleanString);
+    // Determine the nesting level
+    const checkDepth = (arr: any[]): number => {
+      if (!Array.isArray(arr)) return 0;
+      if (arr.length === 0) return 1;
+      return 1 + checkDepth(arr[0]);
+    };
+    
+    const depth = checkDepth(parsed);
+    
+    // Handle different coordinate structures based on nesting depth
+    if (depth === 4) {
+      // MultiPolygon format: [[[[x,y],[x,y]...]]]
+      return parsed;
+    } else if (depth === 3) {
+      // Polygon format: [[[x,y],[x,y]...]]
+      return parsed;
+    } else if (depth === 2) {
+      // LineString format: [[x,y],[x,y]...]
+      // Convert to Polygon format
+      return [parsed];
+    } else {
+      console.warn('Unexpected coordinate format:', coordinatesString);
+      return [[[0, 0]]];
+    }
   } catch (e) {
     console.error('Error parsing coordinates:', e, coordinatesString);
     return [[[0, 0]]];
@@ -124,21 +146,60 @@ export const getColorForValue = (
 export const createGeoJSON = (districts: ProcessedDistrict[]) => {
   return {
     type: 'FeatureCollection',
-    features: districts.map(district => ({
-      type: 'Feature',
-      properties: {
-        id: district.id,
-        name: district.name,
-        value: district.value,
-        code: district.code,
-        region: district.region
-      },
-      geometry: {
-        type: 'Polygon',
-        coordinates: district.coordinates
-      }
-    }))
+    features: districts.map(district => {
+      // Determine geometry type based on coordinate structure
+      const coordinates = district.coordinates;
+      
+      // Check the depth of the coordinates to determine geometry type
+      const isMultiPolygon = Array.isArray(coordinates[0][0][0]);
+      
+      return {
+        type: 'Feature',
+        properties: {
+          id: district.id,
+          name: district.name,
+          value: district.value,
+          code: district.code,
+          region: district.region
+        },
+        geometry: {
+          type: isMultiPolygon ? 'MultiPolygon' : 'Polygon',
+          coordinates: isMultiPolygon ? coordinates : coordinates
+        }
+      };
+    })
   };
+};
+// Function to detect and fix issues with organization units
+export const syncOrganizationUnits = (
+  analyticsMapData: any, 
+  geoFeaturesData: any[],
+  metaMapData: any
+) => {
+  if (!analyticsMapData?.rows || !metaMapData?.metaData?.dimensions?.ou) {
+    return;
+  }
+  
+  // Get all organization unit IDs from analytics data
+  const analyticsOrgUnits = new Set<string>();
+  analyticsMapData.rows.forEach((row: any[]) => {
+    if (row && row.length >= 2) {
+      analyticsOrgUnits.add(row[1]);
+    }
+  });
+  
+  // Get all organization unit IDs from metaMapData dimensions
+  const dimensionOrgUnits = new Set(metaMapData.metaData.dimensions.ou);
+  
+  // Make sure all analytics org units are included in dimensions
+  analyticsOrgUnits.forEach(id => {
+    if (!dimensionOrgUnits.has(id)) {
+      metaMapData.metaData.dimensions.ou.push(id);
+    }
+  });
+  
+  // Return the updated metaMapData
+  return metaMapData;
 };
 
 // Popup content for district features

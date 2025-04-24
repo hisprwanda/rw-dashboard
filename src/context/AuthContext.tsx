@@ -368,8 +368,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             },
           };
           setMapAnalyticsQueryTwo(mapAnalyticsQueryForStorage);
-          
           setMetaMapData(resultTwo?.myData);
+          console.log("MetaMapData test",resultTwo?.myData)
           setAnalyticsMapData(result?.myData);
         } else {
           // Process regular analytics data
