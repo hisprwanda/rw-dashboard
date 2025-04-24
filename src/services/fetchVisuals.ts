@@ -96,7 +96,8 @@ export const useFetchSingleVisualData = (visualId: string) => {
     setBackedSelectedItems,
     fetchAnalyticsData,
     selectedDimensionItemType,
-    setCurrentUserInfoAndOrgUnitsData
+    setCurrentUserInfoAndOrgUnitsData,
+    setIsUseCurrentUserOrgUnits
   } = useAuthorities();
 
   // Early return if no visualId
@@ -237,16 +238,15 @@ export const useFetchSingleVisualData = (visualId: string) => {
     const selectedOrganizationUnits = formatSelectedOrganizationUnit(
       data.dataStore?.query?.myData?.params?.filter
     );
-    const isSetPredifinedUserOrgUnits = formatCurrentUserSelectedOrgUnit(
-      data.dataStore?.query?.myData?.params?.filter
-    );
+    const isSetPredifinedUserOrgUnits = formatCurrentUserSelectedOrgUnit(data.dataStore?.query?.myData?.params?.filter);
+    const isAnyTrue = Object.values(isSetPredifinedUserOrgUnits).some(value => value === true);
     const selectedOrgUnitGroups = formatOrgUnitGroup(
       data.dataStore?.query?.myData?.params?.filter
     );
     const selectedOrganizationUnitsLevels = formatOrgUnitLevels(
       data.dataStore?.query?.myData?.params?.filter
     );
-    
+    setIsUseCurrentUserOrgUnits(isAnyTrue);
     setSelectedOrganizationUnits(selectedOrganizationUnits);
     setIsSetPredifinedUserOrgUnits(isSetPredifinedUserOrgUnits);
     setSelectedOrgUnits(data.dataStore?.organizationTree);
@@ -279,6 +279,7 @@ export const useFetchSingleVisualData = (visualId: string) => {
     setAnalyticsQuery,
     setAnalyticsPayloadDeterminer,
     setSelectedOrganizationUnits,
+    setIsUseCurrentUserOrgUnits,
     setIsSetPredifinedUserOrgUnits,
     setSelectedOrgUnits,
     setSelectedOrgUnitGroups,

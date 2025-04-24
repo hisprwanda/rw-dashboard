@@ -64,19 +64,7 @@ function Visualizers() {
         }
 
     }, [visualId]);
-
-    // update if current user organization is selected
-    useEffect(() => {
-        if (singleSavedVisualData) {
-            const isAnyTrue = Object.values(isSetPredifinedUserOrgUnits).some(value => value === true);
-            setIsUseCurrentUserOrgUnits(isAnyTrue);
-        }
-
-    }, [isSetPredifinedUserOrgUnits]);
-    useEffect(()=>{
-        console.log("singleSavedVisualData xcy",singleSavedVisualData)
-    },[singleSavedVisualData])
-
+    
     const handleShowSaveVisualTypeForm = () => {
         setIsShowSaveVisualTypeForm(true);
     };
