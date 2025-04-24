@@ -177,6 +177,11 @@ const PeriodPicker: React.FC<PeriodPickerProps> = ({
     analyticsPayloadDeterminer,
     isFetchAnalyticsDataLoading,
     selectedDataSourceDetails,
+    selectedOrganizationUnits,
+    selectedOrgUnitGroups,
+    selectedOrganizationUnitsLevels,
+    isUseCurrentUserOrgUnits,
+    isSetPredifinedUserOrgUnits
   } = useAuthorities()
   const [selectedTab, setSelectedTab] = useState(isPeriodInBulletin ? "fixed" : "relative")
   const [selectedPeriodGroup, setSelectedPeriodGroup] = useState("days")
@@ -525,7 +530,13 @@ const PeriodPicker: React.FC<PeriodPickerProps> = ({
     if (isAnalyticsDataHardCoded) {
       analyticsDimensions.dx = dimensionDataHardCoded
     }
-    const checking = await fetchAnalyticsData({dimension:formatAnalyticsDimensions(analyticsDimensions), instance:selectedDataSourceDetails,analyticsPayloadDeterminer})
+    const checking = await fetchAnalyticsData({dimension:formatAnalyticsDimensions(analyticsDimensions), instance:selectedDataSourceDetails,analyticsPayloadDeterminer,
+      selectedOrganizationUnits,
+      selectedOrgUnitGroups,
+      selectedOrganizationUnitsLevels,
+      isUseCurrentUserOrgUnits,
+      isSetPredifinedUserOrgUnits
+    })
     console.log("period modal fetched analytics", checking)
     setDataSubmitted?.(true)
     setIsShowPeriod && setIsShowPeriod(false)

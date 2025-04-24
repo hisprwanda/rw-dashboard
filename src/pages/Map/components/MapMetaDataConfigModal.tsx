@@ -115,7 +115,12 @@ export function MapMetaDataConfigModal({
      const analyticsResult = await fetchAnalyticsData({
       dimension: formatAnalyticsDimensions(analyticsDimensions,isAnalyticsApiUsedInMap),
       instance: selectedDataSourceDetails,
-      isAnalyticsApiUsedInMap,selectedPeriodsOnMap,selectedOrgUnitsWhenUsingMap
+      isAnalyticsApiUsedInMap,selectedPeriodsOnMap,selectedOrgUnitsWhenUsingMap,
+      selectedOrganizationUnits,
+      selectedOrgUnitGroups,
+      selectedOrganizationUnitsLevels,
+      isUseCurrentUserOrgUnits,
+      isSetPredifinedUserOrgUnits
     });
     onOpenChange(false);
   };

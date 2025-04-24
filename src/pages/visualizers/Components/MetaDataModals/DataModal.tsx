@@ -229,7 +229,12 @@ const DataModal: React.FC<DataModalProps> = ({
     analyticsPayloadDeterminer,
     isFetchAnalyticsDataLoading,
     selectedDataSourceDetails,
-    backedSelectedItems,setBackedSelectedItems
+    backedSelectedItems,setBackedSelectedItems,
+    selectedOrganizationUnits,
+    selectedOrgUnitGroups,
+    selectedOrganizationUnitsLevels,
+    isUseCurrentUserOrgUnits,
+    isSetPredifinedUserOrgUnits
   } = useAuthorities();
 
   const [availableOptions, setAvailableOptions] = useState<TransferOption[]>([]);
@@ -420,7 +425,13 @@ const DataModal: React.FC<DataModalProps> = ({
   };
   
   const handleUpdate = async () => {
-    await fetchAnalyticsData({dimension:formatAnalyticsDimensions(analyticsDimensions),instance:selectedDataSourceDetails,analyticsPayloadDeterminer});
+    await fetchAnalyticsData({dimension:formatAnalyticsDimensions(analyticsDimensions),instance:selectedDataSourceDetails,analyticsPayloadDeterminer,
+      selectedOrganizationUnits,
+      selectedOrgUnitGroups,
+      selectedOrganizationUnitsLevels,
+      isUseCurrentUserOrgUnits,
+      isSetPredifinedUserOrgUnits
+    });
     setIsShowDataModal(false);
     setDataItemsDataPage(1);
   };

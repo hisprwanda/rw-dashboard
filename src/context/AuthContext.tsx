@@ -211,6 +211,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     selectedPeriodsOnMap?:string[];
     selectedOrgUnitsWhenUsingMap?:string[];
     analyticsPayloadDeterminer?:analyticsPayloadDeterminerTypes;
+
+    selectedOrganizationUnits: any[];
+    selectedOrgUnitGroups: any[];
+    selectedOrganizationUnitsLevels: any[];
+    isUseCurrentUserOrgUnits: boolean;
+    isSetPredifinedUserOrgUnits: any;
   }
 
 
@@ -220,7 +226,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     isAnalyticsApiUsedInMap,
     selectedPeriodsOnMap = [],
     selectedOrgUnitsWhenUsingMap = [],
-    analyticsPayloadDeterminer
+    analyticsPayloadDeterminer,
+
+    selectedOrganizationUnits,
+    selectedOrgUnitGroups,
+    selectedOrganizationUnitsLevels,
+    isUseCurrentUserOrgUnits,
+    isSetPredifinedUserOrgUnits
   }: fetchAnalyticsDataProps): Promise<void> => {
     try {
       // Prepare organization unit parameters

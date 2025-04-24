@@ -53,6 +53,8 @@ type handleDataSourceChangeProps = {
   isSetPredifinedUserOrgUnits: any;
 };
 
+
+
 export const useFetchSingleMapData = (mapId: string) => {
   const isInitialMount = useRef(true);
   const previousDataRef = useRef<VisualData | null>(null);
@@ -183,6 +185,12 @@ export const useFetchSingleMapData = (mapId: string) => {
             isAnalyticsApiUsedInMap,
             selectedPeriodsOnMap,
             selectedOrgUnitsWhenUsingMap,
+
+            selectedOrganizationUnits,
+            selectedOrgUnitGroups,
+            selectedOrganizationUnitsLevels,
+            isUseCurrentUserOrgUnits,
+            isSetPredifinedUserOrgUnits
           });
           setSelectedDataSourceDetails(currentInstanceDetails);
           await fetchCurrentInstanceData(selectedDimensionItemType);
