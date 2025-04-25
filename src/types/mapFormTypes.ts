@@ -4,6 +4,7 @@ import { z } from "zod";
 export const MapDataSchema = z.object({
   id: z.string(),
   mapType: z.enum(["Thematic"]),
+  BasemapType: z.enum(["osm-light", "osm-detailed"]),
   mapName: z.string().nonempty({ message: "Map name is required" }),
   description: z.string().optional(),
   queries: z.object({
@@ -41,6 +42,14 @@ export const MapDataSchema = z.object({
     id: z.string(),
  
   })),
+  settings: z.object({
+    styles: z.object({
+      labels: z.any(),
+      legend: z.any(),
+      isAutoLegend: z.boolean(),
+    }),
+  }).optional(),
+
 });
 
 // Infer form fields from the schema
