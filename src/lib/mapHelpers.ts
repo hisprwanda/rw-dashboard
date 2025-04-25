@@ -57,9 +57,13 @@ export const calculateMapCenter = (districts: ProcessedDistrict[]): [number, num
     return [-1.9403, 30.0578]; // Default center for Rwanda
   }
   
-  const districtsWithData = districts.filter(d => d.value !== null);
+  const validDistricts = districts.filter(d => 
+    d.coordinates && 
+    Array.isArray(d.coordinates) && 
+    d.coordinates.length > 0
+  );
   
-  if (districtsWithData.length === 0) {
+  if (validDistricts.length === 0) {
     return [-1.9403, 30.0578];
   }
   
@@ -67,13 +71,16 @@ export const calculateMapCenter = (districts: ProcessedDistrict[]): [number, num
   let lonSum = 0;
   let pointCount = 0;
   
-  districtsWithData.forEach(district => {
-    if (district.coordinates && district.coordinates.length > 0) {
+  validDistricts.forEach(district => {
+    if (district.coordinates) {
       district.coordinates.forEach(polygon => {
         if (polygon && polygon.length > 0) {
-          lonSum += polygon[0][0];
-          latSum += polygon[0][1];
-          pointCount++;
+          // Handle the first point of each polygon
+          if (Array.isArray(polygon[0])) {
+            lonSum += polygon[0][0];
+            latSum += polygon[0][1];
+            pointCount++;
+          }
         }
       });
     }
@@ -84,11 +91,32 @@ export const calculateMapCenter = (districts: ProcessedDistrict[]): [number, num
     : [-1.9403, 30.0578];
 };
 
-// Parse coordinates string to GeoJSON format
+
+// Parse coordinates string to GeoJSON format with consistent polygon output
 export const parseCoordinates = (coordinatesString: string): any => {
   try {
     // Parse the original string without modifying it
     const parsed = JSON.parse(coordinatesString);
+    
+    // Handle simple point coordinates [lon, lat]
+    if (Array.isArray(parsed) && parsed.length === 2 && 
+        typeof parsed[0] === 'number' && typeof parsed[1] === 'number') {
+      // Convert point to small polygon
+      const lon = parsed[0];
+      const lat = parsed[1];
+      const offset = 0.005; // ~500m at equator
+      
+      // Create a small square polygon around the point
+      return [
+        [
+          [lon - offset, lat - offset],
+          [lon + offset, lat - offset], 
+          [lon + offset, lat + offset],
+          [lon - offset, lat + offset],
+          [lon - offset, lat - offset] // Close the polygon
+        ]
+      ];
+    }
     
     // Determine the nesting level
     const checkDepth = (arr: any[]): number => {
@@ -142,16 +170,50 @@ export const getColorForValue = (
   
   return "#FFFFFF";
 };
-// Convert processed districts to GeoJSON
+// Convert processed districts to GeoJSON - ensure all are displayed as polygons
 export const createGeoJSON = (districts: ProcessedDistrict[]) => {
   return {
     type: 'FeatureCollection',
     features: districts.map(district => {
-      // Determine geometry type based on coordinate structure
-      const coordinates = district.coordinates;
+      if (!district.coordinates) {
+        console.warn(`District ${district.name} has no coordinates`);
+        return null;
+      }
       
-      // Check the depth of the coordinates to determine geometry type
-      const isMultiPolygon = Array.isArray(coordinates[0][0][0]);
+      let coordinates = district.coordinates;
+      let geometryType = 'Polygon';
+      
+      // Handle point coordinates [lon, lat] - convert to small polygon
+      if (Array.isArray(coordinates) && 
+          coordinates.length === 2 && 
+          typeof coordinates[0] === 'number' && 
+          typeof coordinates[1] === 'number') {
+        
+        // Convert point to small polygon (0.01 degree square around the point)
+        const lon = coordinates[0];
+        const lat = coordinates[1];
+        const offset = 0.005; // approximately 500m at equator
+        
+        // Create a small square polygon around the point
+        coordinates = [
+          [
+            [lon - offset, lat - offset],
+            [lon + offset, lat - offset],
+            [lon + offset, lat + offset],
+            [lon - offset, lat + offset],
+            [lon - offset, lat - offset] // Close the polygon
+          ]
+        ];
+        
+        geometryType = 'Polygon';
+      } 
+      // Check for MultiPolygon structure
+      else if (Array.isArray(coordinates) && 
+               Array.isArray(coordinates[0]) && 
+               Array.isArray(coordinates[0][0]) && 
+               Array.isArray(coordinates[0][0][0])) {
+        geometryType = 'MultiPolygon';
+      }
       
       return {
         type: 'Feature',
@@ -163,13 +225,15 @@ export const createGeoJSON = (districts: ProcessedDistrict[]) => {
           region: district.region
         },
         geometry: {
-          type: isMultiPolygon ? 'MultiPolygon' : 'Polygon',
-          coordinates: isMultiPolygon ? coordinates : coordinates
+          type: geometryType,
+          coordinates: coordinates
         }
       };
-    })
+    }).filter(Boolean) // Remove any null features
   };
 };
+
+
 // Function to detect and fix issues with organization units
 export const syncOrganizationUnits = (
   analyticsMapData: any, 
@@ -242,3 +306,82 @@ export const onEachFeature = (
       Value: ${displayValue} 
   `);
 };
+
+export const getMapBounds = (geoJsonData: any): L.LatLngBounds | null => {
+  if (!geoJsonData || !geoJsonData.features || geoJsonData.features.length === 0) {
+    return null;
+  }
+
+  try {
+    // Create a GeoJSON layer to calculate bounds
+    const geoLayer = L.geoJSON(geoJsonData);
+    const bounds = geoLayer.getBounds();
+    
+    // Only return bounds if they are valid
+    if (bounds.isValid()) {
+      return bounds;
+    }
+    return null;
+  } catch (error) {
+    console.error("Error calculating bounds:", error);
+    return null;
+  }
+};
+
+export const calculateMapBounds = (districts: ProcessedDistrict[]): L.LatLngBounds | null => {
+  if (!districts || districts.length === 0) {
+    return null;
+  }
+  
+  // Create bounds object
+  let bounds = new L.LatLngBounds([0, 0], [0, 0]);
+  let boundsInitialized = false;
+  
+  districts.forEach(district => {
+    if (!district.coordinates) return;
+    
+    try {
+      // Handle point format
+      if (Array.isArray(district.coordinates) && district.coordinates.length === 2 && 
+          typeof district.coordinates[0] === 'number' && typeof district.coordinates[1] === 'number') {
+        const latLng = L.latLng(district.coordinates[1], district.coordinates[0]);
+        if (!boundsInitialized) {
+          bounds = new L.LatLngBounds(latLng, latLng);
+          boundsInitialized = true;
+        } else {
+          bounds.extend(latLng);
+        }
+      } 
+      // Handle polygon/multipolygon formats
+      else {
+        district.coordinates.forEach(polygon => {
+          if (!polygon) return;
+          
+          // Handle first level arrays (polygons)
+          if (Array.isArray(polygon)) {
+            polygon.forEach(ring => {
+              if (!Array.isArray(ring)) return;
+              
+              // For each point in the polygon
+              ring.forEach(point => {
+                if (Array.isArray(point) && point.length >= 2) {
+                  const latLng = L.latLng(point[1], point[0]);
+                  if (!boundsInitialized) {
+                    bounds = new L.LatLngBounds(latLng, latLng);
+                    boundsInitialized = true;
+                  } else {
+                    bounds.extend(latLng);
+                  }
+                }
+              });
+            });
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Error processing district for bounds:", district.name, error);
+    }
+  });
+  
+  return boundsInitialized ? bounds : null;
+}

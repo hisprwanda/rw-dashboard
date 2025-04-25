@@ -22,7 +22,8 @@ import {
   getColorForValue,
   createGeoJSON,
   onEachFeature,
-  syncOrganizationUnits
+  syncOrganizationUnits,
+  getMapBounds
 } from '../../../lib/mapHelpers';
 import { useAuthorities } from '../../../context/AuthContext';
 import LegendControls from './LegendControls';
@@ -46,15 +47,18 @@ const MapViewUpdater: React.FC<{
   const map = useMap();
   
   useEffect(() => {
-    if (geoJsonData && Object.keys(geoJsonData).length > 0) {
+    if (geoJsonData && geoJsonData.features && geoJsonData.features.length > 0) {
       try {
-        // Create a GeoJSON layer to calculate bounds
-        const geoLayer = L.geoJSON(geoJsonData);
-        const bounds = geoLayer.getBounds();
+        // Create a temporary GeoJSON layer just for bounds calculation
+        const tempLayer = L.geoJSON(geoJsonData);
+        const bounds = tempLayer.getBounds();
         
-        // Only fit bounds if the bounds are valid
+        // Only fit bounds if they are valid
         if (bounds.isValid()) {
-          map.fitBounds(bounds);
+          map.fitBounds(bounds, {
+            padding: [20, 20], // Add padding around the bounds
+            maxZoom: 12 // Limit max zoom to avoid excessive zoom on small areas
+          });
           return; // Exit early since we've set the bounds
         }
       } catch (error) {
@@ -105,6 +109,7 @@ const MapBody: React.FC<MapBodyProps> = ({
   const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   
   // Main data processing effect
+// Main data processing effect
 useEffect(() => {
   console.log({ geoFeaturesData, analyticsMapData, metaMapData });
   
@@ -143,8 +148,14 @@ useEffect(() => {
         }
         
         try {
-          // Parse coordinates with enhanced function
-          const coordinates = parseCoordinates(district.co);
+          // Parse coordinates keeping original format
+          let coordinates;
+          try {
+            coordinates = JSON.parse(district.co);
+          } catch (e) {
+            console.error(`Error parsing coordinates for ${district.na}:`, e);
+            return null;
+          }
           
           // Get value if available
           const value = dataValues.get(district.id) 
@@ -169,11 +180,11 @@ useEffect(() => {
     console.log(`Processed ${processedDistricts.length} districts successfully`);
     setDistricts(processedDistricts);
     
-    // Generate GeoJSON with improved function
+    // Generate GeoJSON for rendering
     const generatedGeoJson = createGeoJSON(processedDistricts);
     setGeoJsonData(generatedGeoJson);
     
-    // Calculate center and set zoom
+    // Calculate map center
     if (processedDistricts.length > 0) {
       const center = calculateMapCenter(processedDistricts);
       setCenterPosition(center);
@@ -196,7 +207,6 @@ useEffect(() => {
     console.error("Error processing map data:", error);
   }
 }, [geoFeaturesData, analyticsMapData, metaMapData]);
-
   // Style function for GeoJSON
   const getStyleOne = (feature: any) => {
     const value = feature.properties.value;
