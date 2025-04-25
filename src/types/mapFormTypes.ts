@@ -42,13 +42,13 @@ export const MapDataSchema = z.object({
     id: z.string(),
  
   })),
-  settings: z.object({
-    styles: z.object({
-      labels: z.any(),
-      legend: z.any(),
-      isAutoLegend: z.boolean(),
-    }),
-  }).optional(),
+  // settings: z.object({
+  //   styles: z.object({
+  //     labels: z.any(),
+  //     legend: z.any(),
+  //     isAutoLegend: z.boolean(),
+  //   }),
+  // }).optional(),
 
 });
 
