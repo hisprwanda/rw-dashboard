@@ -23,7 +23,7 @@ import { DeleteMapModal } from './DeleteMapModal';
 
 const MyMapsTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
   const { toast } = useToast();
-  const {setAnalyticsData} = useAuthorities();
+  const {setAnalyticsData,setMetaDataLabels} = useAuthorities();
     const navigate = useNavigate();
     const { refetch } = useFetchAllSavedMaps();
     const [isShowDeleteVisual,setIsShowDeleteVisual] = useState<boolean>(false)
@@ -77,9 +77,9 @@ const MyMapsTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
 
   // Handlers that log the key
   const handleView = (data:any) => {
-    // clear existing analytics data
     setAnalyticsData([])
-  navigate(`/map/${data?.key}`)
+    setMetaDataLabels({})
+  navigate(`/map/${data?.key}/${data.value.mapName}`)
   };
 
   const engine = useDataEngine();

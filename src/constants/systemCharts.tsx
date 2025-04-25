@@ -13,43 +13,43 @@ import { LocalSingleValue } from '../components/charts/LocalSingleValue';
 import { LocalTreeMapChart } from '../components/charts/LocalTreeMapChart';
 import { IoBarChartSharp, IoPieChart } from 'react-icons/io5';
 import { FaChartLine ,FaChartArea} from 'react-icons/fa';
-import { FaChartSimple } from 'react-icons/fa6';
-import {VisualSettingsTypes,VisualTitleAndSubtitleType} from "../types/visualSettingsTypes"
 import { FaTableCells } from "react-icons/fa6";
 import { VscListTree } from "react-icons/vsc";
 import { RxValue } from "react-icons/rx";
 import { TbChartRadar } from "react-icons/tb";
 import { PiChartScatterDuotone } from "react-icons/pi";
 import { GiRadialBalance } from "react-icons/gi";
-type ChartProps = {
-    data: any;
-    visualTitleAndSubTitle:VisualTitleAndSubtitleType;
-    visualSettings:VisualSettingsTypes
-
-};
+import { genericChartsProps } from '../types/visualSettingsTypes';
+import LocalGaugeChart from '../components/charts/LocalGaugeChart';
 
 type ChartComponent = {
     type: string;
-    component: React.FC<ChartProps>;
+    component: React.FC<genericChartsProps>;
     description: string;
     icon: JSX.Element;
 }[];
 
 export const chartComponents: ChartComponent = [
-
+ 
     { 
         type: 'Column', 
         component: LocalBarChart, 
         description: 'A bar chart displaying data', 
         icon: <IoBarChartSharp /> 
     },
- 
+    { 
+        type: 'Gauge', 
+        component: LocalGaugeChart, 
+        description: 'A bar chart displaying data', 
+        icon: <IoBarChartSharp /> 
+    },
     { 
         type: 'Table', 
         component: LocalTableVisual, 
         description: 'A bar chart displaying data', 
         icon: <FaTableCells /> 
     },
+
     { 
         type: 'Stacked Col', 
         component: LocalStackedBar, 
@@ -104,7 +104,6 @@ export const chartComponents: ChartComponent = [
         description: 'A bar chart displaying data', 
         icon: <RxValue /> 
     },
-    // change icon later
     { 
         type: 'Radar', 
         component: LocalRadarChart, 

@@ -1,7 +1,13 @@
+import { analyticsPayloadDeterminerTypes } from "./analyticsTypes";
+
 export interface VisualTitleAndSubtitleType {
-    visualTitle: string;
-    customSubTitle:string;
-    DefaultSubTitle: string[];
+    visualTitle?: string;
+    customSubTitle?:string;
+    DefaultSubTitle: {
+      periods:any[];
+      orgUnits:any[];
+      dataElements:any[];
+    };
   
   }
 
@@ -31,5 +37,7 @@ export interface VisualTitleAndSubtitleType {
   export interface genericChartsProps {
     data: any;
     visualTitleAndSubTitle:VisualTitleAndSubtitleType;
-    visualSettings:VisualSettingsTypes
+    visualSettings:VisualSettingsTypes;
+    metaDataLabels:any;
+    analyticsPayloadDeterminer:analyticsPayloadDeterminerTypes
 }

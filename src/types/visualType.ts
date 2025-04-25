@@ -17,13 +17,20 @@ export const VisualDataSchema = z.object({
     "Scatter",
     "Radial",
     "Single Value",
-    "Tree Map"
+    "Tree Map",
+    "Gauge",
 ]),
   visualName: z.string().nonempty({ message: "Visual name is required" }),
   visualTitleAndSubTitle: z.object({
     visualTitle: z.string().optional(),
     customSubTitle: z.string()?.optional(),
-    DefaultSubTitle: z.array(z.string()?.nullable()?.optional())?.optional(),
+    DefaultSubTitle: z
+    .object({
+      periods: z.array(z.any()),
+      orgUnits: z.array(z.any()),
+      dataElements: z.array(z.any()),
+    })
+    .optional(),
   }),
   visualSettings:  z.object({
     visualColorPalette: z.object({
@@ -47,6 +54,11 @@ export const VisualDataSchema = z.object({
     .refine((data) => Object.keys(data).length > 0, {
       message: "Query object cannot be empty",
     }), 
+    analyticsPayloadDeterminer:z.object({
+      Columns: z.array(z.string()),
+      Rows: z.array(z.string()),
+      Filter: z.array(z.string()),
+    }),
   dataSourceId: z.string().nonempty({ message: "Data source ID is required" }),
   createdBy: z.object({
     name: z.string(),

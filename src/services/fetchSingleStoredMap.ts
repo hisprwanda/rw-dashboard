@@ -53,6 +53,8 @@ type handleDataSourceChangeProps = {
   isSetPredifinedUserOrgUnits: any;
 };
 
+
+
 export const useFetchSingleMapData = (mapId: string) => {
   const isInitialMount = useRef(true);
   const previousDataRef = useRef<VisualData | null>(null);
@@ -90,10 +92,12 @@ export const useFetchSingleMapData = (mapId: string) => {
     setSelectedOrganizationUnitsLevels,
     setSelectedLevel,
     setAnalyticsData,
+    setMetaDataLabels,
     setSelectedVisualTitleAndSubTitle,
     setSelectedVisualSettings,
     setSelectedColorPalette,
     setBackedSelectedItems,
+    setIsUseCurrentUserOrgUnits,
     fetchAnalyticsData,
     selectedDimensionItemType,
     setCurrentUserInfoAndOrgUnitsData,
@@ -171,6 +175,7 @@ export const useFetchSingleMapData = (mapId: string) => {
             isCurrentInstance: true,
           };
           setAnalyticsData([]);
+          setMetaDataLabels({});
           await fetchGeoFeatures({ selectedOrgUnitsWhenUsingMap });
           await fetchAnalyticsData({
             dimension: formatAnalyticsDimensions(
@@ -181,6 +186,12 @@ export const useFetchSingleMapData = (mapId: string) => {
             isAnalyticsApiUsedInMap,
             selectedPeriodsOnMap,
             selectedOrgUnitsWhenUsingMap,
+
+            selectedOrganizationUnits,
+            selectedOrgUnitGroups,
+            selectedOrganizationUnitsLevels,
+            isUseCurrentUserOrgUnits,
+            isSetPredifinedUserOrgUnits
           });
           setSelectedDataSourceDetails(currentInstanceDetails);
           await fetchCurrentInstanceData(selectedDimensionItemType);
@@ -188,6 +199,7 @@ export const useFetchSingleMapData = (mapId: string) => {
           setCurrentUserInfoAndOrgUnitsData(result);
         } else if (dataSourceDetails) {
           setAnalyticsData([]);
+          setMetaDataLabels({});
           await fetchGeoFeatures({ selectedOrgUnitsWhenUsingMap });
           await fetchAnalyticsData({
             dimension: formatAnalyticsDimensions(
@@ -223,6 +235,7 @@ export const useFetchSingleMapData = (mapId: string) => {
       fetchAnalyticsData,
       fetchGeoFeatures,
       setAnalyticsData,
+      setMetaDataLabels,
       setCurrentUserInfoAndOrgUnitsData,
       setSelectedDataSourceDetails,
     ]
@@ -288,8 +301,9 @@ export const useFetchSingleMapData = (mapId: string) => {
     const selectedOrganizationUnitsLevels =
       formatOrgUnitLevels(selectedOrgUnit);
     const selectedOrgUnitGroups = formatOrgUnitGroup(selectedOrgUnit);
-    const isSetPredifinedUserOrgUnits =
-      formatCurrentUserSelectedOrgUnit(selectedOrgUnit);
+    const isSetPredifinedUserOrgUnits =formatCurrentUserSelectedOrgUnit(selectedOrgUnit);
+    const isAnyTrue = Object.values(isSetPredifinedUserOrgUnits).some(value => value === true);
+    setIsUseCurrentUserOrgUnits(isAnyTrue);
     handleDataSourceChange({
       dataSourceId: savedDataSourceId,
       dimensions,
@@ -317,6 +331,7 @@ export const useFetchSingleMapData = (mapId: string) => {
     setSelectedColorPalette,
     setSelectedVisualSettings,
     setBackedSelectedItems,
+    setIsUseCurrentUserOrgUnits
   ]);
 
   return {

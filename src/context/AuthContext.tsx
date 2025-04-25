@@ -19,6 +19,9 @@ import { dimensionItemTypes } from "../constants/dimensionItemTypes";
 import { BackedSelectedItem, visualTypes } from "../types/visualType";
 import { currentInstanceId } from "../constants/currentInstanceInfo";
 import { getAnalyticsFilter, getSelectedOrgUnitsWhenUsingMap } from "../lib/getAnalyticsFilters";
+import { getDimensionItems, PeriodItem, transformMetadataLabels } from "../lib/formatMetaDataLabels";
+import { analyticsPayloadDeterminerTypes } from "../types/analyticsTypes";
+import { updateQueryParams } from "../lib/payloadFormatter";
 
 interface AuthContextProps {
   userDatails: {};
@@ -86,7 +89,11 @@ interface AuthContextProps {
            analyticsMapData:any;
             setAnalyticsMapData:any;
             metaMapData:any;
-             setMetaMapData:any
+             setMetaMapData:any;
+             metaDataLabels:any;
+              setMetaDataLabels:any;
+              analyticsPayloadDeterminer:analyticsPayloadDeterminerTypes;
+              setAnalyticsPayloadDeterminer:any
  
 }
 
@@ -106,9 +113,13 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const {apiVersion } = useConfig()
-
+  const initialState: analyticsPayloadDeterminerTypes = {
+    Columns: ["Data"],
+    Rows: ["Period"],
+    Filter: ["Organisation unit"],
+  };
   const { data, loading, error } = useDataQuery(query);
+    const [analyticsPayloadDeterminer, setAnalyticsPayloadDeterminer] = useState<analyticsPayloadDeterminerTypes>(initialState);
   const [isExportingDashboardAsPPTX, setIsExportingDashboardAsPPTX] = useState<boolean>(false);
   const {  data:systemInfo } = useSystemInfo();
   const [authorities, setAuthorities] = useState<string[]>([]);
@@ -117,6 +128,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
  const [geoFeaturesData, setGeoFeaturesData] = useState<any>([])
  const [analyticsMapData, setAnalyticsMapData] = useState<any>([])
  const [metaMapData, setMetaMapData] = useState<any>([])
+ const [metaDataLabels, setMetaDataLabels] = useState<any>({})
   /// this is the current instance definition as data source
   const defaultDataSource: DataSourceFormFields = {
     instanceName: systemInfo?.title?.applicationTitle || "", // Fallback to an empty string if undefined
@@ -152,13 +164,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [selectedVisualsForDashboard, setSelectedVisualsForDashboard] = useState<string[]>([]);
   const [visualTitleAndSubTitle, setSelectedVisualTitleAndSubTitle] = useState<VisualTitleAndSubtitleType>({
     visualTitle: "",
-    DefaultSubTitle: [defaultUserOrgUnit],
+    DefaultSubTitle: {
+      periods:[],
+      orgUnits: [],
+      dataElements:[]
+    },
     customSubTitle:""
   })
 
  const [selectedColorPalette, setSelectedColorPalette] = useState<visualColorPaletteTypes>(systemDefaultColorPalettes[0] || []);
  const [visualsColorPalettes,setVisualsColorPalettes] =useState<ColorPaletteTypes >(systemDefaultColorPalettes)
-  const [visualSettings, setSelectedVisualSettings] = useState<VisualSettingsTypes>({ backgroundColor: '#ffffff',visualColorPalette:selectedColorPalette,fillColor:"#ffffff",XAxisSettings:{color:"#000000",fontSize:12},YAxisSettings:{color:"#000000",fontSize:12} })
+  const [visualSettings, setSelectedVisualSettings] = useState<VisualSettingsTypes>({ backgroundColor: '#ffffff',visualColorPalette:selectedColorPalette,fillColor:"#000000",XAxisSettings:{color:"#000000",fontSize:12},YAxisSettings:{color:"#000000",fontSize:12} })
 
 
   const [isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits] = useState<any>({
@@ -176,21 +192,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setAuthorities(data.me.authorities);
     }
   }, [data]);
+    // update default title
+    useEffect(()=>{
+      console.log("setSelectedVisualTitleAndSubTitle fax",visualTitleAndSubTitle)
+    },[setSelectedVisualTitleAndSubTitle])
 
-  // test
-  useEffect(()=>{
-
-       if(currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName)
-       {
-      setSelectedVisualTitleAndSubTitle({
-          visualTitle:"",
-          DefaultSubTitle: [currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName],
-          customSubTitle:""
-        })
-
-       }
-  },[currentUserInfoAndOrgUnitsData || []])
-
+  
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading user authorities</div>;
 
@@ -202,110 +209,268 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     instance:DataSourceFormFields;
     isAnalyticsApiUsedInMap?:boolean;
     selectedPeriodsOnMap?:string[];
-    selectedOrgUnitsWhenUsingMap?:string[]
+    selectedOrgUnitsWhenUsingMap?:string[];
+    analyticsPayloadDeterminer?:analyticsPayloadDeterminerTypes;
+
+    selectedOrganizationUnits: any[];
+    selectedOrgUnitGroups: any[];
+    selectedOrganizationUnitsLevels: any[];
+    isUseCurrentUserOrgUnits: boolean;
+    isSetPredifinedUserOrgUnits: any;
   }
-  const fetchAnalyticsData = async ({dimension,instance,isAnalyticsApiUsedInMap,selectedPeriodsOnMap = [],selectedOrgUnitsWhenUsingMap = []}:fetchAnalyticsDataProps ):Promise<void> => {
-    const orgUnitIds = selectedOrganizationUnits?.map((unit: any) => unit)?.join(';');
-    const orgUnitLevelIds = selectedOrganizationUnitsLevels?.map((unit: any) => `LEVEL-${unit}`)?.join(';');
-    const orgUnitGroupIds = selectedOrgUnitGroups?.map((item: any) => `OU_GROUP-${item}`)?.join(';'); 
 
-    const filter =  getAnalyticsFilter({
-      isAnalyticsApiUsedInMap,
-      selectedPeriodsOnMap,
-      isUseCurrentUserOrgUnits,
-      isSetPredifinedUserOrgUnits,
-      orgUnitIds,
-      orgUnitLevelIds,
-      orgUnitGroupIds,
-    });
 
-    ///// before running api check if all required states have valid data
-    if (isAnalyticsApiUsedInMap ? 
-      ( dimension.some(item => item.startsWith("dx:") && item.split(":")[1].trim()) &&
-    filter.startsWith("pe:") && filter.split(":")[1].trim()) : 
-    ( dimension.some(item => item.startsWith("dx:") && item.split(":")[1].trim()) &&
-    dimension.some(item => item.startsWith("pe:") && item.split(":")[1].trim()) &&
-   filter.startsWith("ou:") && filter.split(":")[1].trim())
-      
-  ){
+  const fetchAnalyticsData = async ({
+    dimension,
+    instance,
+    isAnalyticsApiUsedInMap,
+    selectedPeriodsOnMap = [],
+    selectedOrgUnitsWhenUsingMap = [],
+    analyticsPayloadDeterminer,
+
+    selectedOrganizationUnits,
+    selectedOrgUnitGroups,
+    selectedOrganizationUnitsLevels,
+    isUseCurrentUserOrgUnits,
+    isSetPredifinedUserOrgUnits
+  }: fetchAnalyticsDataProps): Promise<void> => {
     try {
+      // Prepare organization unit parameters
+      const orgUnitIds = selectedOrganizationUnits?.map((unit: any) => unit)?.join(';');
+      const orgUnitLevelIds = selectedOrganizationUnitsLevels?.map((unit: any) => `LEVEL-${unit}`)?.join(';');
+      const orgUnitGroupIds = selectedOrgUnitGroups?.map((item: any) => `OU_GROUP-${item}`)?.join(';'); 
+  
+      // Get analytics filter
+      const filter = getAnalyticsFilter({
+        isAnalyticsApiUsedInMap,
+        selectedPeriodsOnMap,
+        isUseCurrentUserOrgUnits,
+        isSetPredifinedUserOrgUnits,
+        orgUnitIds,
+        orgUnitLevelIds,
+        orgUnitGroupIds,
+      });
+  
+      // Validate required data before proceeding
+      const isDxDimensionValid = dimension.some(item => item.startsWith("dx:") && item.split(":")[1].trim());
+      const isPeValid = isAnalyticsApiUsedInMap 
+        ? filter.startsWith("pe:") && filter.split(":")[1].trim() 
+        : dimension.some(item => item.startsWith("pe:") && item.split(":")[1].trim());
+      const isOuValid = !isAnalyticsApiUsedInMap 
+        ? filter.startsWith("ou:") && filter.split(":")[1].trim()
+        : true;
+      
+      if (!(isDxDimensionValid && isPeValid && isOuValid)) {
+        console.error("Invalid analytics parameters");
+        return;
+      }
+  
+      // Set loading state
       setIsFetchAnalyticsDataLoading(true);
       setFetchAnalyticsDataError(null);
-
-
-    if(isAnalyticsApiUsedInMap)
-    {
-      dimension.push(selectedOrgUnitsWhenUsingMap) 
-    }
   
- 
-      const queryParams = isAnalyticsApiUsedInMap ? {
-        dimension,
-        filter,
-        displayProperty: 'NAME',
-        skipData: false,
-        skipMeta: true
-      } : {
-        dimension,
+      // Update dimensions for map if needed
+      const updatedDimension = [...dimension];
+      if (isAnalyticsApiUsedInMap) {
+        updatedDimension.push(selectedOrgUnitsWhenUsingMap);
+      }
+  
+      // Create original analytics query
+      const originalAnalyticsQuery = {
+        dimension: updatedDimension,
         filter,
         displayProperty: 'NAME',
         includeNumDen: true,
-      } 
-    
-      const queryParamsTwo = {
-        dimension,
+      };
+    console.log("test 1",originalAnalyticsQuery)
+      // Transform query for API execution, but not for storage
+      const transformedQueryBasedOnPayloadDeterminer = updateQueryParams(originalAnalyticsQuery, analyticsPayloadDeterminer);
+      
+      // Determine query parameters based on use case (for API execution)
+      const queryParams = isAnalyticsApiUsedInMap 
+        ? {
+            dimension: updatedDimension,
+            filter,
+            displayProperty: 'NAME',
+            skipData: false,
+            skipMeta: true
+          } 
+        : transformedQueryBasedOnPayloadDeterminer;
+        console.log("test 2",queryParams)
+      // Metadata query parameters
+      const queryParamsForMetaDataLabels = {
+        dimension: updatedDimension,
+        filter,
+        displayProperty: "NAME",
+        includeNumDen: true,
+        skipMeta: false,
+        skipData: true,
+        includeMetadataDetails: true,
+      };
+  
+      // Map-specific metadata query parameters
+      const mapMetadataQueryParams = {
+        dimension: updatedDimension,
         filter,
         displayProperty: 'NAME',
         skipMeta: false,
         skipData: true,
         includeMetadataDetails: true
-      }
-
-      
-
+      };
+  
       if (instance.isCurrentInstance) {
         // Internal request via engine.query
-        const analyticsQuery =  {
+        // Create query objects for execution
+        const queryForExecution = {
           myData: {
             resource: 'analytics',
-            params: queryParams,
+            params: queryParams, // Use transformed params for execution
+          },
+          MetaDataLabels: {
+            resource: 'analytics',
+            params: queryParamsForMetaDataLabels,
           },
         };
-        const analyticsQueryTwo =  {
+  
+        // Execute the query
+        const result = await engine.query(queryForExecution);
+  
+        // Store original query in state (not the transformed one)
+        const analyticsQueryForStorage = {
           myData: {
             resource: 'analytics',
-            params: queryParamsTwo,
+            params: originalAnalyticsQuery, // Use original params for storage
+          },
+          MetaDataLabels: {
+            resource: 'analytics',
+            params: queryParamsForMetaDataLabels,
           },
         };
-
-        const result = await engine.query(analyticsQuery);
-        if(isAnalyticsApiUsedInMap)
-        {
-          const resultTwo = await engine.query(analyticsQueryTwo);
-          setMetaMapData(resultTwo?.myData)
-        }
-        if(isAnalyticsApiUsedInMap)
-        {
-          setAnalyticsMapData(result?.myData)
-        }else{
+        console.log("test 3",analyticsQueryForStorage?.myData?.params)
+        setAnalyticsQuery(analyticsQueryForStorage);
+  
+        if (isAnalyticsApiUsedInMap) {
+          // Additional query for map data
+          const analyticsQueryTwoForExecution = {
+            myData: {
+              resource: 'analytics',
+              params: mapMetadataQueryParams,
+            },
+          };
+          
+          const resultTwo = await engine.query(analyticsQueryTwoForExecution);
+          
+          // Store original query for map
+          const mapAnalyticsQueryForStorage = {
+            myData: {
+              resource: 'analytics',
+              params: originalAnalyticsQuery, // Use original params for storage
+            },
+          };
+          setMapAnalyticsQueryTwo(mapAnalyticsQueryForStorage);
+          setMetaMapData(resultTwo?.myData);
+          console.log("MetaMapData test",resultTwo?.myData)
+          setAnalyticsMapData(result?.myData);
+        } else {
+          // Process regular analytics data
           setAnalyticsData(result?.myData);
+          setMetaDataLabels(result?.MetaDataLabels?.metaData);
+          
+          // Update visual title and subtitle
+          if (result?.MetaDataLabels?.metaData) {
+            const transformedMetaDataLabels = transformMetadataLabels(result.MetaDataLabels.metaData);
+            
+            const allPeriods = transformedMetaDataLabels ? getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'periods') : [];
+            const allOrganizationUnit = transformedMetaDataLabels ? getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'orgUnits') : [];
+            const allDataElements = transformedMetaDataLabels ? getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'dataElements') : [];
+            
+            setSelectedVisualTitleAndSubTitle((prevState: VisualTitleAndSubtitleType) => ({
+              ...prevState,
+              DefaultSubTitle: {
+                periods: allPeriods,
+                orgUnits: allOrganizationUnit,
+                dataElements: allDataElements
+              }
+            }));
+          }
         }
-      
-        setAnalyticsQuery(analyticsQuery);
-        setMapAnalyticsQueryTwo(analyticsQueryTwo)
       } else {
         // External request via axios
-
-        console.log("beta query",queryParams)
-        const response = await axios.get(`${instance.url}/api/analytics`, {
-          headers: {
-            Authorization: `ApiToken ${instance.token}`,
-          },
-          params: queryParams,
-        });
-
-        setAnalyticsData(response.data);
-        setAnalyticsQuery({ myData: { resource: 'analytics', params: queryParams } });
+        try {
+          // Main data request - use transformed params for execution
+          const response = await axios.get(`${instance.url}/api/analytics`, {
+            headers: {
+              Authorization: `ApiToken ${instance.token}`,
+            },
+            params: queryParams, // Use transformed params for API call
+          });
+  
+          // Store original query in state (not the transformed one)
+          const analyticsQueryForStorage = {
+            myData: { 
+              resource: 'analytics', 
+              params: originalAnalyticsQuery // Use original params for storage
+            },
+            MetaDataLabels: {
+              resource: 'analytics',
+              params: queryParamsForMetaDataLabels,
+            }
+          };
+          
+          setAnalyticsQuery(analyticsQueryForStorage);
+          setAnalyticsData(response.data);
+  
+          // Get metadata for labels if not using map
+          if (!isAnalyticsApiUsedInMap) {
+            const metadataResponse = await axios.get(`${instance.url}/api/analytics`, {
+              headers: {
+                Authorization: `ApiToken ${instance.token}`,
+              },
+              params: queryParamsForMetaDataLabels,
+            });
+            
+            setMetaDataLabels(metadataResponse.data?.metaData);
+            
+            // Process metadata for visual elements
+            const transformedMetaDataLabels = transformMetadataLabels(metadataResponse.data?.metaData);
+            
+            const allPeriods = transformedMetaDataLabels ? getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'periods') : [];
+            const allOrganizationUnit = transformedMetaDataLabels ? getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'orgUnits') : [];
+            const allDataElements = transformedMetaDataLabels ? getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'dataElements') : [];
+            
+            setSelectedVisualTitleAndSubTitle((prevState: VisualTitleAndSubtitleType) => ({
+              ...prevState,
+              DefaultSubTitle: {
+                periods: allPeriods,
+                orgUnits: allOrganizationUnit,
+                dataElements: allDataElements
+              }
+            }));
+          } else {
+            // Additional map-specific metadata request
+            const mapMetadataResponse = await axios.get(`${instance.url}/api/analytics`, {
+              headers: {
+                Authorization: `ApiToken ${instance.token}`,
+              },
+              params: mapMetadataQueryParams,
+            });
+            
+            // Store original query for map
+            const mapAnalyticsQueryForStorage = {
+              myData: {
+                resource: 'analytics',
+                params: originalAnalyticsQuery, // Use original params for storage
+              },
+            };
+            
+            setMapAnalyticsQueryTwo(mapAnalyticsQueryForStorage);
+            setMetaMapData(mapMetadataResponse.data);
+            setAnalyticsMapData(response.data);
+          }
+        } catch (error) {
+          console.error("Error in external API request:", error);
+          throw error; // Rethrow to be caught by outer try/catch
+        }
       }
     } catch (error) {
       setFetchAnalyticsDataError(error);
@@ -313,11 +478,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } finally {
       setIsFetchAnalyticsDataLoading(false);
     }
-  }
-
-
-
-
   };
 
   const fetchSingleOrgUnitName = async (orgUnitId: string, instance: DataSourceFormFields) => {
@@ -360,7 +520,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
 
   return (
-    <AuthContext.Provider value={{geoFeaturesQuery, mapAnalyticsQueryTwo,analyticsMapData,setGeoFeaturesQuery,setMapAnalyticsQueryTwo,geoFeaturesData,metaMapData,setAnalyticsMapData,setGeoFeaturesData,setMetaMapData, isExportingDashboardAsPPTX,setIsExportingDashboardAsPPTX,setSubDataItemsData,subDataItemsData,backedSelectedItems,setBackedSelectedItems,dataItemsDataPage,setDataItemsDataPage,selectedDimensionItemType,setSelectedDimensionItemType,selectedDataSourceOption,setSelectedDataSourceOption,currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData,selectedDataSourceDetails,setSelectedDataSourceDetails,dataItemsData,setDataItemsData,setVisualsColorPalettes,visualsColorPalettes, selectedColorPalette,setSelectedColorPalette ,visualSettings,setSelectedVisualSettings,fetchSingleOrgUnitName,visualTitleAndSubTitle,setSelectedVisualTitleAndSubTitle,  selectedVisualsForDashboard, setSelectedVisualsForDashboard,setAnalyticsData,setAnalyticsQuery,selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery,selectedChartType,setSelectedChartType}}>
+    <AuthContext.Provider value={{analyticsPayloadDeterminer,setAnalyticsPayloadDeterminer,metaDataLabels,setMetaDataLabels,geoFeaturesQuery, mapAnalyticsQueryTwo,analyticsMapData,setGeoFeaturesQuery,setMapAnalyticsQueryTwo,geoFeaturesData,metaMapData,setAnalyticsMapData,setGeoFeaturesData,setMetaMapData, isExportingDashboardAsPPTX,setIsExportingDashboardAsPPTX,setSubDataItemsData,subDataItemsData,backedSelectedItems,setBackedSelectedItems,dataItemsDataPage,setDataItemsDataPage,selectedDimensionItemType,setSelectedDimensionItemType,selectedDataSourceOption,setSelectedDataSourceOption,currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData,selectedDataSourceDetails,setSelectedDataSourceDetails,dataItemsData,setDataItemsData,setVisualsColorPalettes,visualsColorPalettes, selectedColorPalette,setSelectedColorPalette ,visualSettings,setSelectedVisualSettings,fetchSingleOrgUnitName,visualTitleAndSubTitle,setSelectedVisualTitleAndSubTitle,  selectedVisualsForDashboard, setSelectedVisualsForDashboard,setAnalyticsData,setAnalyticsQuery,selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery,selectedChartType,setSelectedChartType}}>
       {children}
     </AuthContext.Provider>
   );

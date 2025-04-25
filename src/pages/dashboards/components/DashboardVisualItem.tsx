@@ -6,6 +6,7 @@ import { currentInstanceId } from '../../../constants/currentInstanceInfo';
 import { useDataSourceData } from '../../../services/DataSourceHooks';
 import { useFetchSingleChartApi } from '../../../services/fetchSingleChart';
 import { useExternalAnalyticsData } from '../../../services/useFetchExternalAnalytics';
+import { analyticsPayloadDeterminerTypes } from '../../../types/analyticsTypes';
 
 interface DashboardVisualItemProps {
     query: any;
@@ -13,6 +14,7 @@ interface DashboardVisualItemProps {
     visualTitleAndSubTitle: VisualTitleAndSubtitleType;
     visualSettings: VisualSettingsTypes;
     dataSourceId: string;
+    analyticsPayloadDeterminer:analyticsPayloadDeterminerTypes
 }
 
 const DashboardVisualItem: React.FC<DashboardVisualItemProps> = ({
@@ -21,9 +23,10 @@ const DashboardVisualItem: React.FC<DashboardVisualItemProps> = ({
     visualSettings,
     visualTitleAndSubTitle,
     dataSourceId,
+    analyticsPayloadDeterminer
 }) => {
     const { data: savedDataSource, loading, error, isError } = useDataSourceData();
-    const { runSavedSingleVisualAnalytics, data: internalData, loading: internalLoading, error: internalError } = useFetchSingleChartApi(query);
+    const { runSavedSingleVisualAnalytics, data: internalData, loading: internalLoading, error: internalError } = useFetchSingleChartApi(query,analyticsPayloadDeterminer);
     const { fetchExternalAnalyticsData, response: externalData, loading: externalLoading, error: externalError } = useExternalAnalyticsData();
 
     const [chartData, setChartData] = useState<any>(null);

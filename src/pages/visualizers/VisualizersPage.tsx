@@ -1,44 +1,34 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Button from "../../components/Button";
-import { IoSaveOutline } from 'react-icons/io5';
-import { TiExport } from "react-icons/ti";
+import {FileActionMenu} from "./Components/FileActionMenu"
 import { useDataSourceData } from '../../services/DataSourceHooks';
 import { GenericModal, Loading } from "../../components";
 import { DataModal, OrganizationModal, PeriodModal } from './Components/MetaDataModals';
 import { useAuthorities } from '../../context/AuthContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
 import SelectChartType from './Components/SelectChartType';
-import { IoBarChartSharp } from "react-icons/io5";
-import { FaChartLine } from "react-icons/fa6";
 import SaveVisualTypeForm from './Components/SaveVisualTypeForm';
 import { useParams } from 'react-router-dom';
 import { useFetchSingleVisualData } from '../../services/fetchVisuals';
-import { unFormatAnalyticsDimensions, formatAnalyticsDimensions } from '../../lib/formatAnalyticsDimensions';
-import { formatCurrentUserSelectedOrgUnit, formatSelectedOrganizationUnit, formatOrgUnitGroup, formatOrgUnitLevels } from '../../lib/formatCurrentUserOrgUnit';
 import { useOrgUnitData } from '../../services/fetchOrgunitData';
 import { useDataItems } from '../../services/fetchDataItems';
 import { chartComponents } from "../../constants/systemCharts";
-import { IoIosOptions } from "react-icons/io";
 import GeneralChartsStyles from './Components/GeneralChartsOptions';
-import { NavigationMenuDemo } from './Components/ChartsMenu';
 import VisualSettings from './Components/VisualSettings';
-import { systemDefaultColorPalettes } from "../../constants/colorPalettes";
 import { useExternalDataItems } from '../../services/useExternalDataItems';
 import { useSystemInfo } from '../../services/fetchSystemInfo';
 import { useExternalOrgUnitData } from '../../services/fetchExternalOrgUnit';
 import { currentInstanceId } from '../../constants/currentInstanceInfo';
-import debounce from 'lodash/debounce';
-import { dimensionItemTypes } from '../../constants/dimensionItemTypes';
 import ExportModal from './Components/ExportModal';
-import { useToast } from "../../components/ui/use-toast";
-import { Maximize2 } from 'lucide-react';
 import i18n from '../../locales/index.js'
 import { useResetAnalyticsStatesToDefault } from '../../hooks/useResetAnalyticsStatesTDefault';
-
+import FilteringVisualsDragAndDrop from './Components/FilteringVisuals/FilteringVisualsDragAndDrop';
+import { GrUpdate } from "react-icons/gr";
+import { formatAnalyticsDimensions } from '../../lib/formatAnalyticsDimensions';
 function Visualizers() {
     const { id: visualId } = useParams();
     const { data: systemInfo } = useSystemInfo();
-    const { subDataItemsData, setDataItemsDataPage, dataItemsDataPage, selectedDataSourceOption, setSelectedDataSourceOption, currentUserInfoAndOrgUnitsData, setCurrentUserInfoAndOrgUnitsData, dataItemsData, selectedDataSourceDetails, setSelectedDataSourceDetails, setSelectedDimensionItemType, analyticsData, isFetchAnalyticsDataLoading, selectedChartType, setSelectedChartType, setAnalyticsQuery, isUseCurrentUserOrgUnits, analyticsQuery, analyticsDimensions, setAnalyticsDimensions, setIsSetPredifinedUserOrgUnits, isSetPredifinedUserOrgUnits, selectedOrganizationUnits, setSelectedOrganizationUnits, setIsUseCurrentUserOrgUnits, selectedOrgUnits, setSelectedOrgUnits, selectedOrgUnitGroups, setSelectedOrgUnitGroups, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedLevel, setSelectedLevel, fetchAnalyticsData, setAnalyticsData, fetchAnalyticsDataError, setSelectedVisualTitleAndSubTitle, visualTitleAndSubTitle, visualSettings, setSelectedVisualSettings, setVisualsColorPalettes, selectedColorPalette, selectedDimensionItemType } = useAuthorities();
+    const {fetchAnalyticsData,analyticsPayloadDeterminer, subDataItemsData, setDataItemsDataPage, metaDataLabels, selectedDataSourceOption, setSelectedDataSourceOption, currentUserInfoAndOrgUnitsData, setCurrentUserInfoAndOrgUnitsData, dataItemsData, selectedDataSourceDetails, setSelectedDataSourceDetails, setSelectedDimensionItemType, analyticsData, isFetchAnalyticsDataLoading, selectedChartType, setSelectedChartType, setAnalyticsQuery, isUseCurrentUserOrgUnits, analyticsQuery, analyticsDimensions, setAnalyticsDimensions, setIsSetPredifinedUserOrgUnits, isSetPredifinedUserOrgUnits, selectedOrganizationUnits,selectedOrganizationUnitsLevels,selectedOrgUnitGroups, setSelectedOrganizationUnits, setIsUseCurrentUserOrgUnits,  fetchAnalyticsDataError, visualTitleAndSubTitle, visualSettings, setSelectedVisualSettings, setVisualsColorPalettes, selectedColorPalette, selectedDimensionItemType } = useAuthorities();
     const { data: singleSavedVisualData, isError, loading: isFetchSingleVisualLoading } = useFetchSingleVisualData(visualId);
     const { loading: orgUnitLoading, error: fetchOrgUnitError, data: orgUnitsData, fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData();
     const { error: dataItemsFetchError, loading: isFetchCurrentInstanceDataItemsLoading, fetchCurrentInstanceData } = useDataItems();
@@ -74,16 +64,7 @@ function Visualizers() {
         }
 
     }, [visualId]);
-
-    // update if current user organization is selected
-    useEffect(() => {
-        if (singleSavedVisualData) {
-            const isAnyTrue = Object.values(isSetPredifinedUserOrgUnits).some(value => value === true);
-            setIsUseCurrentUserOrgUnits(isAnyTrue);
-        }
-
-    }, [isSetPredifinedUserOrgUnits]);
-
+    
     const handleShowSaveVisualTypeForm = () => {
         setIsShowSaveVisualTypeForm(true);
     };
@@ -100,7 +81,7 @@ function Visualizers() {
     // Function to render the selected chart
     const renderChart = () => {
         const SelectedChart = chartComponents.find(chart => chart.type === selectedChartType)?.component;
-        return SelectedChart ? <SelectedChart data={analyticsData} visualTitleAndSubTitle={visualTitleAndSubTitle} visualSettings={visualSettings} /> : null;
+        return SelectedChart ? <SelectedChart data={analyticsData} visualTitleAndSubTitle={visualTitleAndSubTitle} visualSettings={visualSettings} metaDataLabels={metaDataLabels} analyticsPayloadDeterminer={analyticsPayloadDeterminer}  /> : null;
     };
 
     /// handle data source onchange
@@ -136,6 +117,17 @@ function Visualizers() {
 
     };
 
+    // run analytics
+    const handleRunAnalytics = async() => {
+            await fetchAnalyticsData({dimension:formatAnalyticsDimensions(analyticsDimensions),instance:selectedDataSourceDetails,analyticsPayloadDeterminer,
+                selectedOrganizationUnits,
+                selectedOrgUnitGroups,
+                selectedOrganizationUnitsLevels,
+                isUseCurrentUserOrgUnits,
+                isSetPredifinedUserOrgUnits
+            });
+    }
+
     /// fetch current user and Organization unit
     const fetchCurrentUserAndOrgUnitData = async () => {
         const result = await fetchCurrentUserInfoAndOrgUnitData();
@@ -150,12 +142,8 @@ function Visualizers() {
 
     /// main return
     return (
-        <div className="min-h-screen bg-gray-50 p-4">
+        <div className="min-h-screen bg-gray-50 p-1">
 
-            <div>
-
-                {/* <h3>Test Total: {dataItemsData?.pager?.total}</h3> */}
-            </div>
             {(isFetchSingleVisualLoading || loading) ? <Loading /> :
                 <>
                     <div className="flex justify-between items-start">
@@ -208,32 +196,50 @@ function Visualizers() {
                         </Tabs>
 
                         {/* Visualization Area */}
-                        <div className="flex-grow bg-white shadow-md p-4 rounded-lg mx-4">
-                            <div className="flex justify-between mb-4 gap-1 ">
-                                <div className='' >
-                                    {/* this co */}
+                        <div className="flex-grow bg-white shadow-md  rounded-lg mx-4 bg-green-500 ">
+                            <div className="flex mb-1 gap-1 ">
+
+                            <button
+  className="
+    inline-flex        
+    items-center      
+    gap-2              
+    border border-gray-300
+    rounded-md
+    bg-white hover:bg-gray-50
+    text-blue-600       
+    transition-colors     
+    duration-150
+    ease-in-out
+    px-3 py-1 font-bold
+  "
+  onClick={handleRunAnalytics}
+    disabled={isFetchAnalyticsDataLoading}
+>
+  <span>Update</span>
+  <GrUpdate  />
+</button>
                                     <SelectChartType
                                         chartComponents={chartComponents}
                                         selectedChartType={selectedChartType}
                                         setSelectedChartType={setSelectedChartType}
                                     />
-                                </div>
-
-                                <div>
-                                    <Button variant="secondary" text={"Export"} type="button" icon={<TiExport />} onClick={handleExportVisualization} />
-                                </div>
-
-                                <div>
-                                    <Button variant="primary" text={visualId ? "Update" : "Save"} type="button" icon={<IoSaveOutline />} onClick={handleShowSaveVisualTypeForm} />
-                                </div>
+                                      <FileActionMenu 
+    visualId={visualId} 
+    handleExportVisualization={handleExportVisualization} 
+    handleShowSaveVisualTypeForm={handleShowSaveVisualTypeForm} 
+  />
+                               
 
                             </div>
-                            <div className="h-[600px] flex items-center justify-center border border-gray-300 rounded-lg bg-gray-100" ref={visualizationRef}>
+                            <FilteringVisualsDragAndDrop/>
+                            <div className=" flex items-center justify-center border border-gray-300 rounded-lg bg-gray-100" ref={visualizationRef}>
+                                
                                 {isFetchAnalyticsDataLoading ? (
                                     <Loading />
                                 ) : (
-                                    <div className="flex items-center justify-center w-full h-[600px]">
-                                        <div className="w-[100%] max-h-[100%]">
+                                    <div className="flex items-center justify-center w-full  ">
+                                        <div className="w-[100%] max-h-[100px]   ">
                                             {fetchAnalyticsDataError ?
                                                 <p className='text-center text-red-600 bg-red-100 p-4 rounded-lg shadow-sm border border-red-300'  >{fetchAnalyticsDataError?.message}</p> :
                                                 renderChart()}

@@ -46,8 +46,7 @@ const App: React.FC = () => {
               <Route index element={<HomePage />} />
               <Route path="dashboards" element={<DashboardsPage />} />
               <Route path="visualization" element={<VisualizationPage />} />
-              <Route path="maps" element={<AllMapsPage />} />
-            
+              <Route path="maps" element={<AllMapsPage />} /> 
               <Route path="settings" element={<SettingsPage />} />
               <Route path="alerts" element={<AlertsPage />} />
               <Route path="test" element={<TestChart />} />
@@ -56,7 +55,7 @@ const App: React.FC = () => {
               <Route path="datasource" element={<DataSourcePage />} />
               {/* <Route path="data-source" element={<DataSourcePage />} /> */}
               <Route path="unauthorized" element={<UnauthorizedPage />} />
-              <Route path="map/:id?" element={<MapHomepage />} />
+              <Route path="map/:id?/:mapName?" element={<MapHomepage />} />
               <Route path="visualizers/:id?" element={<VisualizersPage />} />
               <Route path="dashboard/:id?/:present?" element={<CreateDashboardPage />} />
               <Route path="*" element={<NotFoundPage />} />

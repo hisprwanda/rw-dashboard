@@ -7,11 +7,14 @@ import {
 } from "../../components/ui/chart";
 import { transformDataForGenericChart, generateChartConfig, isValidInputData } from "../../lib/localGenericchartFormat";
 import { genericChartsProps } from "../../types/visualSettingsTypes";
+import { VisualHeading } from "./VisualHeading";
 
 export const LocalPieChart: React.FC<genericChartsProps> = ({
   data,
   visualTitleAndSubTitle,
   visualSettings,
+  metaDataLabels,
+  analyticsPayloadDeterminer
 }) => {
   // Error handling to check if data exists before passing it to the formatter function or graph
   const { chartData, chartConfig, error } = useMemo(() => {
@@ -20,7 +23,7 @@ export const LocalPieChart: React.FC<genericChartsProps> = ({
     }
 
     try {
-      const transformedData = transformDataForGenericChart(data, "pie",visualSettings.visualColorPalette);
+      const transformedData = transformDataForGenericChart(data, "pie",visualSettings.visualColorPalette,metaDataLabels);
       const config = generateChartConfig(data,visualSettings.visualColorPalette);
       return { chartData: transformedData, chartConfig: config, error: null };
     } catch (err) {
@@ -95,22 +98,10 @@ export const LocalPieChart: React.FC<genericChartsProps> = ({
         <h4 className="text-center text-md font-medium text-gray-600 mt-1">
           {visualTitleAndSubTitle?.customSubTitle}
         </h4>
-      ) : (
-        visualTitleAndSubTitle?.DefaultSubTitle?.length !== 0 && (
-          <div className="flex justify-center gap-1">
-            {visualTitleAndSubTitle?.DefaultSubTitle?.map((subTitle, index) => (
-              <h4
-                key={index}
-                className="text-center text-md font-medium text-gray-600 mt-1"
-              >
-                {subTitle}
-                {index < visualTitleAndSubTitle?.DefaultSubTitle?.length - 1 &&
-                  ","}
-              </h4>
-            ))}
-          </div>
-        )
-      )}
+      ) : <VisualHeading analyticsPayloadDeterminer={analyticsPayloadDeterminer}  visualTitleAndSubTitle={visualTitleAndSubTitle} />
+                        
+      
+      }
       
       <PieChart width={400} height={400}>
         <Tooltip content={<ChartTooltipContent className="bg-white" />} />

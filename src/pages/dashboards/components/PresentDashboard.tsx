@@ -381,13 +381,13 @@ useEffect(()=>{
                   className="flex-[0_0_auto] min-w-0 w-full h-full flex items-center"
                   style={{ 
                     width: `${100 / slidesToShow}%`, 
-                    backgroundColor: item.visualSettings?.backgroundColor || item.backgroundColor || '#ffffff' 
+                    backgroundColor: item.visualType === "Gauge" ? '#ffffff' : (item.visualSettings?.backgroundColor || item.backgroundColor || '#ffffff')
                   }}
                 >
                   <div className="w-full">
                     <h4 
-                      className={`text-xl font-medium text-center ${
-                        (!isFullscreen || showControls) ? "text-gray-400" : "text-gray-400"
+                      className={`text-xl font-medium text-center bg-white ${
+                        (!isFullscreen || showControls) ? "text-black" : "text-gray-400"
                       }`}
                     >
                       {index + 1}. {item.visualName || item.mapName}
@@ -396,7 +396,7 @@ useEffect(()=>{
                     <div 
                       className="h-full" 
                       style={{
-                        backgroundColor: item.visualSettings?.backgroundColor || item.backgroundColor || 'transparent'
+                        backgroundColor: item.visualType === "Gauge" ? '#ffffff' : (item.visualSettings?.backgroundColor || item.backgroundColor || 'transparent')
                       }} 
                     >
                       {/* Render either Visual Item or Map Item */}
@@ -407,6 +407,7 @@ useEffect(()=>{
                           visualType={item.visualType}
                           visualSettings={item.visualSettings}
                           visualTitleAndSubTitle={item.visualTitleAndSubTitle}
+                          analyticsPayloadDeterminer={item.analyticsPayloadDeterminer}
                         />
                       ) : (
                         <div  className=" h-[calc(100vh-50px)] " >
