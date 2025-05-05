@@ -139,7 +139,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
  const [metaDataLabels, setMetaDataLabels] = useState<any>({})
    const [currentBasemap, setCurrentBasemap] = useState<BasemapType>('osm-light');
      const [legendType, setLegendType] = useState<legendTypeTypes>("auto");
-     const [mapSettings, setMapSettings] = useState<mapSettingsTypes>({appliedLabels:{},selectedLabels:{},legend:{},legendType:"auto"})
+     const [mapSettings, setMapSettings] = useState<mapSettingsTypes>({appliedLabels:{},selectedLabels:[],legend:{},legendType:"auto"})
   /// this is the current instance definition as data source
   const defaultDataSource: DataSourceFormFields = {
     instanceName: systemInfo?.title?.applicationTitle || "", // Fallback to an empty string if undefined

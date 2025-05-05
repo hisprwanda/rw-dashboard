@@ -3,15 +3,10 @@ import { LabelControls } from '../MapLabels';
 import { useAuthorities } from '../../../../context/AuthContext';
 import { mapSettingsTypes } from '../../../../types/mapFormTypes';
 
-type ThematicStylesTabProps = {
-    selectedLabels: string[];
-    setSelectedLabels: any;
-}
-
-const ThematicStylesTab: React.FC<ThematicStylesTabProps> = ({ selectedLabels, setSelectedLabels }) => {
+const ThematicStylesTab = () => {
   // Label controls state
   const [showLabelControls, setShowLabelControls] = useState<boolean>(true);
-  const {setMapSettings} = useAuthorities()
+  const {setMapSettings, mapSettings} = useAuthorities();
   const [labelOptions] = useState([
     { id: 'area', label: 'Area Name' },
     { id: 'data', label: 'Data Name' },
@@ -19,27 +14,39 @@ const ThematicStylesTab: React.FC<ThematicStylesTabProps> = ({ selectedLabels, s
     { id: 'value', label: 'Value' }
   ]);
 
+  // Initialize mapSettings.selectedLabels if it doesn't exist
+  useEffect(() => {
+    if (!Array.isArray(mapSettings.selectedLabels)) {
+      setMapSettings((prevSettings: mapSettingsTypes) => ({
+        ...prevSettings,
+        selectedLabels: []
+      }));
+    }
+  }, [mapSettings.selectedLabels, setMapSettings]);
+
   // UseEffect to apply labels whenever selectedLabels changes
   useEffect(() => {
     // Only apply if the labels panel is showing and selectedLabels has been initialized
-    if (showLabelControls && selectedLabels) {
-      setMapSettings((prevSettings:mapSettingsTypes) => ({...prevSettings,appliedLabels: selectedLabels
+    if (showLabelControls && Array.isArray(mapSettings.selectedLabels)) {
+      setMapSettings((prevSettings: mapSettingsTypes) => ({
+        ...prevSettings,
+        appliedLabels: mapSettings.selectedLabels
       }));
-
-
-
     }
-  }, [selectedLabels, showLabelControls, setMapSettings]);
+  }, [mapSettings.selectedLabels, showLabelControls, setMapSettings]);
   
   // We'll keep this function for any direct calls that might be needed
   const handleApplyLabels = () => {
-    setMapSettings((prevSettings:mapSettingsTypes) => ({...prevSettings,appliedLabels: selectedLabels
-    }));
+    if (Array.isArray(mapSettings.selectedLabels)) {
+      setMapSettings((prevSettings: mapSettingsTypes) => ({
+        ...prevSettings,
+        appliedLabels: mapSettings.selectedLabels
+      }));
+    }
   };
   
   return (
     <div className="p-4">
-
       {/* Label Controls Section */}
       <div className="mb-6">
         <button 
@@ -57,14 +64,11 @@ const ThematicStylesTab: React.FC<ThematicStylesTabProps> = ({ selectedLabels, s
         {showLabelControls && (
           <LabelControls 
             labelOptions={labelOptions}
-            selectedLabels={selectedLabels}
-            onChange={setSelectedLabels}
+            onChange={setMapSettings}
             onApply={handleApplyLabels}
             onClose={() => setShowLabelControls(false)}
           />
         )}
-        
- 
       </div>
     </div>
   );

@@ -62,7 +62,8 @@ export type legendTypeTypes = "auto" | "dhis2";
 export type mapSettingsTypes = {
   appliedLabels: any;
   selectedLabels: any;
-  legend: any;
+  legend:any;
   legendType: legendTypeTypes;
+
 }
 

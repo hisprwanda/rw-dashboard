@@ -2,23 +2,27 @@
 import React, { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import { useMap } from 'react-leaflet';
-
+import { useAuthorities } from '../../../context/AuthContext';
+import { mapSettingsTypes } from '../../../types/mapFormTypes';
 
 // Label Controls Component
 export const LabelControls: React.FC<{
   labelOptions: Array<{id: string, label: string}>,
-  selectedLabels: string[],
   onChange: (labels: string[]) => void,
   onApply: () => void,
   onClose: () => void
-}> = ({ labelOptions, selectedLabels, onChange, onApply, onClose }) => {
+}> = ({ labelOptions, onChange, onApply, onClose }) => {
+    const {setMapSettings, mapSettings} = useAuthorities()
   
   const handleCheckboxChange = (labelId: string) => {
-    const updatedLabels = selectedLabels.includes(labelId)
-      ? selectedLabels.filter(id => id !== labelId)
-      : [...selectedLabels, labelId];
+    // Ensure selectedLabels is always an array
+    const currentLabels = Array.isArray(mapSettings.selectedLabels) ? mapSettings.selectedLabels : [];
     
-    onChange(updatedLabels);
+    const updatedLabels = currentLabels.includes(labelId)
+      ? currentLabels.filter(id => id !== labelId)
+      : [...currentLabels, labelId];
+    
+    setMapSettings((prev: mapSettingsTypes) => ({...prev, selectedLabels: updatedLabels}));
     // We'll let the parent component handle applying changes through useEffect
   };
 
@@ -30,7 +34,7 @@ export const LabelControls: React.FC<{
           <input
             type="checkbox"
             id={option.id}
-            checked={selectedLabels.includes(option.id)}
+            checked={Array.isArray(mapSettings.selectedLabels) && mapSettings.selectedLabels.includes(option.id)}
             onChange={() => handleCheckboxChange(option.id)}
             className="mr-2"
           />
@@ -74,7 +78,7 @@ export const MapLabels: React.FC<{
 
   // Create or update labels when applied labels change
   useEffect(() => {
-    if (!map || !geoJsonData || appliedLabels.length === 0) return;
+    if (!map || !geoJsonData || !appliedLabels || appliedLabels.length === 0) return;
 
     // Clear existing labels
     labelsRef.current.forEach(label => {
@@ -126,7 +130,7 @@ export const MapLabels: React.FC<{
       const selectedAreaName = props.name;
       
       let displayValue;
-      if (analyticsMapData.rows.length === 1) {
+      if (analyticsMapData.rows && analyticsMapData.rows.length === 1) {
         displayValue = analyticsMapData.rows[0]?.[2] || 'No data';
       } else {
         displayValue = valueMap.get(props.id) || 'No data';
