@@ -8,8 +8,6 @@ export type MapSidebarProps = {
   onBasemapChange: (basemap: BasemapType) => void;
   singleSavedMapData?:any;
   mapId?:string;
-  appliedLabels:string[];
-   setAppliedLabels:any;
    selectedLabels:string[];
    setSelectedLabels:any;
  

@@ -4,13 +4,11 @@ import { useAuthorities } from '../../../../context/AuthContext';
 import { mapSettingsTypes } from '../../../../types/mapFormTypes';
 
 type ThematicStylesTabProps = {
-    appliedLabels: string[];
-    setAppliedLabels: React.Dispatch<React.SetStateAction<string[]>>;
     selectedLabels: string[];
     setSelectedLabels: any;
 }
 
-const ThematicStylesTab: React.FC<ThematicStylesTabProps> = ({appliedLabels, setAppliedLabels, selectedLabels, setSelectedLabels }) => {
+const ThematicStylesTab: React.FC<ThematicStylesTabProps> = ({ selectedLabels, setSelectedLabels }) => {
   // Label controls state
   const [showLabelControls, setShowLabelControls] = useState<boolean>(true);
   const {setMapSettings} = useAuthorities()
@@ -25,7 +23,6 @@ const ThematicStylesTab: React.FC<ThematicStylesTabProps> = ({appliedLabels, set
   useEffect(() => {
     // Only apply if the labels panel is showing and selectedLabels has been initialized
     if (showLabelControls && selectedLabels) {
-     // setAppliedLabels([...selectedLabels]);
       setMapSettings((prevSettings:mapSettingsTypes) => ({...prevSettings,appliedLabels: selectedLabels
       }));
 
@@ -36,7 +33,6 @@ const ThematicStylesTab: React.FC<ThematicStylesTabProps> = ({appliedLabels, set
   
   // We'll keep this function for any direct calls that might be needed
   const handleApplyLabels = () => {
-    //setAppliedLabels([...selectedLabels]);
     setMapSettings((prevSettings:mapSettingsTypes) => ({...prevSettings,appliedLabels: selectedLabels
     }));
   };

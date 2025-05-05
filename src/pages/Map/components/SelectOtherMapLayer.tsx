@@ -19,14 +19,12 @@ const otherMapLayers = [
 
 
 type SelectOtherMapLayerProps = {
-  appliedLabels:string[];
-   setAppliedLabels:any;
    selectedLabels:string[];
    setSelectedLabels:any;
 
 }
 
-const SelectOtherMapLayer:React.FC<SelectOtherMapLayerProps> = ({appliedLabels,setAppliedLabels,selectedLabels,setSelectedLabels}) => {
+const SelectOtherMapLayer:React.FC<SelectOtherMapLayerProps> = ({selectedLabels,setSelectedLabels}) => {
   // State to track which layer is selected
   const [selectedLayer, setSelectedLayer] = useState(null);
   // State to control modal visibility
@@ -68,8 +66,6 @@ const SelectOtherMapLayer:React.FC<SelectOtherMapLayerProps> = ({appliedLabels,s
           themeLayerType={selectedLayer.themeLayerType}
           isOpen={isModalOpen}
           onOpenChange={setIsModalOpen}
-          appliedLabels = {appliedLabels}
-          setAppliedLabels = {setAppliedLabels}
           selectedLabels = {selectedLabels}
           setSelectedLabels ={setSelectedLabels}
        

@@ -34,8 +34,6 @@ type MapMetaDataConfigModalProps = {
   themeLayerType: "Thematic Layer" | any;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  appliedLabels:string[];
-   setAppliedLabels:any;
    selectedLabels:string[];
    setSelectedLabels:any;
 
@@ -45,8 +43,6 @@ export function MapMetaDataConfigModal({
   themeLayerType, 
   isOpen, 
   onOpenChange ,
-  appliedLabels,
-  setAppliedLabels,
   selectedLabels,
   setSelectedLabels
 }: MapMetaDataConfigModalProps) {
@@ -154,8 +150,6 @@ export function MapMetaDataConfigModal({
             <div className="bg-white rounded-2xl shadow-sm p-4 border border-gray-100">
               <h2 className="text-lg font-semibold  text-gray-800">Labels</h2>
               <ThematicStylesTab
-                appliedLabels={appliedLabels}
-                setAppliedLabels={setAppliedLabels}
                 selectedLabels={selectedLabels}
                 setSelectedLabels={setSelectedLabels}
               />

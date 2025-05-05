@@ -240,8 +240,6 @@ useEffect(() => {
           onBasemapChange={setCurrentBasemap}
           singleSavedMapData={singleSavedMapData}
           mapId={mapId}
-         // appliedLabels={appliedLabels}
-         // setAppliedLabels={setAppliedLabels}
           selectedLabels = {selectedLabels}
           setSelectedLabels={setSelectedLabels}
         
