@@ -7,7 +7,6 @@ import {
   AccordionTrigger,
 } from "../../../components/ui/accordion"
 import { MapMetaDataConfigModal } from "./MapMetaDataConfigModal";
-import { legendControllersKitTypes } from "../../../types/mapFormTypes";
 
 const otherMapLayers = [
   {
@@ -24,10 +23,10 @@ type SelectOtherMapLayerProps = {
    setAppliedLabels:any;
    selectedLabels:string[];
    setSelectedLabels:any;
-   legendControllersKit:legendControllersKitTypes
+
 }
 
-const SelectOtherMapLayer:React.FC<SelectOtherMapLayerProps> = ({legendControllersKit,appliedLabels,setAppliedLabels,selectedLabels,setSelectedLabels}) => {
+const SelectOtherMapLayer:React.FC<SelectOtherMapLayerProps> = ({appliedLabels,setAppliedLabels,selectedLabels,setSelectedLabels}) => {
   // State to track which layer is selected
   const [selectedLayer, setSelectedLayer] = useState(null);
   // State to control modal visibility
@@ -73,7 +72,7 @@ const SelectOtherMapLayer:React.FC<SelectOtherMapLayerProps> = ({legendControlle
           setAppliedLabels = {setAppliedLabels}
           selectedLabels = {selectedLabels}
           setSelectedLabels ={setSelectedLabels}
-          legendControllersKit={legendControllersKit}
+       
         />
       )}
     </ul>

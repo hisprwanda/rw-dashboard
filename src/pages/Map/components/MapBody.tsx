@@ -26,8 +26,7 @@ import {
   getMapBounds
 } from '../../../lib/mapHelpers';
 import { useAuthorities } from '../../../context/AuthContext';
-import LegendControls from './LegendControls';
-import { legendControllersKitTypes, legendTypeTypes, mapSettingsTypes } from '../../../types/mapFormTypes';
+import {  legendTypeTypes, mapSettingsTypes } from '../../../types/mapFormTypes';
 
 // Fix for default marker icon
 let DefaultIcon = L.icon({
@@ -101,7 +100,6 @@ const MapBody: React.FC<MapBodyProps> = ({
 
   const [districts, setDistricts] = useState<ProcessedDistrict[]>([]);
   const [valueMap, setValueMap] = useState<Map<string, string>>(new Map());
-  const [selectedLegendSet, setSelectedLegendSet] = useState<Legend>(sampleLegends[0]);
   const [autoLegend, setAutoLegend] = useState<LegendClass[]>([]);
   const [centerPosition, setCenterPosition] = useState<[number, number]>([0, 28]);
   const [zoomLevel, setZoomLevel] = useState<number>(2);
@@ -218,7 +216,7 @@ useEffect(() => {
     // Add explicit type checking and fallback
     const legendClasses = mapSettings.legendType === "auto" 
       ? (autoLegend || []) 
-      : (selectedLegendSet?.legends || []);
+      : (mapSettings.legend.legends || []);
     
     const color = getColorForValue(value, legendClasses);
     
@@ -231,11 +229,7 @@ useEffect(() => {
     };
   };
 
-  const legendControllersKit:legendControllersKitTypes = { 
-    selectedLegendSet: selectedLegendSet,
-    setSelectedLegendSet: setSelectedLegendSet,
-    sampleLegends: sampleLegends
-  };
+
   
   return (
     <div className="flex flex-1 h-full w-full">
@@ -251,7 +245,7 @@ useEffect(() => {
           setAppliedLabels={setAppliedLabels}
           selectedLabels = {selectedLabels}
           setSelectedLabels={setSelectedLabels}
-          legendControllersKit={legendControllersKit}
+        
         >
         </MapSidebar>
       )}
@@ -316,7 +310,7 @@ useEffect(() => {
             <MapLegend
               legendType={mapSettings.legendType}
               autoLegend={autoLegend}
-              selectedLegendSet={selectedLegendSet}
+              selectedLegendSet={mapSettings.legend}
             />
           )}
           

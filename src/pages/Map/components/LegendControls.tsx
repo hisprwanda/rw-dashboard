@@ -3,21 +3,11 @@ import { Legend } from '../../../types/maps';
 import { useFetchSingleLegend, useLegendsData } from '../../../services/fetchLegends';
 import { mapSettingsTypes } from '../../../types/mapFormTypes';
 import { useAuthorities } from '../../../context/AuthContext';
+import { set } from 'lodash';
 
-type LegendSet = {
-  displayName: string;
-  id: string;
-};
 
-type LegendControlsProps = {
-  selectedLegendSet: Legend;
-  setSelectedLegendSet: (legend: Legend) => void;
-};
 
-const LegendControls: React.FC<LegendControlsProps> = ({
-  selectedLegendSet,
-  setSelectedLegendSet,
-}) => {
+const LegendControls = () => {
   const { myLegendSets, error, isError, loading } = useLegendsData();
   const {setMapSettings,mapSettings} = useAuthorities()
   const {
@@ -50,7 +40,7 @@ const LegendControls: React.FC<LegendControlsProps> = ({
         legends: selectedLegendsData
       };
       
-      setSelectedLegendSet(newLegendSet);
+     setMapSettings((prev:mapSettingsTypes) => ({ ...prev, legend: newLegendSet }));
     }
   }, [selectedLegendsData]);
 

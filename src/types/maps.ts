@@ -1,4 +1,3 @@
-import { legendControllersKitTypes } from "./mapFormTypes";
 
 export type BasemapType = 'osm-light' | 'osm-detailed';
 
@@ -13,7 +12,7 @@ export type MapSidebarProps = {
    setAppliedLabels:any;
    selectedLabels:string[];
    setSelectedLabels:any;
-   legendControllersKit:legendControllersKitTypes
+ 
 };
 // Basemap Configuration Type
 export type BasemapConfig = {

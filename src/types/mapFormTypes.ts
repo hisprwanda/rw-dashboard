@@ -64,9 +64,3 @@ export type mapSettingsTypes = {
   legendType: legendTypeTypes;
 }
 
-
-export type legendControllersKitTypes = {
-  selectedLegendSet: any;
-  setSelectedLegendSet: any;
-  sampleLegends: Legend[];
-}
