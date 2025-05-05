@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { LabelControls } from '../MapLabels';
 
@@ -38,9 +37,10 @@ const ThematicStylesTab: React.FC<ThematicStylesTabProps> = ({appliedLabels, set
       {/* Label Controls Section */}
       <div className="mb-6">
         <button 
+          type="button" {/* Add this line to prevent form submission */}
           onClick={(e) => {
-            e.stopPropagation()
-            setShowLabelControls(!showLabelControls)
+            e.stopPropagation();
+            setShowLabelControls(!showLabelControls);
           }}
           className="bg-white border border-gray-300 px-3 py-1 rounded-md hover:bg-gray-100"
         >

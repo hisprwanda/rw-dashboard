@@ -4,7 +4,7 @@ import { z } from "zod";
 export const MapDataSchema = z.object({
   id: z.string(),
   mapType: z.enum(["Thematic"]),
-  BasemapType: z.enum(["osm-light", "osm-detailed"]),
+  // BasemapType: z.enum(["osm-light", "osm-detailed"]),
   mapName: z.string().nonempty({ message: "Map name is required" }),
   description: z.string().optional(),
   queries: z.object({
