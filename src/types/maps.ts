@@ -1,3 +1,5 @@
+import { legendControllersKitTypes } from "./mapFormTypes";
+
 export type BasemapType = 'osm-light' | 'osm-detailed';
 
 // MapSidebar Props Type
@@ -11,13 +13,7 @@ export type MapSidebarProps = {
    setAppliedLabels:any;
    selectedLabels:string[];
    setSelectedLabels:any;
-   legendControllersKit:{
-    legendType:any;
-    setLegendType:any;
-    selectedLegendSet:any;
-    setSelectedLegendSet:any;
-    sampleLegends:any
-   }
+   legendControllersKit:legendControllersKitTypes
 };
 // Basemap Configuration Type
 export type BasemapConfig = {

@@ -99,7 +99,8 @@ export function SaveMapModal({
       organizationTree: selectedOrgUnits,
       selectedOrgUnitLevel: selectedLevel,
       backedSelectedItems: backedSelectedItems,
-      BasemapType:currentBasemap
+      BasemapType:currentBasemap,
+    
 
     });
   }, [

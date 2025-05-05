@@ -27,6 +27,7 @@ import {
 } from '../../../lib/mapHelpers';
 import { useAuthorities } from '../../../context/AuthContext';
 import LegendControls from './LegendControls';
+import { legendControllersKitTypes, legendTypeTypes, mapSettingsTypes } from '../../../types/mapFormTypes';
 
 // Fix for default marker icon
 let DefaultIcon = L.icon({
@@ -82,6 +83,7 @@ type MapBodyProps = {
   isHideSideBar?: boolean;
   mapName?: string;
   currentBasemap: BasemapType;
+  mapSettings:mapSettingsTypes
 }
 
 const MapBody: React.FC<MapBodyProps> = ({
@@ -92,13 +94,13 @@ const MapBody: React.FC<MapBodyProps> = ({
   mapId,
   isHideSideBar,
   mapName,
-  currentBasemap
+  currentBasemap,
+  mapSettings
 }) => {
   // State management
 
   const [districts, setDistricts] = useState<ProcessedDistrict[]>([]);
   const [valueMap, setValueMap] = useState<Map<string, string>>(new Map());
-  const [legendType, setLegendType] = useState<string>("auto");
   const [selectedLegendSet, setSelectedLegendSet] = useState<Legend>(sampleLegends[0]);
   const [autoLegend, setAutoLegend] = useState<LegendClass[]>([]);
   const [centerPosition, setCenterPosition] = useState<[number, number]>([0, 28]);
@@ -106,7 +108,7 @@ const MapBody: React.FC<MapBodyProps> = ({
   const [dataProcessed, setDataProcessed] = useState<boolean>(false);
   const [hasDataToDisplay, setHasDataToDisplay] = useState<boolean>(false);
   const [geoJsonData, setGeoJsonData] = useState<any>(null);
-  const { mapAnalyticsQueryTwo ,setCurrentBasemap} = useAuthorities();
+  const { mapAnalyticsQueryTwo ,setCurrentBasemap,setMapSettings} = useAuthorities();
   const [appliedLabels, setAppliedLabels] = useState<string[]>([]);
   const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   
@@ -214,7 +216,7 @@ useEffect(() => {
     const value = feature.properties.value;
     
     // Add explicit type checking and fallback
-    const legendClasses = legendType === "auto" 
+    const legendClasses = mapSettings.legendType === "auto" 
       ? (autoLegend || []) 
       : (selectedLegendSet?.legends || []);
     
@@ -229,9 +231,10 @@ useEffect(() => {
     };
   };
 
-  const legendControllersKit = { 
-    legendType: legendType,
-    setLegendType: setLegendType,
+  const legendControllersKit:legendControllersKitTypes = { 
+    legendType: mapSettings.legendType,
+    mapSettings: mapSettings,
+    setMapSettings: setMapSettings,
     selectedLegendSet: selectedLegendSet,
     setSelectedLegendSet: setSelectedLegendSet,
     sampleLegends: sampleLegends
@@ -314,7 +317,7 @@ useEffect(() => {
           {/* Legend */}
           {districts.length > 0 && (
             <MapLegend
-              legendType={legendType}
+              legendType={mapSettings.legendType}
               autoLegend={autoLegend}
               selectedLegendSet={selectedLegendSet}
             />

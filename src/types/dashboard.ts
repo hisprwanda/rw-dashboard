@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { Layout } from "react-grid-layout";
 import { analyticsPayloadDeterminerTypes } from "./analyticsTypes";
+import { BasemapType } from "./maps";
 
 // Schema definition using zod
 export const DashboardSchema = z.object({
@@ -127,5 +128,6 @@ export interface ExtendedLayout extends Layout {
   mapAnalyticsQueryOneQuery?: any;
   mapAnalyticsQueryTwo?: any;
   isMapItem?: boolean;
+  BasemapType?: BasemapType;
   analyticsPayloadDeterminer:analyticsPayloadDeterminerTypes
 }

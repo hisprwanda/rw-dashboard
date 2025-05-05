@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Legend } from '../../../types/maps';
 import { useFetchSingleLegend, useLegendsData } from '../../../services/fetchLegends';
+import { mapSettingsTypes } from '../../../types/mapFormTypes';
+import { useAuthorities } from '../../../context/AuthContext';
 
 type LegendSet = {
   displayName: string;
@@ -9,18 +11,17 @@ type LegendSet = {
 
 type LegendControlsProps = {
   legendType: string;
-  setLegendType: (type: string) => void;
   selectedLegendSet: Legend;
   setSelectedLegendSet: (legend: Legend) => void;
 };
 
 const LegendControls: React.FC<LegendControlsProps> = ({
   legendType,
-  setLegendType,
   selectedLegendSet,
   setSelectedLegendSet,
 }) => {
   const { myLegendSets, error, isError, loading } = useLegendsData();
+  const {setMapSettings} = useAuthorities()
   const {
     data: selectedLegendsData,
     fetchSingleLegendById,
@@ -69,7 +70,7 @@ const LegendControls: React.FC<LegendControlsProps> = ({
             type="radio"
             value="auto"
             checked={legendType === "auto"}
-            onChange={() => setLegendType("auto")}
+            onChange={() => setMapSettings((prev:mapSettingsTypes) => ({ ...prev, legendType: "auto" }))}
             className="mb-4"
           />
           Automatic Legend
@@ -79,7 +80,7 @@ const LegendControls: React.FC<LegendControlsProps> = ({
             type="radio"
             value="dhis2"
             checked={legendType === "dhis2"}
-            onChange={() => setLegendType("dhis2")}
+            onChange={() => setMapSettings((prev:mapSettingsTypes) => ({ ...prev, legendType: "dhis2" }))}
             className="mr-1"
           />
           My Legend

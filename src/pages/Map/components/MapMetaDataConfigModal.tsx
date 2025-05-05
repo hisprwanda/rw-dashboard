@@ -28,6 +28,7 @@ import { useRunGeoFeatures } from "../../../services/maps";
 import { getSelectedOrgUnitsWhenUsingMap } from "../../../lib/getAnalyticsFilters";
 import ThematicStylesTab from "./themanticLayer/ThematicStylesTab";
 import LegendControls from "./LegendControls";
+import { legendControllersKitTypes } from "../../../types/mapFormTypes";
 
 
 type MapMetaDataConfigModalProps = {
@@ -38,13 +39,7 @@ type MapMetaDataConfigModalProps = {
    setAppliedLabels:any;
    selectedLabels:string[];
    setSelectedLabels:any;
-   legendControllersKit:{
-    legendType:any;
-    setLegendType:any;
-    selectedLegendSet:any;
-    setSelectedLegendSet:any;
-    sampleLegends:any
-   }
+   legendControllersKit:legendControllersKitTypes
 }
 
 export function MapMetaDataConfigModal({ 
@@ -173,7 +168,6 @@ export function MapMetaDataConfigModal({
               <h2 className="text-lg font-semibold  text-gray-800">Legends</h2>
               <LegendControls
                 legendType={legendControllersKit.legendType}
-                setLegendType={legendControllersKit.setLegendType}
                 selectedLegendSet={legendControllersKit.selectedLegendSet}
                 setSelectedLegendSet={legendControllersKit.setSelectedLegendSet}
                 sampleLegends={legendControllersKit.sampleLegends}

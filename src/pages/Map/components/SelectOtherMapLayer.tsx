@@ -7,6 +7,7 @@ import {
   AccordionTrigger,
 } from "../../../components/ui/accordion"
 import { MapMetaDataConfigModal } from "./MapMetaDataConfigModal";
+import { legendControllersKitTypes } from "../../../types/mapFormTypes";
 
 const otherMapLayers = [
   {
@@ -23,13 +24,7 @@ type SelectOtherMapLayerProps = {
    setAppliedLabels:any;
    selectedLabels:string[];
    setSelectedLabels:any;
-   legendControllersKit:{
-    legendType:any;
-    setLegendType:any;
-    selectedLegendSet:any;
-    setSelectedLegendSet:any;
-    sampleLegends:any
-   }
+   legendControllersKit:legendControllersKitTypes
 }
 
 const SelectOtherMapLayer:React.FC<SelectOtherMapLayerProps> = ({legendControllersKit,appliedLabels,setAppliedLabels,selectedLabels,setSelectedLabels}) => {

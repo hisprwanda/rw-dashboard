@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { Legend } from '../types/maps';
 
 // Schema definition using zod
 export const MapDataSchema = z.object({
@@ -42,13 +43,11 @@ export const MapDataSchema = z.object({
     id: z.string(),
  
   })),
-  // settings: z.object({
-  //   styles: z.object({
-  //     labels: z.any(),
-  //     legend: z.any(),
-  //     isAutoLegend: z.boolean(),
-  //   }),
-  // }).optional(),
+  mapSettings: z.object({
+      labels: z.any(),
+      legend: z.any(),
+      legendType: z.enum(["auto", "dhis2"]).default("auto"),
+  }).optional(),
 
 });
 
@@ -56,3 +55,21 @@ export const MapDataSchema = z.object({
 export type MapDataFormFields = z.infer<typeof MapDataSchema>;
 
 export type mapTypes = "Thematic";
+
+export type legendTypeTypes = "auto" | "dhis2";
+
+export type mapSettingsTypes = {
+  labels: any;
+  legend: any;
+  legendType: legendTypeTypes;
+}
+
+
+export type legendControllersKitTypes = {
+  legendType:legendTypeTypes ;
+  mapSettings: mapSettingsTypes;
+  setMapSettings: any;
+  selectedLegendSet: any;
+  setSelectedLegendSet: any;
+  sampleLegends: Legend[];
+}
