@@ -82,6 +82,11 @@ export const DashboardSchema = z.object({
       mapAnalyticsQueryTwo: z.any(),
       mapType: z.string(),
       BasemapType: z.enum(["osm-light", "osm-detailed"]).default("osm-light"),
+      mapSettings: z.object({
+        labels: z.any(),
+        legend: z.any(),
+        legendType: z.enum(["auto", "dhis2"]).default("auto"),
+    }).optional(),
       dataSourceId: z
         .string()
         .nonempty({ message: "Data source ID is required" }),
@@ -120,7 +125,7 @@ export interface ExtendedLayout extends Layout {
   visualName?: string;
   visualQuery?: any;
   visualType?: string;
-  visualSettings?: any;
+  visualSecttings?: any;
   visualTitleAndSubTitle?: any;
   dataSourceId?: string;
   mapName?: string;
@@ -129,5 +134,10 @@ export interface ExtendedLayout extends Layout {
   mapAnalyticsQueryTwo?: any;
   isMapItem?: boolean;
   BasemapType?: BasemapType;
+  mapSettings: {
+      labels: any;
+      legend: any;
+      legendType: "auto" | "dhis2";
+    };
   analyticsPayloadDeterminer:analyticsPayloadDeterminerTypes
 }
