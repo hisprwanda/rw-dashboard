@@ -97,6 +97,7 @@ export const useFetchSingleMapData = (mapId: string) => {
     setSelectedVisualSettings,
     setSelectedColorPalette,
     setBackedSelectedItems,
+    setCurrentBasemap,
     setIsUseCurrentUserOrgUnits,
     fetchAnalyticsData,
     selectedDimensionItemType,
@@ -295,6 +296,7 @@ export const useFetchSingleMapData = (mapId: string) => {
     setSelectedColorPalette(data.dataStore?.visualSettings?.visualColorPalette);
     setSelectedVisualSettings(data.dataStore?.visualSettings);
     setBackedSelectedItems(data.dataStore?.backedSelectedItems);
+    setCurrentBasemap(data.dataStore?.BasemapType);
 
     const selectedOrganizationUnits =
       formatSelectedOrganizationUnit(selectedOrgUnit);
@@ -331,6 +333,7 @@ export const useFetchSingleMapData = (mapId: string) => {
     setSelectedColorPalette,
     setSelectedVisualSettings,
     setBackedSelectedItems,
+    setCurrentBasemap,
     setIsUseCurrentUserOrgUnits
   ]);
 

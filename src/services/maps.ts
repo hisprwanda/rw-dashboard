@@ -120,9 +120,6 @@ export const useFetchSavedGeoFeatureByQuery = ({
     setError(null);
     try {
       const result = await engine.query(finalQuery);
-      console.log("ppppppp geo", result?.geoFeatures);
-      console.log("ppppppp mapAnalyticsOne", result?.mapAnalyticsOne);
-      console.log("ppppppp mapAnalyticsTwo", result?.mapAnalyticsTwo);
       setGeoFeaturesSavedData(result?.geoFeatures);
       setAnalyticsMapData(result?.mapAnalyticsOne);
       setMetaMapData(result?.mapAnalyticsTwo);

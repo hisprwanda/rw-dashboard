@@ -11,7 +11,7 @@ type resetAnalyticsStatesToDefaultValuesParams = {
 
 
 export const useResetAnalyticsStatesToDefault = ()=>{
-  const { setAnalyticsPayloadDeterminer, setGeoFeaturesData,setAnalyticsMapData,setMetaMapData, selectedColorPalette,currentUserInfoAndOrgUnitsData, setSelectedDataSourceOption,setSelectedVisualSettings,setVisualsColorPalettes,setIsUseCurrentUserOrgUnits,setSelectedOrganizationUnits,setSelectedOrgUnits,setSelectedOrgUnitGroups,setSelectedOrganizationUnitsLevels,setSelectedLevel,setIsSetPredifinedUserOrgUnits,setAnalyticsDimensions,setSelectedChartType,setSelectedDimensionItemType,setSelectedDataSourceDetails,setAnalyticsData,setMetaDataLabels,setAnalyticsQuery} =   useAuthorities()
+  const { setAnalyticsPayloadDeterminer,setCurrentBasemap, setGeoFeaturesData,setAnalyticsMapData,setMetaMapData, selectedColorPalette,currentUserInfoAndOrgUnitsData, setSelectedDataSourceOption,setSelectedVisualSettings,setVisualsColorPalettes,setIsUseCurrentUserOrgUnits,setSelectedOrganizationUnits,setSelectedOrgUnits,setSelectedOrgUnitGroups,setSelectedOrganizationUnitsLevels,setSelectedLevel,setIsSetPredifinedUserOrgUnits,setAnalyticsDimensions,setSelectedChartType,setSelectedDimensionItemType,setSelectedDataSourceDetails,setAnalyticsData,setMetaDataLabels,setAnalyticsQuery} =   useAuthorities()
   const { data: systemInfo } = useSystemInfo();
   const defaultUserOrgUnit = currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName;
  
@@ -51,6 +51,7 @@ export const useResetAnalyticsStatesToDefault = ()=>{
             setGeoFeaturesData([])
             setAnalyticsMapData([])
             setMetaMapData([])
+            setCurrentBasemap("osm-light")
         }
     }
     ///

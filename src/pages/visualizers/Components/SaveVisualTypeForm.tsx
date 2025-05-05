@@ -21,7 +21,7 @@ interface SaveVisualTypeFormProps {
 }
 
 const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({visualId,singleSavedVisualData,setIsShowSaveVisualTypeForm ,selectedDataSourceId}) => {
-  const {selectedDataSourceOption,setSelectedDataSourceOption,analyticsPayloadDeterminer,visualSettings, analyticsQuery,userDatails,selectedChartType,selectedOrgUnits,selectedLevel, visualTitleAndSubTitle ,backedSelectedItems} = useAuthorities();
+  const {selectedDataSourceOption,analyticsPayloadDeterminer,visualSettings, analyticsQuery,userDatails,selectedChartType,selectedOrgUnits,selectedLevel, visualTitleAndSubTitle ,backedSelectedItems} = useAuthorities();
   const {data:allSavedVisuals,loading,isError}  = useFetchVisualsData()
   const navigate = useNavigate();
    const { toast } = useToast();

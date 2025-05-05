@@ -93,7 +93,7 @@ const MapBody: React.FC<MapBodyProps> = ({
   mapName
 }) => {
   // State management
-  const [currentBasemap, setCurrentBasemap] = useState<BasemapType>('osm-light');
+
   const [districts, setDistricts] = useState<ProcessedDistrict[]>([]);
   const [valueMap, setValueMap] = useState<Map<string, string>>(new Map());
   const [legendType, setLegendType] = useState<string>("auto");
@@ -104,7 +104,7 @@ const MapBody: React.FC<MapBodyProps> = ({
   const [dataProcessed, setDataProcessed] = useState<boolean>(false);
   const [hasDataToDisplay, setHasDataToDisplay] = useState<boolean>(false);
   const [geoJsonData, setGeoJsonData] = useState<any>(null);
-  const { mapAnalyticsQueryTwo } = useAuthorities();
+  const { mapAnalyticsQueryTwo ,currentBasemap,setCurrentBasemap} = useAuthorities();
   const [appliedLabels, setAppliedLabels] = useState<string[]>([]);
   const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   

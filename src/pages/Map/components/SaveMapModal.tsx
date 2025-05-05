@@ -32,7 +32,7 @@ export function SaveMapModal({
   existingMapData,
 }: SaveMapModalProps) {
   // Get user and data source details from context
-  const { userDatails, selectedDataSourceOption, selectedOrgUnits, selectedLevel, analyticsQuery, mapAnalyticsQueryTwo, geoFeaturesQuery, backedSelectedItems, analyticsDimensions } = useAuthorities();
+  const { userDatails, selectedDataSourceOption, selectedOrgUnits, selectedLevel, analyticsQuery, mapAnalyticsQueryTwo, geoFeaturesQuery, backedSelectedItems, analyticsDimensions,currentBasemap } = useAuthorities();
   const { toast } = useToast();
   const engine = useDataEngine();
   const navigate = useNavigate();
@@ -98,7 +98,9 @@ export function SaveMapModal({
       updatedAt: Date.now(),
       organizationTree: selectedOrgUnits,
       selectedOrgUnitLevel: selectedLevel,
-      backedSelectedItems: backedSelectedItems
+      backedSelectedItems: backedSelectedItems,
+      BasemapType:currentBasemap
+
     });
   }, [
     analyticsQuery, 
@@ -111,7 +113,8 @@ export function SaveMapModal({
     mapId, 
     existingMapData, 
     reset,
-    backedSelectedItems
+    backedSelectedItems,
+    currentBasemap
   ]);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
