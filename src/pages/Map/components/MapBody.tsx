@@ -232,9 +232,6 @@ useEffect(() => {
   };
 
   const legendControllersKit:legendControllersKitTypes = { 
-    legendType: mapSettings.legendType,
-    mapSettings: mapSettings,
-    setMapSettings: setMapSettings,
     selectedLegendSet: selectedLegendSet,
     setSelectedLegendSet: setSelectedLegendSet,
     sampleLegends: sampleLegends

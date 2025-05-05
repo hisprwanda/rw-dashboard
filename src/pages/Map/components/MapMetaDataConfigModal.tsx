@@ -167,10 +167,8 @@ export function MapMetaDataConfigModal({
             <div className="bg-white rounded-2xl shadow-sm p-4 border border-gray-100">
               <h2 className="text-lg font-semibold  text-gray-800">Legends</h2>
               <LegendControls
-                legendType={legendControllersKit.legendType}
                 selectedLegendSet={legendControllersKit.selectedLegendSet}
                 setSelectedLegendSet={legendControllersKit.setSelectedLegendSet}
-                sampleLegends={legendControllersKit.sampleLegends}
               />
             </div>
           </div>

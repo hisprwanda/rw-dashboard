@@ -10,18 +10,16 @@ type LegendSet = {
 };
 
 type LegendControlsProps = {
-  legendType: string;
   selectedLegendSet: Legend;
   setSelectedLegendSet: (legend: Legend) => void;
 };
 
 const LegendControls: React.FC<LegendControlsProps> = ({
-  legendType,
   selectedLegendSet,
   setSelectedLegendSet,
 }) => {
   const { myLegendSets, error, isError, loading } = useLegendsData();
-  const {setMapSettings} = useAuthorities()
+  const {setMapSettings,mapSettings} = useAuthorities()
   const {
     data: selectedLegendsData,
     fetchSingleLegendById,
@@ -69,7 +67,7 @@ const LegendControls: React.FC<LegendControlsProps> = ({
           <input
             type="radio"
             value="auto"
-            checked={legendType === "auto"}
+            checked={mapSettings.legendType === "auto"}
             onChange={() => setMapSettings((prev:mapSettingsTypes) => ({ ...prev, legendType: "auto" }))}
             className="mb-4"
           />
@@ -79,7 +77,7 @@ const LegendControls: React.FC<LegendControlsProps> = ({
           <input
             type="radio"
             value="dhis2"
-            checked={legendType === "dhis2"}
+            checked={mapSettings.legendType === "dhis2"}
             onChange={() => setMapSettings((prev:mapSettingsTypes) => ({ ...prev, legendType: "dhis2" }))}
             className="mr-1"
           />
@@ -87,7 +85,7 @@ const LegendControls: React.FC<LegendControlsProps> = ({
         </label>
       </div>
       
-      {legendType === "dhis2" && (
+      {mapSettings.legendType === "dhis2" && (
         <div>
           {loading ? (
             <p>Loading legend sets...</p>
