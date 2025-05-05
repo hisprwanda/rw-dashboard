@@ -100,14 +100,13 @@ const MapBody: React.FC<MapBodyProps> = ({
 
   const [districts, setDistricts] = useState<ProcessedDistrict[]>([]);
   const [valueMap, setValueMap] = useState<Map<string, string>>(new Map());
-  const [autoLegend, setAutoLegend] = useState<LegendClass[]>([]);
+   const [autoLegend, setAutoLegend] = useState<LegendClass[]>([]);
   const [centerPosition, setCenterPosition] = useState<[number, number]>([0, 28]);
   const [zoomLevel, setZoomLevel] = useState<number>(2);
   const [dataProcessed, setDataProcessed] = useState<boolean>(false);
   const [hasDataToDisplay, setHasDataToDisplay] = useState<boolean>(false);
   const [geoJsonData, setGeoJsonData] = useState<any>(null);
   const { mapAnalyticsQueryTwo ,setCurrentBasemap,setMapSettings} = useAuthorities();
-  const [appliedLabels, setAppliedLabels] = useState<string[]>([]);
   const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   
   // Main data processing effect
@@ -241,8 +240,8 @@ useEffect(() => {
           onBasemapChange={setCurrentBasemap}
           singleSavedMapData={singleSavedMapData}
           mapId={mapId}
-          appliedLabels={appliedLabels}
-          setAppliedLabels={setAppliedLabels}
+         // appliedLabels={appliedLabels}
+         // setAppliedLabels={setAppliedLabels}
           selectedLabels = {selectedLabels}
           setSelectedLabels={setSelectedLabels}
         
@@ -293,10 +292,10 @@ useEffect(() => {
 )}
             
              {/* Permanent Labels */}
-             {districts.length > 0 && geoJsonData && appliedLabels.length > 0 && (
+             {districts.length > 0 && geoJsonData && mapSettings.appliedLabels?.length > 0 && (
               <MapLabels
                 geoJsonData={geoJsonData}
-                appliedLabels={appliedLabels}
+                appliedLabels={mapSettings.appliedLabels}
                 analyticsMapData={analyticsMapData}
                 valueMap={valueMap}
                 metaMapData={metaMapData}

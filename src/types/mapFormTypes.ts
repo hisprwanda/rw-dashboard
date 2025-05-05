@@ -44,7 +44,8 @@ export const MapDataSchema = z.object({
  
   })),
   mapSettings: z.object({
-      labels: z.any(),
+      appliedLabels:z.any(),
+      selectedLabels: z.any(),
       legend: z.any(),
       legendType: z.enum(["auto", "dhis2"]).default("auto"),
   }).optional(),
@@ -59,7 +60,8 @@ export type mapTypes = "Thematic";
 export type legendTypeTypes = "auto" | "dhis2";
 
 export type mapSettingsTypes = {
-  labels: any;
+  appliedLabels: any;
+  selectedLabels: any;
   legend: any;
   legendType: legendTypeTypes;
 }
