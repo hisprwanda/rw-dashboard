@@ -37,14 +37,14 @@ const ThematicStylesTab: React.FC<ThematicStylesTabProps> = ({appliedLabels, set
       {/* Label Controls Section */}
       <div className="mb-6">
         <button 
-          type="button" 
+          type="button" {/* Add this line to prevent form submission */}
           onClick={(e) => {
             e.stopPropagation();
             setShowLabelControls(!showLabelControls);
           }}
           className="bg-white border border-gray-300 px-3 py-1 rounded-md hover:bg-gray-100"
         >
-          {showLabelControls ? 'Hide Label Options' : 'Show Labels'}
+          {showLabelControls ? ' Label Options' : 'Show Labels'}
         </button>
         
         {/* Label Control Panel */}
