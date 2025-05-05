@@ -80,6 +80,7 @@ export const DashboardSchema = z.object({
       mapAnalyticsQueryOneQuery: z.any(),
       mapAnalyticsQueryTwo: z.any(),
       mapType: z.string(),
+      BasemapType: z.enum(["osm-light", "osm-detailed"]).default("osm-light"),
       dataSourceId: z
         .string()
         .nonempty({ message: "Data source ID is required" }),

@@ -210,6 +210,7 @@ const mapsOptions = allSavedMaps?.dataStore?.entries?.map((entry: any) => (
                 mapAnalyticsQueryOneQuery: map.value.queries.mapAnalyticsQueryOne,
                 mapAnalyticsQueryTwo: map.value.queries.mapAnalyticsQueryTwo,
                 mapType: map.value.mapType,
+                BasemapType: map.value.BasemapType,
                 dataSourceId: map.value.dataSourceId,
                 isMapItem: true as const
             };
@@ -250,6 +251,7 @@ const mapsOptions = allSavedMaps?.dataStore?.entries?.map((entry: any) => (
                     mapAnalyticsQueryOneQuery: existingMap.mapAnalyticsQueryOneQuery,
                     mapAnalyticsQueryTwo: existingMap.mapAnalyticsQueryTwo,
                     mapType: existingMap.mapType,
+                    BasemapType: existingMap.BasemapType,
                     dataSourceId: existingMap.dataSourceId,
                     isMapItem: true as const
                 }
@@ -562,6 +564,7 @@ const MemoizedGridLayout = React.memo(({
              geoFeaturesQuery={widget.geoFeaturesQuery}
              mapAnalyticsQueryOneQuery={widget.mapAnalyticsQueryOneQuery}
              mapAnalyticsQueryTwo={widget.mapAnalyticsQueryTwo}
+             basemapType={widget.BasemapType}
              
            />
             </div>

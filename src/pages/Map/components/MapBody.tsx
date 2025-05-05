@@ -81,6 +81,7 @@ type MapBodyProps = {
   mapId?: string;
   isHideSideBar?: boolean;
   mapName?: string;
+  currentBasemap: BasemapType;
 }
 
 const MapBody: React.FC<MapBodyProps> = ({
@@ -90,7 +91,8 @@ const MapBody: React.FC<MapBodyProps> = ({
   singleSavedMapData,
   mapId,
   isHideSideBar,
-  mapName
+  mapName,
+  currentBasemap
 }) => {
   // State management
 
@@ -104,7 +106,7 @@ const MapBody: React.FC<MapBodyProps> = ({
   const [dataProcessed, setDataProcessed] = useState<boolean>(false);
   const [hasDataToDisplay, setHasDataToDisplay] = useState<boolean>(false);
   const [geoJsonData, setGeoJsonData] = useState<any>(null);
-  const { mapAnalyticsQueryTwo ,currentBasemap,setCurrentBasemap} = useAuthorities();
+  const { mapAnalyticsQueryTwo ,setCurrentBasemap} = useAuthorities();
   const [appliedLabels, setAppliedLabels] = useState<string[]>([]);
   const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   
