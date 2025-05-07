@@ -167,6 +167,8 @@ function transformSimpleData(
     valueIndex: number
 ): TransformedDataPoint[] {
     const { metaData: metadata, rows } = inputData;
+    const ouDimension = 'ou';
+    const ouIndex = inputData.headers.findIndex(h => h.name === ouDimension);
     
     // Get all categories from metadata or derive from rows
     let allCategories: { id: string, name: string }[] = [];
@@ -189,7 +191,6 @@ function transformSimpleData(
     }
     
     // Find organization units data
-    const ouDimension = 'ou';
     const orgUnits: { id: string, name: string }[] = [];
     
     if (metadata.dimensions[ouDimension]) {
@@ -204,80 +205,65 @@ function transformSimpleData(
     }
     
     // If no org units found in metadata, try to extract from rows
-    if (orgUnits.length === 0) {
-        const ouIndex = inputData.headers.findIndex(h => h.name === ouDimension);
-        if (ouIndex >= 0) {
-            const uniqueOuIds = new Set<string>();
-            rows.forEach(row => uniqueOuIds.add(row[ouIndex]));
-            
-            Array.from(uniqueOuIds).forEach(ouId => {
-                if (metadata.items[ouId]?.name) {
-                    orgUnits.push({
-                        id: ouId,
-                        name: metadata.items[ouId].name
-                    });
-                }
-            });
-        }
-    }
-    
-    // Create data points
-    const dataPoints: TransformedDataPoint[] = [];
-    
-    allCategories.forEach(cat => {
-        const matchingRow = rows.find(row => row[categoryIndex] === cat.id);
+    if (orgUnits.length === 0 && ouIndex >= 0) {
+        const uniqueOuIds = new Set<string>();
+        rows.forEach(row => uniqueOuIds.add(row[ouIndex]));
         
-        if (matchingRow) {
-            const rawValue = matchingRow[valueIndex];
-            const value = rawValue !== '' ? Number(rawValue) : null;
-            
-            // Use org unit names as measure names
-            if (orgUnits.length > 0) {
-                // For each org unit, create a data point with the org unit name as the measure
-                const entry: TransformedDataPoint = { period: cat.name };
-                
-                // Find the org unit for this row
-                const ouIndex = inputData.headers.findIndex(h => h.name === ouDimension);
-                if (ouIndex >= 0) {
-                    const rowOuId = matchingRow[ouIndex];
-                    const ou = orgUnits.find(ou => ou.id === rowOuId);
-                    if (ou) {
-                        entry[ou.name] = value;
-                    }
-                } else {
-                    // If we can't find the ou index, use all org units with the same value
-                    orgUnits.forEach(ou => {
-                        entry[ou.name] = value;
-                    });
-                }
-                
-                dataPoints.push(entry);
-            } else {
-                // Fallback to using "Value" as the measure name if no org units found
-                dataPoints.push({
-                    period: cat.name,
-                    "Value": value
+        Array.from(uniqueOuIds).forEach(ouId => {
+            if (metadata.items[ouId]?.name) {
+                orgUnits.push({
+                    id: ouId,
+                    name: metadata.items[ouId].name
                 });
             }
-        } else {
-            // No matching row found for this category
-            const entry: TransformedDataPoint = { period: cat.name };
+        });
+    }
+    
+    // Create a map to combine data with the same period
+    const dataMap: Record<string, TransformedDataPoint> = {};
+    
+    // Initialize the map with empty entries for all periods
+    allCategories.forEach(cat => {
+        dataMap[cat.name] = { period: cat.name };
+        
+        // Initialize all org unit values to null
+        orgUnits.forEach(ou => {
+            dataMap[cat.name][ou.name] = null;
+        });
+    });
+    
+    // Populate actual values from rows
+    rows.forEach(row => {
+        const catId = row[categoryIndex];
+        const categoryName = metadata.items[catId]?.name || catId;
+        
+        // Skip if we can't find this category
+        if (!dataMap[categoryName]) return;
+        
+        // Get the org unit for this row
+        if (ouIndex >= 0) {
+            const ouId = row[ouIndex];
+            const ouName = metadata.items[ouId]?.name;
             
-            // Add null values for all org units
-            orgUnits.forEach(ou => {
-                entry[ou.name] = null;
-            });
-            
-            // If no org units, add a generic "Value" column
-            if (orgUnits.length === 0) {
-                entry["Value"] = null;
+            if (ouName) {
+                const rawValue = row[valueIndex];
+                const value = rawValue !== '' ? Number(rawValue) : null;
+                
+                // Add this value to the map entry
+                dataMap[categoryName][ouName] = value;
             }
+        } else if (orgUnits.length === 1) {
+            // If there's only one org unit but no ou column, use that
+            const ouName = orgUnits[0].name;
+            const rawValue = row[valueIndex];
+            const value = rawValue !== '' ? Number(rawValue) : null;
             
-            dataPoints.push(entry);
+            dataMap[categoryName][ouName] = value;
         }
     });
     
-    return dataPoints;
+    // Convert the map to an array of data points
+    return Object.values(dataMap);
 }
 
 export function generateChartConfig(
