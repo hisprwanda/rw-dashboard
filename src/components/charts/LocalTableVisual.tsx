@@ -33,9 +33,10 @@ export const LocalTableVisual: React.FC<genericChartsProps> = ({
     }
   
     const columns = Object.keys(chartData[0]).map((key) => ({
-      Header: key.charAt(0).toUpperCase() + key.slice(1),
+      Header: key === "period" ? "" : key.charAt(0).toUpperCase() + key.slice(1),
       accessor: key,
     }));
+    
   
     const [search, setSearch] = useState("");
     const filteredData = useMemo(() => {
@@ -71,17 +72,7 @@ export const LocalTableVisual: React.FC<genericChartsProps> = ({
   
     return (
       <div style={{ backgroundColor: visualSettings.backgroundColor }}>
-        {visualTitleAndSubTitle.visualTitle && (
-          <h3 className="text-center text-lg font-bold text-gray-800">
-            {visualTitleAndSubTitle.visualTitle}
-          </h3>
-        )}
-        {visualTitleAndSubTitle?.customSubTitle && (
-          <h4 className="text-center text-md font-medium text-gray-600 mt-1">
-            {visualTitleAndSubTitle?.customSubTitle}
-          </h4>
-        )}
-  
+    
         {/* Search Input */}
         <div className="mb-4">
           <Input
