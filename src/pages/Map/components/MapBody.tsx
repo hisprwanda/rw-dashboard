@@ -26,7 +26,7 @@ import {
   getMapBounds
 } from '../../../lib/mapHelpers';
 import { useAuthorities } from '../../../context/AuthContext';
-import LegendControls from './LegendControls';
+import {  legendTypeTypes, mapSettingsTypes } from '../../../types/mapFormTypes';
 
 // Fix for default marker icon
 let DefaultIcon = L.icon({
@@ -81,6 +81,8 @@ type MapBodyProps = {
   mapId?: string;
   isHideSideBar?: boolean;
   mapName?: string;
+  currentBasemap: BasemapType;
+  mapSettings:mapSettingsTypes
 }
 
 const MapBody: React.FC<MapBodyProps> = ({
@@ -90,22 +92,21 @@ const MapBody: React.FC<MapBodyProps> = ({
   singleSavedMapData,
   mapId,
   isHideSideBar,
-  mapName
+  mapName,
+  currentBasemap,
+  mapSettings
 }) => {
   // State management
-  const [currentBasemap, setCurrentBasemap] = useState<BasemapType>('osm-light');
+
   const [districts, setDistricts] = useState<ProcessedDistrict[]>([]);
   const [valueMap, setValueMap] = useState<Map<string, string>>(new Map());
-  const [legendType, setLegendType] = useState<string>("auto");
-  const [selectedLegendSet, setSelectedLegendSet] = useState<Legend>(sampleLegends[0]);
-  const [autoLegend, setAutoLegend] = useState<LegendClass[]>([]);
+   const [autoLegend, setAutoLegend] = useState<LegendClass[]>([]);
   const [centerPosition, setCenterPosition] = useState<[number, number]>([0, 28]);
   const [zoomLevel, setZoomLevel] = useState<number>(2);
   const [dataProcessed, setDataProcessed] = useState<boolean>(false);
   const [hasDataToDisplay, setHasDataToDisplay] = useState<boolean>(false);
   const [geoJsonData, setGeoJsonData] = useState<any>(null);
-  const { mapAnalyticsQueryTwo } = useAuthorities();
-  const [appliedLabels, setAppliedLabels] = useState<string[]>([]);
+  const { mapAnalyticsQueryTwo ,setCurrentBasemap,setMapSettings} = useAuthorities();
   const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   
   // Main data processing effect
@@ -212,9 +213,9 @@ useEffect(() => {
     const value = feature.properties.value;
     
     // Add explicit type checking and fallback
-    const legendClasses = legendType === "auto" 
+    const legendClasses = mapSettings.legendType === "auto" 
       ? (autoLegend || []) 
-      : (selectedLegendSet?.legends || []);
+      : (mapSettings.legend.legends || []);
     
     const color = getColorForValue(value, legendClasses);
     
@@ -227,13 +228,7 @@ useEffect(() => {
     };
   };
 
-  const legendControllersKit = { 
-    legendType: legendType,
-    setLegendType: setLegendType,
-    selectedLegendSet: selectedLegendSet,
-    setSelectedLegendSet: setSelectedLegendSet,
-    sampleLegends: sampleLegends
-  };
+
   
   return (
     <div className="flex flex-1 h-full w-full">
@@ -245,11 +240,9 @@ useEffect(() => {
           onBasemapChange={setCurrentBasemap}
           singleSavedMapData={singleSavedMapData}
           mapId={mapId}
-          appliedLabels={appliedLabels}
-          setAppliedLabels={setAppliedLabels}
           selectedLabels = {selectedLabels}
           setSelectedLabels={setSelectedLabels}
-          legendControllersKit={legendControllersKit}
+        
         >
         </MapSidebar>
       )}
@@ -297,10 +290,10 @@ useEffect(() => {
 )}
             
              {/* Permanent Labels */}
-             {districts.length > 0 && geoJsonData && appliedLabels.length > 0 && (
+             {districts.length > 0 && geoJsonData && mapSettings.appliedLabels?.length > 0 && (
               <MapLabels
                 geoJsonData={geoJsonData}
-                appliedLabels={appliedLabels}
+                appliedLabels={mapSettings.appliedLabels}
                 analyticsMapData={analyticsMapData}
                 valueMap={valueMap}
                 metaMapData={metaMapData}
@@ -312,9 +305,9 @@ useEffect(() => {
           {/* Legend */}
           {districts.length > 0 && (
             <MapLegend
-              legendType={legendType}
+              legendType={mapSettings.legendType}
               autoLegend={autoLegend}
-              selectedLegendSet={selectedLegendSet}
+              selectedLegendSet={mapSettings.legend}
             />
           )}
           

@@ -1,9 +1,11 @@
 import { z } from "zod";
+import { Legend } from '../types/maps';
 
 // Schema definition using zod
 export const MapDataSchema = z.object({
   id: z.string(),
   mapType: z.enum(["Thematic"]),
+  BasemapType: z.enum(["osm-light", "osm-detailed"]).default("osm-light"),
   mapName: z.string().nonempty({ message: "Map name is required" }),
   description: z.string().optional(),
   queries: z.object({
@@ -41,9 +43,27 @@ export const MapDataSchema = z.object({
     id: z.string(),
  
   })),
+  mapSettings: z.object({
+      appliedLabels:z.any(),
+      selectedLabels: z.any(),
+      legend: z.any(),
+      legendType: z.enum(["auto", "dhis2"]).default("auto"),
+  }).optional(),
+
 });
 
 // Infer form fields from the schema
 export type MapDataFormFields = z.infer<typeof MapDataSchema>;
 
 export type mapTypes = "Thematic";
+
+export type legendTypeTypes = "auto" | "dhis2";
+
+export type mapSettingsTypes = {
+  appliedLabels: any;
+  selectedLabels: any;
+  legend:any;
+  legendType: legendTypeTypes;
+
+}
+

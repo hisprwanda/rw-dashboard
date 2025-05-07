@@ -1,26 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Legend } from '../../../types/maps';
 import { useFetchSingleLegend, useLegendsData } from '../../../services/fetchLegends';
+import { mapSettingsTypes } from '../../../types/mapFormTypes';
+import { useAuthorities } from '../../../context/AuthContext';
+import { set } from 'lodash';
 
-type LegendSet = {
-  displayName: string;
-  id: string;
-};
 
-type LegendControlsProps = {
-  legendType: string;
-  setLegendType: (type: string) => void;
-  selectedLegendSet: Legend;
-  setSelectedLegendSet: (legend: Legend) => void;
-};
 
-const LegendControls: React.FC<LegendControlsProps> = ({
-  legendType,
-  setLegendType,
-  selectedLegendSet,
-  setSelectedLegendSet,
-}) => {
+const LegendControls = () => {
   const { myLegendSets, error, isError, loading } = useLegendsData();
+  const {setMapSettings,mapSettings} = useAuthorities()
   const {
     data: selectedLegendsData,
     fetchSingleLegendById,
@@ -51,7 +40,7 @@ const LegendControls: React.FC<LegendControlsProps> = ({
         legends: selectedLegendsData
       };
       
-      setSelectedLegendSet(newLegendSet);
+     setMapSettings((prev:mapSettingsTypes) => ({ ...prev, legend: newLegendSet }));
     }
   }, [selectedLegendsData]);
 
@@ -68,8 +57,8 @@ const LegendControls: React.FC<LegendControlsProps> = ({
           <input
             type="radio"
             value="auto"
-            checked={legendType === "auto"}
-            onChange={() => setLegendType("auto")}
+            checked={mapSettings.legendType === "auto"}
+            onChange={() => setMapSettings((prev:mapSettingsTypes) => ({ ...prev, legendType: "auto" }))}
             className="mb-4"
           />
           Automatic Legend
@@ -78,15 +67,15 @@ const LegendControls: React.FC<LegendControlsProps> = ({
           <input
             type="radio"
             value="dhis2"
-            checked={legendType === "dhis2"}
-            onChange={() => setLegendType("dhis2")}
+            checked={mapSettings.legendType === "dhis2"}
+            onChange={() => setMapSettings((prev:mapSettingsTypes) => ({ ...prev, legendType: "dhis2" }))}
             className="mr-1"
           />
           My Legend
         </label>
       </div>
       
-      {legendType === "dhis2" && (
+      {mapSettings.legendType === "dhis2" && (
         <div>
           {loading ? (
             <p>Loading legend sets...</p>

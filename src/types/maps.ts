@@ -1,3 +1,4 @@
+
 export type BasemapType = 'osm-light' | 'osm-detailed';
 
 // MapSidebar Props Type
@@ -7,17 +8,9 @@ export type MapSidebarProps = {
   onBasemapChange: (basemap: BasemapType) => void;
   singleSavedMapData?:any;
   mapId?:string;
-  appliedLabels:string[];
-   setAppliedLabels:any;
    selectedLabels:string[];
    setSelectedLabels:any;
-   legendControllersKit:{
-    legendType:any;
-    setLegendType:any;
-    selectedLegendSet:any;
-    setSelectedLegendSet:any;
-    sampleLegends:any
-   }
+ 
 };
 // Basemap Configuration Type
 export type BasemapConfig = {

@@ -22,6 +22,8 @@ import { getAnalyticsFilter, getSelectedOrgUnitsWhenUsingMap } from "../lib/getA
 import { getDimensionItems, PeriodItem, transformMetadataLabels } from "../lib/formatMetaDataLabels";
 import { analyticsPayloadDeterminerTypes } from "../types/analyticsTypes";
 import { updateQueryParams } from "../lib/payloadFormatter";
+import { BasemapType } from "../types/maps";
+import { legendTypeTypes, mapSettingsTypes } from "../types/mapFormTypes";
 
 interface AuthContextProps {
   userDatails: {};
@@ -93,7 +95,13 @@ interface AuthContextProps {
              metaDataLabels:any;
               setMetaDataLabels:any;
               analyticsPayloadDeterminer:analyticsPayloadDeterminerTypes;
-              setAnalyticsPayloadDeterminer:any
+              setAnalyticsPayloadDeterminer:any;
+              currentBasemap:BasemapType;
+             setCurrentBasemap:any;
+             legendType:legendTypeTypes;
+             setLegendType:any;
+             mapSettings: mapSettingsTypes;
+             setMapSettings:any
  
 }
 
@@ -129,6 +137,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
  const [analyticsMapData, setAnalyticsMapData] = useState<any>([])
  const [metaMapData, setMetaMapData] = useState<any>([])
  const [metaDataLabels, setMetaDataLabels] = useState<any>({})
+   const [currentBasemap, setCurrentBasemap] = useState<BasemapType>('osm-light');
+     const [legendType, setLegendType] = useState<legendTypeTypes>("auto");
+     const [mapSettings, setMapSettings] = useState<mapSettingsTypes>({appliedLabels:{},selectedLabels:[],legend:{},legendType:"auto"})
   /// this is the current instance definition as data source
   const defaultDataSource: DataSourceFormFields = {
     instanceName: systemInfo?.title?.applicationTitle || "", // Fallback to an empty string if undefined
@@ -194,8 +205,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, [data]);
     // update default title
     useEffect(()=>{
-      console.log("setSelectedVisualTitleAndSubTitle fax",visualTitleAndSubTitle)
-    },[setSelectedVisualTitleAndSubTitle])
+      console.log("mapSettings fax",mapSettings)
+    },[mapSettings])
 
   
   if (loading) return <div>Loading...</div>;
@@ -520,7 +531,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
 
   return (
-    <AuthContext.Provider value={{analyticsPayloadDeterminer,setAnalyticsPayloadDeterminer,metaDataLabels,setMetaDataLabels,geoFeaturesQuery, mapAnalyticsQueryTwo,analyticsMapData,setGeoFeaturesQuery,setMapAnalyticsQueryTwo,geoFeaturesData,metaMapData,setAnalyticsMapData,setGeoFeaturesData,setMetaMapData, isExportingDashboardAsPPTX,setIsExportingDashboardAsPPTX,setSubDataItemsData,subDataItemsData,backedSelectedItems,setBackedSelectedItems,dataItemsDataPage,setDataItemsDataPage,selectedDimensionItemType,setSelectedDimensionItemType,selectedDataSourceOption,setSelectedDataSourceOption,currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData,selectedDataSourceDetails,setSelectedDataSourceDetails,dataItemsData,setDataItemsData,setVisualsColorPalettes,visualsColorPalettes, selectedColorPalette,setSelectedColorPalette ,visualSettings,setSelectedVisualSettings,fetchSingleOrgUnitName,visualTitleAndSubTitle,setSelectedVisualTitleAndSubTitle,  selectedVisualsForDashboard, setSelectedVisualsForDashboard,setAnalyticsData,setAnalyticsQuery,selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery,selectedChartType,setSelectedChartType}}>
+    <AuthContext.Provider value={{ mapSettings,setMapSettings, legendType,setLegendType,analyticsPayloadDeterminer,currentBasemap,setCurrentBasemap,setAnalyticsPayloadDeterminer,metaDataLabels,setMetaDataLabels,geoFeaturesQuery, mapAnalyticsQueryTwo,analyticsMapData,setGeoFeaturesQuery,setMapAnalyticsQueryTwo,geoFeaturesData,metaMapData,setAnalyticsMapData,setGeoFeaturesData,setMetaMapData, isExportingDashboardAsPPTX,setIsExportingDashboardAsPPTX,setSubDataItemsData,subDataItemsData,backedSelectedItems,setBackedSelectedItems,dataItemsDataPage,setDataItemsDataPage,selectedDimensionItemType,setSelectedDimensionItemType,selectedDataSourceOption,setSelectedDataSourceOption,currentUserInfoAndOrgUnitsData,setCurrentUserInfoAndOrgUnitsData,selectedDataSourceDetails,setSelectedDataSourceDetails,dataItemsData,setDataItemsData,setVisualsColorPalettes,visualsColorPalettes, selectedColorPalette,setSelectedColorPalette ,visualSettings,setSelectedVisualSettings,fetchSingleOrgUnitName,visualTitleAndSubTitle,setSelectedVisualTitleAndSubTitle,  selectedVisualsForDashboard, setSelectedVisualsForDashboard,setAnalyticsData,setAnalyticsQuery,selectedOrgUnits, setSelectedOrgUnits, selectedLevel, setSelectedLevel, userDatails, authorities, analyticsDimensions, setAnalyticsDimensions, fetchAnalyticsData, analyticsData, isFetchAnalyticsDataLoading, fetchAnalyticsDataError, setSelectedOrganizationUnits, selectedOrganizationUnits, isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits, selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels, selectedOrgUnitGroups, setSelectedOrgUnitGroups, isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits ,analyticsQuery,selectedChartType,setSelectedChartType}}>
       {children}
     </AuthContext.Provider>
   );

@@ -34,28 +34,17 @@ type MapMetaDataConfigModalProps = {
   themeLayerType: "Thematic Layer" | any;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  appliedLabels:string[];
-   setAppliedLabels:any;
    selectedLabels:string[];
    setSelectedLabels:any;
-   legendControllersKit:{
-    legendType:any;
-    setLegendType:any;
-    selectedLegendSet:any;
-    setSelectedLegendSet:any;
-    sampleLegends:any
-   }
+
 }
 
 export function MapMetaDataConfigModal({ 
   themeLayerType, 
   isOpen, 
   onOpenChange ,
-  appliedLabels,
-  setAppliedLabels,
   selectedLabels,
-  setSelectedLabels,
-  legendControllersKit
+  setSelectedLabels
 }: MapMetaDataConfigModalProps) {
   const {fetchGeoFeatures,loading:isFetchGeoDataLoading} = useRunGeoFeatures()
   const { loading: orgUnitLoading, error: fetchOrgUnitError, data: orgUnitsData, fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData();
@@ -161,8 +150,6 @@ export function MapMetaDataConfigModal({
             <div className="bg-white rounded-2xl shadow-sm p-4 border border-gray-100">
               <h2 className="text-lg font-semibold  text-gray-800">Labels</h2>
               <ThematicStylesTab
-                appliedLabels={appliedLabels}
-                setAppliedLabels={setAppliedLabels}
                 selectedLabels={selectedLabels}
                 setSelectedLabels={setSelectedLabels}
               />
@@ -171,13 +158,7 @@ export function MapMetaDataConfigModal({
             {/* Legends Section */}
             <div className="bg-white rounded-2xl shadow-sm p-4 border border-gray-100">
               <h2 className="text-lg font-semibold  text-gray-800">Legends</h2>
-              <LegendControls
-                legendType={legendControllersKit.legendType}
-                setLegendType={legendControllersKit.setLegendType}
-                selectedLegendSet={legendControllersKit.selectedLegendSet}
-                setSelectedLegendSet={legendControllersKit.setSelectedLegendSet}
-                sampleLegends={legendControllersKit.sampleLegends}
-              />
+              <LegendControls/>
             </div>
           </div>
         </div>

@@ -32,11 +32,12 @@ export function SaveMapModal({
   existingMapData,
 }: SaveMapModalProps) {
   // Get user and data source details from context
-  const { userDatails, selectedDataSourceOption, selectedOrgUnits, selectedLevel, analyticsQuery, mapAnalyticsQueryTwo, geoFeaturesQuery,backedSelectedItems,analyticsDimensions } = useAuthorities();
+  const { userDatails,mapSettings, selectedDataSourceOption, selectedOrgUnits, selectedLevel, analyticsQuery, mapAnalyticsQueryTwo, geoFeaturesQuery, backedSelectedItems, analyticsDimensions,currentBasemap } = useAuthorities();
   const { toast } = useToast();
   const engine = useDataEngine();
-  const navigate = useNavigate()
-  // Initialize form with resolver but without default values initially
+  const navigate = useNavigate();
+
+  // Initialize form with resolver and mode set to onSubmit for better error handling
   const {
     register,
     handleSubmit,
@@ -45,39 +46,64 @@ export function SaveMapModal({
     formState: { errors, isSubmitting },
   } = useForm<MapDataFormFields>({
     resolver: zodResolver(MapDataSchema),
+    mode: "onSubmit"
   });
+
+  // Helper function to flatten errors for better debugging
+  const flattenErrors = (obj, prefix = '') => {
+    return Object.keys(obj).reduce((acc, key) => {
+      const pre = prefix.length ? `${prefix}.${key}` : key;
+      if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
+        Object.assign(acc, flattenErrors(obj[key], pre));
+      } else {
+        acc[pre] = obj[key];
+      }
+      return acc;
+    }, {});
+  };
+
+  // Log validation errors when they occur
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      console.log("Zod validation errors (raw):", errors);
+      console.log("Flattened errors:", flattenErrors(errors));
+    }
+  }, [errors]);
 
   // Watch form data
   const formData = watch();
   
   // Set default values when dependencies change or component mounts
   useEffect(() => {
-      reset({
-        id: mapId ? existingMapData?.dataStore?.id :  generateUid(),
-        mapType:mapId ? existingMapData?.dataStore?.mapType  : "Thematic",
-        mapName: mapId ? existingMapData?.dataStore?.mapName  : "",
-        description: mapId ? existingMapData?.dataStore?.description  :  "",
-        queries: {
-          mapAnalyticsQueryOne: analyticsQuery,
-          mapAnalyticsQueryTwo: mapAnalyticsQueryTwo,
-          geoFeaturesQuery: geoFeaturesQuery,
-        },
-        dataSourceId: selectedDataSourceOption,
-        createdBy: {
-          name: userDatails?.me?.displayName,
-          id: userDatails?.me?.id,
-        },
-        updatedBy: {
-          name: userDatails?.me?.displayName,
-          id: userDatails?.me?.id,
-        },
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-        organizationTree: selectedOrgUnits,
-        selectedOrgUnitLevel: selectedLevel,
-        backedSelectedItems:backedSelectedItems
-      });
+    reset({
+      id: mapId ? existingMapData?.dataStore?.id : generateUid(),
+      mapType: mapId ? existingMapData?.dataStore?.mapType : "Thematic",
+      mapName: mapId ? existingMapData?.dataStore?.mapName : "",
+      description: mapId ? existingMapData?.dataStore?.description : "",
+      queries: {
+        mapAnalyticsQueryOne: analyticsQuery,
+        mapAnalyticsQueryTwo: mapAnalyticsQueryTwo,
+        geoFeaturesQuery: geoFeaturesQuery,
+      },
+      dataSourceId: selectedDataSourceOption,
+      createdBy: {
+        name: userDatails?.me?.displayName,
+        id: userDatails?.me?.id,
+      },
+      updatedBy: {
+        name: userDatails?.me?.displayName,
+        id: userDatails?.me?.id,
+      },
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      organizationTree: selectedOrgUnits,
+      selectedOrgUnitLevel: selectedLevel,
+      backedSelectedItems: backedSelectedItems,
+      BasemapType:currentBasemap,
+      mapSettings:mapSettings
     
+
+    });
   }, [
     analyticsQuery, 
     mapAnalyticsQueryTwo, 
@@ -88,32 +114,40 @@ export function SaveMapModal({
     userDatails, 
     mapId, 
     existingMapData, 
-    reset
+    reset,
+    backedSelectedItems,
+    currentBasemap,
+    mapSettings
   ]);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const onSubmit: SubmitHandler<MapDataFormFields> = async (formData) => {
-    setErrorMessage(null);
-    // Use the existing mapId or generate a new one
-    const uid = mapId || generateUid();
-
     try {
+      setErrorMessage(null);
+      console.log("Form submitted with data:", formData);
+      
+      // Use the existing mapId or generate a new one
+      const uid = mapId || generateUid();
+
       await engine.mutate({
         resource: `dataStore/${process.env.REACT_APP_MAPS_STORE}/${uid}`,
         type: mapId ? "update" : "create",
         data: formData,
       });
+      
       toast({
         title: "Success",
         description: "Map saved successfully",
         variant: "default",
       });
+      
       if(!mapId){
         // added navigate(`/maps`) intentionally to fix length undefined bug
-               navigate(`/maps`)
-              navigate(`/map/${uid}/${formData?.mapName}`)    
-             }
+        navigate(`/maps`);
+        navigate(`/map/${uid}/${formData?.mapName}`);
+      }
+      
       // Close the modal after saving
       setOpen(false);
     } catch (error) {
@@ -151,8 +185,8 @@ export function SaveMapModal({
   // Log formData on change
   useEffect(() => {
     console.log("Updated map formData:", formData);
-    console.log("analyticsDimensions status",analyticsDimensions)
-  }, [formData,analyticsDimensions]);
+    console.log("analyticsDimensions status", analyticsDimensions);
+  }, [formData, analyticsDimensions]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -161,9 +195,22 @@ export function SaveMapModal({
           <DialogTitle className="text-xl">Save Map</DialogTitle>
         </DialogHeader>
 
+        {/* Display generic error message */}
         {errorMessage && (
           <div className="p-2 bg-red-100 border border-red-300 text-red-700 mb-4">
             {errorMessage}
+          </div>
+        )}
+
+        {/* Display Zod validation errors */}
+        {Object.keys(errors).length > 0 && (
+          <div className="p-2 bg-red-100 border border-red-300 text-red-700 mb-4">
+            <p className="font-bold">Please fix the following errors:</p>
+            <ul className="list-disc pl-5">
+              {Object.entries(flattenErrors(errors)).map(([field, error]) => (
+                <li key={field}>{typeof error === 'object' ? (error as any)?.message || `Invalid ${field}` : `Invalid ${field}`}</li>
+              ))}
+            </ul>
           </div>
         )}
 
