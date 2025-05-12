@@ -18,7 +18,6 @@ export const LocalTableVisual: React.FC<genericChartsProps> = ({
   
       try {
         const transformedData = transformDataForGenericChart(data,_,_,metaDataLabels);
-        console.log("heyl now",transformedData)
         return { chartData: transformedData, error: null };
       } catch (err) {
         return { chartData: [], error: (err as Error).message };
