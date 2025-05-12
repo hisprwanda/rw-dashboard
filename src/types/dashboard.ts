@@ -2,6 +2,7 @@ import { z } from "zod";
 import { Layout } from "react-grid-layout";
 import { analyticsPayloadDeterminerTypes } from "./analyticsTypes";
 import { BasemapType } from "./maps";
+import { legendTypeTypes } from "./mapFormTypes";
 
 // Schema definition using zod
 export const DashboardSchema = z.object({
@@ -83,7 +84,8 @@ export const DashboardSchema = z.object({
       mapType: z.string(),
       BasemapType: z.enum(["osm-light", "osm-detailed"]).default("osm-light"),
       mapSettings: z.object({
-        labels: z.any(),
+        appliedLabels:z.any(),
+        selectedLabels: z.any(),
         legend: z.any(),
         legendType: z.enum(["auto", "dhis2"]).default("auto"),
     }).optional(),
@@ -135,9 +137,10 @@ export interface ExtendedLayout extends Layout {
   isMapItem?: boolean;
   BasemapType?: BasemapType;
   mapSettings: {
-      labels: any;
-      legend: any;
-      legendType: "auto" | "dhis2";
-    };
+    appliedLabels: any;
+    selectedLabels: any;
+    legend:any;
+    legendType: legendTypeTypes;
+  },
   analyticsPayloadDeterminer:analyticsPayloadDeterminerTypes
 }

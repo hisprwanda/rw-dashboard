@@ -39,7 +39,7 @@ function combineDataByPeriod(data: TransformedDataPoint[]): TransformedDataPoint
 
 export function transformDataForGenericChart(
     inputData: InputData,
-    chartType?: "pie" | "radial" | "single" | "tree",
+    chartType?: "pie" | "radial" | "single" | "tree" | "line" | "bar" | "column",
     selectedColorPalette?: visualColorPaletteTypes,
     metaDataLabels?: any
 ): TransformedDataPoint[] | any {
@@ -49,20 +49,64 @@ export function transformDataForGenericChart(
 
     const { headers, metaData: metadata, rows } = inputData;
 
-    // Determine data-element (dx) and category dimension (first other meta header)
+    // Check if data has a 'dx' column or if it follows the alternative format (like ANC 3 Coverage)
     const dxIndex = headers.findIndex(h => h.name === 'dx');
-    const categoryHeader = headers.find(h => h.meta && h.name !== 'dx');
-    if (!categoryHeader) {
-        throw new Error('No category dimension (pe, ou, co, etc.) found');
+    const hasDxColumn = dxIndex >= 0;
+    
+    // Get all meta headers (those marked with meta=true)
+    const metaHeaders = headers.filter(h => h.meta);
+
+    // Determine the category dimension and index
+    let categoryDimName: string;
+    let categoryIndex: number;
+    
+    // For data without dx column, we'll use 'pe' (period) as the category if it exists
+    if (!hasDxColumn) {
+        // Find 'pe' if it exists
+        const peHeader = headers.find(h => h.name === 'pe');
+        if (peHeader) {
+            categoryDimName = 'pe';
+            categoryIndex = headers.findIndex(h => h.name === 'pe');
+        } else {
+            // Otherwise, use the first meta header as category
+            const firstMetaHeader = metaHeaders[0];
+            if (!firstMetaHeader) {
+                throw new Error('No category dimension found');
+            }
+            categoryDimName = firstMetaHeader.name;
+            categoryIndex = headers.findIndex(h => h.name === categoryDimName);
+        }
+    } else {
+        // For traditional data with 'dx', use the first non-dx meta header as category
+        const categoryHeader = metaHeaders.find(h => h.name !== 'dx');
+        if (!categoryHeader) {
+            throw new Error('No category dimension (pe, ou, co, etc.) found');
+        }
+        categoryDimName = categoryHeader.name;
+        categoryIndex = headers.findIndex(h => h.name === categoryDimName);
     }
-    const categoryDimName = categoryHeader.name;                // e.g. 'pe' or 'ou'
-    const categoryIndex = headers.findIndex(h => h.name === categoryDimName);
+    
+    // Find the value index
     const valueIndex = headers.findIndex(h => h.name === 'value');
-
-    if (dxIndex < 0 || categoryIndex < 0 || valueIndex < 0) {
-        throw new Error('Required headers (dx, value, and a category) are missing');
+    
+    if (categoryIndex < 0 || valueIndex < 0) {
+        throw new Error('Required headers (value and a category) are missing');
     }
 
+    // Handle data without 'dx' column (like ANC 3 Coverage)
+    if (!hasDxColumn) {
+        const result = transformSimpleData(inputData, categoryDimName, categoryIndex, valueIndex);
+        
+        if (chartType === "pie" || chartType === "radial") {
+            return transformDataNoneAxisData(result, selectedColorPalette);
+        } else if (chartType === "tree") {
+            return convertDataForTreeMap(result);
+        }
+        
+        return result;
+    }
+    
+    // Traditional data handling with 'dx' column
     // Build all category entries in order
     const allCategories = metadata.dimensions[categoryDimName].map((id: string) => ({
         id,
@@ -115,6 +159,113 @@ export function transformDataForGenericChart(
     return finalData;
 }
 
+// Function to transform simple data (like ANC 3 Coverage) without dx dimension
+function transformSimpleData(
+    inputData: InputData,
+    categoryDimName: string,
+    categoryIndex: number,
+    valueIndex: number
+): TransformedDataPoint[] {
+    const { metaData: metadata, rows } = inputData;
+    const ouDimension = 'ou';
+    const ouIndex = inputData.headers.findIndex(h => h.name === ouDimension);
+    
+    // Get all categories from metadata or derive from rows
+    let allCategories: { id: string, name: string }[] = [];
+    
+    if (metadata.dimensions[categoryDimName]) {
+        // Get from metadata if available
+        allCategories = metadata.dimensions[categoryDimName].map((id: string) => ({
+            id,
+            name: metadata.items[id]?.name || id
+        }));
+    } else {
+        // Otherwise extract unique categories from rows
+        const uniqueCatIds = new Set<string>();
+        rows.forEach(row => uniqueCatIds.add(row[categoryIndex]));
+        
+        allCategories = Array.from(uniqueCatIds).map(id => ({
+            id,
+            name: metadata.items[id]?.name || id
+        }));
+    }
+    
+    // Find organization units data
+    const orgUnits: { id: string, name: string }[] = [];
+    
+    if (metadata.dimensions[ouDimension]) {
+        metadata.dimensions[ouDimension].forEach((ouId: string) => {
+            if (metadata.items[ouId]?.name) {
+                orgUnits.push({
+                    id: ouId,
+                    name: metadata.items[ouId].name
+                });
+            }
+        });
+    }
+    
+    // If no org units found in metadata, try to extract from rows
+    if (orgUnits.length === 0 && ouIndex >= 0) {
+        const uniqueOuIds = new Set<string>();
+        rows.forEach(row => uniqueOuIds.add(row[ouIndex]));
+        
+        Array.from(uniqueOuIds).forEach(ouId => {
+            if (metadata.items[ouId]?.name) {
+                orgUnits.push({
+                    id: ouId,
+                    name: metadata.items[ouId].name
+                });
+            }
+        });
+    }
+    
+    // Create a map to combine data with the same period
+    const dataMap: Record<string, TransformedDataPoint> = {};
+    
+    // Initialize the map with empty entries for all periods
+    allCategories.forEach(cat => {
+        dataMap[cat.name] = { period: cat.name };
+        
+        // Initialize all org unit values to null
+        orgUnits.forEach(ou => {
+            dataMap[cat.name][ou.name] = null;
+        });
+    });
+    
+    // Populate actual values from rows
+    rows.forEach(row => {
+        const catId = row[categoryIndex];
+        const categoryName = metadata.items[catId]?.name || catId;
+        
+        // Skip if we can't find this category
+        if (!dataMap[categoryName]) return;
+        
+        // Get the org unit for this row
+        if (ouIndex >= 0) {
+            const ouId = row[ouIndex];
+            const ouName = metadata.items[ouId]?.name;
+            
+            if (ouName) {
+                const rawValue = row[valueIndex];
+                const value = rawValue !== '' ? Number(rawValue) : null;
+                
+                // Add this value to the map entry
+                dataMap[categoryName][ouName] = value;
+            }
+        } else if (orgUnits.length === 1) {
+            // If there's only one org unit but no ou column, use that
+            const ouName = orgUnits[0].name;
+            const rawValue = row[valueIndex];
+            const value = rawValue !== '' ? Number(rawValue) : null;
+            
+            dataMap[categoryName][ouName] = value;
+        }
+    });
+    
+    // Convert the map to an array of data points
+    return Object.values(dataMap);
+}
+
 export function generateChartConfig(
     inputData: InputData,
     selectedColorPalette?: visualColorPaletteTypes
@@ -124,12 +275,38 @@ export function generateChartConfig(
     }
 
     const config: ChartConfig = {};
+    const palette = selectedColorPalette?.itemsBackgroundColors || [];
+    
+    // Handle case where data doesn't have dx dimension but has organization units
+    if (!inputData.metaData.dimensions.dx || inputData.metaData.dimensions.dx.length === 0) {
+        // Try to use organization units as metrics
+        if (inputData.metaData.dimensions.ou && inputData.metaData.dimensions.ou.length > 0) {
+            inputData.metaData.dimensions.ou.forEach((ouId: string, index: number) => {
+                const name = inputData.metaData.items[ouId]?.name || ouId;
+                const color = palette.every(c => c.startsWith("hsl"))
+                    ? palette[index % palette.length] || `hsl(var(--chart-${index + 1}))`
+                    : palette[index % palette.length] || `hsl(var(--chart-${index + 1}))`;
+                
+                config[name] = { label: name, color };
+            });
+        } else {
+            // Fallback to a generic "Value" metric
+            const color = palette.every(c => c.startsWith("hsl"))
+                ? palette[0] || `hsl(var(--chart-1))`
+                : palette[0] || `hsl(var(--chart-1))`;
+                
+            config["Value"] = { label: "Value", color };
+        }
+        
+        return config;
+    }
+    
+    // Original functionality for dx dimensions
     inputData.metaData.dimensions.dx.forEach((dxId: string, index: number) => {
         const name = inputData.metaData.items[dxId].name;
-        const palette = selectedColorPalette?.itemsBackgroundColors || [];
         const color = palette.every(c => c.startsWith("hsl"))
-            ? palette[index] || `hsl(var(--chart-${index + 1}))`
-            : palette[index] || palette[0];
+            ? palette[index % palette.length] || `hsl(var(--chart-${index + 1}))`
+            : palette[index % palette.length] || palette[0] || `hsl(var(--chart-${index + 1}))`;
         config[name] = { label: name, color };
     });
 
@@ -155,7 +332,7 @@ function transformDataNoneAxisData(
     return Object.entries(totals).map(([name, total], idx) => ({
         name,
         total,
-        fill: palette[idx % palette.length]
+        fill: palette[idx % palette.length] || `hsl(var(--chart-${idx + 1}))`
     }));
 }
 

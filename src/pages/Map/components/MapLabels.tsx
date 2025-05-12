@@ -168,14 +168,11 @@ export const MapLabels: React.FC<{
       style.id = 'map-label-styles';
       style.innerHTML = `
         .map-permanent-label {
-          background-color: white;
           padding: 2px 5px;
           border-radius: 3px;
-          font-size: 10px;
-          box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+          font-size: 13px;
           pointer-events: none;
           text-align: center;
-          white-space: nowrap;
         }
         .map-label-icon {
           background: none;
