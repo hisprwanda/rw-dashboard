@@ -415,6 +415,8 @@ useEffect(()=>{
                           geoFeaturesQuery={item.geoFeaturesQuery}
                           mapAnalyticsQueryOneQuery={item.mapAnalyticsQueryOneQuery}
                           mapAnalyticsQueryTwo={item.mapAnalyticsQueryTwo}
+                            basemapType={item.BasemapType}
+                           mapSettings={item.mapSettings}
                         />
                         </div>
                      

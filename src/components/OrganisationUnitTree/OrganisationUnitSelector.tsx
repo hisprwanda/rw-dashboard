@@ -128,6 +128,10 @@ const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsSh
     }
   };
 
+  useEffect(()=>{
+    console.log("hello now",currentUserOrgUnit)
+  },[currentUserOrgUnit])
+
   const handleNodeSelectExternalInstance = (node) => {
     console.log('external selected node:', node);
   };
