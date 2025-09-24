@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useConfig } from '@dhis2/app-runtime';
 
 const AudioUploader = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -7,9 +8,8 @@ const AudioUploader = () => {
   const [error, setError] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
 
-  // Your existing credentials
-  const urlForAudio = `https://play.im.dhis2.org/stable-2-42-1/api/fileResources`;
-  const stableToken = `d2p_ZevZm0iEFvAxsZSTtVyzKpjAx85RCMfuAwpbuQBbx8Zp2LPx64`;
+  // Use DHIS2 config to get base URL
+  const { baseUrl } = useConfig();
 
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
@@ -38,45 +38,142 @@ const AudioUploader = () => {
     setUploadProgress(0);
 
     try {
+      // Start progress simulation
+      const progressInterval = simulateProgress();
+
+      // Check file size (DHIS2 may have limits)
+      const maxFileSize = 50 * 1024 * 1024; // 50MB limit
+      if (selectedFile.size > maxFileSize) {
+        throw new Error(`File too large. Maximum size is ${formatFileSize(maxFileSize)}`);
+      }
+
+      console.log('Selected file details:', {
+        name: selectedFile.name,
+        type: selectedFile.type,
+        size: selectedFile.size
+      });
+
       // Create FormData for multipart upload
       const formData = new FormData();
       formData.append('file', selectedFile);
 
-      // Start progress simulation
-      const progressInterval = simulateProgress();
+      // Debug: Log FormData contents
+      console.log('FormData entries:');
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
 
-      // Upload to DHIS2 fileResources API using fetch
-      const response = await fetch(urlForAudio, {
-        method: 'POST',
-        headers: {
-          'Authorization': `ApiToken ${stableToken}`,
-          // Don't set Content-Type for FormData, let browser set it with boundary
-        },
-        body: formData,
-      });
+      console.log('Uploading file to DHIS2 fileResources API...');
+      console.log('Upload URL:', `${baseUrl}/api/fileResources`);
+
+      // Try multiple approaches
+      let response;
+      let responseData;
+
+      try {
+        // Approach 1: Standard fetch with FormData
+        console.log('Attempting standard fetch upload...');
+        response = await fetch(`${baseUrl}/api/fileResources`, {
+          method: 'POST',
+          body: formData,
+          credentials: 'include'
+        });
+
+        // If that fails, try the alternative documents endpoint
+        if (!response.ok && response.status === 500) {
+          console.log('Trying alternative documents endpoint...');
+          response = await fetch(`${baseUrl}/api/documents`, {
+            method: 'POST',
+            body: formData,
+            credentials: 'include'
+          });
+        }
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        responseData = await response.json();
+        console.log('Standard fetch successful:', responseData);
+
+      } catch (fetchError) {
+        console.log('Standard fetch failed, trying XMLHttpRequest...', fetchError);
+        
+        // Approach 2: XMLHttpRequest as fallback
+        responseData = await new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          
+          xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+              if (xhr.status >= 200 && xhr.status < 300) {
+                try {
+                  const result = JSON.parse(xhr.responseText);
+                  resolve(result);
+                } catch (parseError) {
+                  reject(new Error('Invalid JSON response'));
+                }
+              } else {
+                try {
+                  const errorData = JSON.parse(xhr.responseText);
+                  reject(new Error(errorData.message || `HTTP ${xhr.status}: ${xhr.statusText}`));
+                } catch {
+                  reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+                }
+              }
+            }
+          };
+
+          xhr.onerror = function() {
+            reject(new Error('Network error occurred'));
+          };
+
+          // Open connection
+          xhr.open('POST', `${baseUrl}/api/fileResources`, true);
+          xhr.withCredentials = true;
+
+          // Send FormData
+          xhr.send(formData);
+        });
+
+        console.log('XMLHttpRequest successful:', responseData);
+      }
 
       // Complete the progress
       clearInterval(progressInterval);
       setUploadProgress(100);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
-      }
-
-      const responseData = await response.json();
       setUploadResponse(responseData);
-      console.log('Upload successful:', responseData);
       
       // Check storage status
-      if (responseData.storageStatus === 'PENDING') {
+      const storageStatus = responseData.response?.storageStatus || responseData.storageStatus;
+      if (storageStatus === 'PENDING') {
         console.log('File is being processed in background storage');
       }
 
     } catch (err) {
       console.error('Upload failed:', err);
-      setError(
-        err.message || 'Upload failed'
-      );
+      
+      let errorMessage = 'Upload failed';
+      
+      if (err.message.includes('Current request is not a multipart request')) {
+        errorMessage = 'Multipart request error. This might be due to DHIS2 server configuration or proxy settings. Please check with your system administrator.';
+      } else if (err.message.includes('502')) {
+        errorMessage = 'Server error (502). The DHIS2 server may be experiencing issues. Please try again later or contact your system administrator.';
+      } else if (err.message.includes('413') || err.message.includes('too large')) {
+        errorMessage = 'File too large. Please choose a smaller audio file.';
+      } else if (err.message.includes('415')) {
+        errorMessage = 'Unsupported file type. Please ensure you are uploading a valid audio file.';
+      } else if (err.message.includes('Failed to fetch') || err.message.includes('Network error')) {
+        errorMessage = 'Network error. Please check your internet connection and try again.';
+      } else if (err.message.includes('401') || err.message.includes('Unauthorized')) {
+        errorMessage = 'Authentication error. Please make sure you are logged in to DHIS2.';
+      } else if (err.message.includes('403') || err.message.includes('Forbidden')) {
+        errorMessage = 'Permission denied. You may not have the required permissions to upload files.';
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
     } finally {
       setIsUploading(false);
     }
@@ -98,7 +195,7 @@ const AudioUploader = () => {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
-  // Simple progress simulation since fetch doesn't support upload progress easily
+  // Simple progress simulation since we can't track real progress with fetch
   const simulateProgress = () => {
     let progress = 0;
     const interval = setInterval(() => {
@@ -141,7 +238,7 @@ const AudioUploader = () => {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m-9 0h10m-10 0l1 16a1 1 0 001 1h8a1 1 0 001-1L17 4M9 8v8m6-8v8"
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                   />
                 </svg>
               </div>
@@ -219,20 +316,28 @@ const AudioUploader = () => {
         <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
           <h3 className="font-medium text-green-800 mb-2">Upload Successful!</h3>
           <div className="text-sm text-green-700 space-y-1">
-            <p><strong>File ID:</strong> {uploadResponse.id}</p>
-            <p><strong>Name:</strong> {uploadResponse.name}</p>
-            <p><strong>Content Type:</strong> {uploadResponse.contentType}</p>
-            <p><strong>Content Length:</strong> {formatFileSize(uploadResponse.contentLength)}</p>
-            <p><strong>Storage Status:</strong> 
-              <span className={`ml-1 px-2 py-1 rounded text-xs ${
-                uploadResponse.storageStatus === 'STORED' 
-                  ? 'bg-green-100 text-green-800' 
-                  : 'bg-yellow-100 text-yellow-800'
-              }`}>
-                {uploadResponse.storageStatus}
-              </span>
-            </p>
-            {uploadResponse.storageStatus === 'PENDING' && (
+            <p><strong>File ID:</strong> {uploadResponse.response?.uid || uploadResponse.uid || uploadResponse.id || 'N/A'}</p>
+            {(uploadResponse.response?.name || uploadResponse.name) && (
+              <p><strong>Name:</strong> {uploadResponse.response?.name || uploadResponse.name}</p>
+            )}
+            {(uploadResponse.response?.contentType || uploadResponse.contentType) && (
+              <p><strong>Content Type:</strong> {uploadResponse.response?.contentType || uploadResponse.contentType}</p>
+            )}
+            {(uploadResponse.response?.contentLength || uploadResponse.contentLength) && (
+              <p><strong>Content Length:</strong> {formatFileSize(uploadResponse.response?.contentLength || uploadResponse.contentLength)}</p>
+            )}
+            {(uploadResponse.response?.storageStatus || uploadResponse.storageStatus) && (
+              <p><strong>Storage Status:</strong> 
+                <span className={`ml-1 px-2 py-1 rounded text-xs ${
+                  (uploadResponse.response?.storageStatus || uploadResponse.storageStatus) === 'STORED' 
+                    ? 'bg-green-100 text-green-800' 
+                    : 'bg-yellow-100 text-yellow-800'
+                }`}>
+                  {uploadResponse.response?.storageStatus || uploadResponse.storageStatus}
+                </span>
+              </p>
+            )}
+            {(uploadResponse.response?.storageStatus || uploadResponse.storageStatus) === 'PENDING' && (
               <p className="text-xs text-yellow-600 mt-2">
                 ⏳ File is being processed and stored in background
               </p>
@@ -262,8 +367,9 @@ const AudioUploader = () => {
       <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm">
         <h3 className="font-medium text-blue-800 mb-2">API Information</h3>
         <div className="text-blue-700 space-y-1">
-          <p><strong>Endpoint:</strong> {urlForAudio}</p>
+          <p><strong>Endpoint:</strong> {baseUrl}/api/fileResources</p>
           <p><strong>Method:</strong> POST (multipart/form-data)</p>
+          <p><strong>Authentication:</strong> Handled by DHIS2 App Context</p>
           <p><strong>Response:</strong> 202 Accepted with file resource details</p>
         </div>
       </div>
