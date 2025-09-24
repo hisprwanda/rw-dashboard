@@ -10,7 +10,7 @@ interface SingleMapItemProps {
     mapAnalyticsQueryOneQuery: any;
     mapAnalyticsQueryTwo: any;
     basemapType:BasemapType;
-    mapSettings:mapSettingsTypesd}
+    mapSettings:mapSettingsTypes}
 
 const SingleMapItem: React.FC<SingleMapItemProps> = ({
     geoFeaturesQuery,
