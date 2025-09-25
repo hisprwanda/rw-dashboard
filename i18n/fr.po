@@ -176,5 +176,171 @@ msgstr "Quitter le plein écran"
 msgid "Exit"
 msgstr "Sortie"
 
+msgid "audioPageTitle"
+msgstr "Gestion des audios"
+
+msgid "audioPageSubtitle"
+msgstr "Téléchargez, gérez et organisez vos fichiers audio."
+
+msgid "noStoredAudiosFound"
+msgstr "Aucun audio enregistré trouvé ou erreur de chargement"
+
+msgid "pleaseSelectValidAudioFile"
+msgstr "Veuillez sélectionner un fichier audio valide (MP3, WAV, OGG, M4A)"
+
+msgid "fileSizeMustBeLess10MB"
+msgstr "La taille du fichier doit être inférieure à 10 Mo pour des performances optimales"
+
+msgid "pleaseSelectAudioFileAndProvideName"
+msgstr "Veuillez sélectionner un fichier audio et fournir un nom"
+
+msgid "audioUploadedSuccessfully"
+msgstr "Audio \"{audioName}\" téléchargé avec succès !"
+
+msgid "uploadFailed"
+msgstr "Échec du téléchargement : {error}"
+
+msgid "unknownError"
+msgstr "Erreur inconnue"
+
+msgid "errorPlayingAudioFile"
+msgstr "Erreur lors de la lecture du fichier audio"
+
+msgid "couldNotPlayAudioFile"
+msgstr "Impossible de lire le fichier audio"
+
+msgid "errorCreatingAudioPlayer"
+msgstr "Erreur lors de la création du lecteur audio"
+
+msgid "audioDeletedSuccessfully"
+msgstr "Audio \"{audioName}\" supprimé avec succès"
+
+msgid "failedToDeleteAudio"
+msgstr "Échec de la suppression de l’audio : {error}"
+
+msgid "zeroBytes"
+msgstr "0 Octets"
+
+msgid "bytes"
+msgstr "Octets"
+
+msgid "kb"
+msgstr "Ko"
+
+msgid "mb"
+msgstr "Mo"
+
+msgid "gb"
+msgstr "Go"
+
+msgid "uploadNewAudio"
+msgstr "Télécharger un nouvel audio"
+
+msgid "selectAudioFile"
+msgstr "Sélectionner un fichier audio"
+
+msgid "clickOrDragToUploadAudioFile"
+msgstr "Cliquez ou glissez-déposez pour télécharger un fichier audio"
+
+msgid "supportedFormats"
+msgstr "Formats pris en charge : MP3, WAV, OGG, M4A (Max 10 Mo)"
+
+msgid "audioName"
+msgstr "Nom de l’audio"
+
+msgid "enterDescriptiveNameForAudio"
+msgstr "Entrez un nom descriptif pour votre audio"
+
+msgid "file"
+msgstr "Fichier"
+
+msgid "size"
+msgstr "Taille"
+
+msgid "type"
+msgstr "Type"
+
+msgid "uploading"
+msgstr "Téléchargement en cours..."
+
+msgid "uploadAudio"
+msgstr "Télécharger l’audio"
+
+msgid "success"
+msgstr "Succès"
+
+msgid "warning"
+msgstr "Avertissement"
+
+msgid "error"
+msgstr "Erreur"
+
+msgid "audioLibrary"
+msgstr "Bibliothèque audio"
+
+msgid "files"
+msgstr "fichiers"
+
+msgid "searchAudioFiles"
+msgstr "Rechercher des fichiers audio..."
+
+msgid "refresh"
+msgstr "Rafraîchir"
+
+msgid "noMatchingAudioFiles"
+msgstr "Aucun fichier audio correspondant"
+
+msgid "noAudioFilesYet"
+msgstr "Aucun fichier audio pour le moment"
+
+msgid "tryAdjustingSearchTerms"
+msgstr "Essayez de modifier vos termes de recherche"
+
+msgid "uploadFirstAudioFileToGetStarted"
+msgstr "Téléchargez votre premier fichier audio pour commencer !"
+
+msgid "name"
+msgstr "Nom"
+
+msgid "originalFile"
+msgstr "Fichier original"
+
+msgid "format"
+msgstr "Format"
+
+msgid "uploadDate"
+msgstr "Date de téléchargement"
+
+msgid "actions"
+msgstr "Actions"
+
+msgid "stop"
+msgstr "Arrêter"
+
+msgid "play"
+msgstr "Lire"
+
+msgid "delete"
+msgstr "Supprimer"
+
+msgid "confirmDeletion"
+msgstr "Confirmer la suppression"
+
+msgid "areYouSureDeleteAudioFile"
+msgstr "Êtes-vous sûr de vouloir supprimer le fichier audio"
+
+msgid "thisActionCannotBeUndone"
+msgstr "Cette action est irréversible."
+
+msgid "cancel"
+msgstr "Annuler"
+
+msgid "deleteAudio"
+msgstr "Supprimer l’audio"
+
+
+
+
+
 
 

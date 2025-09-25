@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import  { useState, useRef, useEffect } from 'react';
 import { useDataEngine } from '@dhis2/app-runtime';
 import { 
   Button, 
@@ -22,6 +22,7 @@ import {
   LinearLoader,
   IconUpload24,
 } from '@dhis2/ui';
+import i18n from '../../locales/index.js'
 
 const AudioStoragePage = () => {
     const engine = useDataEngine();
@@ -76,7 +77,7 @@ const AudioStoragePage = () => {
             }
         } catch (error) {
             console.error('Error loading stored audios:', error);
-            setMessage({ text: 'No stored audios found or error loading them', type: 'warning' });
+            setMessage({ text: i18n.t('noStoredAudiosFound'), type: 'warning' });
         }
         setIsLoading(false);
     };
@@ -87,13 +88,13 @@ const AudioStoragePage = () => {
             // Validate file type
             const validTypes = ['audio/mp3', 'audio/wav', 'audio/ogg', 'audio/mpeg', 'audio/m4a'];
             if (!validTypes.includes(file.type)) {
-                setMessage({ text: 'Please select a valid audio file (MP3, WAV, OGG, M4A)', type: 'critical' });
+                setMessage({ text: i18n.t('pleaseSelectValidAudioFile'), type: 'critical' });
                 return;
             }
 
             // Check file size (max 10MB)
             if (file.size > 10 * 1024 * 1024) {
-                setMessage({ text: 'File size must be less than 10MB for optimal performance', type: 'warning' });
+                setMessage({ text: i18n.t('fileSizeMustBeLess10MB'), type: 'warning' });
                 return;
             }
 
@@ -117,7 +118,7 @@ const AudioStoragePage = () => {
 
     const handleUpload = async () => {
         if (!audioFile || !audioName.trim()) {
-            setMessage({ text: 'Please select an audio file and provide a name', type: 'critical' });
+            setMessage({ text: i18n.t('pleaseSelectAudioFileAndProvideName'), type: 'critical' });
             return;
         }
 
@@ -153,7 +154,7 @@ const AudioStoragePage = () => {
                 data: audioJSON
             });
 
-            setMessage({ text: `Audio "${audioName}" uploaded successfully!`, type: 'success' });
+            setMessage({ text: i18n.t('audioUploadedSuccessfully', { audioName }), type: 'success' });
             
             // Reset form
             setAudioFile(null);
@@ -168,7 +169,7 @@ const AudioStoragePage = () => {
         } catch (error) {
             console.error('Upload error:', error);
             setMessage({ 
-                text: `Upload failed: ${error.message || 'Unknown error'}`, 
+                text: i18n.t('uploadFailed', { error: error.message || i18n.t('unknownError') }), 
                 type: 'critical' 
             });
         }
@@ -195,18 +196,18 @@ const AudioStoragePage = () => {
             audio.onended = () => setCurrentlyPlaying(null);
             audio.onerror = () => {
                 setCurrentlyPlaying(null);
-                setMessage({ text: 'Error playing audio file', type: 'critical' });
+                setMessage({ text: i18n.t('errorPlayingAudioFile'), type: 'critical' });
             };
 
             audio.play().catch(error => {
                 console.error('Play error:', error);
-                setMessage({ text: 'Could not play audio file', type: 'critical' });
+                setMessage({ text: i18n.t('couldNotPlayAudioFile'), type: 'critical' });
                 setCurrentlyPlaying(null);
             });
 
         } catch (error) {
             console.error('Audio play error:', error);
-            setMessage({ text: 'Error creating audio player', type: 'critical' });
+            setMessage({ text: i18n.t('errorCreatingAudioPlayer'), type: 'critical' });
         }
     };
 
@@ -230,19 +231,19 @@ const AudioStoragePage = () => {
                 type: 'delete'
             });
 
-            setMessage({ text: `Audio "${audio.name}" deleted successfully`, type: 'success' });
+            setMessage({ text: i18n.t('audioDeletedSuccessfully', { audioName: audio.name }), type: 'success' });
             loadStoredAudios();
         } catch (error) {
             console.error('Delete error:', error);
-            setMessage({ text: `Failed to delete audio: ${error.message}`, type: 'critical' });
+            setMessage({ text: i18n.t('failedToDeleteAudio', { error: error.message }), type: 'critical' });
         }
         setDeleteModal({ open: false, audio: null });
     };
 
     const formatFileSize = (bytes) => {
-        if (bytes === 0) return '0 Bytes';
+        if (bytes === 0) return i18n.t('zeroBytes');
         const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const sizes = [i18n.t('bytes'), i18n.t('kb'), i18n.t('mb'), i18n.t('gb')];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     };
@@ -288,10 +289,10 @@ const AudioStoragePage = () => {
             {/* Header */}
             <div style={{ marginBottom: '32px' }}>
                 <h1 style={{ fontSize: '28px', fontWeight: '600', color: '#2c3e50', marginBottom: '8px' }}>
-                    Audio Management System
+                    {i18n.t('audioPageTitle')}
                 </h1>
                 <p style={{ color: '#6c757d', fontSize: '16px' }}>
-                    Upload, manage, and organize your audio files for DHIS2 presentations
+                    {i18n.t('audioPageSubtitle')}
                 </p>
             </div>
             
@@ -300,13 +301,13 @@ const AudioStoragePage = () => {
                 <div style={{ padding: '24px' }}>
                     <h2 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '20px', color: '#2c3e50', display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <IconUpload24 />
-                        Upload New Audio
+                        {i18n.t('uploadNewAudio')}
                     </h2>
                     
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '24px' }}>
                         <div>
                             <label style={{ display: 'block', fontWeight: '500', marginBottom: '8px', color: '#495057' }}>
-                                Select Audio File
+                                {i18n.t('selectAudioFile')}
                             </label>
                             <div style={{ 
                                 position: 'relative', 
@@ -336,10 +337,10 @@ const AudioStoragePage = () => {
                                 <div style={{ pointerEvents: 'none' }}>
                                     <IconUpload24 style={{ color: '#6c757d', marginBottom: '8px' }} />
                                     <p style={{ margin: 0, color: '#6c757d' }}>
-                                        {audioFile ? audioFile.name : 'Click or drag to upload audio file'}
+                                        {audioFile ? audioFile.name : i18n.t('clickOrDragToUploadAudioFile')}
                                     </p>
                                     <small style={{ color: '#868e96' }}>
-                                        Supported: MP3, WAV, OGG, M4A (Max 10MB)
+                                        {i18n.t('supportedFormats')}
                                     </small>
                                 </div>
                             </div>
@@ -347,10 +348,10 @@ const AudioStoragePage = () => {
 
                         <div>
                             <Input
-                                label="Audio Name"
+                                label={i18n.t('audioName')}
                                 value={audioName}
                                 onChange={({ value }) => setAudioName(value)}
-                                placeholder="Enter a descriptive name for your audio"
+                                placeholder={i18n.t('enterDescriptiveNameForAudio')}
                                 style={{ marginBottom: '16px' }}
                             />
                             
@@ -363,15 +364,15 @@ const AudioStoragePage = () => {
                                     border: '1px solid #dee2e6'
                                 }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                                        <span style={{ fontWeight: '500' }}>File:</span>
+                                        <span style={{ fontWeight: '500' }}>{i18n.t('file')}:</span>
                                         <span>{audioFile.name}</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                                        <span style={{ fontWeight: '500' }}>Size:</span>
+                                        <span style={{ fontWeight: '500' }}>{i18n.t('size')}:</span>
                                         <span>{formatFileSize(audioFile.size)}</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                        <span style={{ fontWeight: '500' }}>Type:</span>
+                                        <span style={{ fontWeight: '500' }}>{i18n.t('type')}:</span>
                                         <span>{audioFile.type}</span>
                                     </div>
                                 </div>
@@ -386,7 +387,7 @@ const AudioStoragePage = () => {
                             disabled={!audioFile || !audioName.trim() || isUploading}
                             loading={isUploading}
                         >
-                            {isUploading ? 'Uploading...' : 'Upload Audio'}
+                            {isUploading ? i18n.t('uploading') : i18n.t('uploadAudio')}
                         </Button>
                     </div>
                 </div>
@@ -396,7 +397,7 @@ const AudioStoragePage = () => {
             {message.text && (
                 <div style={{ marginBottom: '24px' }}>
                     <NoticeBox 
-                        title={message.type === 'success' ? 'Success' : message.type === 'warning' ? 'Warning' : 'Error'}
+                        title={message.type === 'success' ? i18n.t('success') : message.type === 'warning' ? i18n.t('warning') : i18n.t('error')}
                         {...(message.type === 'success' && { success: true })}
                         {...(message.type === 'warning' && { warning: true })}
                         {...(message.type === 'critical' && { error: true })}
@@ -411,11 +412,11 @@ const AudioStoragePage = () => {
                 <div style={{ padding: '24px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                         <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#2c3e50', margin: 0 }}>
-                            Audio Library ({filteredAndSortedAudios.length} {filteredAndSortedAudios.length === 1 ? 'file' : 'files'})
+                            {i18n.t('audioLibrary')} ({filteredAndSortedAudios.length} {filteredAndSortedAudios.length === 1 ? i18n.t('file') : i18n.t('files')})
                         </h2>
                         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                             <Input
-                                placeholder="Search audio files..."
+                                placeholder={i18n.t('searchAudioFiles')}
                                 value={searchTerm}
                                 onChange={({ value }) => setSearchTerm(value)}
                                 style={{ width: '250px' }}
@@ -427,7 +428,7 @@ const AudioStoragePage = () => {
                                 loading={isLoading}
                             
                             >
-                                Refresh
+                                {i18n.t('refresh')}
                             </Button>
                         </div>
                     </div>
@@ -442,12 +443,12 @@ const AudioStoragePage = () => {
                         }}>
                             <div style={{ fontSize: '48px', marginBottom: '16px', opacity: 0.5 }}>🎵</div>
                             <h3 style={{ marginBottom: '8px', color: '#495057' }}>
-                                {searchTerm ? 'No matching audio files' : 'No audio files yet'}
+                                {searchTerm ? i18n.t('noMatchingAudioFiles') : i18n.t('noAudioFilesYet')}
                             </h3>
                             <p style={{ margin: 0 }}>
                                 {searchTerm 
-                                    ? 'Try adjusting your search terms'
-                                    : 'Upload your first audio file to get started!'
+                                    ? i18n.t('tryAdjustingSearchTerms')
+                                    : i18n.t('uploadFirstAudioFileToGetStarted')
                                 }
                             </p>
                         </div>
@@ -460,28 +461,28 @@ const AudioStoragePage = () => {
                                             onClick={() => handleSort('name')}
                                             style={{ cursor: 'pointer', userSelect: 'none' }}
                                         >
-                                            Name {sortConfig.key === 'name' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                                            {i18n.t('name')} {sortConfig.key === 'name' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
                                         </TableCellHead>
-                                        <TableCellHead>Original File</TableCellHead>
+                                        <TableCellHead>{i18n.t('originalFile')}</TableCellHead>
                                         <TableCellHead 
                                             onClick={() => handleSort('format')}
                                             style={{ cursor: 'pointer', userSelect: 'none' }}
                                         >
-                                            Format {sortConfig.key === 'format' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                                            {i18n.t('format')} {sortConfig.key === 'format' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
                                         </TableCellHead>
                                         <TableCellHead 
                                             onClick={() => handleSort('size')}
                                             style={{ cursor: 'pointer', userSelect: 'none' }}
                                         >
-                                            Size {sortConfig.key === 'size' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                                            {i18n.t('size')} {sortConfig.key === 'size' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
                                         </TableCellHead>
                                         <TableCellHead 
                                             onClick={() => handleSort('uploadDate')}
                                             style={{ cursor: 'pointer', userSelect: 'none' }}
                                         >
-                                            Upload Date {sortConfig.key === 'uploadDate' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+                                            {i18n.t('uploadDate')} {sortConfig.key === 'uploadDate' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
                                         </TableCellHead>
-                                        <TableCellHead>Actions</TableCellHead>
+                                        <TableCellHead>{i18n.t('actions')}</TableCellHead>
                                     </TableRowHead>
                                 </TableHead>
                                 <TableBody>
@@ -524,7 +525,7 @@ const AudioStoragePage = () => {
                                                             onClick={stopAudio}
                                                           
                                                         >
-                                                            Stop
+                                                            {i18n.t('stop')}
                                                         </Button>
                                                     ) : (
                                                         <Button 
@@ -533,7 +534,7 @@ const AudioStoragePage = () => {
                                                             onClick={() => playAudio(audio)}
                                                          
                                                         >
-                                                            Play
+                                                            {i18n.t('play')}
                                                         </Button>
                                                     )}
                                                     
@@ -543,7 +544,7 @@ const AudioStoragePage = () => {
                                                         onClick={() => confirmDelete(audio)}
                                                  
                                                     >
-                                                        Delete
+                                                        {i18n.t('delete')}
                                                     </Button>
                                                 </div>
                                             </TableCell>
@@ -559,20 +560,20 @@ const AudioStoragePage = () => {
             {/* Delete Confirmation Modal */}
             {deleteModal.open && (
                 <Modal onClose={() => setDeleteModal({ open: false, audio: null })}>
-                    <ModalTitle>Confirm Deletion</ModalTitle>
+                    <ModalTitle>{i18n.t('confirmDeletion')}</ModalTitle>
                     <ModalContent>
-                        <p>Are you sure you want to delete the audio file "<strong>{deleteModal.audio?.name}</strong>"?</p>
+                        <p>{i18n.t('areYouSureDeleteAudioFile')} "<strong>{deleteModal.audio?.name}</strong>"?</p>
                         <p style={{ color: '#dc3545', fontSize: '14px', marginTop: '12px' }}>
-                            This action cannot be undone.
+                            {i18n.t('thisActionCannotBeUndone')}
                         </p>
                     </ModalContent>
                     <ModalActions>
                         <ButtonStrip end>
                             <Button secondary onClick={() => setDeleteModal({ open: false, audio: null })}>
-                                Cancel
+                                {i18n.t('cancel')}
                             </Button>
                             <Button destructive onClick={deleteAudio}>
-                                Delete Audio
+                                {i18n.t('deleteAudio')}
                             </Button>
                         </ButtonStrip>
                     </ModalActions>

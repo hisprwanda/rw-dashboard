@@ -1,11 +1,11 @@
 import React from "react";
-import { ArrowUpRight, Mail, Layers, Filter,Cog } from "lucide-react";
+import { ArrowUpRight, Mail, Layers, Filter,Cog,AudioLines } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 
 const navigations = [
-  { name: "Data Sources", path: "datasource", icon: <ArrowUpRight size={28} /> },
-  { name: "Audio", path: "audio", icon: <ArrowUpRight size={28} /> },
-  { name: "Report Config", path: "report", icon: <Cog size={28} /> },
+  { name: "Data Sources", description: "Configure where your data should come from.", path: "datasource", icon: <ArrowUpRight size={28} /> },
+  { name: "Audio", description: "Manage audio files and settings.", path: "audio", icon: <AudioLines size={28} /> },
+  // { name: "Report Config", description: "Configure report settings and templates.", path: "report", icon: <Cog size={28} /> },
 ];
 
 const SettingsPage = () => {
@@ -27,13 +27,7 @@ const SettingsPage = () => {
             <div>
               <h3 className="text-lg font-semibold text-blue-900">{item.name}</h3>
               <p className="text-gray-600">
-                {item.name === "Data Sources"
-                  ? "Configure where your data should come from. By default, IDSR pulls data from your DHIS2 instance."
-                  : item.name === "Notifications"
-                  ? "Configure notifications to send selected reports to respective recipients at defined intervals."
-                  : item.name === "DHIS2 Instance"
-                  ? "Go and view your DHIS2 instance and related IDSR views."
-                  : "Categorize your dashboards and visualizations by creating categories."}
+                {item.description}
               </p>
             </div>
           </div>

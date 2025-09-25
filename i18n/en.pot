@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-04-01T12:27:31.542Z\n"
-"PO-Revision-Date: 2025-04-01T12:27:31.543Z\n"
+"POT-Creation-Date: 2025-09-25T12:58:52.683Z\n"
+"PO-Revision-Date: 2025-09-25T12:58:52.684Z\n"
 
 msgid "Dashboards"
 msgstr "Dashboards"
@@ -25,6 +25,168 @@ msgstr "Settings"
 
 msgid "report"
 msgstr "report"
+
+msgid "noStoredAudiosFound"
+msgstr "noStoredAudiosFound"
+
+msgid "pleaseSelectValidAudioFile"
+msgstr "pleaseSelectValidAudioFile"
+
+msgid "fileSizeMustBeLess10MB"
+msgstr "fileSizeMustBeLess10MB"
+
+msgid "pleaseSelectAudioFileAndProvideName"
+msgstr "pleaseSelectAudioFileAndProvideName"
+
+msgid "audioUploadedSuccessfully"
+msgstr "audioUploadedSuccessfully"
+
+msgid "uploadFailed"
+msgstr "uploadFailed"
+
+msgid "unknownError"
+msgstr "unknownError"
+
+msgid "errorPlayingAudioFile"
+msgstr "errorPlayingAudioFile"
+
+msgid "couldNotPlayAudioFile"
+msgstr "couldNotPlayAudioFile"
+
+msgid "errorCreatingAudioPlayer"
+msgstr "errorCreatingAudioPlayer"
+
+msgid "audioDeletedSuccessfully"
+msgstr "audioDeletedSuccessfully"
+
+msgid "failedToDeleteAudio"
+msgstr "failedToDeleteAudio"
+
+msgid "zeroBytes"
+msgstr "zeroBytes"
+
+msgid "bytes"
+msgstr "bytes"
+
+msgid "kb"
+msgstr "kb"
+
+msgid "mb"
+msgstr "mb"
+
+msgid "gb"
+msgstr "gb"
+
+msgid "audioPageTitle"
+msgstr "audioPageTitle"
+
+msgid "audioPageSubtitle"
+msgstr "audioPageSubtitle"
+
+msgid "uploadNewAudio"
+msgstr "uploadNewAudio"
+
+msgid "selectAudioFile"
+msgstr "selectAudioFile"
+
+msgid "clickOrDragToUploadAudioFile"
+msgstr "clickOrDragToUploadAudioFile"
+
+msgid "supportedFormats"
+msgstr "supportedFormats"
+
+msgid "audioName"
+msgstr "audioName"
+
+msgid "enterDescriptiveNameForAudio"
+msgstr "enterDescriptiveNameForAudio"
+
+msgid "file"
+msgstr "file"
+
+msgid "size"
+msgstr "size"
+
+msgid "type"
+msgstr "type"
+
+msgid "uploading"
+msgstr "uploading"
+
+msgid "uploadAudio"
+msgstr "uploadAudio"
+
+msgid "success"
+msgstr "success"
+
+msgid "warning"
+msgstr "warning"
+
+msgid "error"
+msgstr "error"
+
+msgid "audioLibrary"
+msgstr "audioLibrary"
+
+msgid "files"
+msgstr "files"
+
+msgid "searchAudioFiles"
+msgstr "searchAudioFiles"
+
+msgid "refresh"
+msgstr "refresh"
+
+msgid "noMatchingAudioFiles"
+msgstr "noMatchingAudioFiles"
+
+msgid "noAudioFilesYet"
+msgstr "noAudioFilesYet"
+
+msgid "tryAdjustingSearchTerms"
+msgstr "tryAdjustingSearchTerms"
+
+msgid "uploadFirstAudioFileToGetStarted"
+msgstr "uploadFirstAudioFileToGetStarted"
+
+msgid "name"
+msgstr "name"
+
+msgid "originalFile"
+msgstr "originalFile"
+
+msgid "format"
+msgstr "format"
+
+msgid "uploadDate"
+msgstr "uploadDate"
+
+msgid "actions"
+msgstr "actions"
+
+msgid "stop"
+msgstr "stop"
+
+msgid "play"
+msgstr "play"
+
+msgid "delete"
+msgstr "delete"
+
+msgid "confirmDeletion"
+msgstr "confirmDeletion"
+
+msgid "areYouSureDeleteAudioFile"
+msgstr "areYouSureDeleteAudioFile"
+
+msgid "thisActionCannotBeUndone"
+msgstr "thisActionCannotBeUndone"
+
+msgid "cancel"
+msgstr "cancel"
+
+msgid "deleteAudio"
+msgstr "deleteAudio"
 
 msgid "Organization Unit"
 msgstr "Organization Unit"
@@ -52,6 +214,9 @@ msgstr "Background Music"
 
 msgid "Stop"
 msgstr "Stop"
+
+msgid "Refresh"
+msgstr "Refresh"
 
 msgid "Play slideshow"
 msgstr "Play slideshow"
