@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const navigations = [
   { name: "Data Sources", path: "datasource", icon: <ArrowUpRight size={28} /> },
+  { name: "Audio", path: "audio", icon: <ArrowUpRight size={28} /> },
   { name: "Report Config", path: "report", icon: <Cog size={28} /> },
 ];
 

@@ -27,6 +27,7 @@ import UserCredentials from "./pages/UserCredentials";
 import { Toaster } from "./components/ui/toaster";
 import MapHomepage from "./pages/Map/MapHomepage";
 import AllMapsPage from "./pages/Map/AllMapsPage";
+import AudioStoragePage from "./pages/audio/page";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -48,6 +49,7 @@ const App: React.FC = () => {
               <Route path="visualization" element={<VisualizationPage />} />
               <Route path="maps" element={<AllMapsPage />} /> 
               <Route path="settings" element={<SettingsPage />} />
+              <Route path="audio" element={<AudioStoragePage />} />
               <Route path="alerts" element={<AlertsPage />} />
               <Route path="test" element={<TestChart />} />
               <Route path="token-test" element={<TokenTest />} />

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import useEmblaCarousel from "embla-carousel-react";
+import { useDataEngine } from '@dhis2/app-runtime';
 import { Card, CardContent } from "../../../components/ui/card";
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
@@ -11,18 +12,24 @@ import { IoMdExit } from "react-icons/io";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
 import DashboardVisualItem from "./DashboardVisualItem";
 import SingleMapItem from "../../Map/components/SingleMapItem";
-import song1 from "../../../songs/song1.mp3";
-import song2 from "../../../songs/song2.mp3";
-import song3 from "../../../songs/song3.mp3";
 import i18n from '../../../locales/index.js'
 
 import { ChevronLeft, ChevronRight, Music2, Pause, Play, RotateCcw, ZoomIn, ZoomOut, Maximize2, Minimize2 } from "lucide-react";
 
-const mp3Files = [
-  { name: "Track 1", src: song1 },
-  { name: "Track 2", src: song2 },
-  { name: "Track 3", src: song3 }
-];
+interface AudioFile {
+  key: string;
+  id: string;
+  name: string;
+  originalName: string;
+  format: string;
+  base64Data: string;
+  metadata: {
+    size: number;
+    duration: number;
+    uploadDate: string;
+    mimeType: string;
+  };
+}
 
 interface PresentDashboardProps {
   dashboardData: any[];
@@ -37,8 +44,12 @@ const PresentDashboard: React.FC<PresentDashboardProps> = ({
   dashboardName,
   dashboardMaps = []  // Default to empty array
 }) => {
+    const engine = useDataEngine();
     const audioRef = useRef<HTMLAudioElement | null>(null);
-    const [isTrackPaused, setIsTrackPaused] = useState(false)
+    const [isTrackPaused, setIsTrackPaused] = useState(false);
+    const [audioFiles, setAudioFiles] = useState<AudioFile[]>([]);
+    const [isLoadingAudio, setIsLoadingAudio] = useState(true);
+    const [audioLoadError, setAudioLoadError] = useState<string>('');
   
     const [currentTrack, setCurrentTrack] = useState<string | null>(null);
     const [slidesToShow, setSlidesToShow] = useState(1);
@@ -49,9 +60,62 @@ const PresentDashboard: React.FC<PresentDashboardProps> = ({
     const [showControls, setShowControls] = useState(true);
     const containerRef = useRef<HTMLDivElement>(null);
     const controlsTimeoutRef = useRef<NodeJS.Timeout>();
-useEffect(()=>{
-  console.log("hello bog",dashboardMaps)
-},[dashboardMaps])
+
+    useEffect(()=>{
+      console.log("hello bog",dashboardMaps)
+    },[dashboardMaps])
+
+    // Load audio files from DHIS2 datastore
+    const loadAudioFiles = useCallback(async () => {
+      setIsLoadingAudio(true);
+      setAudioLoadError('');
+      try {
+        // Query to get all keys in the audio namespace
+        const response = await engine.query({
+          keys: {
+            resource: 'dataStore/audio'
+          }
+        });
+
+        if (response.keys && response.keys.length > 0) {
+          // Fetch each audio file
+          const audioPromises = response.keys.map(async (key: string) => {
+            try {
+              const audioData = await engine.query({
+                audio: {
+                  resource: `dataStore/audio/${key}`
+                }
+              });
+              return { key, ...audioData.audio };
+            } catch (error) {
+              console.error(`Error loading audio ${key}:`, error);
+              return null;
+            }
+          });
+
+          const audios = (await Promise.all(audioPromises)).filter(Boolean) as AudioFile[];
+          setAudioFiles(audios);
+        } else {
+          setAudioFiles([]);
+        }
+      } catch (error) {
+        console.error('Error loading audio files:', error);
+        setAudioLoadError('Failed to load audio files from datastore');
+        setAudioFiles([]);
+      }
+      setIsLoadingAudio(false);
+    }, [engine]);
+
+    // Load audio files on component mount
+    useEffect(() => {
+      loadAudioFiles();
+    }, [loadAudioFiles]);
+
+    // Convert Base64 audio data to playable URL
+    const getAudioUrl = useCallback((audioFile: AudioFile): string => {
+      return `data:${audioFile.metadata.mimeType};base64,${audioFile.base64Data}`;
+    }, []);
+
     // Combine visuals and maps
     const combinedData = [...dashboardData, ...(dashboardMaps || [])];
 
@@ -186,7 +250,10 @@ useEffect(()=>{
       setCurrentTrack(value);
       if (audioRef.current) {
         audioRef.current.src = value;
-        audioRef.current.play();
+        audioRef.current.play().catch(error => {
+          console.error('Audio play error:', error);
+        });
+        setIsTrackPaused(false);
       }
     };
   
@@ -199,7 +266,9 @@ useEffect(()=>{
     // Function to play the audio
     const playAudio = () => {
       if (audioRef.current && audioRef.current.src && audioRef.current.readyState >= 2) {
-        audioRef.current.play();
+        audioRef.current.play().catch(error => {
+          console.error('Audio play error:', error);
+        });
         setIsTrackPaused(false);
       }
     };
@@ -215,8 +284,9 @@ useEffect(()=>{
     // Function to stop the audio
     const stopAudio = () => {
       if (audioRef.current) {
-        audioRef.current.src = null
-        setCurrentTrack(null)
+        audioRef.current.src = '';
+        setCurrentTrack(null);
+        setIsTrackPaused(false);
       }
     };
   
@@ -303,34 +373,56 @@ useEffect(()=>{
                     <Music2 className="" />{i18n.t('Background Music')}
                   </Label>
                   <div className="flex gap-2">
-                    <Select value={currentTrack || ''} onValueChange={handleTrackChange}>
+                    <Select 
+                      value={currentTrack || ''} 
+                      onValueChange={handleTrackChange}
+                      disabled={isLoadingAudio}
+                    >
                       <SelectTrigger className="h-9 flex-1">
-                        <SelectValue placeholder="Select a track" />
+                        <SelectValue placeholder={
+                          isLoadingAudio ? "Loading tracks..." : 
+                          audioFiles.length === 0 ? "No tracks available" :
+                          "Select a track"
+                        } />
                       </SelectTrigger>
                       <SelectContent>
-                        {mp3Files.map((file, index) => (
-                          <SelectItem key={index} value={file.src}>
+                        {audioFiles.map((file) => (
+                          <SelectItem key={file.key} value={getAudioUrl(file)}>
                             {file.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                     <Button
-                    onClick={resetAudio}
-                    text=""
-                    icon={<RotateCcw className="h-5 w-5" />}
-                  />
+                      onClick={resetAudio}
+                      text=""
+                      icon={<RotateCcw className="h-5 w-5" />}
+                      disabled={!currentTrack}
+                    />
                     <Button
-                    onClick={ isTrackPaused ? playAudio : pauseAudio}
-                    text= "Track"
-                    icon={isPaused ? <FaPlay className="w-4 h-4" /> : <FaPause className="w-4 h-4" />}
-                  />
+                      onClick={isTrackPaused ? playAudio : pauseAudio}
+                      text="Track"
+                      icon={isTrackPaused ? <FaPlay className="w-4 h-4" /> : <FaPause className="w-4 h-4" />}
+                      disabled={!currentTrack}
+                    />
                     <Button
-                    onClick={stopAudio}
-                    text={i18n.t('Stop')}
-                    variant="danger"
-                  />
+                      onClick={stopAudio}
+                      text={i18n.t('Stop')}
+                      variant="danger"
+                      disabled={!currentTrack}
+                    />
+                    <Button
+                      onClick={loadAudioFiles}
+                      text={i18n.t('Refresh')}
+                      disabled={isLoadingAudio}
+                    />
                   </div>
+                  {audioLoadError && (
+                    <p className="text-xs text-red-500 mt-1">{audioLoadError}</p>
+                  )}
+                  {!isLoadingAudio && audioFiles.length === 0 && !audioLoadError && (
+                    <p className="text-xs text-gray-500 mt-1">No audio files found in datastore</p>
+                  )}
                 </div>
               </div>
 
