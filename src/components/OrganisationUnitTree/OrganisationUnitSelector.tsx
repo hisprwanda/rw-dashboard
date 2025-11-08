@@ -1,24 +1,35 @@
-import React, { useEffect } from 'react';
-import { InputField, MultiSelectField, MultiSelectOption, OrganisationUnitTree, CircularLoader } from '@dhis2/ui';
-import { useOrgUnitSelection } from '../../hooks/useOrgUnitSelection';
+import React, { useEffect } from "react";
+import {
+  InputField,
+  MultiSelectField,
+  MultiSelectOption,
+  OrganisationUnitTree,
+  CircularLoader,
+} from "@dhis2/ui";
+import { useOrgUnitSelection } from "../../hooks/useOrgUnitSelection";
 import Button from "../Button";
-import { useAuthorities } from '../../context/AuthContext';
-import { formatAnalyticsDimensions } from '../../lib/formatAnalyticsDimensions';
-import { IoSaveOutline } from 'react-icons/io5';
-import OrganizationUnitGroup from '../../pages/visualizers/Components/MetaDataModals/OrganizationUnitGroup';
-import OrganizationUnitLevels from '../../pages/visualizers/Components/MetaDataModals/OrganizationUnitLevels';
-import CustomOrganisationUnitTree from '../../pages/visualizers/Components/MetaDataModals/CustomOrganisationUnitTree';
+import { useAuthorities } from "../../context/AuthContext";
+import { formatAnalyticsDimensions } from "../../lib/formatAnalyticsDimensions";
+import { IoSaveOutline } from "react-icons/io5";
+import OrganizationUnitGroup from "../../pages/visualizers/Components/MetaDataModals/OrganizationUnitGroup";
+import OrganizationUnitLevels from "../../pages/visualizers/Components/MetaDataModals/OrganizationUnitLevels";
+import CustomOrganisationUnitTree from "../../pages/visualizers/Components/MetaDataModals/CustomOrganisationUnitTree";
 
 interface OrganisationUnitSelectProps {
   setIsShowOrganizationUnit?: any;
   data: any;
   loading: boolean;
   error: any;
-  isDataModalBeingUsedInMap?: boolean
+  isDataModalBeingUsedInMap?: boolean;
 }
 
-const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsShowOrganizationUnit, data, loading, error, isDataModalBeingUsedInMap }) => {
-
+const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({
+  setIsShowOrganizationUnit,
+  data,
+  loading,
+  error,
+  isDataModalBeingUsedInMap,
+}) => {
   const {
     analyticsDimensions,
     analyticsPayloadDeterminer,
@@ -33,13 +44,14 @@ const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsSh
     setSelectedOrganizationUnitsLevels,
     setSelectedOrgUnitGroups,
     selectedOrgUnitGroups,
-    isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits,
+    isSetPredifinedUserOrgUnits,
+    setIsSetPredifinedUserOrgUnits,
     selectedOrgUnits,
     setSelectedOrgUnits,
     fetchSingleOrgUnitName,
     visualTitleAndSubTitle,
     setSelectedVisualTitleAndSubTitle,
-    selectedDataSourceDetails
+    selectedDataSourceDetails,
   } = useAuthorities();
 
   // Safely extract data with null checks
@@ -57,8 +69,18 @@ const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsSh
     filteredOrgUnitPaths,
   } = useOrgUnitSelection(orgUnits);
 
+  // Reset org unit selections when data source changes
+  useEffect(() => {
+    // Clear selections when switching between data sources
+    handleDeselectAll();
+    setSelectedOrgUnitGroups([]);
+  }, [selectedDataSourceDetails]);
+
   // Handle change of currentOrgUnit
-  const handleCurrentOrgUnitChange = (e: React.ChangeEvent<HTMLInputElement>, key: string) => {
+  const handleCurrentOrgUnitChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    key: string
+  ) => {
     const updatedPredifinedUserOrgUnits = {
       ...isSetPredifinedUserOrgUnits,
       [key]: e.target.checked,
@@ -66,7 +88,9 @@ const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsSh
     setIsSetPredifinedUserOrgUnits(updatedPredifinedUserOrgUnits);
 
     // Check if any of the properties are true; if none are true, set isUseCurrentUserOrgUnits to false
-    const isAnyTrue = Object.values(updatedPredifinedUserOrgUnits).some(value => value === true);
+    const isAnyTrue = Object.values(updatedPredifinedUserOrgUnits).some(
+      (value) => value === true
+    );
     setIsUseCurrentUserOrgUnits(isAnyTrue);
     // clear existing other org units
     handleDeselect();
@@ -74,22 +98,34 @@ const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsSh
 
   // Update selectedOrgUnit
   useEffect(() => {
-    if (selectedDataSourceDetails.isCurrentInstance && selectedOrgUnits?.length > 0) {
+    if (
+      selectedDataSourceDetails.isCurrentInstance &&
+      selectedOrgUnits?.length > 0
+    ) {
       const updatedOrganizationUnits = selectedOrgUnits.map((path) => {
         // Extract the last segment of the path
-        const parts = path.split('/');
+        const parts = path.split("/");
         return parts[parts.length - 1]; // Get the last segment (org unit ID)
       });
 
       setSelectedOrganizationUnits(updatedOrganizationUnits);
     }
-  }, [selectedOrgUnits, selectedDataSourceDetails, setSelectedOrganizationUnits]);
+  }, [
+    selectedOrgUnits,
+    selectedDataSourceDetails,
+    setSelectedOrganizationUnits,
+  ]);
 
   useEffect(() => {
-    if (selectedLevel && selectedLevel.length > 0 && orgUnitLevels && orgUnitLevels.length > 0) {
+    if (
+      selectedLevel &&
+      selectedLevel.length > 0 &&
+      orgUnitLevels &&
+      orgUnitLevels.length > 0
+    ) {
       const newSelectedLevelIds = orgUnitLevels
-        ?.filter(level => selectedLevel.includes(level.level))
-        ?.map(level => level.id);
+        ?.filter((level) => selectedLevel.includes(level.level))
+        ?.map((level) => level.id);
 
       // Merge existing levels with new ones and avoid duplicates
       setSelectedOrganizationUnitsLevels((prevLevels: string[]) => {
@@ -99,12 +135,11 @@ const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsSh
     }
   }, [selectedLevel, orgUnitLevels, setSelectedOrganizationUnitsLevels]);
 
-
   /// handle deselect
   function handleDeselect() {
     handleDeselectAll();
     setSelectedOrgUnitGroups([]);
-  };
+  }
 
   // Handle update analytics API
   const handleUpdateAnalytics = async () => {
@@ -118,8 +153,7 @@ const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsSh
         selectedOrgUnitGroups,
         selectedOrganizationUnitsLevels,
         isUseCurrentUserOrgUnits,
-        isSetPredifinedUserOrgUnits
-
+        isSetPredifinedUserOrgUnits,
       });
       setIsShowOrganizationUnit(false);
     } catch (error) {
@@ -128,12 +162,12 @@ const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsSh
     }
   };
 
-  useEffect(()=>{
-    console.log("hello now",currentUserOrgUnit)
-  },[currentUserOrgUnit])
+  useEffect(() => {
+    console.log("hello now", currentUserOrgUnit);
+  }, [currentUserOrgUnit]);
 
   const handleNodeSelectExternalInstance = (node) => {
-    console.log('external selected node:', node);
+    console.log("external selected node:", node);
   };
 
   // Show loading indicator while data is being fetched
@@ -154,7 +188,7 @@ const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsSh
   // Check if required data is available before rendering tree
   const canRenderTree = !loading && currentUserOrgUnit && currentUserOrgUnit.id;
 
-  /// main return 
+  /// main return
   return (
     <div className="container mx-auto p-6 bg-white shadow-md rounded-lg">
       <h2 className="text-xl font-semibold mb-4">Organisation Units</h2>
@@ -167,9 +201,11 @@ const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsSh
             type="checkbox"
             className="form-checkbox h-5 w-5 text-blue-600 rounded"
             checked={isSetPredifinedUserOrgUnits?.is_USER_ORGUNIT}
-            onChange={(e) => handleCurrentOrgUnitChange(e, 'is_USER_ORGUNIT')}
+            onChange={(e) => handleCurrentOrgUnitChange(e, "is_USER_ORGUNIT")}
           />
-          <span className="text-gray-700 font-medium">User Organization Unit</span>
+          <span className="text-gray-700 font-medium">
+            User Organization Unit
+          </span>
         </div>
 
         {/* User sub-units */}
@@ -178,7 +214,9 @@ const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsSh
             type="checkbox"
             className="form-checkbox h-5 w-5 text-blue-600 rounded"
             checked={isSetPredifinedUserOrgUnits?.is_USER_ORGUNIT_CHILDREN}
-            onChange={(e) => handleCurrentOrgUnitChange(e, 'is_USER_ORGUNIT_CHILDREN')}
+            onChange={(e) =>
+              handleCurrentOrgUnitChange(e, "is_USER_ORGUNIT_CHILDREN")
+            }
           />
           <span className="text-gray-700 font-medium">User sub-units</span>
         </div>
@@ -189,7 +227,9 @@ const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsSh
             type="checkbox"
             className="form-checkbox h-5 w-5 text-blue-600 rounded"
             checked={isSetPredifinedUserOrgUnits?.is_USER_ORGUNIT_GRANDCHILDREN}
-            onChange={(e) => handleCurrentOrgUnitChange(e, 'is_USER_ORGUNIT_GRANDCHILDREN')}
+            onChange={(e) =>
+              handleCurrentOrgUnitChange(e, "is_USER_ORGUNIT_GRANDCHILDREN")
+            }
           />
           <span className="text-gray-700 font-medium">User sub-x2-units</span>
         </div>
@@ -207,9 +247,16 @@ const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsSh
                 onChange={({ path }) => handleOrgUnitClick(path)}
                 singleSelection={false}
                 renderNodeLabel={({ node }) => (
-                  <span className="text-blue-600 font-medium">{node?.displayName || ""}</span>
+                  <span className="text-blue-600 font-medium">
+                    {node?.displayName || ""}
+                  </span>
                 )}
-                filter={filteredOrgUnitPaths?.length && filteredOrgUnitPaths.every(path => path?.displayName) ? filteredOrgUnitPaths : undefined}
+                filter={
+                  filteredOrgUnitPaths?.length &&
+                  filteredOrgUnitPaths.every((path) => path?.displayName)
+                    ? filteredOrgUnitPaths
+                    : undefined
+                }
               />
             ) : (
               <CustomOrganisationUnitTree
@@ -231,11 +278,16 @@ const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsSh
 
       {/* MultiSelectField for Organization Unit Level */}
       <div className="mb-6">
-        <div className='flex gap-2'>
+        <div className="flex gap-2">
           {/* levels test */}
-          <OrganizationUnitLevels isUseCurrentUserOrgUnits={isUseCurrentUserOrgUnits} isDataModalBeingUsedInMap={isDataModalBeingUsedInMap} />
+          <OrganizationUnitLevels
+            isUseCurrentUserOrgUnits={isUseCurrentUserOrgUnits}
+            isDataModalBeingUsedInMap={isDataModalBeingUsedInMap}
+          />
           {/* organization unit group */}
-          <OrganizationUnitGroup isUseCurrentUserOrgUnits={isUseCurrentUserOrgUnits} />
+          <OrganizationUnitGroup
+            isUseCurrentUserOrgUnits={isUseCurrentUserOrgUnits}
+          />
         </div>
 
         <button
@@ -251,7 +303,7 @@ const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsSh
         <div className="flex justify-end items-center">
           <div>
             <Button
-              variant='primary'
+              variant="primary"
               text={isFetchAnalyticsDataLoading ? "Loading" : "Update"}
               onClick={handleUpdateAnalytics}
               disabled={isFetchAnalyticsDataLoading || !canRenderTree}
@@ -264,4 +316,4 @@ const OrganisationUnitSelect: React.FC<OrganisationUnitSelectProps> = ({ setIsSh
   );
 };
 
-export default OrganisationUnitSelect
+export default OrganisationUnitSelect;
