@@ -6,4 +6,4 @@ build
 .env
 .env.development
 .env.production
-/draft/
+/draft/.DS_Store

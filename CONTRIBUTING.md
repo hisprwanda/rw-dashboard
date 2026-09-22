@@ -38,6 +38,8 @@ export default function VisualizerBuilderPage() {
 
 ### Imports
 - Always use the `@/` alias (maps to `src/`), never `../../..`.
+  (Runtime `@/` imports need the Vite toolchain from Phase 2; until then the v11 CRA
+  build only resolves `@/` for type-only imports.)
 - Outside a feature, import only from its barrel: `@/features/visualizers`,
   never `@/features/visualizers/components/X`. ESLint enforces this.
 
@@ -87,6 +89,10 @@ layout) lives in a Redux Toolkit slice inside the owning feature
 `useAppDispatch` from `@/app/store`. Local component state stays in `useState`.
 Server data is **never** copied into Redux.
 
+**No React Context API** for app state. Do not call `createContext`/`useContext`
+(ESLint error in `app/`, `features/`, `shared/`). The legacy `AuthContext` is being
+removed. Library providers (Redux, TanStack Query, DHIS2) are the only contexts.
+
 ## UI
 
 - `@dhis2/ui` is the component library (Button, Modal, InputField, Transfer,
@@ -102,14 +108,19 @@ interpolation, not concatenation: `i18n.t('Saved {{name}}', { name })`.
 
 ## TypeScript
 
-- No `any` (error in `app/`, `features/`, `shared/`; warning in legacy code).
-- No `@ts-ignore`. If unavoidable, use `@ts-expect-error` with a reason.
+- **No `any`, anywhere.** Not as an annotation, not `as any`, not `any[]`. Use a real
+  type, a generic, or `unknown` + narrowing. It is an ESLint error in `app/`,
+  `features/`, `shared/`, and the `yarn typecheck` ratchet fails the commit if the total
+  `any` count in legacy code goes up.
+- **All existing type errors get fixed.** Every phase lowers the `tsc` error count and
+  the `any` count; files you create or migrate must have 0 of both. Target: 0 / 0.
+- No `@ts-ignore` / `@ts-nocheck`. If truly unavoidable, `@ts-expect-error` with a reason.
 - Type DHIS2 payloads in `shared/types/dhis2.types.ts` or the feature's `types/`.
 
 ## Quality gates
 
 ```
-yarn typecheck   # ratchet: total errors may never go up; app/features/shared must have 0
+yarn typecheck   # ratchet: tsc errors and `any` count may never go up; app/features/shared must have 0
 yarn lint
 yarn format
 yarn build
@@ -117,4 +128,4 @@ yarn build
 
 A Husky pre-commit hook runs lint-staged (prettier + eslint on staged files) and
 the typecheck ratchet. CI runs typecheck, lint and build on every PR.
-When you fix legacy type errors, run `yarn typecheck:update-baseline` to lock in progress.
+When you fix legacy type errors or remove `any`, run `yarn typecheck:update-baseline` to lock in progress.

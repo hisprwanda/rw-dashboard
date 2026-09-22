@@ -1,20 +1,19 @@
-import React from 'react';
-import { encryptCredentials, decryptCredentials } from '../../../lib/utils';
+import React from 'react'
 
 type SavedDataProps = {
     data: {
-        id: string;
-        type: string;
-        description: string;
-        instanceName: string;
+        id: string
+        type: string
+        description: string
+        instanceName: string
         authentication: {
-            url: string;
-            username: string;
-            password: string;
-        };
-        isCurrentInstance: boolean;
-    };
-};
+            url: string
+            username: string
+            password: string
+        }
+        isCurrentInstance: boolean
+    }
+}
 
 const SavedDataSourceCard: React.FC<SavedDataProps> = ({ data }) => {
     return (
@@ -32,25 +31,21 @@ const SavedDataSourceCard: React.FC<SavedDataProps> = ({ data }) => {
                 </div>
                 <div className="mb-6">
                     <h4 className="text-xl font-semibold text-gray-900 mb-1">Description</h4>
-                    <p className="text-base text-gray-700">{data.description || 'No description provided'}</p>
+                    <p className="text-base text-gray-700">
+                        {data.description || 'No description provided'}
+                    </p>
                 </div>
                 <div className="border-t border-gray-300 pt-6">
-                    <h4 className="text-xl font-semibold text-gray-900 mb-3">Authentication Details</h4>
+                    <h4 className="text-xl font-semibold text-gray-900 mb-3">
+                        Authentication Details
+                    </h4>
                     <p className="text-base text-gray-700 mb-2">
                         <strong className="font-medium">URL:</strong> {data.url}
                     </p>
-                    {/* Uncomment when needed
-                    <p className="text-base text-gray-700 mb-2">
-                        <strong className="font-medium">Username:</strong> {decryptCredentials(data.authentication.username)}
-                    </p>
-                    <p className="text-base text-gray-700 mb-2">
-                        <strong className="font-medium">Password:</strong> {decryptCredentials(data.authentication.password)}
-                    </p>
-                    */}
                 </div>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default SavedDataSourceCard;
+export default SavedDataSourceCard

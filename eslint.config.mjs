@@ -64,6 +64,19 @@ export default tseslint.config(
             '@typescript-eslint/no-explicit-any': 'error',
             'no-console': ['error', { allow: ['warn', 'error'] }],
             'react-hooks/exhaustive-deps': 'error',
+            'no-restricted-syntax': [
+                'error',
+                {
+                    selector: "CallExpression[callee.name='createContext'], CallExpression[callee.property.name='createContext']",
+                    message:
+                        'No React Context for app state: use TanStack Query (server state) or a Redux slice (client state).',
+                },
+                {
+                    selector: "CallExpression[callee.name='useContext'], CallExpression[callee.property.name='useContext']",
+                    message:
+                        'No React Context for app state: use TanStack Query (server state) or a Redux slice (client state).',
+                },
+            ],
             'no-restricted-imports': [
                 'error',
                 {
