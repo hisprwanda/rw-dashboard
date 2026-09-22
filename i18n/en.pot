@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-04-01T12:27:31.542Z\n"
-"PO-Revision-Date: 2025-04-01T12:27:31.543Z\n"
+"POT-Creation-Date: 2026-06-12T13:58:31.897Z\n"
+"PO-Revision-Date: 2026-06-12T13:58:31.897Z\n"
 
 msgid "Dashboards"
 msgstr "Dashboards"
@@ -26,11 +26,80 @@ msgstr "Settings"
 msgid "report"
 msgstr "report"
 
+msgid "My Maps"
+msgstr "My Maps"
+
+msgid "Other Charts"
+msgstr "Other Charts"
+
+msgid "New Map"
+msgstr "New Map"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "Created At"
+msgstr "Created At"
+
+msgid "Updated At"
+msgstr "Updated At"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Created By"
+msgstr "Created By"
+
 msgid "Organization Unit"
 msgstr "Organization Unit"
 
 msgid "Data"
 msgstr "Data"
+
+msgid "Dashboard Name"
+msgstr "Dashboard Name"
+
+msgid "Dashboard Description"
+msgstr "Dashboard Description"
+
+msgid "Is Official Dashboard"
+msgstr "Is Official Dashboard"
+
+msgid "Exporting..."
+msgstr "Exporting..."
+
+msgid "Export to PPT"
+msgstr "Export to PPT"
+
+msgid "FullScreen"
+msgstr "FullScreen"
+
+msgid "Present"
+msgstr "Present"
+
+msgid "Save changes"
+msgstr "Save changes"
+
+msgid "Background Color"
+msgstr "Background Color"
+
+msgid "Select a visual"
+msgstr "Select a visual"
+
+msgid "Select a Map"
+msgstr "Select a Map"
+
+msgid "My Dashboards"
+msgstr "My Dashboards"
+
+msgid "Other Dashboards"
+msgstr "Other Dashboards"
+
+msgid "New Dashboard"
+msgstr "New Dashboard"
 
 msgid "Modified"
 msgstr "Modified"
@@ -62,9 +131,6 @@ msgstr "Pause slideshow"
 msgid "Exit Fullscreen"
 msgstr "Exit Fullscreen"
 
-msgid "FullScreen"
-msgstr "FullScreen"
-
 msgid "Exit"
 msgstr "Exit"
 
@@ -74,74 +140,8 @@ msgstr "Play"
 msgid "Pause"
 msgstr "Pause"
 
-msgid "Dashboard Name"
-msgstr "Dashboard Name"
-
-msgid "Dashboard Description"
-msgstr "Dashboard Description"
-
-msgid "Is Official Dashboard"
-msgstr "Is Official Dashboard"
-
-msgid "Exporting..."
-msgstr "Exporting..."
-
-msgid "Export to PPT"
-msgstr "Export to PPT"
-
-msgid "Present"
-msgstr "Present"
-
-msgid "Save changes"
-msgstr "Save changes"
-
-msgid "Background Color"
-msgstr "Background Color"
-
-msgid "Select a visual"
-msgstr "Select a visual"
-
-msgid "Select a Map"
-msgstr "Select a Map"
-
-msgid "My Dashboards"
-msgstr "My Dashboards"
-
-msgid "Other Dashboards"
-msgstr "Other Dashboards"
-
-msgid "New Dashboard"
-msgstr "New Dashboard"
-
-msgid "Name"
-msgstr "Name"
-
-msgid "Created At"
-msgstr "Created At"
-
-msgid "Updated At"
-msgstr "Updated At"
-
-msgid "Actions"
-msgstr "Actions"
-
-msgid "Created By"
-msgstr "Created By"
-
 msgid "Pinned Dashboards"
 msgstr "Pinned Dashboards"
-
-msgid "My Maps"
-msgstr "My Maps"
-
-msgid "Other Charts"
-msgstr "Other Charts"
-
-msgid "New Map"
-msgstr "New Map"
-
-msgid "Type"
-msgstr "Type"
 
 msgid "ERROR"
 msgstr "ERROR"
