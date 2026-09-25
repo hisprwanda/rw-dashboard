@@ -1,3 +1,4 @@
+import { useApplicationTitle } from '@/features/system'
 import React, { useEffect, useRef, useState } from 'react'
 import Button from '../../components/Button'
 import { FileActionMenu } from './Components/FileActionMenu'
@@ -8,16 +9,14 @@ import { useAuthorities } from '../../context/AuthContext'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs'
 import SelectChartType from './Components/SelectChartType'
 import SaveVisualTypeForm from './Components/SaveVisualTypeForm'
+import { useOrgUnitMetadata } from '@/features/org-units'
 import { useParams } from 'react-router-dom'
 import { useFetchSingleVisualData } from '../../services/fetchVisuals'
-import { useOrgUnitData } from '../../services/fetchOrgunitData'
 import { useDataItems } from '../../services/fetchDataItems'
 import { chartComponents } from '../../constants/systemCharts'
 import GeneralChartsStyles from './Components/GeneralChartsOptions'
 import VisualSettings from './Components/VisualSettings'
 import { useExternalDataItems } from '../../services/useExternalDataItems'
-import { useSystemInfo } from '../../services/fetchSystemInfo'
-import { useExternalOrgUnitData } from '../../services/fetchExternalOrgUnit'
 import { currentInstanceId } from '../../constants/currentInstanceInfo'
 import ExportModal from './Components/ExportModal'
 import i18n from '@dhis2/d2-i18n'
@@ -27,7 +26,7 @@ import { GrUpdate } from 'react-icons/gr'
 import { formatAnalyticsDimensions } from '../../lib/formatAnalyticsDimensions'
 function Visualizers() {
     const { id: visualId } = useParams()
-    const { data: systemInfo } = useSystemInfo()
+    const applicationTitle = useApplicationTitle()
     const {
         fetchAnalyticsData,
         analyticsPayloadDeterminer,
@@ -37,7 +36,6 @@ function Visualizers() {
         selectedDataSourceOption,
         setSelectedDataSourceOption,
         currentUserInfoAndOrgUnitsData,
-        setCurrentUserInfoAndOrgUnitsData,
         dataItemsData,
         selectedDataSourceDetails,
         setSelectedDataSourceDetails,
@@ -66,17 +64,13 @@ function Visualizers() {
         selectedColorPalette,
         selectedDimensionItemType,
     } = useAuthorities()
+    const { isLoading: orgUnitLoading, error: fetchOrgUnitError } =
+        useOrgUnitMetadata(selectedDataSourceDetails)
     const {
         data: singleSavedVisualData,
         isError,
         loading: isFetchSingleVisualLoading,
     } = useFetchSingleVisualData(visualId)
-    const {
-        loading: orgUnitLoading,
-        error: fetchOrgUnitError,
-        data: orgUnitsData,
-        fetchCurrentUserInfoAndOrgUnitData,
-    } = useOrgUnitData()
     const {
         error: dataItemsFetchError,
         loading: isFetchCurrentInstanceDataItemsLoading,
@@ -88,10 +82,6 @@ function Visualizers() {
         error,
         loading: isFetchExternalInstanceDataItemsLoading,
     } = useExternalDataItems()
-    const {
-        fetchExternalUserInfoAndOrgUnitData,
-        loading: isFetchExternalUserInfoAndOrgUnitDataLoading,
-    } = useExternalOrgUnitData()
     const defaultUserOrgUnit =
         currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName
     const { data: savedDataSource, loading } = useDataSourceData()
@@ -122,7 +112,6 @@ function Visualizers() {
             resetAnalyticsStatesToDefaultValues()
             /// if no visual created , fetch data of current instance
             fetchCurrentInstanceData(selectedDimensionItemType)
-            fetchCurrentUserAndOrgUnitData()
         }
     }, [visualId])
 
@@ -166,12 +155,11 @@ function Visualizers() {
 
         if (selectedValue === currentInstanceId) {
             newSelectedDetails = {
-                instanceName: systemInfo?.title?.applicationTitle || '',
+                instanceName: applicationTitle,
                 isCurrentInstance: true,
             }
 
             fetchCurrentInstanceData(selectedDimensionItemType)
-            fetchCurrentUserAndOrgUnitData()
         } else {
             newSelectedDetails =
                 savedDataSource?.dataStore?.entries?.find((item) => item.key === selectedValue)
@@ -182,7 +170,6 @@ function Visualizers() {
                 newSelectedDetails.token,
                 selectedDimensionItemType
             )
-            fetchExternalUserInfoAndOrgUnitData(newSelectedDetails.url, newSelectedDetails.token)
         }
 
         // Step 3: Update details and reset default values *afterwards*
@@ -202,12 +189,6 @@ function Visualizers() {
             isUseCurrentUserOrgUnits,
             isSetPredifinedUserOrgUnits,
         })
-    }
-
-    /// fetch current user and Organization unit
-    const fetchCurrentUserAndOrgUnitData = async () => {
-        const result = await fetchCurrentUserInfoAndOrgUnitData()
-        setCurrentUserInfoAndOrgUnitsData(result)
     }
 
     useEffect(() => {
@@ -256,7 +237,7 @@ function Visualizers() {
                                             className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                         >
                                             <option value={currentInstanceId}>
-                                                {systemInfo?.title?.applicationTitle}
+                                                {applicationTitle}
                                             </option>
                                             {dataSourceOptions}
                                         </select>

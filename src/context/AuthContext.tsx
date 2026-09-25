@@ -1,8 +1,13 @@
 // AuthContext.tsx
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { useConfig, useDataQuery } from '@dhis2/app-runtime'
+import React, { createContext, useContext, useState, ReactNode } from 'react'
 import { useDataEngine } from '@dhis2/app-runtime'
-import { useOrgUnitData } from '../services/fetchOrgunitData'
+import { useQueryClient } from '@tanstack/react-query'
+import { useMe } from '@/features/auth'
+import { orgUnitNameQuery, useOrgUnitMetadata, type OrgUnitMetadata } from '@/features/org-units'
+import { useApplicationTitle } from '@/features/system'
+import { ErrorState, LoadingState } from '@/shared/components'
+import type { Me } from '@/shared/types/dhis2.types'
+import { useLegacyOrgUnitSelection } from './useLegacyOrgUnitSelection'
 import {
     VisualSettingsTypes,
     VisualTitleAndSubtitleType,
@@ -12,21 +17,27 @@ import {
 } from '../types/visualSettingsTypes'
 import { systemDefaultColorPalettes } from '../constants/colorPalettes'
 import { DataSourceFormFields } from '../types/DataSource'
-import { useSystemInfo } from '../services/fetchSystemInfo'
 import axios from 'axios'
 import { dimensionItemTypesTYPES } from '../types/dimensionDataItemTypes'
 import { dimensionItemTypes } from '../constants/dimensionItemTypes'
 import { BackedSelectedItem, visualTypes } from '../types/visualType'
 import { currentInstanceId } from '../constants/currentInstanceInfo'
-import { getAnalyticsFilter, getSelectedOrgUnitsWhenUsingMap } from '../lib/getAnalyticsFilters'
+import { getAnalyticsFilter } from '../lib/getAnalyticsFilters'
 import { getDimensionItems, PeriodItem, transformMetadataLabels } from '../lib/formatMetaDataLabels'
 import { analyticsPayloadDeterminerTypes } from '../types/analyticsTypes'
 import { updateQueryParams } from '../lib/payloadFormatter'
 import { BasemapType } from '../types/maps'
 import { legendTypeTypes, mapSettingsTypes } from '../types/mapFormTypes'
 
-interface AuthContextProps {
-    userDatails: {}
+type LegacyOrgUnitSelection = ReturnType<typeof useLegacyOrgUnitSelection>
+
+interface AuthContextProps extends LegacyOrgUnitSelection {
+    /** Org-unit tree/levels/groups of the selected data source (TanStack Query). */
+    currentUserInfoAndOrgUnitsData: OrgUnitMetadata | undefined
+    fetchSingleOrgUnitName: (orgUnitId: string, instance: DataSourceFormFields) => Promise<string>
+    /** @deprecated use `useMe()` from @/features/auth */
+    userDatails: { me?: Me }
+    /** @deprecated use `useHasAuthority()` from @/features/auth */
     authorities: string[]
     analyticsDimensions: any
     setAnalyticsDimensions: any
@@ -35,20 +46,6 @@ interface AuthContextProps {
     setAnalyticsData: any
     isFetchAnalyticsDataLoading: any
     fetchAnalyticsDataError: any
-    setSelectedOrganizationUnits: any
-    selectedOrganizationUnits: any
-    isUseCurrentUserOrgUnits: boolean
-    setIsUseCurrentUserOrgUnits: any
-    selectedOrganizationUnitsLevels: any
-    setSelectedOrganizationUnitsLevels: any
-    selectedOrgUnitGroups: any
-    setSelectedOrgUnitGroups: any
-    isSetPredifinedUserOrgUnits: any
-    setIsSetPredifinedUserOrgUnits: any
-    selectedLevel: any
-    setSelectedLevel: any
-    selectedOrgUnits: any
-    setSelectedOrgUnits: any
     analyticsQuery: any
     selectedChartType: visualTypes
     setSelectedChartType: any
@@ -61,7 +58,6 @@ interface AuthContextProps {
     setSelectedVisualsForDashboard: any
     visualTitleAndSubTitle: VisualTitleAndSubtitleType
     setSelectedVisualTitleAndSubTitle: any
-    fetchSingleOrgUnitName: any
     visualSettings: VisualSettingsTypes
     setSelectedVisualSettings: any
     selectedColorPalette: visualColorPaletteTypes
@@ -72,8 +68,6 @@ interface AuthContextProps {
     setDataItemsData: any
     selectedDataSourceDetails: DataSourceFormFields
     setSelectedDataSourceDetails: any
-    currentUserInfoAndOrgUnitsData: any
-    setCurrentUserInfoAndOrgUnitsData: any
     selectedDataSourceOption: string
     setSelectedDataSourceOption: any
     selectedDimensionItemType: dimensionItemTypesTYPES
@@ -106,12 +100,6 @@ interface AuthContextProps {
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined)
 
-const query = {
-    me: {
-        resource: 'me',
-    },
-}
-
 interface AuthProviderProps {
     children: ReactNode
 }
@@ -122,13 +110,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         Rows: ['Period'],
         Filter: ['Organisation unit'],
     }
-    const { data, loading, error } = useDataQuery(query)
+    const { data: me, isLoading: isMeLoading, error: meError, refetch: refetchMe } = useMe()
+    const applicationTitle = useApplicationTitle()
+    const orgUnitSelection = useLegacyOrgUnitSelection()
+    const queryClient = useQueryClient()
     const [analyticsPayloadDeterminer, setAnalyticsPayloadDeterminer] =
         useState<analyticsPayloadDeterminerTypes>(initialState)
     const [isExportingDashboardAsPPTX, setIsExportingDashboardAsPPTX] = useState<boolean>(false)
-    const { data: systemInfo } = useSystemInfo()
-    const [authorities, setAuthorities] = useState<string[]>([])
-    const [userDatails, setUserDatails] = useState<{}>({})
     const [selectedDataSourceOption, setSelectedDataSourceOption] =
         useState<string>(currentInstanceId)
     const [geoFeaturesData, setGeoFeaturesData] = useState<any>([])
@@ -145,7 +133,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     })
     /// this is the current instance definition as data source
     const defaultDataSource: DataSourceFormFields = {
-        instanceName: systemInfo?.title?.applicationTitle || '', // Fallback to an empty string if undefined
+        instanceName: applicationTitle,
         isCurrentInstance: true,
     }
 
@@ -159,10 +147,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [dataItemsData, setDataItemsData] = useState<any>()
     const [subDataItemsData, setSubDataItemsData] = useState<any>()
     const [dataItemsDataPage, setDataItemsDataPage] = useState<number>(1)
-    const [currentUserInfoAndOrgUnitsData, setCurrentUserInfoAndOrgUnitsData] = useState<any>()
     const [backedSelectedItems, setBackedSelectedItems] = useState<BackedSelectedItem[]>([])
-    const defaultUserOrgUnit =
-        currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName
     const [isFetchAnalyticsDataLoading, setIsFetchAnalyticsDataLoading] = useState(false)
     const [analyticsData, setAnalyticsData] = useState<any>(null)
     const [fetchAnalyticsDataError, setFetchAnalyticsDataError] = useState<any>(false)
@@ -170,12 +155,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         dx: [],
         pe: ['LAST_12_MONTHS'],
     })
-    const [selectedOrganizationUnits, setSelectedOrganizationUnits] = useState<any>([])
-    const [selectedOrganizationUnitsLevels, setSelectedOrganizationUnitsLevels] = useState<any>([])
-    const [isUseCurrentUserOrgUnits, setIsUseCurrentUserOrgUnits] = useState<boolean>(true)
-    const [selectedOrgUnitGroups, setSelectedOrgUnitGroups] = useState<any>([])
-    const [selectedLevel, setSelectedLevel] = useState<any>()
-    const [selectedOrgUnits, setSelectedOrgUnits] = useState<string[]>([])
     const [analyticsQuery, setAnalyticsQuery] = useState<any>(null)
     const [mapAnalyticsQueryTwo, setMapAnalyticsQueryTwo] = useState<any>(null)
     const [geoFeaturesQuery, setGeoFeaturesQuery] = useState<any>(null)
@@ -206,23 +185,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         YAxisSettings: { color: '#000000', fontSize: 12 },
     })
 
-    const [isSetPredifinedUserOrgUnits, setIsSetPredifinedUserOrgUnits] = useState<any>({
-        is_USER_ORGUNIT: true,
-        is_USER_ORGUNIT_CHILDREN: false,
-        is_USER_ORGUNIT_GRANDCHILDREN: false,
-    })
+    // Server data for the org-unit pickers follows the selected data source.
+    const { data: currentUserInfoAndOrgUnitsData } = useOrgUnitMetadata(selectedDataSourceDetails)
 
-    useEffect(() => {
-        if (data) {
-            setUserDatails(data)
-            setAuthorities(data.me.authorities)
-        }
-    }, [data])
     // Hooks must run before any early return.
     const engine = useDataEngine()
 
-    if (loading) return <div>Loading...</div>
-    if (error) return <div>Error loading user authorities</div>
+    if (isMeLoading) return <LoadingState fullScreen />
+    if (meError || !me) return <ErrorState error={meError} onRetry={() => void refetchMe()} />
 
     type fetchAnalyticsDataProps = {
         dimension: any
@@ -267,8 +237,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             const filter = getAnalyticsFilter({
                 isAnalyticsApiUsedInMap,
                 selectedPeriodsOnMap,
-                isUseCurrentUserOrgUnits,
-                isSetPredifinedUserOrgUnits,
                 orgUnitIds,
                 orgUnitLevelIds,
                 orgUnitGroupIds,
@@ -533,32 +501,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
     }
 
-    const fetchSingleOrgUnitName = async (orgUnitId: string, instance: DataSourceFormFields) => {
-        if (instance.isCurrentInstance) {
-            // Internal request via engine.query
-            const query = {
-                organisationUnit: {
-                    resource: `organisationUnits/${orgUnitId}`,
-                    params: {
-                        fields: 'displayName',
-                    },
-                },
-            }
-            const result = await engine.query(query)
-            return result.organisationUnit.displayName
-        } else {
-            // External request via axios
-            const response = await axios.get(`${instance.url}/api/organisationUnits/${orgUnitId}`, {
-                headers: {
-                    Authorization: `ApiToken ${instance.token}`,
-                },
-                params: {
-                    fields: 'displayName',
-                },
-            })
-            return response.data.displayName
-        }
-    }
+    const fetchSingleOrgUnitName = (orgUnitId: string, instance: DataSourceFormFields) =>
+        queryClient.fetchQuery(orgUnitNameQuery(engine, instance, orgUnitId))
 
     return (
         <AuthContext.Provider
@@ -595,8 +539,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 setSelectedDimensionItemType,
                 selectedDataSourceOption,
                 setSelectedDataSourceOption,
-                currentUserInfoAndOrgUnitsData,
-                setCurrentUserInfoAndOrgUnitsData,
                 selectedDataSourceDetails,
                 setSelectedDataSourceDetails,
                 dataItemsData,
@@ -614,28 +556,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 setSelectedVisualsForDashboard,
                 setAnalyticsData,
                 setAnalyticsQuery,
-                selectedOrgUnits,
-                setSelectedOrgUnits,
-                selectedLevel,
-                setSelectedLevel,
-                userDatails,
-                authorities,
+                userDatails: { me },
+                authorities: me.authorities,
+                ...orgUnitSelection,
+                currentUserInfoAndOrgUnitsData,
                 analyticsDimensions,
                 setAnalyticsDimensions,
                 fetchAnalyticsData,
                 analyticsData,
                 isFetchAnalyticsDataLoading,
                 fetchAnalyticsDataError,
-                setSelectedOrganizationUnits,
-                selectedOrganizationUnits,
                 isUseCurrentUserOrgUnits,
-                setIsUseCurrentUserOrgUnits,
-                selectedOrganizationUnitsLevels,
-                setSelectedOrganizationUnitsLevels,
-                selectedOrgUnitGroups,
-                setSelectedOrgUnitGroups,
                 isSetPredifinedUserOrgUnits,
-                setIsSetPredifinedUserOrgUnits,
                 analyticsQuery,
                 selectedChartType,
                 setSelectedChartType,

@@ -1,89 +1,124 @@
-import { useAuthorities } from "../context/AuthContext"
-import { dimensionItemTypes } from '../constants/dimensionItemTypes';
-import { useSystemInfo } from "../services/fetchSystemInfo";
-import { chartComponents } from "../constants/systemCharts";
-import { systemDefaultColorPalettes } from "../constants/colorPalettes";
-import { currentInstanceId } from "../constants/currentInstanceInfo";
+import { useApplicationTitle } from '@/features/system'
+import { useAuthorities } from '../context/AuthContext'
+import { dimensionItemTypes } from '../constants/dimensionItemTypes'
+import { chartComponents } from '../constants/systemCharts'
+import { systemDefaultColorPalettes } from '../constants/colorPalettes'
+import { currentInstanceId } from '../constants/currentInstanceInfo'
 
 type resetAnalyticsStatesToDefaultValuesParams = {
-    isBeingUsedInMap?:boolean
+    isBeingUsedInMap?: boolean
 }
 
+export const useResetAnalyticsStatesToDefault = () => {
+    const {
+        setAnalyticsPayloadDeterminer,
+        setCurrentBasemap,
+        setGeoFeaturesData,
+        setAnalyticsMapData,
+        setMetaMapData,
+        selectedColorPalette,
+        currentUserInfoAndOrgUnitsData,
+        setSelectedDataSourceOption,
+        setSelectedVisualSettings,
+        setVisualsColorPalettes,
+        setIsUseCurrentUserOrgUnits,
+        setSelectedOrganizationUnits,
+        setSelectedOrgUnits,
+        setSelectedOrgUnitGroups,
+        setSelectedOrganizationUnitsLevels,
+        setSelectedLevel,
+        setIsSetPredifinedUserOrgUnits,
+        setAnalyticsDimensions,
+        setSelectedChartType,
+        setSelectedDimensionItemType,
+        setSelectedDataSourceDetails,
+        setAnalyticsData,
+        setMetaDataLabels,
+        setAnalyticsQuery,
+    } = useAuthorities()
+    const applicationTitle = useApplicationTitle()
+    const defaultUserOrgUnit =
+        currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName
 
-export const useResetAnalyticsStatesToDefault = ()=>{
-  const { setAnalyticsPayloadDeterminer,setCurrentBasemap, setGeoFeaturesData,setAnalyticsMapData,setMetaMapData, selectedColorPalette,currentUserInfoAndOrgUnitsData, setSelectedDataSourceOption,setSelectedVisualSettings,setVisualsColorPalettes,setIsUseCurrentUserOrgUnits,setSelectedOrganizationUnits,setSelectedOrgUnits,setSelectedOrgUnitGroups,setSelectedOrganizationUnitsLevels,setSelectedLevel,setIsSetPredifinedUserOrgUnits,setAnalyticsDimensions,setSelectedChartType,setSelectedDimensionItemType,setSelectedDataSourceDetails,setAnalyticsData,setMetaDataLabels,setAnalyticsQuery} =   useAuthorities()
-  const { data: systemInfo } = useSystemInfo();
-  const defaultUserOrgUnit = currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName;
- 
-      /// function to clear reset to default values
-      function resetAnalyticsStatesToDefaultValues({isBeingUsedInMap}:resetAnalyticsStatesToDefaultValuesParams = {}) {
-        setSelectedDimensionItemType(dimensionItemTypes[0]);
+    /// function to clear reset to default values
+    function resetAnalyticsStatesToDefaultValues({
+        isBeingUsedInMap,
+    }: resetAnalyticsStatesToDefaultValuesParams = {}) {
+        setSelectedDimensionItemType(dimensionItemTypes[0])
         setSelectedDataSourceDetails({
-            instanceName: systemInfo?.title?.applicationTitle || "", // Fallback to an empty string if undefined
+            instanceName: applicationTitle, // Fallback to an empty string if undefined
             isCurrentInstance: true,
-        });
-        setAnalyticsData(null);
+        })
+        setAnalyticsData(null)
         setMetaDataLabels({})
-        setSelectedChartType(chartComponents[0]?.type);
-        setAnalyticsQuery(null);
-        setAnalyticsDimensions({ dx: [], pe: ['LAST_12_MONTHS'] });
+        setSelectedChartType(chartComponents[0]?.type)
+        setAnalyticsQuery(null)
+        setAnalyticsDimensions({ dx: [], pe: ['LAST_12_MONTHS'] })
         setIsSetPredifinedUserOrgUnits({
             is_USER_ORGUNIT: true,
             is_USER_ORGUNIT_CHILDREN: false,
-            is_USER_ORGUNIT_GRANDCHILDREN: false
-        });
+            is_USER_ORGUNIT_GRANDCHILDREN: false,
+        })
         setAnalyticsPayloadDeterminer({
-            Columns: ["Data"],
-            Rows: ["Period"],
-            Filter: ["Organisation unit"],
-          })
-        setIsUseCurrentUserOrgUnits(true);
-        setSelectedOrganizationUnits([]);
-        setSelectedOrgUnits([]);
-        setSelectedOrgUnitGroups([]);
-        setSelectedOrganizationUnitsLevels([]);
-        setSelectedLevel([]);
-        setVisualsColorPalettes(systemDefaultColorPalettes[0] || []);
-        setSelectedVisualSettings({ backgroundColor: '#ffffff', visualColorPalette: selectedColorPalette, fillColor: "#000000", XAxisSettings: { color: "#000000", fontSize: 12 }, YAxisSettings: { color: "#000000", fontSize: 12 } });
-        setSelectedDataSourceOption(currentInstanceId);
-        if(isBeingUsedInMap)
-        {
+            Columns: ['Data'],
+            Rows: ['Period'],
+            Filter: ['Organisation unit'],
+        })
+        setIsUseCurrentUserOrgUnits(true)
+        setSelectedOrganizationUnits([])
+        setSelectedOrgUnits([])
+        setSelectedOrgUnitGroups([])
+        setSelectedOrganizationUnitsLevels([])
+        setSelectedLevel([])
+        setVisualsColorPalettes(systemDefaultColorPalettes[0] || [])
+        setSelectedVisualSettings({
+            backgroundColor: '#ffffff',
+            visualColorPalette: selectedColorPalette,
+            fillColor: '#000000',
+            XAxisSettings: { color: '#000000', fontSize: 12 },
+            YAxisSettings: { color: '#000000', fontSize: 12 },
+        })
+        setSelectedDataSourceOption(currentInstanceId)
+        if (isBeingUsedInMap) {
             setGeoFeaturesData([])
             setAnalyticsMapData([])
             setMetaMapData([])
-            setCurrentBasemap("osm-light")
+            setCurrentBasemap('osm-light')
         }
     }
     ///
     function resetOtherValuesToDefaultExceptDataSource() {
-        setSelectedDimensionItemType(dimensionItemTypes[0]);
-        setAnalyticsData(null);
+        setSelectedDimensionItemType(dimensionItemTypes[0])
+        setAnalyticsData(null)
         setMetaDataLabels({})
-        setSelectedChartType(chartComponents[0]?.type);
-        setAnalyticsQuery(null);
-        setAnalyticsDimensions({ dx: [], pe: ['LAST_12_MONTHS'] });
+        setSelectedChartType(chartComponents[0]?.type)
+        setAnalyticsQuery(null)
+        setAnalyticsDimensions({ dx: [], pe: ['LAST_12_MONTHS'] })
         setIsSetPredifinedUserOrgUnits({
             is_USER_ORGUNIT: true,
             is_USER_ORGUNIT_CHILDREN: false,
-            is_USER_ORGUNIT_GRANDCHILDREN: false
-        });
+            is_USER_ORGUNIT_GRANDCHILDREN: false,
+        })
         setAnalyticsPayloadDeterminer({
-            Columns: ["Data"],
-            Rows: ["Period"],
-            Filter: ["Organisation unit"],
-          })
-        setIsUseCurrentUserOrgUnits(true);
-        setSelectedOrganizationUnits([]);
-        setSelectedOrgUnits([]);
-        setSelectedOrgUnitGroups([]);
-        setSelectedOrganizationUnitsLevels([]);
-        setSelectedLevel([]);
-        setVisualsColorPalettes(systemDefaultColorPalettes[0] || []);
-        setSelectedVisualSettings({ backgroundColor: '#ffffff', visualColorPalette: selectedColorPalette, fillColor: "#000000", XAxisSettings: { color: "#000000", fontSize: 12 }, YAxisSettings: { color: "#000000", fontSize: 12 } });
-
+            Columns: ['Data'],
+            Rows: ['Period'],
+            Filter: ['Organisation unit'],
+        })
+        setIsUseCurrentUserOrgUnits(true)
+        setSelectedOrganizationUnits([])
+        setSelectedOrgUnits([])
+        setSelectedOrgUnitGroups([])
+        setSelectedOrganizationUnitsLevels([])
+        setSelectedLevel([])
+        setVisualsColorPalettes(systemDefaultColorPalettes[0] || [])
+        setSelectedVisualSettings({
+            backgroundColor: '#ffffff',
+            visualColorPalette: selectedColorPalette,
+            fillColor: '#000000',
+            XAxisSettings: { color: '#000000', fontSize: 12 },
+            YAxisSettings: { color: '#000000', fontSize: 12 },
+        })
     }
 
-
-
-    return {resetAnalyticsStatesToDefaultValues,resetOtherValuesToDefaultExceptDataSource }
+    return { resetAnalyticsStatesToDefaultValues, resetOtherValuesToDefaultExceptDataSource }
 }

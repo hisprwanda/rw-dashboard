@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import { MultiSelectField, MultiSelectOption, CircularLoader } from '@dhis2/ui'
+import { MultiSelectField, MultiSelectOption } from '@dhis2/ui'
 import { useAuthorities } from '../../../..//context/AuthContext'
-import { useOrgUnitData } from '../../../../services/fetchOrgunitData'
 
 interface OrganizationUnitGroupProps {
     isUseCurrentUserOrgUnits: boolean
@@ -12,16 +11,6 @@ const OrganizationUnitGroup: React.FC<OrganizationUnitGroupProps> = ({
 }) => {
     const { selectedOrgUnitGroups, setSelectedOrgUnitGroups, currentUserInfoAndOrgUnitsData } =
         useAuthorities()
-
-    const { error, loading } = useOrgUnitData()
-
-    if (loading) {
-        return <CircularLoader />
-    }
-
-    if (error) {
-        return <p className="text-red-500">Error: {error.message}</p>
-    }
 
     const orgUnitGroups =
         currentUserInfoAndOrgUnitsData?.orgUnitGroups?.organisationUnitGroups || []

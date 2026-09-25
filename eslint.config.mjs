@@ -51,6 +51,11 @@ export default tseslint.config(
             'react/no-unescaped-entities': 'warn',
             'react/display-name': 'warn',
             'react-hooks/exhaustive-deps': 'warn',
+            // The DHIS2 data engine is an app-wide singleton, not a query input.
+            '@tanstack/query/exhaustive-deps': [
+                'error',
+                { allowlist: { variables: ['engine'], types: ['DataEngine'] } },
+            ],
             '@typescript-eslint/no-empty-object-type': 'warn',
             '@typescript-eslint/no-unused-expressions': 'warn',
             'no-empty': 'warn',

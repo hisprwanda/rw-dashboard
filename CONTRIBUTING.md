@@ -131,6 +131,17 @@ Copy `.env.example` to `.env`. Read them only through `env` from
 - No `@ts-ignore` / `@ts-nocheck`. If truly unavoidable, `@ts-expect-error` with a reason.
 - Type DHIS2 payloads in `shared/types/dhis2.types.ts` or the feature's `types/`.
 
+## Dependencies
+
+`@dhis2/app-runtime` and `@dhis2/ui` must resolve to a **single copy**, the same version
+the platform's `@dhis2/app-shell` uses. Two copies means two React contexts, and the
+platform header crashes with "No QueryClient set". After upgrading any `@dhis2/*` package:
+
+```
+npx yarn-deduplicate --scopes @dhis2 @dhis2-ui @tanstack && yarn
+rm -rf node_modules/.vite   # drop Vite's cached pre-bundled deps
+```
+
 ## Quality gates
 
 ```

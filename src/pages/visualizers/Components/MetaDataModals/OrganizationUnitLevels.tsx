@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { MultiSelectField, MultiSelectOption, CircularLoader } from '@dhis2/ui'
+import { MultiSelectField, MultiSelectOption } from '@dhis2/ui'
 import { useAuthorities } from '../../../../context/AuthContext'
-import { useOrgUnitData } from '../../../../services/fetchOrgunitData'
 
 interface OrganizationUnitLevelsProps {
     isUseCurrentUserOrgUnits: boolean
@@ -12,7 +11,6 @@ const OrganizationUnitLevels: React.FC<OrganizationUnitLevelsProps> = ({
     isUseCurrentUserOrgUnits,
     isDataModalBeingUsedInMap,
 }) => {
-    const { data, error, loading } = useOrgUnitData()
     const {
         currentUserInfoAndOrgUnitsData,
         setSelectedOrganizationUnitsLevels,
@@ -22,14 +20,6 @@ const OrganizationUnitLevels: React.FC<OrganizationUnitLevelsProps> = ({
     } = useAuthorities()
 
     // states
-
-    if (loading) {
-        return <CircularLoader />
-    }
-
-    if (error) {
-        return <p className="text-red-500">Error: {error.message}</p>
-    }
 
     const orgUnitLevels =
         currentUserInfoAndOrgUnitsData?.orgUnitLevels?.organisationUnitLevels || []

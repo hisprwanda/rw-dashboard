@@ -1,4 +1,5 @@
-'use client'
+import { useApplicationTitle } from '@/features/system'
+;('use client')
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Button from '../../components/Button'
@@ -8,17 +9,15 @@ import { DataModal, OrganizationModal, PeriodModal } from '../visualizers/Compon
 import { useAuthorities } from '../../context/AuthContext'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs'
 import SaveVisualTypeForm from '../visualizers/Components/SaveVisualTypeForm'
+import { useOrgUnitMetadata } from '@/features/org-units'
 import { useParams } from 'react-router-dom'
 import { useFetchSingleVisualData } from '../../services/fetchVisuals'
 import { formatAnalyticsDimensions } from '../../lib/formatAnalyticsDimensions'
-import { useOrgUnitData } from '../../services/fetchOrgunitData'
 import { useDataItems } from '../../services/fetchDataItems'
 import { chartComponents } from '../../constants/systemCharts'
 import GeneralChartsStyles from '../visualizers/Components/GeneralChartsOptions'
 import { systemDefaultColorPalettes } from '../../constants/colorPalettes'
 import { useExternalDataItems } from '../../services/useExternalDataItems'
-import { useSystemInfo } from '../../services/fetchSystemInfo'
-import { useExternalOrgUnitData } from '../../services/fetchExternalOrgUnit'
 import { currentInstanceId } from '../../constants/currentInstanceInfo'
 import debounce from 'lodash/debounce'
 import { dimensionItemTypes } from '../../constants/dimensionItemTypes'
@@ -27,13 +26,12 @@ import ReportBulletinLanding from './components/ReportBulletinLanding'
 
 function ReportPage() {
     const { id: visualId } = useParams()
-    const { data: systemInfo } = useSystemInfo()
+    const applicationTitle = useApplicationTitle()
     const {
         setDataItemsDataPage,
         selectedDataSourceOption,
         setSelectedDataSourceOption,
         currentUserInfoAndOrgUnitsData,
-        setCurrentUserInfoAndOrgUnitsData,
         dataItemsData,
         selectedDataSourceDetails,
         setSelectedDataSourceDetails,
@@ -68,17 +66,13 @@ function ReportPage() {
         selectedColorPalette,
         selectedDimensionItemType,
     } = useAuthorities()
+    const { isLoading: orgUnitLoading, error: fetchOrgUnitError } =
+        useOrgUnitMetadata(selectedDataSourceDetails)
     const {
         data: singleSavedVisualData,
         isError,
         loading: isFetchSingleVisualLoading,
     } = useFetchSingleVisualData(visualId)
-    const {
-        loading: orgUnitLoading,
-        error: fetchOrgUnitError,
-        data: orgUnitsData,
-        fetchCurrentUserInfoAndOrgUnitData,
-    } = useOrgUnitData()
     const {
         error: dataItemsFetchError,
         loading: isFetchCurrentInstanceDataItemsLoading,
@@ -90,7 +84,6 @@ function ReportPage() {
         error,
         loading: isFetchExternalInstanceDataItemsLoading,
     } = useExternalDataItems()
-    const { fetchExternalUserInfoAndOrgUnitData } = useExternalOrgUnitData()
     const defaultUserOrgUnit =
         currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName
     const { data: savedDataSource, loading } = useDataSourceData()
@@ -109,7 +102,7 @@ function ReportPage() {
     function resetToDefaultValues() {
         setSelectedDimensionItemType(dimensionItemTypes[0])
         setSelectedDataSourceDetails({
-            instanceName: systemInfo?.title?.applicationTitle || '', // Fallback to an empty string if undefined
+            instanceName: applicationTitle, // Fallback to an empty string if undefined
             isCurrentInstance: true,
         })
         setAnalyticsData(null)
@@ -145,7 +138,6 @@ function ReportPage() {
             resetToDefaultValues()
             /// if no visual created , fetch data of current instance
             fetchCurrentInstanceData(selectedDimensionItemType)
-            fetchCurrentUserAndOrgUnitData()
         }
     }, [visualId])
 
@@ -192,12 +184,6 @@ function ReportPage() {
         // setDataSubmitted(false);
     }
 
-    /// fetch current user and Organization unit
-    const fetchCurrentUserAndOrgUnitData = async () => {
-        const result = await fetchCurrentUserInfoAndOrgUnitData()
-        setCurrentUserInfoAndOrgUnitsData(result)
-    }
-
     // keepUp with selected data source
     function keepUpWithSelectedDataSource() {
         const details = selectedDataSourceDetailsRef.current
@@ -207,10 +193,8 @@ function ReportPage() {
         // Proceed with using the latest `details`
         if (details.isCurrentInstance) {
             fetchCurrentInstanceData(selectedDimensionItemType)
-            fetchCurrentUserAndOrgUnitData()
         } else if (details.url && details.token) {
             fetchExternalDataItems(details.url, details.token, selectedDimensionItemType)
-            fetchExternalUserInfoAndOrgUnitData(details.url, details.token)
         } else {
             console.error('Invalid data source details: Missing URL or token.')
         }

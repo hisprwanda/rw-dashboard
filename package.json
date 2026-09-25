@@ -20,7 +20,7 @@
   "devDependencies": {
     "@dhis2/cli-app-scripts": "^12.11.5",
     "@eslint/js": "^9.30",
-    "@tanstack/eslint-plugin-query": "^5.53.0",
+    "@tanstack/eslint-plugin-query": "^5.91",
     "@types/crypto-js": "^4.2.2",
     "@types/jest": "^27",
     "@types/leaflet": "^1.9.16",
@@ -45,7 +45,7 @@
     "typescript-eslint": "^8.70.1"
   },
   "dependencies": {
-    "@dhis2/app-runtime": "^3.10.6",
+    "@dhis2/app-runtime": "^3.17.4",
     "@dhis2/d2-i18n": "^1.2.0",
     "@dhis2/ui": "^10.17.0",
     "@emotion/react": "^11.13.3",

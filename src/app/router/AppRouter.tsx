@@ -1,7 +1,7 @@
 import { lazy, Suspense, type ComponentType, type LazyExoticComponent } from 'react'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import MainLayout from '@/components/layout/MainLayout'
-import ProtectedRoute from '@/routes/ProtectedRoute'
+import { RequireAuthority } from '@/features/auth'
 import { LoadingState } from '@/shared/components'
 
 // Pages are code-split: each route downloads its code on first visit.
@@ -53,17 +53,17 @@ export const AppRouter = () => (
             <Route
                 path="admin"
                 element={
-                    <ProtectedRoute requiredAuthorities={['F_SYSTEM_SETTING']}>
+                    <RequireAuthority authorities={['F_SYSTEM_SETTING']}>
                         {page(AdminPage)}
-                    </ProtectedRoute>
+                    </RequireAuthority>
                 }
             />
             <Route
                 path="user"
                 element={
-                    <ProtectedRoute requiredAuthorities={['M_dhis-web-dashboard']}>
+                    <RequireAuthority authorities={['M_dhis-web-dashboard']}>
                         {page(UserPage)}
-                    </ProtectedRoute>
+                    </RequireAuthority>
                 }
             />
         </Routes>

@@ -1,3 +1,4 @@
+import { useApplicationTitle } from '@/features/system'
 import { useDataEngine, useDataQuery } from '@dhis2/app-runtime'
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useCallback, useRef, useState } from 'react'
@@ -14,11 +15,8 @@ import {
     formatSelectedOrganizationUnit,
 } from '../lib/formatCurrentUserOrgUnit'
 import { currentInstanceId } from '../constants/currentInstanceInfo'
-import { useSystemInfo } from './fetchSystemInfo'
 import { useDataItems } from './fetchDataItems'
 import { useExternalDataItems } from './useExternalDataItems'
-import { useExternalOrgUnitData } from './fetchExternalOrgUnit'
-import { useOrgUnitData } from './fetchOrgunitData'
 import { analyticsPayloadDeterminerTypes } from '../types/analyticsTypes'
 import { env } from '@/shared/constants/env'
 
@@ -71,9 +69,7 @@ export const useFetchSingleVisualData = (visualId: string | undefined) => {
         loading: isFetchExternalInstanceDataItemsLoading,
     } = useExternalDataItems()
 
-    const { fetchExternalUserInfoAndOrgUnitData } = useExternalOrgUnitData()
-    const { fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData()
-    const { data: systemInfo } = useSystemInfo()
+    const applicationTitle = useApplicationTitle()
     const { data: savedDataSource } = useDataSourceData()
 
     const {
@@ -97,7 +93,6 @@ export const useFetchSingleVisualData = (visualId: string | undefined) => {
         setBackedSelectedItems,
         fetchAnalyticsData,
         selectedDimensionItemType,
-        setCurrentUserInfoAndOrgUnitsData,
         setIsUseCurrentUserOrgUnits,
     } = useAuthorities()
 
@@ -138,7 +133,7 @@ export const useFetchSingleVisualData = (visualId: string | undefined) => {
                 setDataSourceChangeLoading(true)
                 if (dataSourceId === currentInstanceId) {
                     const currentInstanceDetails = {
-                        instanceName: systemInfo?.title?.applicationTitle || '',
+                        instanceName: applicationTitle,
                         isCurrentInstance: true,
                     }
                     // clear existing analytics data
@@ -158,8 +153,6 @@ export const useFetchSingleVisualData = (visualId: string | undefined) => {
                     // fetch necessary data for selected instance
                     setSelectedDataSourceDetails(currentInstanceDetails)
                     await fetchCurrentInstanceData(selectedDimensionItemType)
-                    const result = await fetchCurrentUserInfoAndOrgUnitData()
-                    setCurrentUserInfoAndOrgUnitsData(result)
                 } else if (dataSourceDetails) {
                     // clear existing analytics data
                     setAnalyticsData([])
@@ -181,26 +174,19 @@ export const useFetchSingleVisualData = (visualId: string | undefined) => {
                         dataSourceDetails.token,
                         selectedDimensionItemType
                     )
-                    await fetchExternalUserInfoAndOrgUnitData(
-                        dataSourceDetails.url,
-                        dataSourceDetails.token
-                    )
                 }
             } finally {
                 setDataSourceChangeLoading(false)
             }
         },
         [
-            systemInfo,
+            applicationTitle,
             selectedDimensionItemType,
             fetchCurrentInstanceData,
-            fetchCurrentUserInfoAndOrgUnitData,
             fetchExternalDataItems,
-            fetchExternalUserInfoAndOrgUnitData,
             fetchAnalyticsData,
             setAnalyticsData,
             setMetaDataLabels,
-            setCurrentUserInfoAndOrgUnitsData,
             setSelectedDataSourceDetails,
         ]
     )

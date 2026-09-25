@@ -1,6 +1,9 @@
 import { useAuthorities } from '../../../../context/AuthContext'
+import { useDataEngine } from '@dhis2/app-runtime'
 import { CircularLoader } from '@dhis2/ui'
+import { useQueryClient } from '@tanstack/react-query'
 import React, { useState, useEffect, useCallback } from 'react'
+import { orgUnitChildrenQuery } from '@/features/org-units'
 
 const CustomOrganisationUnitTree = ({
     apiUrl,
@@ -17,6 +20,8 @@ const CustomOrganisationUnitTree = ({
     const [loading, setLoading] = useState({})
     const [error, setError] = useState(null)
     const [isOpenRealParent, setIsOpenRealParent] = useState(false)
+    const engine = useDataEngine()
+    const queryClient = useQueryClient()
 
     // Fetch organization units with correct query parameters
     const fetchOrgUnits = useCallback(
@@ -24,34 +29,22 @@ const CustomOrganisationUnitTree = ({
             try {
                 setLoading((prev) => ({ ...prev, [parentId]: true }))
 
-                const params = {
-                    fields: 'children[id,path,displayName]',
-                }
-
-                const queryString = new URLSearchParams(params).toString()
-
-                const response = await fetch(
-                    `${apiUrl}/api/organisationUnits/${parentId}?${queryString}`,
-                    {
-                        headers: {
-                            Authorization: `ApiToken ${token}`,
-                        },
-                    }
+                // Cached per instance + parent, shared with every other tree.
+                const children = await queryClient.fetchQuery(
+                    orgUnitChildrenQuery(
+                        engine,
+                        { isCurrentInstance: false, url: apiUrl, token },
+                        parentId
+                    )
                 )
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`)
-                }
-
-                const data = await response.json()
 
                 // Update tree data with new children
                 setTreeData((prev) => ({
                     ...prev,
-                    [parentId]: data.children || [],
+                    [parentId]: children,
                 }))
 
-                return data.children || []
+                return children
             } catch (err) {
                 setError(`Failed to fetch organization units: ${err.message}`)
                 return []
@@ -63,7 +56,7 @@ const CustomOrganisationUnitTree = ({
                 })
             }
         },
-        [apiUrl, token]
+        [apiUrl, token, engine, queryClient]
     )
 
     // Initialize tree with root node

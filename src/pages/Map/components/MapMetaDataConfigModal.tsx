@@ -1,3 +1,4 @@
+import { useOrgUnitMetadata } from '@/features/org-units'
 import { useEffect, useState } from 'react'
 
 import { Button } from '../../../components/ui/button'
@@ -26,7 +27,6 @@ import {
 import { useAuthorities } from '../../../context/AuthContext'
 import { useDataItems } from '../../../services/fetchDataItems'
 import { useExternalDataItems } from '../../../services/useExternalDataItems'
-import { useOrgUnitData } from '../../../services/fetchOrgunitData'
 import { formatAnalyticsDimensions } from '../../../lib/formatAnalyticsDimensions'
 import { useRunGeoFeatures } from '../../../services/maps'
 import { getSelectedOrgUnitsWhenUsingMap } from '../../../lib/getAnalyticsFilters'
@@ -50,19 +50,12 @@ export function MapMetaDataConfigModal({
 }: MapMetaDataConfigModalProps) {
     const { fetchGeoFeatures, loading: isFetchGeoDataLoading } = useRunGeoFeatures()
     const {
-        loading: orgUnitLoading,
-        error: fetchOrgUnitError,
-        data: orgUnitsData,
-        fetchCurrentUserInfoAndOrgUnitData,
-    } = useOrgUnitData()
-    const {
         subDataItemsData,
         setDataItemsDataPage,
         dataItemsDataPage,
         selectedDataSourceOption,
         setSelectedDataSourceOption,
         currentUserInfoAndOrgUnitsData,
-        setCurrentUserInfoAndOrgUnitsData,
         dataItemsData,
         selectedDataSourceDetails,
         setSelectedDataSourceDetails,
@@ -83,6 +76,8 @@ export function MapMetaDataConfigModal({
         selectedOrganizationUnitsLevels,
         fetchAnalyticsData,
     } = useAuthorities()
+    const { isLoading: orgUnitLoading, error: fetchOrgUnitError } =
+        useOrgUnitMetadata(selectedDataSourceDetails)
     const {
         error: dataItemsFetchError,
         loading: isFetchCurrentInstanceDataItemsLoading,
@@ -118,17 +113,6 @@ export function MapMetaDataConfigModal({
     let selectedPeriodsOnMap = []
     selectedPeriodsOnMap.push(`pe:${analyticsDimensions?.pe?.join(';')}`)
     const [hasError, setHasError] = useState(true)
-
-    /// fetch current user and Organization unit
-    const fetchCurrentUserAndOrgUnitData = async () => {
-        const result = await fetchCurrentUserInfoAndOrgUnitData()
-
-        setCurrentUserInfoAndOrgUnitsData(result)
-    }
-
-    useEffect(() => {
-        fetchCurrentUserAndOrgUnitData()
-    }, [])
 
     const tabs = [
         { id: 'data', label: 'Data' },

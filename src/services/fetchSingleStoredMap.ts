@@ -1,3 +1,4 @@
+import { useApplicationTitle } from '@/features/system'
 import { useDataEngine } from '@dhis2/app-runtime'
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useCallback, useRef, useState } from 'react'
@@ -14,11 +15,8 @@ import {
     formatSelectedOrganizationUnit,
 } from '../lib/formatCurrentUserOrgUnit'
 import { currentInstanceId } from '../constants/currentInstanceInfo'
-import { useSystemInfo } from './fetchSystemInfo'
 import { useDataItems } from './fetchDataItems'
 import { useExternalDataItems } from './useExternalDataItems'
-import { useExternalOrgUnitData } from './fetchExternalOrgUnit'
-import { useOrgUnitData } from './fetchOrgunitData'
 import { useRunGeoFeatures } from './maps'
 import { getSelectedOrgUnitsWhenUsingMap } from '../lib/getAnalyticsFilters'
 import { env } from '@/shared/constants/env'
@@ -71,9 +69,7 @@ export const useFetchSingleMapData = (mapId: string | undefined) => {
         loading: isFetchExternalInstanceDataItemsLoading,
     } = useExternalDataItems()
 
-    const { fetchExternalUserInfoAndOrgUnitData } = useExternalOrgUnitData()
-    const { fetchCurrentUserInfoAndOrgUnitData } = useOrgUnitData()
-    const { data: systemInfo } = useSystemInfo()
+    const applicationTitle = useApplicationTitle()
     const { data: savedDataSource } = useDataSourceData()
 
     const {
@@ -101,7 +97,6 @@ export const useFetchSingleMapData = (mapId: string | undefined) => {
         setIsUseCurrentUserOrgUnits,
         fetchAnalyticsData,
         selectedDimensionItemType,
-        setCurrentUserInfoAndOrgUnitsData,
     } = useAuthorities()
 
     // Always call hooks in the same order; the query simply stays idle without an id.
@@ -162,7 +157,7 @@ export const useFetchSingleMapData = (mapId: string | undefined) => {
                 const isAnalyticsApiUsedInMap = true
                 if (dataSourceId === currentInstanceId) {
                     const currentInstanceDetails = {
-                        instanceName: systemInfo?.title?.applicationTitle || '',
+                        instanceName: applicationTitle,
                         isCurrentInstance: true,
                     }
                     setAnalyticsData([])
@@ -183,8 +178,6 @@ export const useFetchSingleMapData = (mapId: string | undefined) => {
                     })
                     setSelectedDataSourceDetails(currentInstanceDetails)
                     await fetchCurrentInstanceData(selectedDimensionItemType)
-                    const result = await fetchCurrentUserInfoAndOrgUnitData()
-                    setCurrentUserInfoAndOrgUnitsData(result)
                 } else if (dataSourceDetails) {
                     setAnalyticsData([])
                     setMetaDataLabels({})
@@ -201,27 +194,20 @@ export const useFetchSingleMapData = (mapId: string | undefined) => {
                         dataSourceDetails.token,
                         selectedDimensionItemType
                     )
-                    await fetchExternalUserInfoAndOrgUnitData(
-                        dataSourceDetails.url,
-                        dataSourceDetails.token
-                    )
                 }
             } finally {
                 setDataSourceChangeLoading(false)
             }
         },
         [
-            systemInfo,
+            applicationTitle,
             selectedDimensionItemType,
             fetchCurrentInstanceData,
-            fetchCurrentUserInfoAndOrgUnitData,
             fetchExternalDataItems,
-            fetchExternalUserInfoAndOrgUnitData,
             fetchAnalyticsData,
             fetchGeoFeatures,
             setAnalyticsData,
             setMetaDataLabels,
-            setCurrentUserInfoAndOrgUnitsData,
             setSelectedDataSourceDetails,
         ]
     )
