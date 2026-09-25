@@ -1,7 +1,6 @@
-export type AnalyticsFilteringBoxTypes = "Columns" | "Rows" | "Filter";
+import type { AnalyticsLayout } from '@/features/analytics'
 
-export type analyticsPayloadDeterminerTypes = {
-  Columns: string[];
-  Rows: string[];
-  Filter: string[];
-};
+export type AnalyticsFilteringBoxTypes = keyof AnalyticsLayout
+
+/** @deprecated use `AnalyticsLayout` from @/features/analytics */
+export type analyticsPayloadDeterminerTypes = AnalyticsLayout

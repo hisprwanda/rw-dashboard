@@ -23,7 +23,7 @@ import {
     PeriodItem,
     TransformedMetadata,
     transformMetadataLabels,
-} from '../../lib/formatMetaDataLabels'
+} from '@/features/analytics'
 import { VisualHeading } from './VisualHeading'
 export const LocalBarChart: React.FC<genericChartsProps> = ({
     data,
@@ -99,13 +99,13 @@ export const LocalBarChart: React.FC<genericChartsProps> = ({
     }
 
     const allPeriods = transformedMetaDataLabels
-        ? getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'periods')
+        ? getDimensionItems(transformedMetaDataLabels, 'periods')
         : []
     const allOrganizationUnit = transformedMetaDataLabels
-        ? getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'orgUnits')
+        ? getDimensionItems(transformedMetaDataLabels, 'orgUnits')
         : []
     const allDataElements = transformedMetaDataLabels
-        ? getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'dataElements')
+        ? getDimensionItems(transformedMetaDataLabels, 'dataElements')
         : []
 
     return (

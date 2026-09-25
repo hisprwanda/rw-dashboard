@@ -26,7 +26,7 @@ import {
 import { fetchTrackedEntities, fetchEvents } from './BulletinService'
 import { chartComponents } from '../../../constants/systemCharts'
 import { dimensionDataHardCoded } from '../../../constants/bulletinDimension'
-import { formatAnalyticsDimensions } from '../../../lib/formatAnalyticsDimensions'
+import { formatAnalyticsDimensions } from '@/features/analytics'
 import { Textarea } from '../../../components/ui/textarea'
 import { BulletinAreaChart } from './BulletinAreaCharts'
 

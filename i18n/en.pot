@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-09-25T10:47:45.829Z\n"
-"PO-Revision-Date: 2026-09-25T10:47:45.829Z\n"
+"POT-Creation-Date: 2026-09-25T12:30:23.902Z\n"
+"PO-Revision-Date: 2026-09-25T12:30:23.902Z\n"
 
 msgid "Dashboards"
 msgstr "Dashboards"
@@ -115,6 +115,15 @@ msgstr "New Dashboard"
 
 msgid "Modified"
 msgstr "Modified"
+
+msgid "Data source not found"
+msgstr "Data source not found"
+
+msgid "The data source of this visualization was deleted or is not shared with you."
+msgstr "The data source of this visualization was deleted or is not shared with you."
+
+msgid "Could not load this visualization"
+msgstr "Could not load this visualization"
 
 msgid "Slide"
 msgstr "Slide"

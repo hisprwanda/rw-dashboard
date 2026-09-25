@@ -1,7 +1,7 @@
 import { useDataEngine } from '@dhis2/app-runtime'
 import { useQuery } from '@tanstack/react-query'
 import type { InstanceConnection } from '@/shared/api'
-import { orgUnitMetadataQuery } from './orgUnitQueries'
+import { orgUnitMetadataQueryOptions } from './orgUnitQueryOptions'
 
 /**
  * Org-unit tree, levels, groups and the user's org units for an instance
@@ -9,5 +9,5 @@ import { orgUnitMetadataQuery } from './orgUnitQueries'
  */
 export const useOrgUnitMetadata = (instance?: InstanceConnection) => {
     const engine = useDataEngine()
-    return useQuery(orgUnitMetadataQuery(engine, instance))
+    return useQuery(orgUnitMetadataQueryOptions(engine, instance))
 }

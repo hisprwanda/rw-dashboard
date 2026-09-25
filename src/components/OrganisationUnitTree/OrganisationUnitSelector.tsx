@@ -9,7 +9,7 @@ import {
 import { useOrgUnitSelection } from '../../hooks/useOrgUnitSelection'
 import Button from '../Button'
 import { useAuthorities } from '../../context/AuthContext'
-import { formatAnalyticsDimensions } from '../../lib/formatAnalyticsDimensions'
+import { formatAnalyticsDimensions } from '@/features/analytics'
 import { IoSaveOutline } from 'react-icons/io5'
 import OrganizationUnitGroup from '../../pages/visualizers/Components/MetaDataModals/OrganizationUnitGroup'
 import OrganizationUnitLevels from '../../pages/visualizers/Components/MetaDataModals/OrganizationUnitLevels'

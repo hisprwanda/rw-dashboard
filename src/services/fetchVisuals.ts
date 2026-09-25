@@ -6,8 +6,8 @@ import { useAuthorities } from '../context/AuthContext'
 import { useDataSourceData } from '../services/DataSourceHooks'
 import {
     formatAnalyticsDimensions,
-    unFormatAnalyticsDimensions,
-} from '../lib/formatAnalyticsDimensions'
+    parseAnalyticsDimensions as unFormatAnalyticsDimensions,
+} from '@/features/analytics'
 import {
     formatCurrentUserSelectedOrgUnit,
     formatOrgUnitGroup,

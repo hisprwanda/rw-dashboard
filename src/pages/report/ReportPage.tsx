@@ -12,7 +12,7 @@ import SaveVisualTypeForm from '../visualizers/Components/SaveVisualTypeForm'
 import { useOrgUnitMetadata } from '@/features/org-units'
 import { useParams } from 'react-router-dom'
 import { useFetchSingleVisualData } from '../../services/fetchVisuals'
-import { formatAnalyticsDimensions } from '../../lib/formatAnalyticsDimensions'
+import { formatAnalyticsDimensions } from '@/features/analytics'
 import { useDataItems } from '../../services/fetchDataItems'
 import { chartComponents } from '../../constants/systemCharts'
 import GeneralChartsStyles from '../visualizers/Components/GeneralChartsOptions'
@@ -65,6 +65,7 @@ function ReportPage() {
         setVisualsColorPalettes,
         selectedColorPalette,
         selectedDimensionItemType,
+        analyticsPayloadDeterminer,
     } = useAuthorities()
     const { isLoading: orgUnitLoading, error: fetchOrgUnitError } =
         useOrgUnitMetadata(selectedDataSourceDetails)
@@ -148,10 +149,17 @@ function ReportPage() {
                 keepUpWithSelectedDataSource()
                 setAnalyticsData([])
                 setAnalyticsQuery(null)
-                fetchAnalyticsData(
-                    formatAnalyticsDimensions(analyticsDimensions),
-                    selectedDataSourceDetails
-                )
+                // Previously called with positional args, so it never ran (see Phase 4 notes).
+                fetchAnalyticsData({
+                    dimension: formatAnalyticsDimensions(analyticsDimensions),
+                    instance: selectedDataSourceDetails,
+                    analyticsPayloadDeterminer,
+                    selectedOrganizationUnits,
+                    selectedOrgUnitGroups,
+                    selectedOrganizationUnitsLevels,
+                    isUseCurrentUserOrgUnits,
+                    isSetPredifinedUserOrgUnits,
+                })
             }
         }, 500),
         [analyticsDimensions, singleSavedVisualData, visualId]

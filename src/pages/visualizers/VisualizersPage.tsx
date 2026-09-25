@@ -23,7 +23,7 @@ import i18n from '@dhis2/d2-i18n'
 import { useResetAnalyticsStatesToDefault } from '../../hooks/useResetAnalyticsStatesTDefault'
 import FilteringVisualsDragAndDrop from './Components/FilteringVisuals/FilteringVisualsDragAndDrop'
 import { GrUpdate } from 'react-icons/gr'
-import { formatAnalyticsDimensions } from '../../lib/formatAnalyticsDimensions'
+import { formatAnalyticsDimensions } from '@/features/analytics'
 function Visualizers() {
     const { id: visualId } = useParams()
     const applicationTitle = useApplicationTitle()

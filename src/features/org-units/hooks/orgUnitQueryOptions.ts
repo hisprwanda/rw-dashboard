@@ -10,7 +10,7 @@ import { orgUnitKeys } from './queryKeys'
 const TEN_MINUTES = 10 * 60 * 1000
 
 /** Shared by `useQuery` and imperative `queryClient.fetchQuery` callers. */
-export const orgUnitMetadataQuery = (engine: DataEngine, instance?: InstanceConnection) =>
+export const orgUnitMetadataQueryOptions = (engine: DataEngine, instance?: InstanceConnection) =>
     queryOptions({
         queryKey: orgUnitKeys.metadata(instance),
         queryFn: ({ signal }) =>
@@ -18,7 +18,7 @@ export const orgUnitMetadataQuery = (engine: DataEngine, instance?: InstanceConn
         staleTime: TEN_MINUTES,
     })
 
-export const orgUnitChildrenQuery = (
+export const orgUnitChildrenQueryOptions = (
     engine: DataEngine,
     instance: InstanceConnection | undefined,
     parentId: string
@@ -30,7 +30,7 @@ export const orgUnitChildrenQuery = (
         staleTime: TEN_MINUTES,
     })
 
-export const orgUnitNameQuery = (
+export const orgUnitNameQueryOptions = (
     engine: DataEngine,
     instance: InstanceConnection | undefined,
     orgUnitId: string

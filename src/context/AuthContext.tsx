@@ -3,8 +3,21 @@ import React, { createContext, useContext, useState, ReactNode } from 'react'
 import { useDataEngine } from '@dhis2/app-runtime'
 import { useQueryClient } from '@tanstack/react-query'
 import { useMe } from '@/features/auth'
-import { orgUnitNameQuery, useOrgUnitMetadata, type OrgUnitMetadata } from '@/features/org-units'
+import {
+    analyticsQueryOptions,
+    buildAnalyticsRequest,
+    getDimensionItems,
+    transformMetadataLabels,
+    type AnalyticsParams,
+} from '@/features/analytics'
+import {
+    orgUnitNameQueryOptions,
+    useOrgUnitMetadata,
+    type OrgUnitMetadata,
+    type UserOrgUnitScope,
+} from '@/features/org-units'
 import { useApplicationTitle } from '@/features/system'
+import type { InstanceConnection } from '@/shared/api'
 import { ErrorState, LoadingState } from '@/shared/components'
 import type { Me } from '@/shared/types/dhis2.types'
 import { useLegacyOrgUnitSelection } from './useLegacyOrgUnitSelection'
@@ -17,17 +30,29 @@ import {
 } from '../types/visualSettingsTypes'
 import { systemDefaultColorPalettes } from '../constants/colorPalettes'
 import { DataSourceFormFields } from '../types/DataSource'
-import axios from 'axios'
 import { dimensionItemTypesTYPES } from '../types/dimensionDataItemTypes'
 import { dimensionItemTypes } from '../constants/dimensionItemTypes'
 import { BackedSelectedItem, visualTypes } from '../types/visualType'
 import { currentInstanceId } from '../constants/currentInstanceInfo'
-import { getAnalyticsFilter } from '../lib/getAnalyticsFilters'
-import { getDimensionItems, PeriodItem, transformMetadataLabels } from '../lib/formatMetaDataLabels'
 import { analyticsPayloadDeterminerTypes } from '../types/analyticsTypes'
-import { updateQueryParams } from '../lib/payloadFormatter'
 import { BasemapType } from '../types/maps'
 import { legendTypeTypes, mapSettingsTypes } from '../types/mapFormTypes'
+
+export type FetchAnalyticsDataInput = {
+    dimension: string[]
+    instance: InstanceConnection
+    isAnalyticsApiUsedInMap?: boolean
+    selectedPeriodsOnMap?: string[]
+    /** Maps: the `ou:` dimension (see buildOrgUnitDimension). */
+    selectedOrgUnitsWhenUsingMap?: string
+    analyticsPayloadDeterminer?: analyticsPayloadDeterminerTypes
+
+    selectedOrganizationUnits?: string[]
+    selectedOrgUnitGroups?: string[]
+    selectedOrganizationUnitsLevels?: Array<string | number>
+    isUseCurrentUserOrgUnits?: boolean
+    isSetPredifinedUserOrgUnits?: UserOrgUnitScope
+}
 
 type LegacyOrgUnitSelection = ReturnType<typeof useLegacyOrgUnitSelection>
 
@@ -41,7 +66,7 @@ interface AuthContextProps extends LegacyOrgUnitSelection {
     authorities: string[]
     analyticsDimensions: any
     setAnalyticsDimensions: any
-    fetchAnalyticsData: any
+    fetchAnalyticsData: (input: FetchAnalyticsDataInput) => Promise<void>
     analyticsData: any
     setAnalyticsData: any
     isFetchAnalyticsDataLoading: any
@@ -194,305 +219,79 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (isMeLoading) return <LoadingState fullScreen />
     if (meError || !me) return <ErrorState error={meError} onRetry={() => void refetchMe()} />
 
-    type fetchAnalyticsDataProps = {
-        dimension: any
-        instance: DataSourceFormFields
-        isAnalyticsApiUsedInMap?: boolean
-        selectedPeriodsOnMap?: string[]
-        selectedOrgUnitsWhenUsingMap?: string[]
-        analyticsPayloadDeterminer?: analyticsPayloadDeterminerTypes
-
-        selectedOrganizationUnits: any[]
-        selectedOrgUnitGroups: any[]
-        selectedOrganizationUnitsLevels: any[]
-        isUseCurrentUserOrgUnits: boolean
-        isSetPredifinedUserOrgUnits: any
-    }
-
+    /**
+     * Legacy imperative entry point (kept until the builders move to features in Phases 6–7).
+     * Request building lives in @/features/analytics; this only stores results in context.
+     */
     const fetchAnalyticsData = async ({
         dimension,
         instance,
         isAnalyticsApiUsedInMap,
         selectedPeriodsOnMap = [],
-        selectedOrgUnitsWhenUsingMap = [],
-        analyticsPayloadDeterminer,
+        selectedOrgUnitsWhenUsingMap = '',
+        analyticsPayloadDeterminer: layout,
+        selectedOrganizationUnits = [],
+        selectedOrgUnitGroups = [],
+        selectedOrganizationUnitsLevels = [],
+        isUseCurrentUserOrgUnits = false,
+        isSetPredifinedUserOrgUnits = orgUnitSelection.isSetPredifinedUserOrgUnits,
+    }: FetchAnalyticsDataInput): Promise<void> => {
+        const request = buildAnalyticsRequest({
+            dimension,
+            layout,
+            orgUnit: {
+                useCurrentUserOrgUnits: isUseCurrentUserOrgUnits,
+                userOrgUnitScope: isSetPredifinedUserOrgUnits,
+                orgUnitIds: selectedOrganizationUnits,
+                levelIds: selectedOrganizationUnitsLevels,
+                groupIds: selectedOrgUnitGroups,
+            },
+            map: isAnalyticsApiUsedInMap
+                ? {
+                      periodFilter: selectedPeriodsOnMap.join(';'),
+                      orgUnitDimension: selectedOrgUnitsWhenUsingMap,
+                  }
+                : undefined,
+        })
+        if (!request) {
+            console.warn('Analytics request skipped: select data, period and org unit first.')
+            return
+        }
 
-        selectedOrganizationUnits,
-        selectedOrgUnitGroups,
-        selectedOrganizationUnitsLevels,
-        isUseCurrentUserOrgUnits,
-        isSetPredifinedUserOrgUnits,
-    }: fetchAnalyticsDataProps): Promise<void> => {
-        try {
-            // Prepare organization unit parameters
-            const orgUnitIds = selectedOrganizationUnits?.map((unit: any) => unit)?.join(';')
-            const orgUnitLevelIds = selectedOrganizationUnitsLevels
-                ?.map((unit: any) => `LEVEL-${unit}`)
-                ?.join(';')
-            const orgUnitGroupIds = selectedOrgUnitGroups
-                ?.map((item: any) => `OU_GROUP-${item}`)
-                ?.join(';')
-
-            // Get analytics filter
-            const filter = getAnalyticsFilter({
-                isAnalyticsApiUsedInMap,
-                selectedPeriodsOnMap,
-                orgUnitIds,
-                orgUnitLevelIds,
-                orgUnitGroupIds,
+        setIsFetchAnalyticsDataLoading(true)
+        setFetchAnalyticsDataError(null)
+        // staleTime 0: an explicit "Update" always re-fetches (concurrent calls still dedupe).
+        const run = (params: AnalyticsParams) =>
+            queryClient.fetchQuery({
+                ...analyticsQueryOptions(engine, instance, params),
+                staleTime: 0,
             })
 
-            // Validate required data before proceeding
-            const isDxDimensionValid = dimension.some(
-                (item) => item.startsWith('dx:') && item.split(':')[1].trim()
-            )
-            const isPeValid = isAnalyticsApiUsedInMap
-                ? filter.startsWith('pe:') && filter.split(':')[1].trim()
-                : dimension.some((item) => item.startsWith('pe:') && item.split(':')[1].trim())
-            const isOuValid = !isAnalyticsApiUsedInMap
-                ? filter.startsWith('ou:') && filter.split(':')[1].trim()
-                : true
+        try {
+            const [data, metadata] = await Promise.all([
+                run(request.dataParams),
+                run(request.metadataParams),
+            ])
+            setAnalyticsQuery(request.storedQuery)
 
-            if (!(isDxDimensionValid && isPeValid && isOuValid)) {
-                console.error('Invalid analytics parameters')
+            if (isAnalyticsApiUsedInMap) {
+                setMapAnalyticsQueryTwo(request.storedMapQuery)
+                setMetaMapData(metadata)
+                setAnalyticsMapData(data)
                 return
             }
 
-            // Set loading state
-            setIsFetchAnalyticsDataLoading(true)
-            setFetchAnalyticsDataError(null)
-
-            // Update dimensions for map if needed
-            const updatedDimension = [...dimension]
-            if (isAnalyticsApiUsedInMap) {
-                updatedDimension.push(selectedOrgUnitsWhenUsingMap)
-            }
-
-            // Create original analytics query
-            const originalAnalyticsQuery = {
-                dimension: updatedDimension,
-                filter,
-                displayProperty: 'NAME',
-                includeNumDen: true,
-            }
-            // Transform query for API execution, but not for storage
-            const transformedQueryBasedOnPayloadDeterminer = updateQueryParams(
-                originalAnalyticsQuery,
-                analyticsPayloadDeterminer
-            )
-
-            // Determine query parameters based on use case (for API execution)
-            const queryParams = isAnalyticsApiUsedInMap
-                ? {
-                      dimension: updatedDimension,
-                      filter,
-                      displayProperty: 'NAME',
-                      skipData: false,
-                      skipMeta: true,
-                  }
-                : transformedQueryBasedOnPayloadDeterminer
-            // Metadata query parameters
-            const queryParamsForMetaDataLabels = {
-                dimension: updatedDimension,
-                filter,
-                displayProperty: 'NAME',
-                includeNumDen: true,
-                skipMeta: false,
-                skipData: true,
-                includeMetadataDetails: true,
-            }
-
-            // Map-specific metadata query parameters
-            const mapMetadataQueryParams = {
-                dimension: updatedDimension,
-                filter,
-                displayProperty: 'NAME',
-                skipMeta: false,
-                skipData: true,
-                includeMetadataDetails: true,
-            }
-
-            if (instance.isCurrentInstance) {
-                // Internal request via engine.query
-                // Create query objects for execution
-                const queryForExecution = {
-                    myData: {
-                        resource: 'analytics',
-                        params: queryParams, // Use transformed params for execution
-                    },
-                    MetaDataLabels: {
-                        resource: 'analytics',
-                        params: queryParamsForMetaDataLabels,
-                    },
-                }
-
-                // Execute the query
-                const result = await engine.query(queryForExecution)
-
-                // Store original query in state (not the transformed one)
-                const analyticsQueryForStorage = {
-                    myData: {
-                        resource: 'analytics',
-                        params: originalAnalyticsQuery, // Use original params for storage
-                    },
-                    MetaDataLabels: {
-                        resource: 'analytics',
-                        params: queryParamsForMetaDataLabels,
-                    },
-                }
-                setAnalyticsQuery(analyticsQueryForStorage)
-
-                if (isAnalyticsApiUsedInMap) {
-                    // Additional query for map data
-                    const analyticsQueryTwoForExecution = {
-                        myData: {
-                            resource: 'analytics',
-                            params: mapMetadataQueryParams,
-                        },
-                    }
-
-                    const resultTwo = await engine.query(analyticsQueryTwoForExecution)
-
-                    // Store original query for map
-                    const mapAnalyticsQueryForStorage = {
-                        myData: {
-                            resource: 'analytics',
-                            params: originalAnalyticsQuery, // Use original params for storage
-                        },
-                    }
-                    setMapAnalyticsQueryTwo(mapAnalyticsQueryForStorage)
-                    setMetaMapData(resultTwo?.myData)
-                    setAnalyticsMapData(result?.myData)
-                } else {
-                    // Process regular analytics data
-                    setAnalyticsData(result?.myData)
-                    setMetaDataLabels(result?.MetaDataLabels?.metaData)
-
-                    // Update visual title and subtitle
-                    if (result?.MetaDataLabels?.metaData) {
-                        const transformedMetaDataLabels = transformMetadataLabels(
-                            result.MetaDataLabels.metaData
-                        )
-
-                        const allPeriods = transformedMetaDataLabels
-                            ? getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'periods')
-                            : []
-                        const allOrganizationUnit = transformedMetaDataLabels
-                            ? getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'orgUnits')
-                            : []
-                        const allDataElements = transformedMetaDataLabels
-                            ? getDimensionItems<PeriodItem>(
-                                  transformedMetaDataLabels,
-                                  'dataElements'
-                              )
-                            : []
-
-                        setSelectedVisualTitleAndSubTitle(
-                            (prevState: VisualTitleAndSubtitleType) => ({
-                                ...prevState,
-                                DefaultSubTitle: {
-                                    periods: allPeriods,
-                                    orgUnits: allOrganizationUnit,
-                                    dataElements: allDataElements,
-                                },
-                            })
-                        )
-                    }
-                }
-            } else {
-                // External request via axios
-                try {
-                    // Main data request - use transformed params for execution
-                    const response = await axios.get(`${instance.url}/api/analytics`, {
-                        headers: {
-                            Authorization: `ApiToken ${instance.token}`,
-                        },
-                        params: queryParams, // Use transformed params for API call
-                    })
-
-                    // Store original query in state (not the transformed one)
-                    const analyticsQueryForStorage = {
-                        myData: {
-                            resource: 'analytics',
-                            params: originalAnalyticsQuery, // Use original params for storage
-                        },
-                        MetaDataLabels: {
-                            resource: 'analytics',
-                            params: queryParamsForMetaDataLabels,
-                        },
-                    }
-
-                    setAnalyticsQuery(analyticsQueryForStorage)
-                    setAnalyticsData(response.data)
-
-                    // Get metadata for labels if not using map
-                    if (!isAnalyticsApiUsedInMap) {
-                        const metadataResponse = await axios.get(`${instance.url}/api/analytics`, {
-                            headers: {
-                                Authorization: `ApiToken ${instance.token}`,
-                            },
-                            params: queryParamsForMetaDataLabels,
-                        })
-
-                        setMetaDataLabels(metadataResponse.data?.metaData)
-
-                        // Process metadata for visual elements
-                        const transformedMetaDataLabels = transformMetadataLabels(
-                            metadataResponse.data?.metaData
-                        )
-
-                        const allPeriods = transformedMetaDataLabels
-                            ? getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'periods')
-                            : []
-                        const allOrganizationUnit = transformedMetaDataLabels
-                            ? getDimensionItems<PeriodItem>(transformedMetaDataLabels, 'orgUnits')
-                            : []
-                        const allDataElements = transformedMetaDataLabels
-                            ? getDimensionItems<PeriodItem>(
-                                  transformedMetaDataLabels,
-                                  'dataElements'
-                              )
-                            : []
-
-                        setSelectedVisualTitleAndSubTitle(
-                            (prevState: VisualTitleAndSubtitleType) => ({
-                                ...prevState,
-                                DefaultSubTitle: {
-                                    periods: allPeriods,
-                                    orgUnits: allOrganizationUnit,
-                                    dataElements: allDataElements,
-                                },
-                            })
-                        )
-                    } else {
-                        // Additional map-specific metadata request
-                        const mapMetadataResponse = await axios.get(
-                            `${instance.url}/api/analytics`,
-                            {
-                                headers: {
-                                    Authorization: `ApiToken ${instance.token}`,
-                                },
-                                params: mapMetadataQueryParams,
-                            }
-                        )
-
-                        // Store original query for map
-                        const mapAnalyticsQueryForStorage = {
-                            myData: {
-                                resource: 'analytics',
-                                params: originalAnalyticsQuery, // Use original params for storage
-                            },
-                        }
-
-                        setMapAnalyticsQueryTwo(mapAnalyticsQueryForStorage)
-                        setMetaMapData(mapMetadataResponse.data)
-                        setAnalyticsMapData(response.data)
-                    }
-                } catch (error) {
-                    console.error('Error in external API request:', error)
-                    throw error // Rethrow to be caught by outer try/catch
-                }
-            }
+            setAnalyticsData(data)
+            setMetaDataLabels(metadata.metaData)
+            const labels = transformMetadataLabels(metadata.metaData)
+            setSelectedVisualTitleAndSubTitle((prevState: VisualTitleAndSubtitleType) => ({
+                ...prevState,
+                DefaultSubTitle: {
+                    periods: getDimensionItems(labels, 'periods'),
+                    orgUnits: getDimensionItems(labels, 'orgUnits'),
+                    dataElements: getDimensionItems(labels, 'dataElements'),
+                },
+            }))
         } catch (error) {
             setFetchAnalyticsDataError(error)
             console.error('Error fetching analytics data:', error)
@@ -502,7 +301,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
 
     const fetchSingleOrgUnitName = (orgUnitId: string, instance: DataSourceFormFields) =>
-        queryClient.fetchQuery(orgUnitNameQuery(engine, instance, orgUnitId))
+        queryClient.fetchQuery(orgUnitNameQueryOptions(engine, instance, orgUnitId))
 
     return (
         <AuthContext.Provider

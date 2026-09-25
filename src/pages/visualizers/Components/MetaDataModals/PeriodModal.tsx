@@ -1,7 +1,7 @@
 import React from 'react'
 import { useEffect, useState } from 'react'
 import { useAuthorities } from '../../../../context/AuthContext'
-import { formatAnalyticsDimensions } from '../../../../lib/formatAnalyticsDimensions'
+import { formatAnalyticsDimensions } from '@/features/analytics'
 import Button from '../../../../components/Button'
 import { IoSaveOutline } from 'react-icons/io5'
 import { dimensionDataHardCoded } from '../../../../constants/bulletinDimension'

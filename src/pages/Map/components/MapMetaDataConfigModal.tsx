@@ -27,9 +27,9 @@ import {
 import { useAuthorities } from '../../../context/AuthContext'
 import { useDataItems } from '../../../services/fetchDataItems'
 import { useExternalDataItems } from '../../../services/useExternalDataItems'
-import { formatAnalyticsDimensions } from '../../../lib/formatAnalyticsDimensions'
+import { formatAnalyticsDimensions } from '@/features/analytics'
 import { useRunGeoFeatures } from '../../../services/maps'
-import { getSelectedOrgUnitsWhenUsingMap } from '../../../lib/getAnalyticsFilters'
+import { buildOrgUnitDimension } from '@/features/analytics'
 import ThematicStylesTab from './themanticLayer/ThematicStylesTab'
 import LegendControls from './LegendControls'
 
@@ -97,18 +97,12 @@ export function MapMetaDataConfigModal({
         aggregationType: 'By data element',
         showCompletedEvents: false,
     })
-    const orgUnitIds = selectedOrganizationUnits?.map((unit: any) => unit)?.join(';')
-    const orgUnitLevelIds = selectedOrganizationUnitsLevels
-        ?.map((unit: any) => `LEVEL-${unit}`)
-        ?.join(';')
-    const orgUnitGroupIds = selectedOrgUnitGroups?.map((item: any) => `OU_GROUP-${item}`)?.join(';')
-
-    const selectedOrgUnitsWhenUsingMap = getSelectedOrgUnitsWhenUsingMap({
-        isUseCurrentUserOrgUnits,
-        isSetPredifinedUserOrgUnits,
-        orgUnitIds,
-        orgUnitLevelIds,
-        orgUnitGroupIds,
+    const selectedOrgUnitsWhenUsingMap = buildOrgUnitDimension({
+        useCurrentUserOrgUnits: isUseCurrentUserOrgUnits,
+        userOrgUnitScope: isSetPredifinedUserOrgUnits,
+        orgUnitIds: selectedOrganizationUnits,
+        levelIds: selectedOrganizationUnitsLevels,
+        groupIds: selectedOrgUnitGroups,
     })
     let selectedPeriodsOnMap = []
     selectedPeriodsOnMap.push(`pe:${analyticsDimensions?.pe?.join(';')}`)

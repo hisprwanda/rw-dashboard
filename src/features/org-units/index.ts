@@ -1,8 +1,8 @@
 export {
-    orgUnitChildrenQuery,
-    orgUnitMetadataQuery,
-    orgUnitNameQuery,
-} from './hooks/orgUnitQueries'
+    orgUnitChildrenQueryOptions,
+    orgUnitMetadataQueryOptions,
+    orgUnitNameQueryOptions,
+} from './hooks/orgUnitQueryOptions'
 export { orgUnitKeys } from './hooks/queryKeys'
 export { useOrgUnitMetadata } from './hooks/useOrgUnitMetadata'
 export { useOrgUnitName } from './hooks/useOrgUnitName'

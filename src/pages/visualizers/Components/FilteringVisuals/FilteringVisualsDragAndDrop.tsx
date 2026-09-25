@@ -8,6 +8,12 @@ import {
 } from '../../../../types/analyticsTypes'
 import { useAuthorities } from '../../../../context/AuthContext'
 
+const DIMENSION_ICONS: Record<string, JSX.Element> = {
+    Data: <AiOutlineDatabase />,
+    'Organisation unit': <RiOrganizationChart />,
+    Period: <IoIosTime />,
+}
+
 const FilteringVisualsDragAndDrop = () => {
     const { analyticsPayloadDeterminer, setAnalyticsPayloadDeterminer } = useAuthorities()
     const [draggingItem, setDraggingItem] = useState<string | null>(null)
@@ -16,9 +22,9 @@ const FilteringVisualsDragAndDrop = () => {
     const handleDrop = (box: AnalyticsFilteringBoxTypes) => {
         if (!draggingItem || !sourceBox || box === sourceBox) return
 
-        setAnalyticsPayloadDeterminer((prev) => {
+        setAnalyticsPayloadDeterminer((prev: analyticsPayloadDeterminerTypes) => {
             const newState = { ...prev }
-            newState[sourceBox] = newState[sourceBox].filter((i) => i !== draggingItem)
+            newState[sourceBox] = newState[sourceBox].filter((i: string) => i !== draggingItem)
             newState[box] = [...newState[box], draggingItem]
             return newState
         })
@@ -49,15 +55,7 @@ const FilteringVisualsDragAndDrop = () => {
                                 setSourceBox(title)
                             }}
                         >
-                            <span className="text-base">
-                                {
-                                    {
-                                        Data: <AiOutlineDatabase />,
-                                        'Organisation unit': <RiOrganizationChart />,
-                                        Period: <IoIosTime />,
-                                    }[item]
-                                }
-                            </span>
+                            <span className="text-base">{DIMENSION_ICONS[item]}</span>
                             <span>{item}</span>
                         </div>
                     ))}

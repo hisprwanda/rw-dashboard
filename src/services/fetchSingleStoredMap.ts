@@ -6,8 +6,8 @@ import { useAuthorities } from '../context/AuthContext'
 import { useDataSourceData } from './DataSourceHooks'
 import {
     formatAnalyticsDimensions,
-    unFormatAnalyticsDimensions,
-} from '../lib/formatAnalyticsDimensions'
+    parseAnalyticsDimensions as unFormatAnalyticsDimensions,
+} from '@/features/analytics'
 import {
     formatCurrentUserSelectedOrgUnit,
     formatOrgUnitGroup,
@@ -18,7 +18,7 @@ import { currentInstanceId } from '../constants/currentInstanceInfo'
 import { useDataItems } from './fetchDataItems'
 import { useExternalDataItems } from './useExternalDataItems'
 import { useRunGeoFeatures } from './maps'
-import { getSelectedOrgUnitsWhenUsingMap } from '../lib/getAnalyticsFilters'
+import { buildOrgUnitDimension } from '@/features/analytics'
 import { env } from '@/shared/constants/env'
 
 interface VisualData {
@@ -131,27 +131,16 @@ export const useFetchSingleMapData = (mapId: string | undefined) => {
             let selectedPeriodsOnMap: string[] = []
             selectedPeriodsOnMap.push(`pe:${dimensions?.pe?.join(';')}`)
 
-            /// start defining selectedOrgUnitsWhenUsingMap
-            const orgUnitIds = selectedOrganizationUnits?.map((unit: any) => unit)?.join(';')
-            const orgUnitLevelIds = selectedOrganizationUnitsLevels
-                ?.map((unit: any) => `LEVEL-${unit}`)
-                ?.join(';')
-            const orgUnitGroupIds = selectedOrgUnitGroups
-                ?.map((item: any) => `OU_GROUP-${item}`)
-                ?.join(';')
-
             const isUseCurrentUserOrgUnits = Object.values(isSetPredifinedUserOrgUnits).some(
                 (value) => value === true
             )
-
-            const selectedOrgUnitsWhenUsingMap = getSelectedOrgUnitsWhenUsingMap({
-                isUseCurrentUserOrgUnits,
-                isSetPredifinedUserOrgUnits,
-                orgUnitIds,
-                orgUnitLevelIds,
-                orgUnitGroupIds,
+            const selectedOrgUnitsWhenUsingMap = buildOrgUnitDimension({
+                useCurrentUserOrgUnits: isUseCurrentUserOrgUnits,
+                userOrgUnitScope: isSetPredifinedUserOrgUnits,
+                orgUnitIds: selectedOrganizationUnits ?? [],
+                levelIds: selectedOrganizationUnitsLevels ?? [],
+                groupIds: selectedOrgUnitGroups ?? [],
             })
-            /// end defining selectedOrgUnitsWhenUsingMap
             try {
                 setDataSourceChangeLoading(true)
                 const isAnalyticsApiUsedInMap = true

@@ -1,21 +1,33 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { CircularLoader, NoticeBox } from '@dhis2/ui' // Use NoticeBox for better error display
+import i18n from '@dhis2/d2-i18n'
+import { CircularLoader, NoticeBox } from '@dhis2/ui'
+import React, { useMemo } from 'react'
+import {
+    applyLayout,
+    useAnalytics,
+    type AnalyticsLayout,
+    type StoredAnalyticsQuery,
+} from '@/features/analytics'
+import type { InstanceConnection } from '@/shared/api'
 import { chartComponents } from '../../../constants/systemCharts'
-import { VisualSettingsTypes, VisualTitleAndSubtitleType } from '../../../types/visualSettingsTypes'
 import { currentInstanceId } from '../../../constants/currentInstanceInfo'
 import { useDataSourceData } from '../../../services/DataSourceHooks'
-import { useFetchSingleChartApi } from '../../../services/fetchSingleChart'
-import { useExternalAnalyticsData } from '../../../services/useFetchExternalAnalytics'
-import { analyticsPayloadDeterminerTypes } from '../../../types/analyticsTypes'
+import { VisualSettingsTypes, VisualTitleAndSubtitleType } from '../../../types/visualSettingsTypes'
+import type { DataSourceFormFields } from '../../../types/DataSource'
 
 interface DashboardVisualItemProps {
-    query: any
+    query: StoredAnalyticsQuery | undefined
     visualType: string
     visualTitleAndSubTitle: VisualTitleAndSubtitleType
     visualSettings: VisualSettingsTypes
     dataSourceId: string
-    analyticsPayloadDeterminer: analyticsPayloadDeterminerTypes
+    analyticsPayloadDeterminer: AnalyticsLayout
 }
+
+interface SavedDataSources {
+    dataStore?: { entries?: Array<{ key: string; value: DataSourceFormFields }> }
+}
+
+const CURRENT_INSTANCE: InstanceConnection = { isCurrentInstance: true }
 
 const DashboardVisualItem: React.FC<DashboardVisualItemProps> = ({
     query,
@@ -25,85 +37,58 @@ const DashboardVisualItem: React.FC<DashboardVisualItemProps> = ({
     dataSourceId,
     analyticsPayloadDeterminer,
 }) => {
-    const { data: savedDataSource, loading, error, isError } = useDataSourceData()
-    const {
-        runSavedSingleVisualAnalytics,
-        data: internalData,
-        loading: internalLoading,
-        error: internalError,
-    } = useFetchSingleChartApi(query, analyticsPayloadDeterminer)
-    const {
-        fetchExternalAnalyticsData,
-        response: externalData,
-        loading: externalLoading,
-        error: externalError,
-    } = useExternalAnalyticsData()
+    const { data: savedDataSources, loading: isSourcesLoading } = useDataSourceData()
+    const isCurrentInstance = dataSourceId === currentInstanceId
 
-    const [chartData, setChartData] = useState<any>(null)
+    const instance = isCurrentInstance
+        ? CURRENT_INSTANCE
+        : (savedDataSources as SavedDataSources | undefined)?.dataStore?.entries?.find(
+              (entry) => entry.key === dataSourceId
+          )?.value
 
-    // Determine data source and fetch data
-    const fetchData = useCallback(async () => {
-        const isCurrentInstance = dataSourceId === currentInstanceId
+    // The same layout is applied for current and external instances.
+    const params = useMemo(
+        () =>
+            query?.myData?.params
+                ? applyLayout(query.myData.params, analyticsPayloadDeterminer)
+                : undefined,
+        [query, analyticsPayloadDeterminer]
+    )
 
-        if (isCurrentInstance) {
-            // Fetch data from the current instance
-            await runSavedSingleVisualAnalytics()
-        } else {
-            // Fetch data from an external instance
-            const externalSource = savedDataSource?.dataStore?.entries?.find(
-                (item: any) => item.key === dataSourceId
-            )?.value
-            if (externalSource) {
-                await fetchExternalAnalyticsData(query, externalSource.token, externalSource.url)
-            }
-        }
-    }, [
-        dataSourceId,
-        savedDataSource,
-        query,
-        runSavedSingleVisualAnalytics,
-        fetchExternalAnalyticsData,
-    ])
+    const { data, isLoading, error } = useAnalytics(params, instance)
 
-    // Fetch data on mount or when dependencies change
-    useEffect(() => {
-        if (!loading && !error) {
-            fetchData()
-        }
-    }, [loading, error])
+    if (isLoading || (!isCurrentInstance && isSourcesLoading)) return <CircularLoader />
 
-    // Update chart data based on fetch results
-    useEffect(() => {
-        const isCurrentInstance = dataSourceId === currentInstanceId
-        setChartData(isCurrentInstance ? internalData : externalData)
-    }, [internalData, externalData, dataSourceId])
-
-    // Handle loading state
-    if (loading || internalLoading || externalLoading) return <CircularLoader />
-
-    // Handle errors
-    if (isError || internalError || externalError) {
-        const errorMessage = error?.message || internalError?.message || externalError?.message
+    if (!isCurrentInstance && !isSourcesLoading && !instance) {
         return (
-            <NoticeBox title="Error" error>
-                {errorMessage}
+            <NoticeBox warning title={i18n.t('Data source not found')}>
+                {i18n.t(
+                    'The data source of this visualization was deleted or is not shared with you.'
+                )}
             </NoticeBox>
         )
     }
 
-    // Render the selected chart
-    const renderChart = () => {
-        const SelectedChart = chartComponents.find((chart) => chart.type === visualType)?.component
-        return SelectedChart ? (
-            <SelectedChart
-                data={chartData}
-                visualSettings={visualSettings}
-                visualTitleAndSubTitle={visualTitleAndSubTitle}
-            />
-        ) : null
+    if (error) {
+        return (
+            <NoticeBox title={i18n.t('Could not load this visualization')} error>
+                {error.message}
+            </NoticeBox>
+        )
     }
 
-    return <div>{renderChart()}</div>
+    const SelectedChart = chartComponents.find((chart) => chart.type === visualType)?.component
+    return (
+        <div>
+            {SelectedChart ? (
+                <SelectedChart
+                    data={data}
+                    visualSettings={visualSettings}
+                    visualTitleAndSubTitle={visualTitleAndSubTitle}
+                />
+            ) : null}
+        </div>
+    )
 }
 
 export default DashboardVisualItem

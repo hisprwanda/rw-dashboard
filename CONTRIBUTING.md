@@ -74,6 +74,8 @@ through TanStack Query:
       detail: (id: string) => [...dataSourceKeys.details(), id] as const,
   }
   ```
+- **Query option factories** (shared by `useQuery` and `queryClient.fetchQuery`) are named
+  `xxxQueryOptions` (`analyticsQueryOptions`), so they never collide with state names.
 - **Hooks**: one hook per concern (`useDataSources`, `useDataSource(id)`,
   `useSaveDataSource`, `useDeleteDataSource`). Mutations invalidate the relevant
   keys in `onSuccess` and report feedback with `useAlert` from `@dhis2/app-runtime`.

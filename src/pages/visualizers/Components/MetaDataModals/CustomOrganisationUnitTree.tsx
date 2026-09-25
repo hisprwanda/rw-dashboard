@@ -3,7 +3,7 @@ import { useDataEngine } from '@dhis2/app-runtime'
 import { CircularLoader } from '@dhis2/ui'
 import { useQueryClient } from '@tanstack/react-query'
 import React, { useState, useEffect, useCallback } from 'react'
-import { orgUnitChildrenQuery } from '@/features/org-units'
+import { orgUnitChildrenQueryOptions } from '@/features/org-units'
 
 const CustomOrganisationUnitTree = ({
     apiUrl,
@@ -31,7 +31,7 @@ const CustomOrganisationUnitTree = ({
 
                 // Cached per instance + parent, shared with every other tree.
                 const children = await queryClient.fetchQuery(
-                    orgUnitChildrenQuery(
+                    orgUnitChildrenQueryOptions(
                         engine,
                         { isCurrentInstance: false, url: apiUrl, token },
                         parentId

@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 import { useFetchSingleMapData } from '../../services/fetchSingleStoredMap'
 import { Loader } from '@mantine/core'
 import { useRunGeoFeatures } from '../../services/maps'
-import { formatAnalyticsDimensions } from '../../lib/formatAnalyticsDimensions'
+import { formatAnalyticsDimensions } from '@/features/analytics'
 import { CircularLoader } from '@dhis2/ui'
 
 const MapHomepage: React.FC = () => {

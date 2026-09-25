@@ -56,6 +56,9 @@ export default tseslint.config(
                 'error',
                 { allowlist: { variables: ['engine'], types: ['DataEngine'] } },
             ],
+            // A local variable named like an import silently replaces it
+            // (e.g. state `analyticsQuery` hid the imported factory -> "not a function").
+            '@typescript-eslint/no-shadow': 'warn',
             '@typescript-eslint/no-empty-object-type': 'warn',
             '@typescript-eslint/no-unused-expressions': 'warn',
             'no-empty': 'warn',
@@ -69,6 +72,7 @@ export default tseslint.config(
             '@typescript-eslint/no-explicit-any': 'error',
             'no-console': ['error', { allow: ['warn', 'error'] }],
             'react-hooks/exhaustive-deps': 'error',
+            '@typescript-eslint/no-shadow': 'error',
             'no-restricted-syntax': [
                 'error',
                 {
