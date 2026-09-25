@@ -8,7 +8,7 @@ import {
     type StoredAnalyticsQuery,
 } from '@/features/analytics'
 import type { InstanceConnection } from '@/shared/api'
-import { chartComponents } from '../../../constants/systemCharts'
+import { ChartRenderer } from '@/features/charts'
 import { currentInstanceId } from '../../../constants/currentInstanceInfo'
 import { useDataSourceData } from '../../../services/DataSourceHooks'
 import { VisualSettingsTypes, VisualTitleAndSubtitleType } from '../../../types/visualSettingsTypes'
@@ -77,16 +77,15 @@ const DashboardVisualItem: React.FC<DashboardVisualItemProps> = ({
         )
     }
 
-    const SelectedChart = chartComponents.find((chart) => chart.type === visualType)?.component
     return (
         <div>
-            {SelectedChart ? (
-                <SelectedChart
-                    data={data}
-                    visualSettings={visualSettings}
-                    visualTitleAndSubTitle={visualTitleAndSubTitle}
-                />
-            ) : null}
+            <ChartRenderer
+                type={visualType}
+                data={data}
+                visualSettings={visualSettings}
+                visualTitleAndSubTitle={visualTitleAndSubTitle}
+                analyticsPayloadDeterminer={analyticsPayloadDeterminer}
+            />
         </div>
     )
 }

@@ -13,7 +13,7 @@ import { useOrgUnitMetadata } from '@/features/org-units'
 import { useParams } from 'react-router-dom'
 import { useFetchSingleVisualData } from '../../services/fetchVisuals'
 import { useDataItems } from '../../services/fetchDataItems'
-import { chartComponents } from '../../constants/systemCharts'
+import { ChartRenderer, chartRegistry } from '@/features/charts'
 import GeneralChartsStyles from './Components/GeneralChartsOptions'
 import VisualSettings from './Components/VisualSettings'
 import { useExternalDataItems } from '../../services/useExternalDataItems'
@@ -129,20 +129,16 @@ function Visualizers() {
     const handleShowPeriodModal = () => setIsShowPeriod(true)
 
     // Function to render the selected chart
-    const renderChart = () => {
-        const SelectedChart = chartComponents.find(
-            (chart) => chart.type === selectedChartType
-        )?.component
-        return SelectedChart ? (
-            <SelectedChart
-                data={analyticsData}
-                visualTitleAndSubTitle={visualTitleAndSubTitle}
-                visualSettings={visualSettings}
-                metaDataLabels={metaDataLabels}
-                analyticsPayloadDeterminer={analyticsPayloadDeterminer}
-            />
-        ) : null
-    }
+    const renderChart = () => (
+        <ChartRenderer
+            type={selectedChartType}
+            data={analyticsData}
+            visualTitleAndSubTitle={visualTitleAndSubTitle}
+            visualSettings={visualSettings}
+            metaDataLabels={metaDataLabels}
+            analyticsPayloadDeterminer={analyticsPayloadDeterminer}
+        />
+    )
 
     /// handle data source onchange
     const handleDataSourceOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -312,7 +308,7 @@ function Visualizers() {
                                     <GrUpdate />
                                 </button>
                                 <SelectChartType
-                                    chartComponents={chartComponents}
+                                    chartComponents={chartRegistry}
                                     selectedChartType={selectedChartType}
                                     setSelectedChartType={setSelectedChartType}
                                 />

@@ -14,7 +14,7 @@ import { useParams } from 'react-router-dom'
 import { useFetchSingleVisualData } from '../../services/fetchVisuals'
 import { formatAnalyticsDimensions } from '@/features/analytics'
 import { useDataItems } from '../../services/fetchDataItems'
-import { chartComponents } from '../../constants/systemCharts'
+import { DEFAULT_CHART_TYPE } from '@/features/charts'
 import GeneralChartsStyles from '../visualizers/Components/GeneralChartsOptions'
 import { systemDefaultColorPalettes } from '../../constants/colorPalettes'
 import { useExternalDataItems } from '../../services/useExternalDataItems'
@@ -108,7 +108,7 @@ function ReportPage() {
         })
         setAnalyticsData(null)
         setMetaDataLabels({})
-        setSelectedChartType(chartComponents[0]?.type)
+        setSelectedChartType(DEFAULT_CHART_TYPE)
         setAnalyticsQuery(null)
         setAnalyticsDimensions({ dx: [], pe: ['LAST_12_MONTHS'] })
         setIsSetPredifinedUserOrgUnits({

@@ -1,17 +1,26 @@
 import React, { useMemo } from 'react'
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis, Legend, Tooltip, LabelList } from 'recharts'
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '../../../components/ui/chart'
-import { genericChartsProps } from '../../../types/visualSettingsTypes'
+import { ChartHeading, type VisualSettings, type VisualTitles } from '@/features/charts'
 import { generateBulletinChartConfig } from './BulletinAreaChartFormat'
 
-export const BulletinAreaChart: React.FC<genericChartsProps> = ({
+/** Rows already shaped for the chart by ReportTemplate (not a raw analytics response). */
+type BulletinRow = Record<string, string | number | null>
+
+interface BulletinAreaChartProps {
+    data: BulletinRow[] | null | undefined
+    visualSettings: VisualSettings
+    visualTitleAndSubTitle: VisualTitles
+}
+
+export const BulletinAreaChart: React.FC<BulletinAreaChartProps> = ({
     data,
     visualSettings,
     visualTitleAndSubTitle,
 }) => {
     const { chartData, chartConfig, error } = useMemo(() => {
         try {
-            const transformedData = data
+            const transformedData = data ?? []
             const config = generateBulletinChartConfig(data, visualSettings.visualColorPalette)
             return { chartData: transformedData, chartConfig: config, error: null }
         } catch (err) {
@@ -32,30 +41,8 @@ export const BulletinAreaChart: React.FC<genericChartsProps> = ({
             config={chartConfig}
             style={{ backgroundColor: visualSettings.backgroundColor }}
         >
-            {visualTitleAndSubTitle.visualTitle && (
-                <h3 className="text-center text-lg font-bold text-gray-800 ">
-                    {visualTitleAndSubTitle.visualTitle}
-                </h3>
-            )}
-            {visualTitleAndSubTitle?.customSubTitle ? (
-                <h4 className="text-center text-md font-medium text-gray-600 mt-1">
-                    {visualTitleAndSubTitle?.customSubTitle}
-                </h4>
-            ) : (
-                visualTitleAndSubTitle?.DefaultSubTitle?.length !== 0 && (
-                    <div className="flex justify-center gap-1">
-                        {visualTitleAndSubTitle?.DefaultSubTitle?.map((subTitle, index) => (
-                            <h4
-                                key={index}
-                                className="text-center text-md font-medium text-gray-600 mt-1"
-                            >
-                                {subTitle}
-                                {index < visualTitleAndSubTitle?.DefaultSubTitle?.length - 1 && ','}
-                            </h4>
-                        ))}
-                    </div>
-                )
-            )}
+            {/* DefaultSubTitle is an object, not a list: the old .map() here crashed. */}
+            <ChartHeading titles={visualTitleAndSubTitle} />
 
             <AreaChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" />

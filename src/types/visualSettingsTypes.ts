@@ -1,43 +1,15 @@
-import { analyticsPayloadDeterminerTypes } from "./analyticsTypes";
+/** @deprecated Legacy names. Use the types from @/features/charts. */
+import type {
+    AxisSettings,
+    ChartProps,
+    ColorPalette,
+    VisualSettings,
+    VisualTitles,
+} from '@/features/charts'
 
-export interface VisualTitleAndSubtitleType {
-    visualTitle?: string;
-    customSubTitle?:string;
-    DefaultSubTitle: {
-      periods:any[];
-      orgUnits:any[];
-      dataElements:any[];
-    };
-  
-  }
-
-  export type ColorPaletteTypes = Array<{
-    name: string; 
-    itemsBackgroundColors: string[];
-
-  }>;
-  
-  export type visualColorPaletteTypes ={
-    name: string; 
-    itemsBackgroundColors: string[];
-  }
-
-   export type AxisSettingsTypes = {
-    color: string;
-    fontSize:number
-  }
-  export interface VisualSettingsTypes {
-    visualColorPalette:visualColorPaletteTypes;
-    backgroundColor:string,
-    fillColor:string,
-    XAxisSettings:AxisSettingsTypes,
-    YAxisSettings:AxisSettingsTypes
-  }
-
-  export interface genericChartsProps {
-    data: any;
-    visualTitleAndSubTitle:VisualTitleAndSubtitleType;
-    visualSettings:VisualSettingsTypes;
-    metaDataLabels:any;
-    analyticsPayloadDeterminer:analyticsPayloadDeterminerTypes
-}
+export type VisualTitleAndSubtitleType = VisualTitles
+export type ColorPaletteTypes = ColorPalette[]
+export type visualColorPaletteTypes = ColorPalette
+export type AxisSettingsTypes = AxisSettings
+export type VisualSettingsTypes = VisualSettings
+export type genericChartsProps = ChartProps

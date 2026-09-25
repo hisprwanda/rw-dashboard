@@ -1,9 +1,9 @@
-import { InputData } from '../../../lib/localGenericchartFormat'
+import type { AnalyticsResponse } from '@/shared/types/dhis2.types'
 import { ChartConfig } from '../../../components/ui/chart'
 import { visualColorPaletteTypes } from '../../../types/visualSettingsTypes'
 
 export function generateBulletinChartConfig(
-    inputData: InputData,
+    inputData: AnalyticsResponse,
     selectedColorPalette?: visualColorPaletteTypes
 ): ChartConfig {
     const config: ChartConfig = {}

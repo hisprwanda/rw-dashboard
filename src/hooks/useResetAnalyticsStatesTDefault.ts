@@ -1,7 +1,7 @@
 import { useApplicationTitle } from '@/features/system'
 import { useAuthorities } from '../context/AuthContext'
 import { dimensionItemTypes } from '../constants/dimensionItemTypes'
-import { chartComponents } from '../constants/systemCharts'
+import { DEFAULT_CHART_TYPE } from '@/features/charts'
 import { systemDefaultColorPalettes } from '../constants/colorPalettes'
 import { currentInstanceId } from '../constants/currentInstanceInfo'
 
@@ -51,7 +51,7 @@ export const useResetAnalyticsStatesToDefault = () => {
         })
         setAnalyticsData(null)
         setMetaDataLabels({})
-        setSelectedChartType(chartComponents[0]?.type)
+        setSelectedChartType(DEFAULT_CHART_TYPE)
         setAnalyticsQuery(null)
         setAnalyticsDimensions({ dx: [], pe: ['LAST_12_MONTHS'] })
         setIsSetPredifinedUserOrgUnits({
@@ -91,7 +91,7 @@ export const useResetAnalyticsStatesToDefault = () => {
         setSelectedDimensionItemType(dimensionItemTypes[0])
         setAnalyticsData(null)
         setMetaDataLabels({})
-        setSelectedChartType(chartComponents[0]?.type)
+        setSelectedChartType(DEFAULT_CHART_TYPE)
         setAnalyticsQuery(null)
         setAnalyticsDimensions({ dx: [], pe: ['LAST_12_MONTHS'] })
         setIsSetPredifinedUserOrgUnits({

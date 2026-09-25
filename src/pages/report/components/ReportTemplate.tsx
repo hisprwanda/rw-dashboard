@@ -19,12 +19,7 @@ import {
 } from 'recharts'
 import { Tab, Tabs, TabBar, Transfer, Button, Modal } from '@dhis2/ui'
 import { useAuthorities } from '../../../context/AuthContext'
-import {
-    isValidInputData,
-    transformDataForGenericChart,
-} from '../../../lib/localGenericchartFormat'
 import { fetchTrackedEntities, fetchEvents } from './BulletinService'
-import { chartComponents } from '../../../constants/systemCharts'
 import { dimensionDataHardCoded } from '../../../constants/bulletinDimension'
 import { formatAnalyticsDimensions } from '@/features/analytics'
 import { Textarea } from '../../../components/ui/textarea'
