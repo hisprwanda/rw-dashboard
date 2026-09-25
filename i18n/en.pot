@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-09-22T20:41:21.687Z\n"
-"PO-Revision-Date: 2026-09-22T20:41:21.687Z\n"
+"POT-Creation-Date: 2026-09-25T10:47:45.829Z\n"
+"PO-Revision-Date: 2026-09-25T10:47:45.829Z\n"
 
 msgid "Dashboards"
 msgstr "Dashboards"
@@ -22,6 +22,12 @@ msgstr "Settings"
 
 msgid "report"
 msgstr "report"
+
+msgid "PowerPoint file downloaded"
+msgstr "PowerPoint file downloaded"
+
+msgid "Exporting to PowerPoint failed"
+msgstr "Exporting to PowerPoint failed"
 
 msgid "My Maps"
 msgstr "My Maps"
@@ -44,11 +50,26 @@ msgstr "Created At"
 msgid "Updated At"
 msgstr "Updated At"
 
+msgid "Map deleted"
+msgstr "Map deleted"
+
+msgid "Something went wrong. Please try again."
+msgstr "Something went wrong. Please try again."
+
 msgid "Actions"
 msgstr "Actions"
 
 msgid "Created By"
 msgstr "Created By"
+
+msgid "Map saved"
+msgstr "Map saved"
+
+msgid "Failed to save the map. Please try again."
+msgstr "Failed to save the map. Please try again."
+
+msgid "Dashboard saved"
+msgstr "Dashboard saved"
 
 msgid "Dashboard Name"
 msgstr "Dashboard Name"
@@ -134,11 +155,17 @@ msgstr "Pause"
 msgid "Pinned Dashboards"
 msgstr "Pinned Dashboards"
 
+msgid "Dashboard deleted"
+msgstr "Dashboard deleted"
+
 msgid "ERROR"
 msgstr "ERROR"
 
 msgid "Loading..."
 msgstr "Loading..."
+
+msgid "Data source saved"
+msgstr "Data source saved"
 
 msgid "Instance Name"
 msgstr "Instance Name"
@@ -176,6 +203,9 @@ msgstr "Confirm"
 msgid "Visual Name"
 msgstr "Visual Name"
 
+msgid "Visualization saved"
+msgstr "Visualization saved"
+
 msgid "My Charts"
 msgstr "My Charts"
 
@@ -196,3 +226,38 @@ msgstr "Period"
 
 msgid "Organization Unit"
 msgstr "Organization Unit"
+
+msgid "Sharing settings saved"
+msgstr "Sharing settings saved"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Search"
+msgstr "Search"
+
+msgid "No results match \"{{search}}\""
+msgstr "No results match \"{{search}}\""
+
+msgid "Nothing to show yet"
+msgstr "Nothing to show yet"
+
+msgid "Something went wrong"
+msgstr "Something went wrong"
+
+msgid "The data could not be loaded."
+msgstr "The data could not be loaded."
+
+msgid "Try again"
+msgstr "Try again"
+
+msgctxt "Application title"
+msgid "__MANIFEST_APP_TITLE"
+msgstr "Data Analytics Lab"
+
+msgctxt "Application description"
+msgid "__MANIFEST_APP_DESCRIPTION"
+msgstr ""
+"A Data Analytics Lab, developed by HISP Rwanda, featuring an interactive "
+"dashboard that can be presented as dynamic slides, with a wide range of "
+"customizable visualization types for enhanced data representation."

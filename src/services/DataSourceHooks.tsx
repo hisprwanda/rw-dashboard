@@ -1,18 +1,17 @@
-import { useDataMutation, useDataQuery } from '@dhis2/app-runtime';
+import { useDataMutation, useDataQuery } from '@dhis2/app-runtime'
+import { env } from '@/shared/constants/env'
 
-export const useDataSourceData = ()=>{
-
+export const useDataSourceData = () => {
     const query = {
         dataStore: {
-            resource: `dataStore/${process.env.REACT_APP_DATA_SOURCES_STORE}`,
+            resource: `dataStore/${env.dataSourcesStore}`,
             params: () => ({
-              fields: '.',
+                fields: '.',
             }),
         },
-    };
+    }
 
-    const { data, loading, error ,isError,refetch} = useDataQuery(query);
+    const { data, loading, error, isError, refetch } = useDataQuery(query)
 
-    return { data, loading, error,isError,refetch };
-
+    return { data, loading, error, isError, refetch }
 }

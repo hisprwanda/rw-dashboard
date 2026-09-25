@@ -3,6 +3,7 @@ import { useDataEngine } from '@dhis2/app-runtime'
 import { AlertBar } from '@dhis2/ui'
 import Button from '../../../../components/Button'
 import { MdDelete } from 'react-icons/md'
+import { env } from '@/shared/constants/env'
 
 type DeleteProps = {
     id: string
@@ -24,7 +25,7 @@ const DeleteDataSourceCard: React.FC<DeleteProps> = ({
         try {
             setIsLoading(true)
             const resp = await engine.mutate({
-                resource: `dataStore/${process.env.REACT_APP_DATA_SOURCES_STORE}/${id}`,
+                resource: `dataStore/${env.dataSourcesStore}/${id}`,
                 type: 'delete',
             })
             if (resp?.httpStatus) {

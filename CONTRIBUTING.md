@@ -37,9 +37,8 @@ export default function VisualizerBuilderPage() {
 ```
 
 ### Imports
-- Always use the `@/` alias (maps to `src/`), never `../../..`.
-  (Runtime `@/` imports need the Vite toolchain from Phase 2; until then the v11 CRA
-  build only resolves `@/` for type-only imports.)
+- Always use the `@/` alias (maps to `src/`), never `../../..`. It is configured for
+  TypeScript in `tsconfig.json` and for the build in `viteConfigExtensions.mts`.
 - Outside a feature, import only from its barrel: `@/features/visualizers`,
   never `@/features/visualizers/components/X`. ESLint enforces this.
 
@@ -105,6 +104,21 @@ removed. Library providers (Redux, TanStack Query, DHIS2) are the only contexts.
 
 Every user-facing string goes through `i18n.t()` from `@dhis2/d2-i18n`. Use
 interpolation, not concatenation: `i18n.t('Saved {{name}}', { name })`.
+Always `import i18n from '@dhis2/d2-i18n'`. Never import `src/locales` (generated):
+it is imported once in `src/App.tsx` to register the translations.
+
+## Environment
+
+Build-time variables must be prefixed `DHIS2_` (the platform drops anything else).
+Copy `.env.example` to `.env`. Read them only through `env` from
+`@/shared/constants/env`, never `process.env` directly.
+
+## Feedback & shared UI
+
+- Success/error messages: `useNotify()` from `@/shared/hooks` (DHIS2 AlertBar).
+- Loading / error / empty: `LoadingState`, `ErrorState`, `EmptyState` from `@/shared/components`.
+- Lists: `DataTable` from `@/shared/components` (search, sort, pagination built in).
+- Confirmations: `ConfirmModal`.
 
 ## TypeScript
 
@@ -122,6 +136,7 @@ interpolation, not concatenation: `i18n.t('Saved {{name}}', { name })`.
 ```
 yarn typecheck   # ratchet: tsc errors and `any` count may never go up; app/features/shared must have 0
 yarn lint
+yarn test        # jest via d2-app-scripts; put *.test.ts next to the code
 yarn format
 yarn build
 ```

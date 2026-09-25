@@ -1,3 +1,4 @@
+import i18n from '@dhis2/d2-i18n'
 import React, { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -7,8 +8,8 @@ import { AlertBar } from '@dhis2/ui'
 import Button from '../../../../components/Button'
 import { DataSourceFormFields, DataSourceSchema } from '../../../../types/DataSource'
 import { IoSaveOutline } from 'react-icons/io5'
-import { useToast } from '../../../../components/ui/use-toast'
-import i18n from '../../../../locales/index.js'
+import { useNotify } from '@/shared/hooks'
+import { env } from '@/shared/constants/env'
 
 const dataSourceOptions = [{ name: 'DHIS2', value: 'DHIS2' }]
 
@@ -49,7 +50,7 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({
 
     const [successMessage, setSuccessMessage] = useState<string | null>(null)
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
-    const { toast } = useToast()
+    const notify = useNotify()
     const engine = useDataEngine()
 
     // Populate form fields when updating
@@ -66,15 +67,11 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({
         try {
             const uid = action === 'update' && data ? data.key : generateUid()
             await engine.mutate({
-                resource: `dataStore/${process.env.REACT_APP_DATA_SOURCES_STORE}/${uid}`,
+                resource: `dataStore/${env.dataSourcesStore}/${uid}`,
                 type: action === 'update' ? 'update' : 'create',
                 data: formData,
             })
-            toast({
-                title: 'Success',
-                description: 'saved successfully',
-                variant: 'default',
-            })
+            notify.success(i18n.t('Data source saved'))
 
             refetch && refetch()
 
@@ -95,11 +92,7 @@ const DataSourceForm: React.FC<DataSourceFormProps> = ({
             }
         } catch (error) {
             console.error('Error saving data source:', error)
-            toast({
-                title: 'Error',
-                description: 'Something went wrong',
-                variant: 'destructive',
-            })
+            notify.error(i18n.t('Something went wrong. Please try again.'))
         }
     }
 

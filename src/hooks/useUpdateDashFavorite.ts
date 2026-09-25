@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useDataEngine } from '@dhis2/app-runtime'
+import { env } from '@/shared/constants/env'
 
 // Define DashboardValue type
 interface DashboardValue {
@@ -28,7 +29,7 @@ export const useUpdateDashboardFavorite = ({
         try {
             setIsUpdatingDashboard(true)
             await engine.mutate({
-                resource: `dataStore/${process.env.REACT_APP_DASHBOARD_STORE}/${dashboardId}`,
+                resource: `dataStore/${env.dashboardStore}/${dashboardId}`,
                 type: 'update',
                 data: { ...dashboard, favorites: updatedFavorites },
             })

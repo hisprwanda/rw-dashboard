@@ -17,7 +17,8 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn typecheck
       - run: yarn lint
-      - run: yarn build
+      - run: yarn test
         env:
-          # CRA treats warnings as errors when CI=true; legacy code still has warnings.
-          CI: false
+          CI: true
+      - run: cp .env.example .env
+      - run: yarn build

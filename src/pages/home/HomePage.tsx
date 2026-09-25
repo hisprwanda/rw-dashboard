@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import { Loading } from '../../components'
 import { FaEye, FaRegPlayCircle } from 'react-icons/fa'
 import { filterOtherCharts } from '../../lib/filterOtherDashboards'
-import i18n from '../../locales/index.js'
+import i18n from '@dhis2/d2-i18n'
 
 interface User {
     id: string

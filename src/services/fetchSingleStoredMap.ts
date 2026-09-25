@@ -21,6 +21,7 @@ import { useExternalOrgUnitData } from './fetchExternalOrgUnit'
 import { useOrgUnitData } from './fetchOrgunitData'
 import { useRunGeoFeatures } from './maps'
 import { getSelectedOrgUnitsWhenUsingMap } from '../lib/getAnalyticsFilters'
+import { env } from '@/shared/constants/env'
 
 interface VisualData {
     dataStore?: {
@@ -115,7 +116,7 @@ export const useFetchSingleMapData = (mapId: string | undefined) => {
         queryFn: async () =>
             (await engine.query({
                 dataStore: {
-                    resource: `dataStore/${process.env.REACT_APP_MAPS_STORE}/${mapId}`,
+                    resource: `dataStore/${env.mapsStore}/${mapId}`,
                 },
             })) as VisualData,
         enabled: !!mapId,

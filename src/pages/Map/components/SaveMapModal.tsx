@@ -1,3 +1,4 @@
+import i18n from '@dhis2/d2-i18n'
 import React, { useEffect, useState } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -15,8 +16,9 @@ import { Input } from '../../../components/ui/input'
 import { Label } from '../../../components/ui/label'
 import Button from '../../../components/Button'
 import { useAuthorities } from '../../../context/AuthContext'
-import { useToast } from '../../../components/ui/use-toast'
+import { useNotify } from '@/shared/hooks'
 import { useNavigate } from 'react-router-dom'
+import { env } from '@/shared/constants/env'
 
 interface SaveMapModalProps {
     open: boolean
@@ -40,7 +42,7 @@ export function SaveMapModal({ open, setOpen, mapId, existingMapData }: SaveMapM
         analyticsDimensions,
         currentBasemap,
     } = useAuthorities()
-    const { toast } = useToast()
+    const notify = useNotify()
     const engine = useDataEngine()
     const navigate = useNavigate()
 
@@ -133,16 +135,12 @@ export function SaveMapModal({ open, setOpen, mapId, existingMapData }: SaveMapM
             const uid = mapId || generateUid()
 
             await engine.mutate({
-                resource: `dataStore/${process.env.REACT_APP_MAPS_STORE}/${uid}`,
+                resource: `dataStore/${env.mapsStore}/${uid}`,
                 type: mapId ? 'update' : 'create',
                 data: formData,
             })
 
-            toast({
-                title: 'Success',
-                description: 'Map saved successfully',
-                variant: 'default',
-            })
+            notify.success(i18n.t('Map saved'))
 
             if (!mapId) {
                 // added navigate(`/maps`) intentionally to fix length undefined bug
@@ -154,11 +152,7 @@ export function SaveMapModal({ open, setOpen, mapId, existingMapData }: SaveMapM
             setOpen(false)
         } catch (error) {
             console.error('Error saving map:', error)
-            toast({
-                title: 'Error',
-                description: 'Failed to save map. Please try again.',
-                variant: 'destructive',
-            })
+            notify.error(i18n.t('Failed to save the map. Please try again.'))
             setErrorMessage('Failed to save map. Please try again.')
         }
     }

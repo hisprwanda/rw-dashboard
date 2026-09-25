@@ -1,3 +1,4 @@
+import i18n from '@dhis2/d2-i18n'
 import React, { useEffect, useState, useRef, useCallback } from 'react'
 import Button from '../../components/Button'
 import {
@@ -32,16 +33,16 @@ import html2canvas from 'html2canvas'
 import PresentDashboard from './components/PresentDashboard'
 import { FaPlay } from 'react-icons/fa'
 import { IoSaveOutline } from 'react-icons/io5'
-import { useToast } from '../../components/ui/use-toast'
+import { useNotify } from '@/shared/hooks'
 import { Loader, Loader2, Maximize2, Minimize2 } from 'lucide-react'
-import i18n from '../../locales/index.js'
 import { FileText } from 'lucide-react'
 import { usePPTXExport } from '../../hooks/useExportDashboard'
 import { useFetchAllSavedMaps } from '../../services/maps'
 import SingleMapItem from '../Map/components/SingleMapItem'
+import { env } from '@/shared/constants/env'
 
 const CreateDashboardPage: React.FC = () => {
-    const { toast } = useToast()
+    const notify = useNotify()
     const { exportToPPTX, isExporting } = usePPTXExport()
     const { id: dashboardId, present: isPresentModeFromView } = useParams()
     const navigate = useNavigate()
@@ -348,16 +349,12 @@ const CreateDashboardPage: React.FC = () => {
 
             // Save the dashboard
             await engine.mutate({
-                resource: `dataStore/${process.env.REACT_APP_DASHBOARD_STORE}/${uuid}`,
+                resource: `dataStore/${env.dashboardStore}/${uuid}`,
                 type: dashboardId ? 'update' : 'create',
                 data,
             })
 
-            toast({
-                title: 'Success',
-                description: 'saved successfully',
-                variant: 'default',
-            })
+            notify.success(i18n.t('Dashboard saved'))
 
             setIsSuccess(true)
 
@@ -366,11 +363,7 @@ const CreateDashboardPage: React.FC = () => {
                 navigate(`/dashboard/${uuid}`)
             }
         } catch (error) {
-            toast({
-                title: 'Error',
-                description: 'Something went wrong',
-                variant: 'destructive',
-            })
+            notify.error(i18n.t('Something went wrong. Please try again.'))
             console.error('Error saving dashboard:', error)
         }
     }

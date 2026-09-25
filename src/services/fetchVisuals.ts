@@ -20,6 +20,7 @@ import { useExternalDataItems } from './useExternalDataItems'
 import { useExternalOrgUnitData } from './fetchExternalOrgUnit'
 import { useOrgUnitData } from './fetchOrgunitData'
 import { analyticsPayloadDeterminerTypes } from '../types/analyticsTypes'
+import { env } from '@/shared/constants/env'
 
 interface VisualData {
     dataStore?: {
@@ -112,7 +113,7 @@ export const useFetchSingleVisualData = (visualId: string | undefined) => {
         queryFn: async () =>
             (await engine.query({
                 dataStore: {
-                    resource: `dataStore/${process.env.REACT_APP_VISUALS_STORE}/${visualId}`,
+                    resource: `dataStore/${env.visualsStore}/${visualId}`,
                 },
             })) as VisualData,
         enabled: !!visualId,
@@ -302,7 +303,7 @@ export const useFetchSingleVisualData = (visualId: string | undefined) => {
 export const useFetchVisualsData = () => {
     const query = {
         dataStore: {
-            resource: `dataStore/${process.env.REACT_APP_VISUALS_STORE}`,
+            resource: `dataStore/${env.visualsStore}`,
             params: () => ({
                 fields: '.',
             }),

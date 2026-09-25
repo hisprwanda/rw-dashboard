@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/ta
 import { useAuthorities } from '../../context/AuthContext'
 import OtherVisualizersTable from './Components/OtherVisualizersTable'
 import { filterOtherCharts } from '../../lib/filterOtherDashboards'
-import i18n from '../../locales/index.js'
+import i18n from '@dhis2/d2-i18n'
 
 function filterSavedChartsByCreatorId(data: any, creatorId: string) {
     return data?.filter((item) => item.value.createdBy.id === creatorId)

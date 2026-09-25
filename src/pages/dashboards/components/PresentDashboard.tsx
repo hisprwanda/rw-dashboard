@@ -20,7 +20,7 @@ import SingleMapItem from '../../Map/components/SingleMapItem'
 import song1 from '../../../songs/song1.mp3'
 import song2 from '../../../songs/song2.mp3'
 import song3 from '../../../songs/song3.mp3'
-import i18n from '../../../locales/index.js'
+import i18n from '@dhis2/d2-i18n'
 
 import {
     ChevronLeft,

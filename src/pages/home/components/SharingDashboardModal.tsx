@@ -26,7 +26,6 @@ import {
     useFetchSingleDashboardData,
     useUpdatingDashboardSharing,
 } from '../../../services/fetchDashboard'
-import { useToast } from '../../../components/ui/use-toast'
 
 interface SharingDashboardModalProps {
     dashboardId: string
@@ -39,7 +38,6 @@ export function SharingDashboardModal({
     dashboardName,
     onClose,
 }: SharingDashboardModalProps) {
-    const { toast } = useToast()
     const {
         data: allsavedDashboardData,
         error,

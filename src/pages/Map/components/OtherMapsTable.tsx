@@ -9,7 +9,7 @@ import { useFetchVisualsData } from '../../../services/fetchVisuals'
 import { useNavigate } from 'react-router-dom'
 import { useAuthorities } from '../../../context/AuthContext'
 import { FaEye } from 'react-icons/fa'
-import i18n from '../../../locales/index.js'
+import i18n from '@dhis2/d2-i18n'
 
 const OtherMapsTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
     const { setAnalyticsData } = useAuthorities()

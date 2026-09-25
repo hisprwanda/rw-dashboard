@@ -1,8 +1,10 @@
+import i18n from '@dhis2/d2-i18n'
 import { useDataQuery } from '@dhis2/app-runtime'
 import { useDataEngine } from '@dhis2/app-runtime'
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { useToast } from '../components/ui/use-toast'
+import { useNotify } from '@/shared/hooks'
+import { env } from '@/shared/constants/env'
 
 export const useFetchSingleDashboardData = (dashboardId: string | undefined) => {
     const engine = useDataEngine()
@@ -13,7 +15,7 @@ export const useFetchSingleDashboardData = (dashboardId: string | undefined) => 
         queryFn: () =>
             engine.query({
                 dataStore: {
-                    resource: `dataStore/${process.env.REACT_APP_DASHBOARD_STORE}/${dashboardId}`,
+                    resource: `dataStore/${env.dashboardStore}/${dashboardId}`,
                 },
             }),
         enabled: !!dashboardId,
@@ -31,7 +33,7 @@ export const useFetchSingleDashboardData = (dashboardId: string | undefined) => 
 export const useDashboardsData = () => {
     const query = {
         dataStore: {
-            resource: `dataStore/${process.env.REACT_APP_DASHBOARD_STORE}`,
+            resource: `dataStore/${env.dashboardStore}`,
             params: () => ({
                 fields: '.',
                 paging: false,
@@ -56,7 +58,7 @@ export const useDashboardsData = () => {
 }
 
 export const useUpdatingDashboardSharing = () => {
-    const { toast } = useToast()
+    const notify = useNotify()
     const engine = useDataEngine()
     const [data, setData] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
@@ -73,24 +75,16 @@ export const useUpdatingDashboardSharing = () => {
         setIsError(false)
         try {
             const { dataStore } = await engine.mutate({
-                resource: `dataStore/${process.env.REACT_APP_DASHBOARD_STORE}/${uuid}`,
+                resource: `dataStore/${env.dashboardStore}/${uuid}`,
                 type: 'update',
                 data: dashboardData,
             })
-            toast({
-                title: 'Success',
-                description: 'saved successfully',
-                variant: 'default',
-            })
+            notify.success(i18n.t('Sharing settings saved'))
             setData(dataStore)
             return dataStore
         } catch (error) {
             setIsError(true)
-            toast({
-                title: 'Error',
-                description: 'Something went wrong',
-                variant: 'destructive',
-            })
+            notify.error(i18n.t('Something went wrong. Please try again.'))
             throw new Error('Updating Dashboard error')
         } finally {
             setIsLoading(false)

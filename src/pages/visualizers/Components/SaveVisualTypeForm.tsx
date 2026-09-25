@@ -1,3 +1,4 @@
+import i18n from '@dhis2/d2-i18n'
 import React, { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -11,7 +12,8 @@ import { useAuthorities } from '../../../context/AuthContext'
 import { useFetchVisualsData } from '../../../services/fetchVisuals'
 import { useNavigate } from 'react-router-dom'
 import { currentInstanceId } from '../../../constants/currentInstanceInfo'
-import { useToast } from '../../../components/ui/use-toast'
+import { useNotify } from '@/shared/hooks'
+import { env } from '@/shared/constants/env'
 
 interface SaveVisualTypeFormProps {
     setIsShowSaveVisualTypeForm: any
@@ -40,7 +42,7 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({
     } = useAuthorities()
     const { data: allSavedVisuals, loading, isError } = useFetchVisualsData()
     const navigate = useNavigate()
-    const { toast } = useToast()
+    const notify = useNotify()
     const engine = useDataEngine()
 
     const {
@@ -125,15 +127,11 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({
 
         try {
             await engine.mutate({
-                resource: `dataStore/${process.env.REACT_APP_VISUALS_STORE}/${uid}`,
+                resource: `dataStore/${env.visualsStore}/${uid}`,
                 type: visualId ? 'update' : 'create',
                 data: formData,
             })
-            toast({
-                title: 'Success',
-                description: 'saved successfully',
-                variant: 'default',
-            })
+            notify.success(i18n.t('Visualization saved'))
 
             // setSuccessMessage('Visual saved successfully!');
             // Delay a bit to show success message
@@ -148,11 +146,7 @@ const SaveVisualTypeForm: React.FC<SaveVisualTypeFormProps> = ({
             }
         } catch (error) {
             console.error('Error saving visual:', error)
-            toast({
-                title: 'Error',
-                description: 'Something went wrong',
-                variant: 'destructive',
-            })
+            notify.error(i18n.t('Something went wrong. Please try again.'))
             setErrorMessage('Failed to save visual. Please try again.')
         }
     }

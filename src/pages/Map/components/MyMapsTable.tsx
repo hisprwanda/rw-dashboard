@@ -1,3 +1,4 @@
+import i18n from '@dhis2/d2-i18n'
 import { useMemo, useState } from 'react'
 import { useDataEngine } from '@dhis2/app-runtime'
 import { RiDeleteBin5Line } from 'react-icons/ri'
@@ -10,13 +11,13 @@ import { useFetchVisualsData } from '../../../services/fetchVisuals'
 import { useNavigate } from 'react-router-dom'
 import { useAuthorities } from '../../../context/AuthContext'
 import { FaEye, FaRegTrashAlt } from 'react-icons/fa'
-import i18n from '../../../locales/index.js'
-import { useToast } from '../../../components/ui/use-toast'
+import { useNotify } from '@/shared/hooks'
 import { useFetchAllSavedMaps } from '../../../services/maps'
 import { DeleteMapModal } from './DeleteMapModal'
+import { env } from '@/shared/constants/env'
 
 const MyMapsTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
-    const { toast } = useToast()
+    const notify = useNotify()
     const { setAnalyticsData, setMetaDataLabels } = useAuthorities()
     const navigate = useNavigate()
     const { refetch } = useFetchAllSavedMaps()
@@ -74,22 +75,14 @@ const MyMapsTable = ({ savedVisualData }: { savedVisualData: any[] }) => {
     const handleDeleteMap = async (MapId: string) => {
         try {
             await engine.mutate({
-                resource: `dataStore/${process.env.REACT_APP_MAPS_STORE}/${MapId}`,
+                resource: `dataStore/${env.mapsStore}/${MapId}`,
                 type: 'delete',
             })
 
-            toast({
-                title: 'Success',
-                description: 'Map deleted successfully',
-                variant: 'default',
-            })
+            notify.success(i18n.t('Map deleted'))
             refetch()
         } catch (error) {
-            toast({
-                title: 'Error',
-                description: 'Something went wrong. Please try again.',
-                variant: 'destructive',
-            })
+            notify.error(i18n.t('Something went wrong. Please try again.'))
             console.error('Failed to delete Map:', error)
         }
     }

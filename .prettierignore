@@ -2,5 +2,5 @@ build
 .d2
 node_modules
 src/locales
-src/index.css
+
 i18n
