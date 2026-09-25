@@ -2,9 +2,12 @@
 /**
  * Type-safety ratchet.
  *
- * Tracks two numbers for the whole codebase and fails when either goes UP:
- *   - `tsc` errors
+ * Tracks legacy type debt and fails when it grows:
+ *   - `tsc` errors, in total AND per file (a file may never gain errors, even if
+ *     others were fixed in the same change)
  *   - `any` usages (explicit `any` type annotations, `as any`, `any[]`, generics…)
+ * Always fatal, whatever the baseline: errors that crash at runtime (undefined names,
+ * missing modules/exports, use before declaration).
  * Files under src/app, src/features and src/shared must always have 0 of both.
  *
  * The goal (Phase 11) is 0 / 0, after which this script is replaced by plain `tsc --noEmit`.
@@ -20,6 +23,27 @@ import ts from 'typescript'
 const BASELINE_FILE = new URL('./typecheck-baseline.json', import.meta.url)
 const STRICT_DIRS = ['src/app/', 'src/features/', 'src/shared/']
 const isStrict = (file) => STRICT_DIRS.some((d) => file.startsWith(d))
+
+// Error codes that are (almost) always a runtime crash, never "just typing debt".
+const FATAL_CODES = new Set([
+    'TS2304', // Cannot find name
+    'TS2552', // Cannot find name. Did you mean…
+    'TS18004', // No value exists in scope for the shorthand property
+    'TS2448', // Block-scoped variable used before its declaration
+    'TS2454', // Variable is used before being assigned
+    'TS2305', // Module has no exported member
+    'TS2307', // Cannot find module
+    'TS2614', // Module has no exported member (did you mean default import)
+    'TS2724', // Module has no exported member named…
+])
+const codeOf = (line) => line.match(/error (TS\d+)/)?.[1]
+const fileOf = (line) => line.slice(0, line.indexOf('('))
+const countByFile = (lines) =>
+    lines.reduce((acc, line) => {
+        const file = fileOf(line)
+        acc[file] = (acc[file] ?? 0) + 1
+        return acc
+    }, {})
 
 // --- tsc errors -------------------------------------------------------------
 const result = spawnSync('npx', ['tsc', '--noEmit', '-p', '.'], {
@@ -53,10 +77,15 @@ for (const file of walk('src')) {
 
 // --- compare ----------------------------------------------------------------
 const baseline = JSON.parse(readFileSync(BASELINE_FILE, 'utf8'))
-const current = { errors: tscErrors.length, any: anyUsages.length }
+const current = {
+    errors: tscErrors.length,
+    any: anyUsages.length,
+    files: Object.fromEntries(Object.entries(countByFile(tscErrors)).sort()),
+}
 
 if (process.argv.includes('--update')) {
-    if (current.errors > baseline.errors || current.any > baseline.any) {
+    const grew = Object.entries(current.files).some(([f, n]) => n > (baseline.files?.[f] ?? 0))
+    if (current.errors > baseline.errors || current.any > baseline.any || (baseline.files && grew)) {
         console.error(
             `Refusing to raise the baseline (errors ${baseline.errors} -> ${current.errors}, any ${baseline.any} -> ${current.any}).`
         )
@@ -70,6 +99,26 @@ if (process.argv.includes('--update')) {
 }
 
 let failed = false
+const fatal = tscErrors.filter((l) => FATAL_CODES.has(codeOf(l)))
+if (fatal.length) {
+    console.error(fatal.join('\n'))
+    console.error(`\n✖ ${fatal.length} error(s) that crash at runtime (undefined names, missing imports…).`)
+    failed = true
+}
+const grownFiles = Object.entries(current.files).filter(
+    ([file, count]) => count > (baseline.files?.[file] ?? 0)
+)
+if (grownFiles.length) {
+    for (const [file] of grownFiles) {
+        console.error(tscErrors.filter((l) => fileOf(l) === file).join('\n'))
+    }
+    console.error(
+        `\n✖ New type errors in: ${grownFiles
+            .map(([f, n]) => `${f} (${baseline.files?.[f] ?? 0} -> ${n})`)
+            .join(', ')}`
+    )
+    failed = true
+}
 const strictErrors = tscErrors.filter(isStrict)
 const strictAny = anyUsages.filter(isStrict)
 if (strictErrors.length || strictAny.length) {

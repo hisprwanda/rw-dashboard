@@ -566,8 +566,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 analyticsData,
                 isFetchAnalyticsDataLoading,
                 fetchAnalyticsDataError,
-                isUseCurrentUserOrgUnits,
-                isSetPredifinedUserOrgUnits,
                 analyticsQuery,
                 selectedChartType,
                 setSelectedChartType,
