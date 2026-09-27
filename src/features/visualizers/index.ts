@@ -1,0 +1,5 @@
+export { VisualsManagement } from './components/VisualsManagement'
+export { visualKeys } from './hooks/queryKeys'
+export { useDeleteVisual } from './hooks/useDeleteVisual'
+export { useVisuals } from './hooks/useVisuals'
+export type { BackedSelectedItem, SavedVisual, SavedVisualEntry } from './types/visual.types'

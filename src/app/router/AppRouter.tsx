@@ -9,7 +9,7 @@ import { LoadingState } from '@/shared/components'
 const HomePage = lazy(() => import('@/pages/home/HomePage'))
 const DashboardsPage = lazy(() => import('@/pages/dashboards/DashboardsPage'))
 const CreateDashboardPage = lazy(() => import('@/pages/dashboards/CreateDashboardPage'))
-const VisualizationPage = lazy(() => import('@/pages/visualizers/VisualizationPage'))
+const VisualizationsPage = lazy(() => import('@/pages/visualizers/VisualizationsPage'))
 const VisualizersPage = lazy(() => import('@/pages/visualizers/VisualizersPage'))
 const AllMapsPage = lazy(() => import('@/pages/Map/AllMapsPage'))
 const MapHomepage = lazy(() => import('@/pages/Map/MapHomepage'))
@@ -38,7 +38,7 @@ export const AppRouter = () => (
                 <Route index element={page(HomePage)} />
                 <Route path="dashboards" element={page(DashboardsPage)} />
                 <Route path="dashboard/:id?/:present?" element={page(CreateDashboardPage)} />
-                <Route path="visualization" element={page(VisualizationPage)} />
+                <Route path="visualization" element={page(VisualizationsPage)} />
                 <Route path="visualizers/:id?" element={page(VisualizersPage)} />
                 <Route path="maps" element={page(AllMapsPage)} />
                 <Route path="map/:id?/:mapName?" element={page(MapHomepage)} />

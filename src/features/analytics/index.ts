@@ -23,4 +23,4 @@ export {
     type PeriodItem,
     type TransformedMetadata,
 } from './utils/metadata'
-export { buildOrgUnitDimension } from './utils/orgUnitDimension'
+export { buildOrgUnitDimension, parseOrgUnitDimension } from './utils/orgUnitDimension'
