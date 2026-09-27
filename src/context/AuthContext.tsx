@@ -9,6 +9,7 @@ import {
     getDimensionItems,
     transformMetadataLabels,
     type AnalyticsParams,
+    type SelectedDataSource,
 } from '@/features/analytics'
 import {
     orgUnitNameQueryOptions,
@@ -16,24 +17,11 @@ import {
     type OrgUnitMetadata,
     type UserOrgUnitScope,
 } from '@/features/org-units'
-import { useApplicationTitle } from '@/features/system'
 import type { InstanceConnection } from '@/shared/api'
 import { ErrorState, LoadingState } from '@/shared/components'
 import type { Me } from '@/shared/types/dhis2.types'
+import { useLegacyBuilderState } from './useLegacyBuilderState'
 import { useLegacyOrgUnitSelection } from './useLegacyOrgUnitSelection'
-import {
-    VisualSettingsTypes,
-    VisualTitleAndSubtitleType,
-    ColorPaletteTypes,
-    visualColorPaletteTypes,
-    AxisSettingsTypes,
-} from '../types/visualSettingsTypes'
-import { systemDefaultColorPalettes } from '../constants/colorPalettes'
-import type { DataSource } from '@/features/data-sources'
-import { dimensionItemTypesTYPES } from '../types/dimensionDataItemTypes'
-import { dimensionItemTypes } from '../constants/dimensionItemTypes'
-import { BackedSelectedItem, visualTypes } from '../types/visualType'
-import { currentInstanceId } from '../constants/currentInstanceInfo'
 import { analyticsPayloadDeterminerTypes } from '../types/analyticsTypes'
 import { BasemapType } from '../types/maps'
 import { legendTypeTypes, mapSettingsTypes } from '../types/mapFormTypes'
@@ -54,12 +42,10 @@ export type FetchAnalyticsDataInput = {
     isSetPredifinedUserOrgUnits?: UserOrgUnitScope
 }
 
-/** The data source picked in a builder: the current instance or a saved external one. */
-export type SelectedDataSource = InstanceConnection & { instanceName: string } & Partial<DataSource>
-
 type LegacyOrgUnitSelection = ReturnType<typeof useLegacyOrgUnitSelection>
+type LegacyBuilderState = ReturnType<typeof useLegacyBuilderState>
 
-interface AuthContextProps extends LegacyOrgUnitSelection {
+interface AuthContextProps extends LegacyOrgUnitSelection, LegacyBuilderState {
     /** Org-unit tree/levels/groups of the selected data source (TanStack Query). */
     currentUserInfoAndOrgUnitsData: OrgUnitMetadata | undefined
     fetchSingleOrgUnitName: (orgUnitId: string, instance: InstanceConnection) => Promise<string>
@@ -67,47 +53,23 @@ interface AuthContextProps extends LegacyOrgUnitSelection {
     userDatails: { me?: Me }
     /** @deprecated use `useHasAuthority()` from @/features/auth */
     authorities: string[]
-    analyticsDimensions: any
-    setAnalyticsDimensions: any
     fetchAnalyticsData: (input: FetchAnalyticsDataInput) => Promise<void>
     analyticsData: any
     setAnalyticsData: any
     isFetchAnalyticsDataLoading: any
     fetchAnalyticsDataError: any
     analyticsQuery: any
-    selectedChartType: visualTypes
-    setSelectedChartType: any
     setAnalyticsQuery: any
     mapAnalyticsQueryTwo: any
     setMapAnalyticsQueryTwo: any
     geoFeaturesQuery: any
     setGeoFeaturesQuery: any
-    selectedVisualsForDashboard: string[]
-    setSelectedVisualsForDashboard: any
-    visualTitleAndSubTitle: VisualTitleAndSubtitleType
-    setSelectedVisualTitleAndSubTitle: any
-    visualSettings: VisualSettingsTypes
-    setSelectedVisualSettings: any
-    selectedColorPalette: visualColorPaletteTypes
-    setSelectedColorPalette: any
-    visualsColorPalettes: ColorPaletteTypes
-    setVisualsColorPalettes: any
     dataItemsData: any
     setDataItemsData: any
-    selectedDataSourceDetails: SelectedDataSource
-    setSelectedDataSourceDetails: any
-    selectedDataSourceOption: string
-    setSelectedDataSourceOption: any
-    selectedDimensionItemType: dimensionItemTypesTYPES
-    setSelectedDimensionItemType: any
     dataItemsDataPage: number
     setDataItemsDataPage: any
     subDataItemsData: any
     setSubDataItemsData: any
-    backedSelectedItems: BackedSelectedItem[]
-    setBackedSelectedItems: any
-    isExportingDashboardAsPPTX: boolean
-    setIsExportingDashboardAsPPTX: any
     geoFeaturesData: any
     setGeoFeaturesData: any
     analyticsMapData: any
@@ -116,8 +78,6 @@ interface AuthContextProps extends LegacyOrgUnitSelection {
     setMetaMapData: any
     metaDataLabels: any
     setMetaDataLabels: any
-    analyticsPayloadDeterminer: analyticsPayloadDeterminerTypes
-    setAnalyticsPayloadDeterminer: any
     currentBasemap: BasemapType
     setCurrentBasemap: any
     legendType: legendTypeTypes
@@ -133,20 +93,10 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-    const initialState: analyticsPayloadDeterminerTypes = {
-        Columns: ['Data'],
-        Rows: ['Period'],
-        Filter: ['Organisation unit'],
-    }
     const { data: me, isLoading: isMeLoading, error: meError, refetch: refetchMe } = useMe()
-    const applicationTitle = useApplicationTitle()
     const orgUnitSelection = useLegacyOrgUnitSelection()
+    const builder = useLegacyBuilderState()
     const queryClient = useQueryClient()
-    const [analyticsPayloadDeterminer, setAnalyticsPayloadDeterminer] =
-        useState<analyticsPayloadDeterminerTypes>(initialState)
-    const [isExportingDashboardAsPPTX, setIsExportingDashboardAsPPTX] = useState<boolean>(false)
-    const [selectedDataSourceOption, setSelectedDataSourceOption] =
-        useState<string>(currentInstanceId)
     const [geoFeaturesData, setGeoFeaturesData] = useState<any>([])
     const [analyticsMapData, setAnalyticsMapData] = useState<any>([])
     const [metaMapData, setMetaMapData] = useState<any>([])
@@ -159,62 +109,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         legend: {},
         legendType: 'auto',
     })
-    /// this is the current instance definition as data source
-    const defaultDataSource: SelectedDataSource = {
-        instanceName: applicationTitle,
-        isCurrentInstance: true,
-    }
-
-    const [selectedDataSourceDetails, setSelectedDataSourceDetails] =
-        useState<SelectedDataSource>(defaultDataSource)
-    const [selectedDimensionItemType, setSelectedDimensionItemType] =
-        useState<dimensionItemTypesTYPES>(dimensionItemTypes[0])
 
     // metadata states
     //
     const [dataItemsData, setDataItemsData] = useState<any>()
     const [subDataItemsData, setSubDataItemsData] = useState<any>()
     const [dataItemsDataPage, setDataItemsDataPage] = useState<number>(1)
-    const [backedSelectedItems, setBackedSelectedItems] = useState<BackedSelectedItem[]>([])
     const [isFetchAnalyticsDataLoading, setIsFetchAnalyticsDataLoading] = useState(false)
     const [analyticsData, setAnalyticsData] = useState<any>(null)
     const [fetchAnalyticsDataError, setFetchAnalyticsDataError] = useState<any>(false)
-    const [analyticsDimensions, setAnalyticsDimensions] = useState<any>({
-        dx: [],
-        pe: ['LAST_12_MONTHS'],
-    })
     const [analyticsQuery, setAnalyticsQuery] = useState<any>(null)
     const [mapAnalyticsQueryTwo, setMapAnalyticsQueryTwo] = useState<any>(null)
     const [geoFeaturesQuery, setGeoFeaturesQuery] = useState<any>(null)
-    const [selectedChartType, setSelectedChartType] = useState<visualTypes>('Column')
-    const [selectedVisualsForDashboard, setSelectedVisualsForDashboard] = useState<string[]>([])
-    const [visualTitleAndSubTitle, setSelectedVisualTitleAndSubTitle] =
-        useState<VisualTitleAndSubtitleType>({
-            visualTitle: '',
-            DefaultSubTitle: {
-                periods: [],
-                orgUnits: [],
-                dataElements: [],
-            },
-            customSubTitle: '',
-        })
-
-    const [selectedColorPalette, setSelectedColorPalette] = useState<visualColorPaletteTypes>(
-        systemDefaultColorPalettes[0] || []
-    )
-    const [visualsColorPalettes, setVisualsColorPalettes] = useState<ColorPaletteTypes>(
-        systemDefaultColorPalettes
-    )
-    const [visualSettings, setSelectedVisualSettings] = useState<VisualSettingsTypes>({
-        backgroundColor: '#ffffff',
-        visualColorPalette: selectedColorPalette,
-        fillColor: '#000000',
-        XAxisSettings: { color: '#000000', fontSize: 12 },
-        YAxisSettings: { color: '#000000', fontSize: 12 },
-    })
 
     // Server data for the org-unit pickers follows the selected data source.
-    const { data: currentUserInfoAndOrgUnitsData } = useOrgUnitMetadata(selectedDataSourceDetails)
+    const { data: currentUserInfoAndOrgUnitsData } = useOrgUnitMetadata(
+        builder.selectedDataSourceDetails
+    )
 
     // Hooks must run before any early return.
     const engine = useDataEngine()
@@ -287,7 +198,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             setAnalyticsData(data)
             setMetaDataLabels(metadata.metaData)
             const labels = transformMetadataLabels(metadata.metaData)
-            setSelectedVisualTitleAndSubTitle((prevState: VisualTitleAndSubtitleType) => ({
+            builder.setSelectedVisualTitleAndSubTitle((prevState) => ({
                 ...prevState,
                 DefaultSubTitle: {
                     periods: getDimensionItems(labels, 'periods'),
@@ -313,10 +224,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 setMapSettings,
                 legendType,
                 setLegendType,
-                analyticsPayloadDeterminer,
                 currentBasemap,
                 setCurrentBasemap,
-                setAnalyticsPayloadDeterminer,
                 metaDataLabels,
                 setMetaDataLabels,
                 geoFeaturesQuery,
@@ -329,48 +238,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 setAnalyticsMapData,
                 setGeoFeaturesData,
                 setMetaMapData,
-                isExportingDashboardAsPPTX,
-                setIsExportingDashboardAsPPTX,
                 setSubDataItemsData,
                 subDataItemsData,
-                backedSelectedItems,
-                setBackedSelectedItems,
                 dataItemsDataPage,
                 setDataItemsDataPage,
-                selectedDimensionItemType,
-                setSelectedDimensionItemType,
-                selectedDataSourceOption,
-                setSelectedDataSourceOption,
-                selectedDataSourceDetails,
-                setSelectedDataSourceDetails,
                 dataItemsData,
                 setDataItemsData,
-                setVisualsColorPalettes,
-                visualsColorPalettes,
-                selectedColorPalette,
-                setSelectedColorPalette,
-                visualSettings,
-                setSelectedVisualSettings,
                 fetchSingleOrgUnitName,
-                visualTitleAndSubTitle,
-                setSelectedVisualTitleAndSubTitle,
-                selectedVisualsForDashboard,
-                setSelectedVisualsForDashboard,
                 setAnalyticsData,
                 setAnalyticsQuery,
                 userDatails: { me },
                 authorities: me.authorities,
                 ...orgUnitSelection,
+                ...builder,
                 currentUserInfoAndOrgUnitsData,
-                analyticsDimensions,
-                setAnalyticsDimensions,
                 fetchAnalyticsData,
                 analyticsData,
                 isFetchAnalyticsDataLoading,
                 fetchAnalyticsDataError,
                 analyticsQuery,
-                selectedChartType,
-                setSelectedChartType,
             }}
         >
             {children}
@@ -385,3 +271,5 @@ export const useAuthorities = (): AuthContextProps => {
     }
     return context
 }
+
+export type { SelectedDataSource }

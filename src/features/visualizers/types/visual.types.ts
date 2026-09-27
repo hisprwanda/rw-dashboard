@@ -1,13 +1,10 @@
-import type { AnalyticsLayout, StoredAnalyticsQuery } from '@/features/analytics'
+import type { AnalyticsLayout, DataItemRef, StoredAnalyticsQuery } from '@/features/analytics'
 import type { ChartType, VisualSettings, VisualTitles } from '@/features/charts'
 import type { Shareable, UserRef } from '@/shared/types/common.types'
 import type { DataStoreEntry } from '@/shared/types/dhis2.types'
 
 /** A data item picked in the Data modal (kept to restore the modal's selection). */
-export interface BackedSelectedItem {
-    id: string
-    label: string
-}
+export type BackedSelectedItem = DataItemRef
 
 /** A visualization as stored in the visuals dataStore namespace. */
 export type SavedVisual = Shareable & {

@@ -1,7 +1,8 @@
+import { useVisual, type SavedVisual } from '@/features/visualizers'
 import { useApplicationTitle } from '@/features/system'
 import { useDataEngine, useDataQuery } from '@dhis2/app-runtime'
 import { useQuery } from '@tanstack/react-query'
-import { useEffect, useCallback, useRef, useState } from 'react'
+import { useEffect, useCallback, useMemo, useRef, useState } from 'react'
 import { useAuthorities } from '../context/AuthContext'
 import { useDataSources } from '@/features/data-sources'
 import {
@@ -20,28 +21,6 @@ import { useExternalDataItems } from './useExternalDataItems'
 import { analyticsPayloadDeterminerTypes } from '../types/analyticsTypes'
 import { env } from '@/shared/constants/env'
 
-interface VisualData {
-    dataStore?: {
-        visualType?: string
-        query?: {
-            myData?: {
-                params?: {
-                    dimension?: any
-                    filter?: any
-                }
-            }
-        }
-        organizationTree?: any
-        selectedOrgUnitLevel?: string
-        visualTitleAndSubTitle?: any
-        visualSettings?: {
-            visualColorPalette?: any
-        }
-        dataSourceId?: string
-        backedSelectedItems?: any
-    }
-}
-
 type handleDataSourceChangeProps = {
     dataSourceId: string | undefined
     dimensions: any
@@ -54,7 +33,7 @@ type handleDataSourceChangeProps = {
 }
 
 export const useFetchSingleVisualData = (visualId: string | undefined) => {
-    const previousDataRef = useRef<VisualData | null>(null)
+    const previousDataRef = useRef<{ dataStore: SavedVisual } | null>(null)
     const [dataSourceChangeLoading, setDataSourceChangeLoading] = useState(false)
 
     const {
@@ -97,22 +76,9 @@ export const useFetchSingleVisualData = (visualId: string | undefined) => {
     } = useAuthorities()
 
     // Always call hooks in the same order; the query simply stays idle without an id.
-    const engine = useDataEngine()
-    const {
-        data,
-        isLoading: loading,
-        error,
-        refetch,
-    } = useQuery({
-        queryKey: ['visuals', 'detail', visualId],
-        queryFn: async () =>
-            (await engine.query({
-                dataStore: {
-                    resource: `dataStore/${env.visualsStore}/${visualId}`,
-                },
-            })) as VisualData,
-        enabled: !!visualId,
-    })
+    const { data: visual, isLoading: loading, error, refetch } = useVisual(visualId)
+    // Legacy shape `{ dataStore: visual }` kept for the pages that still read it.
+    const data = useMemo(() => (visual ? { dataStore: visual } : undefined), [visual])
 
     const handleDataSourceChange = useCallback(
         async ({
@@ -197,12 +163,11 @@ export const useFetchSingleVisualData = (visualId: string | undefined) => {
         }
 
         previousDataRef.current = data
+        const saved = data.dataStore
 
-        const savedDataSourceId = data.dataStore?.dataSourceId
-        const dimensions = unFormatAnalyticsDimensions(
-            data.dataStore?.query?.myData?.params?.dimension
-        )
-        const analyticsPayloadDeterminer = data.dataStore?.analyticsPayloadDeterminer
+        const savedDataSourceId = saved.dataSourceId
+        const dimensions = unFormatAnalyticsDimensions(saved.query?.myData?.params.dimension)
+        const analyticsPayloadDeterminer = saved.analyticsPayloadDeterminer
         setSelectedDataSourceOption(savedDataSourceId)
         setAnalyticsDimensions(dimensions)
 
@@ -211,33 +176,31 @@ export const useFetchSingleVisualData = (visualId: string | undefined) => {
         )?.value
 
         // Update all visual related states (like settings)
-        setSelectedChartType(data.dataStore?.visualType)
-        setAnalyticsQuery(data.dataStore?.query)
-        setAnalyticsPayloadDeterminer(data.dataStore?.analyticsPayloadDeterminer)
+        setSelectedChartType(saved.visualType)
+        setAnalyticsQuery(saved.query)
+        setAnalyticsPayloadDeterminer(saved.analyticsPayloadDeterminer)
         const selectedOrganizationUnits = formatSelectedOrganizationUnit(
-            data.dataStore?.query?.myData?.params?.filter
+            saved.query?.myData?.params.filter
         )
         const isSetPredifinedUserOrgUnits = formatCurrentUserSelectedOrgUnit(
-            data.dataStore?.query?.myData?.params?.filter
+            saved.query?.myData?.params.filter
         )
         const isAnyTrue = Object.values(isSetPredifinedUserOrgUnits).some((value) => value === true)
-        const selectedOrgUnitGroups = formatOrgUnitGroup(
-            data.dataStore?.query?.myData?.params?.filter
-        )
+        const selectedOrgUnitGroups = formatOrgUnitGroup(saved.query?.myData?.params.filter)
         const selectedOrganizationUnitsLevels = formatOrgUnitLevels(
-            data.dataStore?.query?.myData?.params?.filter
+            saved.query?.myData?.params.filter
         )
         setIsUseCurrentUserOrgUnits(isAnyTrue)
         setSelectedOrganizationUnits(selectedOrganizationUnits)
         setIsSetPredifinedUserOrgUnits(isSetPredifinedUserOrgUnits)
-        setSelectedOrgUnits(data.dataStore?.organizationTree)
+        setSelectedOrgUnits(saved.organizationTree ?? [])
         setSelectedOrgUnitGroups(selectedOrgUnitGroups)
         setSelectedOrganizationUnitsLevels(selectedOrganizationUnitsLevels)
-        setSelectedLevel(data.dataStore?.selectedOrgUnitLevel)
-        setSelectedVisualTitleAndSubTitle(data.dataStore?.visualTitleAndSubTitle)
-        setSelectedColorPalette(data.dataStore?.visualSettings?.visualColorPalette)
-        setSelectedVisualSettings(data.dataStore?.visualSettings)
-        setBackedSelectedItems(data.dataStore?.backedSelectedItems)
+        setSelectedLevel(saved.selectedOrgUnitLevel ?? null)
+        setSelectedVisualTitleAndSubTitle(saved.visualTitleAndSubTitle)
+        setSelectedColorPalette(saved.visualSettings.visualColorPalette)
+        setSelectedVisualSettings(saved.visualSettings)
+        setBackedSelectedItems(saved.backedSelectedItems)
 
         // Handle data source change
         handleDataSourceChange({

@@ -39,3 +39,25 @@ export interface StoredAnalyticsQuery {
     myData: { resource: 'analytics'; params: AnalyticsParams }
     MetaDataLabels?: { resource: 'analytics'; params: AnalyticsParams }
 }
+
+/** The data source picked in a builder: the current instance or a saved external one. */
+export type SelectedDataSource = {
+    isCurrentInstance: boolean
+    instanceName: string
+    url?: string
+    token?: string
+    description?: string
+    type?: string
+}
+
+/** A dimension item type filter of the Data modal (indicators, data elements…). */
+export interface DimensionItemType {
+    label: string
+    value: string
+}
+
+/** A data item picked in the Data modal, kept to restore the modal's selection. */
+export interface DataItemRef {
+    id: string
+    label: string
+}

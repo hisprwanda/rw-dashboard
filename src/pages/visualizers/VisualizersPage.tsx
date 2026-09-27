@@ -1,3 +1,4 @@
+import type { SelectedDataSource } from '@/features/analytics'
 import { useApplicationTitle } from '@/features/system'
 import React, { useEffect, useRef, useState } from 'react'
 import Button from '../../components/Button'
@@ -8,9 +9,9 @@ import { DataModal, OrganizationModal, PeriodModal } from './Components/MetaData
 import { useAuthorities } from '../../context/AuthContext'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs'
 import SelectChartType from './Components/SelectChartType'
-import SaveVisualTypeForm from './Components/SaveVisualTypeForm'
+import { SaveVisualModal } from '@/features/visualizers'
 import { useOrgUnitMetadata } from '@/features/org-units'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useFetchSingleVisualData } from '../../services/fetchVisuals'
 import { useDataItems } from '../../services/fetchDataItems'
 import { ChartRenderer, chartRegistry } from '@/features/charts'
@@ -26,6 +27,7 @@ import { GrUpdate } from 'react-icons/gr'
 import { formatAnalyticsDimensions } from '@/features/analytics'
 function Visualizers() {
     const { id: visualId } = useParams()
+    const navigate = useNavigate()
     const applicationTitle = useApplicationTitle()
     const {
         fetchAnalyticsData,
@@ -60,7 +62,6 @@ function Visualizers() {
         visualTitleAndSubTitle,
         visualSettings,
         setSelectedVisualSettings,
-        setVisualsColorPalettes,
         selectedColorPalette,
         selectedDimensionItemType,
     } = useAuthorities()
@@ -146,25 +147,16 @@ function Visualizers() {
         // Step 1: Update selected data source option
         setSelectedDataSourceOption(selectedValue)
 
-        // Step 2: Reset states *only* after updating selected data source details
-        let newSelectedDetails = {}
-
+        // Step 2: Resolve the connection of the picked source
+        let newSelectedDetails: SelectedDataSource
         if (selectedValue === currentInstanceId) {
-            newSelectedDetails = {
-                instanceName: applicationTitle,
-                isCurrentInstance: true,
-            }
-
+            newSelectedDetails = { instanceName: applicationTitle, isCurrentInstance: true }
             fetchCurrentInstanceData(selectedDimensionItemType)
         } else {
-            newSelectedDetails =
-                savedDataSources?.find((item) => item.key === selectedValue)?.value || {}
-
-            fetchExternalDataItems(
-                newSelectedDetails.url,
-                newSelectedDetails.token,
-                selectedDimensionItemType
-            )
+            const saved = savedDataSources?.find((item) => item.key === selectedValue)?.value
+            if (!saved) return
+            newSelectedDetails = saved
+            fetchExternalDataItems(saved.url, saved.token, selectedDimensionItemType)
         }
 
         // Step 3: Update details and reset default values *afterwards*
@@ -368,18 +360,23 @@ function Visualizers() {
                         <PeriodModal setIsShowPeriod={setIsShowPeriod} />
                     </GenericModal>
                     {/* save visual type form */}
-                    <GenericModal
-                        isOpen={isShowSaveVisualTypeForm}
-                        setIsOpen={setIsShowSaveVisualTypeForm}
-                    >
-                        <SaveVisualTypeForm
+                    {isShowSaveVisualTypeForm && (
+                        <SaveVisualModal
                             visualId={visualId}
-                            singleSavedVisualData={singleSavedVisualData}
-                            setIsShowSaveVisualTypeForm={setIsShowSaveVisualTypeForm}
-                            selectedChartType={selectedChartType}
-                            selectedDataSourceId={selectedDataSourceOption}
+                            saved={singleSavedVisualData?.dataStore}
+                            query={analyticsQuery}
+                            onClose={() => setIsShowSaveVisualTypeForm(false)}
+                            onSaved={(key) => {
+                                setIsShowSaveVisualTypeForm(false)
+                                // A new visual opens its saved URL (going through the list forces
+                                // the builder to remount with the saved state).
+                                if (!visualId) {
+                                    navigate('/visualization')
+                                    navigate(`/visualizers/${key}`)
+                                }
+                            }}
                         />
-                    </GenericModal>
+                    )}
                     {/* general charts option */}
                     <GenericModal isOpen={isShowStyles} setIsOpen={setIsShowStyles}>
                         <GeneralChartsStyles

@@ -18,29 +18,36 @@ import { currentInstanceId } from '../constants/currentInstanceInfo'
 import { useDataItems } from './fetchDataItems'
 import { useExternalDataItems } from './useExternalDataItems'
 import { useRunGeoFeatures } from './maps'
-import { buildOrgUnitDimension } from '@/features/analytics'
+import {
+    buildOrgUnitDimension,
+    type DataItemRef,
+    type StoredAnalyticsQuery,
+} from '@/features/analytics'
+import type { ChartType, VisualSettings, VisualTitles } from '@/features/charts'
+import type { BasemapType } from '../types/maps'
+import type { mapSettingsTypes } from '../types/mapFormTypes'
 import { env } from '@/shared/constants/env'
 
-interface VisualData {
-    dataStore?: {
-        visualType?: string
-        query?: {
-            myData?: {
-                params?: {
-                    dimension?: any
-                    filter?: any
-                }
-            }
-        }
-        organizationTree?: any
-        selectedOrgUnitLevel?: string
-        visualTitleAndSubTitle?: any
-        visualSettings?: {
-            visualColorPalette?: any
-        }
-        dataSourceId?: string
-        backedSelectedItems?: any
+/** A map as stored in the maps dataStore namespace (typed properly in Phase 7). */
+interface SavedMap {
+    visualType: ChartType
+    dataSourceId: string
+    queries?: {
+        mapAnalyticsQueryOne?: StoredAnalyticsQuery
+        mapAnalyticsQueryTwo?: StoredAnalyticsQuery
+        geoFeaturesQuery?: unknown
     }
+    organizationTree?: string[]
+    selectedOrgUnitLevel?: number[]
+    visualTitleAndSubTitle: VisualTitles
+    visualSettings: VisualSettings
+    backedSelectedItems?: DataItemRef[]
+    BasemapType?: BasemapType
+    mapSettings?: mapSettingsTypes
+}
+
+interface VisualData {
+    dataStore?: SavedMap
 }
 
 type handleDataSourceChangeProps = {
@@ -207,12 +214,13 @@ export const useFetchSingleMapData = (mapId: string | undefined) => {
         }
 
         previousDataRef.current = data
+        const saved = data.dataStore
+        if (!saved) return
 
-        const savedDataSourceId = data.dataStore?.dataSourceId
-        const selectedPeriods =
-            data.dataStore?.queries?.mapAnalyticsQueryOne?.myData?.params?.filter
+        const savedDataSourceId = saved.dataSourceId
+        const selectedPeriods = saved.queries?.mapAnalyticsQueryOne?.myData?.params?.filter
         let tempAnalyticsData =
-            data.dataStore?.queries?.mapAnalyticsQueryOne?.myData?.params?.dimension?.slice(0, -1)
+            saved.queries?.mapAnalyticsQueryOne?.myData?.params?.dimension?.slice(0, -1)
         let analyticsOfPeriodsAndData = [...tempAnalyticsData, selectedPeriods]
         const dimensions = unFormatAnalyticsDimensions(analyticsOfPeriodsAndData)
 
@@ -223,24 +231,23 @@ export const useFetchSingleMapData = (mapId: string | undefined) => {
             (item: any) => item.key === savedDataSourceId
         )?.value
 
-        setSelectedChartType(data.dataStore?.visualType)
-        setAnalyticsQuery(data.dataStore?.queries?.mapAnalyticsQueryOne)
-        setMapAnalyticsQueryTwo(data.dataStore?.queries?.mapAnalyticsQueryTwo)
-        setGeoFeaturesQuery(data.dataStore?.queries?.geoFeaturesQuery)
-        const selectedOrgUnit =
-            data.dataStore?.queries?.mapAnalyticsQueryOne?.myData?.params?.dimension?.[1]
+        setSelectedChartType(saved.visualType)
+        setAnalyticsQuery(saved.queries?.mapAnalyticsQueryOne)
+        setMapAnalyticsQueryTwo(saved.queries?.mapAnalyticsQueryTwo)
+        setGeoFeaturesQuery(saved.queries?.geoFeaturesQuery)
+        const selectedOrgUnit = saved.queries?.mapAnalyticsQueryOne?.myData?.params?.dimension?.[1]
         setSelectedOrganizationUnits(formatSelectedOrganizationUnit(selectedOrgUnit))
         setIsSetPredifinedUserOrgUnits(formatCurrentUserSelectedOrgUnit(selectedOrgUnit))
-        setSelectedOrgUnits(data.dataStore?.organizationTree)
+        setSelectedOrgUnits(saved.organizationTree ?? [])
         setSelectedOrgUnitGroups(formatOrgUnitGroup(selectedOrgUnit))
         setSelectedOrganizationUnitsLevels(formatOrgUnitLevels(selectedOrgUnit))
-        setSelectedLevel(data.dataStore?.selectedOrgUnitLevel)
-        setSelectedVisualTitleAndSubTitle(data.dataStore?.visualTitleAndSubTitle)
-        setSelectedColorPalette(data.dataStore?.visualSettings?.visualColorPalette)
-        setSelectedVisualSettings(data.dataStore?.visualSettings)
-        setBackedSelectedItems(data.dataStore?.backedSelectedItems)
-        setCurrentBasemap(data.dataStore?.BasemapType)
-        setMapSettings(data.dataStore?.mapSettings)
+        setSelectedLevel(saved.selectedOrgUnitLevel ?? null)
+        setSelectedVisualTitleAndSubTitle(saved.visualTitleAndSubTitle)
+        setSelectedColorPalette(saved.visualSettings.visualColorPalette)
+        setSelectedVisualSettings(saved.visualSettings)
+        setBackedSelectedItems(saved.backedSelectedItems ?? [])
+        setCurrentBasemap(saved.BasemapType ?? 'osm-light')
+        if (saved.mapSettings) setMapSettings(saved.mapSettings)
 
         const selectedOrganizationUnits = formatSelectedOrganizationUnit(selectedOrgUnit)
         const selectedOrganizationUnitsLevels = formatOrgUnitLevels(selectedOrgUnit)

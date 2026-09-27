@@ -24,3 +24,10 @@ export {
     type TransformedMetadata,
 } from './utils/metadata'
 export { buildOrgUnitDimension, parseOrgUnitDimension } from './utils/orgUnitDimension'
+export {
+    initialSelection,
+    selectionActions,
+    selectionReducer,
+    type SelectionState,
+} from './store/selectionSlice'
+export type { DataItemRef, DimensionItemType, SelectedDataSource } from './types/analytics.types'

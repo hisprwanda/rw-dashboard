@@ -20,7 +20,6 @@ export const useResetAnalyticsStatesToDefault = () => {
         currentUserInfoAndOrgUnitsData,
         setSelectedDataSourceOption,
         setSelectedVisualSettings,
-        setVisualsColorPalettes,
         setIsUseCurrentUserOrgUnits,
         setSelectedOrganizationUnits,
         setSelectedOrgUnits,
@@ -70,7 +69,6 @@ export const useResetAnalyticsStatesToDefault = () => {
         setSelectedOrgUnitGroups([])
         setSelectedOrganizationUnitsLevels([])
         setSelectedLevel([])
-        setVisualsColorPalettes(systemDefaultColorPalettes[0] || [])
         setSelectedVisualSettings({
             backgroundColor: '#ffffff',
             visualColorPalette: selectedColorPalette,
@@ -110,7 +108,6 @@ export const useResetAnalyticsStatesToDefault = () => {
         setSelectedOrgUnitGroups([])
         setSelectedOrganizationUnitsLevels([])
         setSelectedLevel([])
-        setVisualsColorPalettes(systemDefaultColorPalettes[0] || [])
         setSelectedVisualSettings({
             backgroundColor: '#ffffff',
             visualColorPalette: selectedColorPalette,

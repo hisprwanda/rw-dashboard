@@ -8,9 +8,9 @@ import { GenericModal, Loading } from '../../components'
 import { DataModal, OrganizationModal, PeriodModal } from '../visualizers/Components/MetaDataModals'
 import { useAuthorities } from '../../context/AuthContext'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs'
-import SaveVisualTypeForm from '../visualizers/Components/SaveVisualTypeForm'
+import { SaveVisualModal } from '@/features/visualizers'
 import { useOrgUnitMetadata } from '@/features/org-units'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useFetchSingleVisualData } from '../../services/fetchVisuals'
 import { formatAnalyticsDimensions } from '@/features/analytics'
 import { useDataItems } from '../../services/fetchDataItems'
@@ -26,6 +26,7 @@ import ReportBulletinLanding from './components/ReportBulletinLanding'
 
 function ReportPage() {
     const { id: visualId } = useParams()
+    const navigate = useNavigate()
     const applicationTitle = useApplicationTitle()
     const {
         setDataItemsDataPage,
@@ -62,7 +63,6 @@ function ReportPage() {
         setAnalyticsData,
         setMetaDataLabels,
         setSelectedVisualSettings,
-        setVisualsColorPalettes,
         selectedColorPalette,
         selectedDimensionItemType,
         analyticsPayloadDeterminer,
@@ -122,7 +122,6 @@ function ReportPage() {
         setSelectedOrgUnitGroups([])
         setSelectedOrganizationUnitsLevels([])
         setSelectedLevel([])
-        setVisualsColorPalettes(systemDefaultColorPalettes[0] || [])
         setSelectedVisualSettings({
             backgroundColor: '#ffffff',
             visualColorPalette: selectedColorPalette,
@@ -310,18 +309,23 @@ function ReportPage() {
                         />
                     </GenericModal>
                     {/* save visual type form */}
-                    <GenericModal
-                        isOpen={isShowSaveVisualTypeForm}
-                        setIsOpen={setIsShowSaveVisualTypeForm}
-                    >
-                        <SaveVisualTypeForm
+                    {isShowSaveVisualTypeForm && (
+                        <SaveVisualModal
                             visualId={visualId}
-                            singleSavedVisualData={singleSavedVisualData}
-                            setIsShowSaveVisualTypeForm={setIsShowSaveVisualTypeForm}
-                            selectedChartType={selectedChartType}
-                            selectedDataSourceId={selectedDataSourceOption}
+                            saved={singleSavedVisualData?.dataStore}
+                            query={analyticsQuery}
+                            onClose={() => setIsShowSaveVisualTypeForm(false)}
+                            onSaved={(key) => {
+                                setIsShowSaveVisualTypeForm(false)
+                                // A new visual opens its saved URL (going through the list forces
+                                // the builder to remount with the saved state).
+                                if (!visualId) {
+                                    navigate('/visualization')
+                                    navigate(`/visualizers/${key}`)
+                                }
+                            }}
                         />
-                    </GenericModal>
+                    )}
                     {/* general charts option */}
                     <GenericModal isOpen={isShowStyles} setIsOpen={setIsShowStyles}>
                         <GeneralChartsStyles
