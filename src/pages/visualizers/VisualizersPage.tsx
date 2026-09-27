@@ -2,7 +2,7 @@ import { useApplicationTitle } from '@/features/system'
 import React, { useEffect, useRef, useState } from 'react'
 import Button from '../../components/Button'
 import { FileActionMenu } from './Components/FileActionMenu'
-import { useDataSourceData } from '../../services/DataSourceHooks'
+import { useDataSources } from '@/features/data-sources'
 import { GenericModal, Loading } from '../../components'
 import { DataModal, OrganizationModal, PeriodModal } from './Components/MetaDataModals'
 import { useAuthorities } from '../../context/AuthContext'
@@ -84,7 +84,7 @@ function Visualizers() {
     } = useExternalDataItems()
     const defaultUserOrgUnit =
         currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName
-    const { data: savedDataSource, loading } = useDataSourceData()
+    const { data: savedDataSources, isLoading: loading } = useDataSources()
     const [isShowDataModal, setIsShowDataModal] = useState<boolean>(false)
     const [isShowExportModal, setIsShowExportModal] = useState<boolean>(false)
     const [isShowOrganizationUnit, setIsShowOrganizationUnit] = useState<boolean>(false)
@@ -101,7 +101,7 @@ function Visualizers() {
         useResetAnalyticsStatesToDefault()
 
     //// data source options
-    const dataSourceOptions = savedDataSource?.dataStore?.entries?.map((entry: any) => (
+    const dataSourceOptions = savedDataSources?.map((entry: any) => (
         <option key={entry?.key} value={entry?.key}>
             {entry?.value?.instanceName}
         </option>
@@ -158,8 +158,7 @@ function Visualizers() {
             fetchCurrentInstanceData(selectedDimensionItemType)
         } else {
             newSelectedDetails =
-                savedDataSource?.dataStore?.entries?.find((item) => item.key === selectedValue)
-                    ?.value || {}
+                savedDataSources?.find((item) => item.key === selectedValue)?.value || {}
 
             fetchExternalDataItems(
                 newSelectedDetails.url,

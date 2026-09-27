@@ -3,7 +3,7 @@ import { useApplicationTitle } from '@/features/system'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Button from '../../components/Button'
-import { useDataSourceData } from '../../services/DataSourceHooks'
+import { useDataSources } from '@/features/data-sources'
 import { GenericModal, Loading } from '../../components'
 import { DataModal, OrganizationModal, PeriodModal } from '../visualizers/Components/MetaDataModals'
 import { useAuthorities } from '../../context/AuthContext'
@@ -87,7 +87,7 @@ function ReportPage() {
     } = useExternalDataItems()
     const defaultUserOrgUnit =
         currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName
-    const { data: savedDataSource, loading } = useDataSourceData()
+    const { data: savedDataSources, isLoading: loading } = useDataSources()
     const [isShowDataModal, setIsShowDataModal] = useState<boolean>(false)
     const [isShowOrganizationUnit, setIsShowOrganizationUnit] = useState<boolean>(false)
     const [isShowPeriod, setIsShowPeriod] = useState<boolean>(false)

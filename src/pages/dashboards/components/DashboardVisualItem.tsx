@@ -7,12 +7,9 @@ import {
     type AnalyticsLayout,
     type StoredAnalyticsQuery,
 } from '@/features/analytics'
-import type { InstanceConnection } from '@/shared/api'
 import { ChartRenderer } from '@/features/charts'
-import { currentInstanceId } from '../../../constants/currentInstanceInfo'
-import { useDataSourceData } from '../../../services/DataSourceHooks'
+import { useDataSourceInstance } from '@/features/data-sources'
 import { VisualSettingsTypes, VisualTitleAndSubtitleType } from '../../../types/visualSettingsTypes'
-import type { DataSourceFormFields } from '../../../types/DataSource'
 
 interface DashboardVisualItemProps {
     query: StoredAnalyticsQuery | undefined
@@ -23,12 +20,6 @@ interface DashboardVisualItemProps {
     analyticsPayloadDeterminer: AnalyticsLayout
 }
 
-interface SavedDataSources {
-    dataStore?: { entries?: Array<{ key: string; value: DataSourceFormFields }> }
-}
-
-const CURRENT_INSTANCE: InstanceConnection = { isCurrentInstance: true }
-
 const DashboardVisualItem: React.FC<DashboardVisualItemProps> = ({
     query,
     visualType,
@@ -37,14 +28,7 @@ const DashboardVisualItem: React.FC<DashboardVisualItemProps> = ({
     dataSourceId,
     analyticsPayloadDeterminer,
 }) => {
-    const { data: savedDataSources, loading: isSourcesLoading } = useDataSourceData()
-    const isCurrentInstance = dataSourceId === currentInstanceId
-
-    const instance = isCurrentInstance
-        ? CURRENT_INSTANCE
-        : (savedDataSources as SavedDataSources | undefined)?.dataStore?.entries?.find(
-              (entry) => entry.key === dataSourceId
-          )?.value
+    const { instance, isLoading: isSourcesLoading, notFound } = useDataSourceInstance(dataSourceId)
 
     // The same layout is applied for current and external instances.
     const params = useMemo(
@@ -57,9 +41,9 @@ const DashboardVisualItem: React.FC<DashboardVisualItemProps> = ({
 
     const { data, isLoading, error } = useAnalytics(params, instance)
 
-    if (isLoading || (!isCurrentInstance && isSourcesLoading)) return <CircularLoader />
+    if (isLoading || isSourcesLoading) return <CircularLoader />
 
-    if (!isCurrentInstance && !isSourcesLoading && !instance) {
+    if (notFound) {
         return (
             <NoticeBox warning title={i18n.t('Data source not found')}>
                 {i18n.t(

@@ -3,7 +3,7 @@ import { useDataEngine, useDataQuery } from '@dhis2/app-runtime'
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useCallback, useRef, useState } from 'react'
 import { useAuthorities } from '../context/AuthContext'
-import { useDataSourceData } from '../services/DataSourceHooks'
+import { useDataSources } from '@/features/data-sources'
 import {
     formatAnalyticsDimensions,
     parseAnalyticsDimensions as unFormatAnalyticsDimensions,
@@ -70,7 +70,7 @@ export const useFetchSingleVisualData = (visualId: string | undefined) => {
     } = useExternalDataItems()
 
     const applicationTitle = useApplicationTitle()
-    const { data: savedDataSource } = useDataSourceData()
+    const { data: savedDataSources } = useDataSources()
 
     const {
         setSelectedDataSourceOption,
@@ -206,7 +206,7 @@ export const useFetchSingleVisualData = (visualId: string | undefined) => {
         setSelectedDataSourceOption(savedDataSourceId)
         setAnalyticsDimensions(dimensions)
 
-        const selectedDataSourceDetails = savedDataSource?.dataStore?.entries?.find(
+        const selectedDataSourceDetails = savedDataSources?.find(
             (item: any) => item.key === savedDataSourceId
         )?.value
 
@@ -252,7 +252,7 @@ export const useFetchSingleVisualData = (visualId: string | undefined) => {
         })
     }, [
         data,
-        savedDataSource,
+        savedDataSources,
         handleDataSourceChange,
         setAnalyticsDimensions,
         setSelectedDataSourceOption,

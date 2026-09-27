@@ -2,7 +2,7 @@ import i18n from '@dhis2/d2-i18n'
 import React, { useEffect, useState } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { generateUid } from '../../../lib/uid'
+import { generateUid } from '@/shared/utils/uid'
 import { MapDataFormFields, MapDataSchema } from '../../../types/mapFormTypes'
 import { useDataEngine } from '@dhis2/app-runtime'
 import {

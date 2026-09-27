@@ -29,7 +29,7 @@ import {
     AxisSettingsTypes,
 } from '../types/visualSettingsTypes'
 import { systemDefaultColorPalettes } from '../constants/colorPalettes'
-import { DataSourceFormFields } from '../types/DataSource'
+import type { DataSource } from '@/features/data-sources'
 import { dimensionItemTypesTYPES } from '../types/dimensionDataItemTypes'
 import { dimensionItemTypes } from '../constants/dimensionItemTypes'
 import { BackedSelectedItem, visualTypes } from '../types/visualType'
@@ -54,12 +54,15 @@ export type FetchAnalyticsDataInput = {
     isSetPredifinedUserOrgUnits?: UserOrgUnitScope
 }
 
+/** The data source picked in a builder: the current instance or a saved external one. */
+export type SelectedDataSource = InstanceConnection & { instanceName: string } & Partial<DataSource>
+
 type LegacyOrgUnitSelection = ReturnType<typeof useLegacyOrgUnitSelection>
 
 interface AuthContextProps extends LegacyOrgUnitSelection {
     /** Org-unit tree/levels/groups of the selected data source (TanStack Query). */
     currentUserInfoAndOrgUnitsData: OrgUnitMetadata | undefined
-    fetchSingleOrgUnitName: (orgUnitId: string, instance: DataSourceFormFields) => Promise<string>
+    fetchSingleOrgUnitName: (orgUnitId: string, instance: InstanceConnection) => Promise<string>
     /** @deprecated use `useMe()` from @/features/auth */
     userDatails: { me?: Me }
     /** @deprecated use `useHasAuthority()` from @/features/auth */
@@ -91,7 +94,7 @@ interface AuthContextProps extends LegacyOrgUnitSelection {
     setVisualsColorPalettes: any
     dataItemsData: any
     setDataItemsData: any
-    selectedDataSourceDetails: DataSourceFormFields
+    selectedDataSourceDetails: SelectedDataSource
     setSelectedDataSourceDetails: any
     selectedDataSourceOption: string
     setSelectedDataSourceOption: any
@@ -157,13 +160,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         legendType: 'auto',
     })
     /// this is the current instance definition as data source
-    const defaultDataSource: DataSourceFormFields = {
+    const defaultDataSource: SelectedDataSource = {
         instanceName: applicationTitle,
         isCurrentInstance: true,
     }
 
     const [selectedDataSourceDetails, setSelectedDataSourceDetails] =
-        useState<DataSourceFormFields>(defaultDataSource)
+        useState<SelectedDataSource>(defaultDataSource)
     const [selectedDimensionItemType, setSelectedDimensionItemType] =
         useState<dimensionItemTypesTYPES>(dimensionItemTypes[0])
 
@@ -300,7 +303,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
     }
 
-    const fetchSingleOrgUnitName = (orgUnitId: string, instance: DataSourceFormFields) =>
+    const fetchSingleOrgUnitName = (orgUnitId: string, instance: InstanceConnection) =>
         queryClient.fetchQuery(orgUnitNameQueryOptions(engine, instance, orgUnitId))
 
     return (

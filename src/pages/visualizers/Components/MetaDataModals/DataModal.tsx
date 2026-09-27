@@ -464,7 +464,7 @@ const DataModal: React.FC<DataModalProps> = ({
                 setIsGroupChanging(false)
                 setIsOtherOptionsChanging(false)
             })
-        } else {
+        } else if (selectedDataSourceDetails.url && selectedDataSourceDetails.token) {
             fetchExternalDataItems(
                 selectedDataSourceDetails.url,
                 selectedDataSourceDetails.token,

@@ -15,7 +15,7 @@ const AllMapsPage = lazy(() => import('@/pages/Map/AllMapsPage'))
 const MapHomepage = lazy(() => import('@/pages/Map/MapHomepage'))
 const ReportPage = lazy(() => import('@/pages/report/ReportPage'))
 const SettingsPage = lazy(() => import('@/pages/settings/SettingsPage'))
-const DataSourcePage = lazy(() => import('@/pages/settings/DataSource/DataSourcePage'))
+const DataSourcesPage = lazy(() => import('@/pages/settings/data-sources/DataSourcesPage'))
 const AlertsPage = lazy(() => import('@/pages/alerts/AlertsPage'))
 const AdminPage = lazy(() => import('@/pages/AdminPage'))
 const UserPage = lazy(() => import('@/pages/UserPage'))
@@ -44,7 +44,7 @@ export const AppRouter = () => (
                 <Route path="map/:id?/:mapName?" element={page(MapHomepage)} />
                 <Route path="report" element={page(ReportPage)} />
                 <Route path="settings" element={page(SettingsPage)} />
-                <Route path="datasource" element={page(DataSourcePage)} />
+                <Route path="datasource" element={page(DataSourcesPage)} />
                 <Route path="alerts" element={page(AlertsPage)} />
                 <Route path="unauthorized" element={page(UnauthorizedPage)} />
                 <Route path="*" element={page(NotFoundPage)} />
