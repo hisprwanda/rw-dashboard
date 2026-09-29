@@ -37,7 +37,7 @@ import { useNotify } from '@/shared/hooks'
 import { Loader, Loader2, Maximize2, Minimize2 } from 'lucide-react'
 import { FileText } from 'lucide-react'
 import { usePPTXExport } from '../../hooks/useExportDashboard'
-import { useFetchAllSavedMaps } from '../../services/maps'
+import { useMaps } from '@/features/maps'
 import SingleMapItem from '../Map/components/SingleMapItem'
 import { env } from '@/shared/constants/env'
 
@@ -47,7 +47,7 @@ const CreateDashboardPage: React.FC = () => {
     const { id: dashboardId, present: isPresentModeFromView } = useParams()
     const navigate = useNavigate()
     const { data: allSavedVisuals, error, isError, loading } = useFetchVisualsData()
-    const { data: allSavedMaps, loading: isLoadingAllSavedMaps } = useFetchAllSavedMaps()
+    const { data: allSavedMaps } = useMaps()
     const {
         data: singleSavedDashboardData,
         error: singleSavedDashboardDataError,
@@ -183,7 +183,7 @@ const CreateDashboardPage: React.FC = () => {
             {entry.value.visualName} ({entry.value.visualType})
         </option>
     ))
-    const mapsOptions = allSavedMaps?.dataStore?.entries?.map((entry: any) => (
+    const mapsOptions = allSavedMaps?.map((entry) => (
         <option
             key={entry.key}
             value={entry.key}
@@ -219,9 +219,7 @@ const CreateDashboardPage: React.FC = () => {
     }
     const handleMapsSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedKey = e.target.value
-        const map = allSavedMaps?.dataStore?.entries?.find(
-            (entry: any) => entry.key === selectedKey
-        )
+        const map = allSavedMaps?.find((entry) => entry.key === selectedKey)
         if (map && !selectedMaps.some((v) => v.i === map.key)) {
             const newMap = {
                 i: map.key,

@@ -1,7 +1,6 @@
 import { useApplicationTitle } from '@/features/system'
-import { useDataEngine } from '@dhis2/app-runtime'
-import { useQuery } from '@tanstack/react-query'
-import { useEffect, useCallback, useRef, useState } from 'react'
+import { useEffect, useCallback, useMemo, useRef, useState } from 'react'
+import { useMap, type SavedMap } from '@/features/maps'
 import { useAuthorities } from '../context/AuthContext'
 import { useDataSources } from '@/features/data-sources'
 import {
@@ -24,25 +23,6 @@ import {
 import type { ChartType, VisualSettings, VisualTitles } from '@/features/charts'
 import type { BasemapType } from '../types/maps'
 import type { mapSettingsTypes } from '../types/mapFormTypes'
-import { env } from '@/shared/constants/env'
-
-/** A map as stored in the maps dataStore namespace (typed properly in Phase 7). */
-interface SavedMap {
-    visualType: ChartType
-    dataSourceId: string
-    queries?: {
-        mapAnalyticsQueryOne?: StoredAnalyticsQuery
-        mapAnalyticsQueryTwo?: StoredAnalyticsQuery
-        geoFeaturesQuery?: unknown
-    }
-    organizationTree?: string[]
-    selectedOrgUnitLevel?: number[]
-    visualTitleAndSubTitle: VisualTitles
-    visualSettings: VisualSettings
-    backedSelectedItems?: DataItemRef[]
-    BasemapType?: BasemapType
-    mapSettings?: mapSettingsTypes
-}
 
 interface VisualData {
     dataStore?: SavedMap
@@ -93,22 +73,12 @@ export const useFetchSingleMapData = (mapId: string | undefined) => {
     } = useAuthorities()
 
     // Always call hooks in the same order; the query simply stays idle without an id.
-    const engine = useDataEngine()
-    const {
-        data,
-        isLoading: loading,
-        error,
-        refetch,
-    } = useQuery({
-        queryKey: ['maps', 'detail', mapId],
-        queryFn: async () =>
-            (await engine.query({
-                dataStore: {
-                    resource: `dataStore/${env.mapsStore}/${mapId}`,
-                },
-            })) as VisualData,
-        enabled: !!mapId,
-    })
+    const { data: map, isLoading: loading, error, refetch } = useMap(mapId)
+    // Legacy shape `{ dataStore: map }` kept for the components that still read it.
+    const data = useMemo<VisualData | undefined>(
+        () => (map ? { dataStore: map } : undefined),
+        [map]
+    )
     const { fetchGeoFeatures } = useRunGeoFeatures()
 
     const handleDataSourceChange = useCallback(
@@ -197,9 +167,9 @@ export const useFetchSingleMapData = (mapId: string | undefined) => {
 
         const savedDataSourceId = saved.dataSourceId
         const selectedPeriods = saved.queries?.mapAnalyticsQueryOne?.myData?.params?.filter
-        let tempAnalyticsData =
-            saved.queries?.mapAnalyticsQueryOne?.myData?.params?.dimension?.slice(0, -1)
-        let analyticsOfPeriodsAndData = [...tempAnalyticsData, selectedPeriods]
+        const tempAnalyticsData =
+            saved.queries?.mapAnalyticsQueryOne?.myData?.params?.dimension?.slice(0, -1) ?? []
+        const analyticsOfPeriodsAndData = [...tempAnalyticsData, selectedPeriods]
         const dimensions = unFormatAnalyticsDimensions(analyticsOfPeriodsAndData)
 
         setSelectedDataSourceOption(savedDataSourceId)
@@ -209,7 +179,8 @@ export const useFetchSingleMapData = (mapId: string | undefined) => {
             (item: any) => item.key === savedDataSourceId
         )?.value
 
-        setSelectedChartType(saved.visualType)
+        // Maps saved through the map form do not store the chart appearance.
+        if (saved.visualType) setSelectedChartType(saved.visualType)
         setAnalyticsQuery(saved.queries?.mapAnalyticsQueryOne)
         setMapAnalyticsQueryTwo(saved.queries?.mapAnalyticsQueryTwo)
         setGeoFeaturesQuery(saved.queries?.geoFeaturesQuery)
@@ -220,9 +191,13 @@ export const useFetchSingleMapData = (mapId: string | undefined) => {
         setSelectedOrgUnitGroups(formatOrgUnitGroup(selectedOrgUnit))
         setSelectedOrganizationUnitsLevels(formatOrgUnitLevels(selectedOrgUnit))
         setSelectedLevel(saved.selectedOrgUnitLevel ?? null)
-        setSelectedVisualTitleAndSubTitle(saved.visualTitleAndSubTitle)
-        setSelectedColorPalette(saved.visualSettings.visualColorPalette)
-        setSelectedVisualSettings(saved.visualSettings)
+        if (saved.visualTitleAndSubTitle) {
+            setSelectedVisualTitleAndSubTitle(saved.visualTitleAndSubTitle)
+        }
+        if (saved.visualSettings) {
+            setSelectedColorPalette(saved.visualSettings.visualColorPalette)
+            setSelectedVisualSettings(saved.visualSettings)
+        }
         setBackedSelectedItems(saved.backedSelectedItems ?? [])
         setCurrentBasemap(saved.BasemapType ?? 'osm-light')
         if (saved.mapSettings) setMapSettings(saved.mapSettings)

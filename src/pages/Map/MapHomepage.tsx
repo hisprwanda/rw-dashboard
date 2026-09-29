@@ -7,6 +7,7 @@ import { Loader } from '@mantine/core'
 import { useRunGeoFeatures } from '../../services/maps'
 import { formatAnalyticsDimensions } from '@/features/analytics'
 import { CircularLoader } from '@dhis2/ui'
+import { useResetAnalyticsStatesToDefault } from '../../hooks/useResetAnalyticsStatesTDefault'
 
 const MapHomepage: React.FC = () => {
     const { id: mapId, mapName } = useParams()
@@ -29,6 +30,12 @@ const MapHomepage: React.FC = () => {
         isHandleDataSourceChangeLoading,
     } = useFetchSingleMapData(mapId)
     const { loading: isFetchingGeoFeaturesLoading } = useRunGeoFeatures()
+    const { resetAnalyticsStatesToDefaultValues } = useResetAnalyticsStatesToDefault()
+    // A new map starts from a clean state (the maps list no longer resets it).
+    useEffect(() => {
+        if (!mapId) resetAnalyticsStatesToDefaultValues({ isBeingUsedInMap: true })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [mapId])
     // update if current user organization is selected
     //   useEffect(() => {
     //     console.log("isSetPredifinedUserOrgUnits in map ",isSetPredifinedUserOrgUnits )

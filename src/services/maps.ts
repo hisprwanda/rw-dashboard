@@ -1,8 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useAuthorities } from '../context/AuthContext'
 import { useDataEngine } from '@dhis2/app-runtime'
-import { useDataQuery } from '@dhis2/app-runtime'
-import { env } from '@/shared/constants/env'
 
 type fetchGeoFeatures = {
     selectedOrgUnitsWhenUsingMap: any
@@ -56,24 +54,6 @@ export const useRunGeoFeatures = () => {
     }
 
     return { data, loading, error, isError: !!error, fetchGeoFeatures }
-}
-
-export const useFetchAllSavedMaps = () => {
-    const query = {
-        dataStore: {
-            resource: `dataStore/${env.mapsStore}`,
-            params: () => ({
-                fields: '.',
-            }),
-        },
-    }
-
-    const { data, loading, error, isError, refetch } = useDataQuery(query)
-    // Sort the entries based on `updatedAt` in descending order
-    const sortedData = data?.dataStore?.entries?.sort(
-        (a, b) => b.value.updatedAt - a.value.updatedAt
-    )
-    return { data, loading, error, isError, refetch }
 }
 
 export const useFetchSavedGeoFeatureByQuery = ({

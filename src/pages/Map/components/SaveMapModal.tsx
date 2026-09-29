@@ -19,6 +19,8 @@ import { useAuthorities } from '../../../context/AuthContext'
 import { useNotify } from '@/shared/hooks'
 import { useNavigate } from 'react-router-dom'
 import { env } from '@/shared/constants/env'
+import { useQueryClient } from '@tanstack/react-query'
+import { mapKeys } from '@/features/maps'
 
 interface SaveMapModalProps {
     open: boolean
@@ -127,6 +129,7 @@ export function SaveMapModal({ open, setOpen, mapId, existingMapData }: SaveMapM
 
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
+    const queryClient = useQueryClient()
     const onSubmit: SubmitHandler<MapDataFormFields> = async (formData) => {
         try {
             setErrorMessage(null)
@@ -141,6 +144,7 @@ export function SaveMapModal({ open, setOpen, mapId, existingMapData }: SaveMapM
             })
 
             notify.success(i18n.t('Map saved'))
+            await queryClient.invalidateQueries({ queryKey: mapKeys.all })
 
             if (!mapId) {
                 // added navigate(`/maps`) intentionally to fix length undefined bug
