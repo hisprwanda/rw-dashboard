@@ -7,7 +7,7 @@ import {
     Tooltip,
     type PieLabelRenderProps,
 } from 'recharts'
-import { ChartTooltipContent } from '@/components/ui/chart'
+import { ChartTooltipContent } from './ChartTooltipContent'
 import type { ChartProps } from '../types/chart.types'
 import { toSlices } from '../utils/chartData'
 import { ChartFrame } from './ChartFrame'
@@ -46,9 +46,9 @@ export const PieChart = (props: ChartProps) => {
     }
 
     return (
-        <ChartFrame {...props} config={config} error={error} isEmpty={slices.length === 0}>
+        <ChartFrame {...props} error={error} isEmpty={slices.length === 0}>
             <RePieChart width={400} height={400}>
-                <Tooltip content={<ChartTooltipContent className="bg-white" />} />
+                <Tooltip content={<ChartTooltipContent config={config} />} />
                 <Legend />
                 <Pie
                     data={slices}

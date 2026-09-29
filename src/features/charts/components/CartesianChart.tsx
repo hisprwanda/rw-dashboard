@@ -17,7 +17,7 @@ import {
     XAxis,
     YAxis,
 } from 'recharts'
-import { ChartTooltipContent } from '@/components/ui/chart'
+import { ChartTooltipContent } from './ChartTooltipContent'
 import type { ChartProps } from '../types/chart.types'
 import { ChartFrame } from './ChartFrame'
 import { useChartData } from '../hooks/useChartData'
@@ -179,7 +179,7 @@ export const CartesianChart = ({ variant, ...props }: CartesianChartProps) => {
     const Chart = CHART_BY_SERIES[spec.series]
 
     return (
-        <ChartFrame {...props} config={config} error={error} isEmpty={rows.length === 0}>
+        <ChartFrame {...props} error={error} isEmpty={rows.length === 0}>
             <ResponsiveContainer
                 width="100%"
                 height={spec.horizontal ? rows.length * 50 + 100 : '100%'}
@@ -223,7 +223,7 @@ export const CartesianChart = ({ variant, ...props }: CartesianChartProps) => {
                             <YAxis tick={yTick} />
                         </>
                     )}
-                    <Tooltip content={<ChartTooltipContent className="bg-white" />} />
+                    <Tooltip content={<ChartTooltipContent config={config} />} />
                     <Legend wrapperStyle={{ paddingTop: 10 }} />
                     {Object.keys(config).map(renderSeries)}
                 </Chart>

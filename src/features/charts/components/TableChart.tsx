@@ -21,7 +21,7 @@ export const TableChart = (props: ChartProps) => {
     }, [rows])
 
     return (
-        <ChartFrame {...props} config={config} error={error} isEmpty={rows.length === 0} plain>
+        <ChartFrame {...props} error={error} isEmpty={rows.length === 0} plain>
             <div className="max-h-[400px] overflow-auto">
                 <DataTable
                     columns={columns}

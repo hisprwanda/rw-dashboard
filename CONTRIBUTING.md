@@ -93,14 +93,16 @@ imported by `AppProviders` alone, otherwise feature barrels and the store import
 Server data is **never** copied into Redux.
 
 **No React Context API** for app state. Do not call `createContext`/`useContext`
-(ESLint error in `app/`, `features/`, `shared/`). The legacy `AuthContext` is being
-removed. Library providers (Redux, TanStack Query, DHIS2) are the only contexts.
+(ESLint error everywhere in `src/`). Library providers (Redux, TanStack Query, DHIS2) are
+the only contexts.
 
 ## UI
 
 - `@dhis2/ui` is the component library (Button, Modal, InputField, Transfer,
-  DataTable, TabBar, CircularLoader, NoticeBox…). Do not add new shadcn/Radix/Mantine usage.
-- Tailwind is used for layout and spacing only.
+  DataTable, TabBar, CircularLoader, NoticeBox…) and the icon set. `lucide-react` is the only
+  fallback for icons DHIS2 lacks. shadcn/Radix/Mantine were removed: do not add them back.
+- Tailwind is used for layout and spacing only; DHIS2 colors are available as `dhis2-*`
+  (from `@dhis2/ui-constants`, e.g. `bg-dhis2-blue800`).
 - Charts: recharts (inside `features/charts`). Maps: react-leaflet. Dashboard grid: react-grid-layout.
 - Forms: react-hook-form + zod, rendered with `@dhis2/ui` fields.
 

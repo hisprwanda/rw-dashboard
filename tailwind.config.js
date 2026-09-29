@@ -1,49 +1,22 @@
-/** @type {import('tailwindcss').Config} */
+const path = require('path')
+
+// The DHIS2 palette. Loaded by path: the package "exports" map hides this file, and the
+// package entry point needs a DOM, which Tailwind (Node) does not have.
+const { colors } = require(
+    path.join(__dirname, 'node_modules/@dhis2/ui-constants/build/cjs/colors.js')
+)
+
+/**
+ * Tailwind is used for layout and spacing only; components come from @dhis2/ui.
+ * DHIS2 colors are available as `dhis2-*` (e.g. `bg-dhis2-blue800`).
+ * @type {import('tailwindcss').Config}
+ */
 module.exports = {
-    darkMode: ['class'],
     content: ['./src/**/*.{ts,tsx}'],
     theme: {
         extend: {
-            borderRadius: {
-                lg: 'var(--radius)',
-                md: 'calc(var(--radius) - 2px)',
-                sm: 'calc(var(--radius) - 4px)',
-            },
-            colors: {
-                dhisMainBlue: '#2C6693',
-                dhisGrey900: '#212934',
-                dhisDarkBlue: '#1A557F',
-                dhisMainGreen: '#00897b',
-                dhisGrey500: '#A0ADBA',
-                background: 'hsl(var(--background))',
-                foreground: 'hsl(var(--foreground))',
-                card: {
-                    DEFAULT: 'hsl(var(--card))',
-                    foreground: 'hsl(var(--card-foreground))',
-                },
-                popover: {
-                    DEFAULT: 'hsl(var(--popover))',
-                    foreground: 'hsl(var(--popover-foreground))',
-                },
-                primary: '#2C6693',
-                destructive: 'hsl(0, 61%, 57%)',
-                hoverDestructive: 'hsl(0, 80%, 75%)',
-            },
-            keyframes: {
-                'accordion-down': {
-                    from: { height: '0' },
-                    to: { height: 'var(--radix-accordion-content-height)' },
-                },
-                'accordion-up': {
-                    from: { height: 'var(--radix-accordion-content-height)' },
-                    to: { height: '0' },
-                },
-            },
-            animation: {
-                'accordion-down': 'accordion-down 0.2s ease-out',
-                'accordion-up': 'accordion-up 0.2s ease-out',
-            },
+            colors: { dhis2: colors },
         },
     },
-    plugins: [require('tailwindcss-animate')],
+    plugins: [],
 }

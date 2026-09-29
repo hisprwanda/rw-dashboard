@@ -98,7 +98,7 @@ export const TreeMapChart = (props: ChartProps) => {
     const { rows, config, error } = useChartData(props)
     const nodes = useMemo(() => toTreeNodes(rows), [rows])
     return (
-        <ChartFrame {...props} config={config} error={error} isEmpty={nodes.length === 0}>
+        <ChartFrame {...props} error={error} isEmpty={nodes.length === 0}>
             <ResponsiveContainer width="100%" height={400}>
                 <Treemap
                     data={nodes}

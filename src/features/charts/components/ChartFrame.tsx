@@ -1,6 +1,6 @@
 import i18n from '@dhis2/d2-i18n'
 import type { ReactElement } from 'react'
-import { ChartContainer, type ChartConfig } from '@/components/ui/chart'
+import { ResponsiveContainer } from 'recharts'
 import type { ChartProps } from '../types/chart.types'
 import { ChartHeading } from './ChartHeading'
 
@@ -9,7 +9,6 @@ interface ChartFrameProps
         ChartProps,
         'visualSettings' | 'visualTitleAndSubTitle' | 'analyticsPayloadDeterminer'
     > {
-    config: ChartConfig
     /** Set when the data could not be charted; replaces the chart with a message. */
     error?: string | null
     isEmpty?: boolean
@@ -30,9 +29,8 @@ export const ChartEmpty = ({ message }: { message?: string | null }) => (
     </div>
 )
 
-/** Shared shell of every chart: colors (CSS vars + tooltips), background, heading, empty state. */
+/** Shared shell of every chart: background, heading, responsive size and empty state. */
 export const ChartFrame = ({
-    config,
     error,
     isEmpty,
     hideHeading,
@@ -51,9 +49,9 @@ export const ChartFrame = ({
             {plain ? (
                 children
             ) : (
-                <ChartContainer config={config} style={{ width: '100%', height: '100%' }}>
-                    {children}
-                </ChartContainer>
+                <div className="flex aspect-video justify-center text-xs [&_.recharts-layer]:outline-none [&_.recharts-sector]:outline-none [&_.recharts-surface]:outline-none">
+                    <ResponsiveContainer>{children}</ResponsiveContainer>
+                </div>
             )}
         </div>
     )

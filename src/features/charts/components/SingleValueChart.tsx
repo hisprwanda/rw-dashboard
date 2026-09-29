@@ -10,7 +10,7 @@ export const SingleValueChart = (props: ChartProps) => {
     const { rows, config, error } = useChartData(props)
     const first = useMemo(() => toSlices(rows)[0], [rows])
     return (
-        <ChartFrame {...props} config={config} error={error} isEmpty={!first} hideHeading>
+        <ChartFrame {...props} error={error} isEmpty={!first} hideHeading>
             <div className="flex h-full w-full items-center justify-center">
                 <article
                     style={{ backgroundColor: visualSettings.backgroundColor }}

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { Cell, Pie, PieChart, Tooltip } from 'recharts'
-import { ChartTooltipContent } from '@/components/ui/chart'
+import { ChartTooltipContent } from './ChartTooltipContent'
 import type { ChartProps } from '../types/chart.types'
 import { toSlices } from '../utils/chartData'
 import { ChartFrame } from './ChartFrame'
@@ -23,7 +23,7 @@ export const GaugeChart = (props: ChartProps) => {
     const size = Math.max(300, fontSize * 15)
 
     return (
-        <ChartFrame {...props} config={config} error={error} isEmpty={!first} hideHeading>
+        <ChartFrame {...props} error={error} isEmpty={!first} hideHeading>
             <div className="flex h-full w-full flex-col items-center justify-center">
                 <PieChart width={size} height={size / 1.5}>
                     <Pie
@@ -44,9 +44,7 @@ export const GaugeChart = (props: ChartProps) => {
                         ))}
                     </Pie>
                     <Tooltip
-                        content={
-                            <ChartTooltipContent hideLabel nameKey="name" className="bg-white" />
-                        }
+                        content={<ChartTooltipContent config={config} hideLabel nameKey="name" />}
                     />
                     <text
                         x="50%"

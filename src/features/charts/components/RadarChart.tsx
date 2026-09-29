@@ -1,5 +1,5 @@
-import { PolarAngleAxis, PolarGrid, Radar, RadarChart as ReRadarChart } from 'recharts'
-import { ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
+import { PolarAngleAxis, PolarGrid, Radar, RadarChart as ReRadarChart, Tooltip } from 'recharts'
+import { ChartTooltipContent } from './ChartTooltipContent'
 import type { ChartProps } from '../types/chart.types'
 import { ChartFrame } from './ChartFrame'
 import { useChartData } from '../hooks/useChartData'
@@ -8,12 +8,9 @@ export const RadarChart = (props: ChartProps) => {
     const { visualSettings } = props
     const { rows, config, error } = useChartData(props)
     return (
-        <ChartFrame {...props} config={config} error={error} isEmpty={rows.length === 0}>
+        <ChartFrame {...props} error={error} isEmpty={rows.length === 0}>
             <ReRadarChart data={rows} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                <ChartTooltip
-                    cursor={false}
-                    content={<ChartTooltipContent indicator="line" className="bg-white" />}
-                />
+                <Tooltip cursor={false} content={<ChartTooltipContent config={config} />} />
                 <PolarAngleAxis
                     dataKey="period"
                     tick={{

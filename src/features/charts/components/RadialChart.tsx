@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { LabelList, Legend, RadialBar, RadialBarChart, Tooltip } from 'recharts'
-import { ChartTooltipContent } from '@/components/ui/chart'
+import { ChartTooltipContent } from './ChartTooltipContent'
 import type { ChartProps } from '../types/chart.types'
 import { toSlices } from '../utils/chartData'
 import { ChartFrame } from './ChartFrame'
@@ -14,7 +14,7 @@ export const RadialChart = (props: ChartProps) => {
         [rows, visualSettings.visualColorPalette]
     )
     return (
-        <ChartFrame {...props} config={config} error={error} isEmpty={slices.length === 0}>
+        <ChartFrame {...props} error={error} isEmpty={slices.length === 0}>
             <RadialBarChart
                 data={slices}
                 startAngle={-130}
@@ -23,7 +23,7 @@ export const RadialChart = (props: ChartProps) => {
                 outerRadius={110}
             >
                 <Tooltip
-                    content={<ChartTooltipContent hideLabel nameKey="name" className="bg-white" />}
+                    content={<ChartTooltipContent config={config} hideLabel nameKey="name" />}
                 />
                 <Legend />
                 <RadialBar dataKey="total" background>

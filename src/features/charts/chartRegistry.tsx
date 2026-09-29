@@ -1,12 +1,20 @@
 import type { ComponentType, ReactNode } from 'react'
-import { FaChartArea, FaChartLine } from 'react-icons/fa'
-import { FaTableCells } from 'react-icons/fa6'
-import { GiRadialBalance } from 'react-icons/gi'
-import { IoBarChartSharp, IoPieChart } from 'react-icons/io5'
-import { PiChartScatterDuotone } from 'react-icons/pi'
-import { RxValue } from 'react-icons/rx'
-import { TbChartRadar } from 'react-icons/tb'
-import { VscListTree } from 'react-icons/vsc'
+import {
+    IconVisualizationArea24,
+    IconVisualizationBar24,
+    IconVisualizationBarStacked24,
+    IconVisualizationColumn24,
+    IconVisualizationColumnStacked24,
+    IconVisualizationGauge24,
+    IconVisualizationLine24,
+    IconVisualizationPie24,
+    IconVisualizationPivotTable24,
+    IconVisualizationRadar24,
+    IconVisualizationScatter24,
+    IconVisualizationSingleValue24,
+} from '@dhis2/ui'
+// lucide is the single fallback set, for the chart types @dhis2/ui has no icon for.
+import { LayoutGrid, Target } from 'lucide-react'
 import { CartesianChart, type CartesianVariant } from './components/CartesianChart'
 import { GaugeChart } from './components/GaugeChart'
 import { PieChart } from './components/PieChart'
@@ -31,20 +39,28 @@ const cartesian = (variant: CartesianVariant): ComponentType<ChartProps> => {
 
 /** Every chart type, in the order shown in the chart picker. The first one is the default. */
 export const chartRegistry: readonly ChartDefinition[] = [
-    { type: 'Column', icon: <IoBarChartSharp />, component: cartesian('Column') },
-    { type: 'Gauge', icon: <IoBarChartSharp />, component: GaugeChart },
-    { type: 'Table', icon: <FaTableCells />, component: TableChart },
-    { type: 'Stacked Col', icon: <IoBarChartSharp />, component: cartesian('Stacked Col') },
-    { type: 'Bar', icon: <IoBarChartSharp />, component: cartesian('Bar') },
-    { type: 'Stacked Bar', icon: <IoBarChartSharp />, component: cartesian('Stacked Bar') },
-    { type: 'Line', icon: <FaChartLine />, component: cartesian('Line') },
-    { type: 'Area', icon: <FaChartArea />, component: cartesian('Area') },
-    { type: 'Pie', icon: <IoPieChart />, component: PieChart },
-    { type: 'Radial', icon: <GiRadialBalance />, component: RadialChart },
-    { type: 'Tree Map', icon: <VscListTree />, component: TreeMapChart },
-    { type: 'Single Value', icon: <RxValue />, component: SingleValueChart },
-    { type: 'Radar', icon: <TbChartRadar />, component: RadarChart },
-    { type: 'Scatter', icon: <PiChartScatterDuotone />, component: cartesian('Scatter') },
+    { type: 'Column', icon: <IconVisualizationColumn24 />, component: cartesian('Column') },
+    { type: 'Gauge', icon: <IconVisualizationGauge24 />, component: GaugeChart },
+    { type: 'Table', icon: <IconVisualizationPivotTable24 />, component: TableChart },
+    {
+        type: 'Stacked Col',
+        icon: <IconVisualizationColumnStacked24 />,
+        component: cartesian('Stacked Col'),
+    },
+    { type: 'Bar', icon: <IconVisualizationBar24 />, component: cartesian('Bar') },
+    {
+        type: 'Stacked Bar',
+        icon: <IconVisualizationBarStacked24 />,
+        component: cartesian('Stacked Bar'),
+    },
+    { type: 'Line', icon: <IconVisualizationLine24 />, component: cartesian('Line') },
+    { type: 'Area', icon: <IconVisualizationArea24 />, component: cartesian('Area') },
+    { type: 'Pie', icon: <IconVisualizationPie24 />, component: PieChart },
+    { type: 'Radial', icon: <Target size={24} />, component: RadialChart },
+    { type: 'Tree Map', icon: <LayoutGrid size={24} />, component: TreeMapChart },
+    { type: 'Single Value', icon: <IconVisualizationSingleValue24 />, component: SingleValueChart },
+    { type: 'Radar', icon: <IconVisualizationRadar24 />, component: RadarChart },
+    { type: 'Scatter', icon: <IconVisualizationScatter24 />, component: cartesian('Scatter') },
 ]
 
 export const DEFAULT_CHART_TYPE: ChartType = 'Column'
