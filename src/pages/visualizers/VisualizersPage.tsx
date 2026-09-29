@@ -6,7 +6,8 @@ import Button from '../../components/Button'
 import { FileActionMenu } from './Components/FileActionMenu'
 import { useDataSources } from '@/features/data-sources'
 import { GenericModal, Loading } from '../../components'
-import { OrganizationModal, PeriodModal } from './Components/MetaDataModals'
+import { PeriodModal } from '@/features/periods'
+import { OrganizationModal } from './Components/MetaDataModals'
 import { useAuthorities } from '../../context/AuthContext'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs'
 import SelectChartType from './Components/SelectChartType'
@@ -313,9 +314,13 @@ function Visualizers() {
                             setIsShowOrganizationUnit={setIsShowOrganizationUnit}
                         />
                     </GenericModal>
-                    <GenericModal isOpen={isShowPeriod} setIsOpen={setIsShowPeriod}>
-                        <PeriodModal setIsShowPeriod={setIsShowPeriod} />
-                    </GenericModal>
+                    {isShowPeriod && (
+                        <PeriodModal
+                            onClose={() => setIsShowPeriod(false)}
+                            onUpdate={handleRunAnalytics}
+                            updating={isFetchAnalyticsDataLoading}
+                        />
+                    )}
                     {/* save visual type form */}
                     {isShowSaveVisualTypeForm && (
                         <SaveVisualModal

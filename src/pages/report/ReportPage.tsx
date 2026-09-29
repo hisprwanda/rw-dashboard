@@ -6,7 +6,9 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import Button from '../../components/Button'
 import { useDataSources } from '@/features/data-sources'
 import { GenericModal, Loading } from '../../components'
-import { OrganizationModal, PeriodModal } from '../visualizers/Components/MetaDataModals'
+import { PeriodModal } from '@/features/periods'
+import { OrganizationModal } from '../visualizers/Components/MetaDataModals'
+import { dimensionDataHardCoded } from '../../constants/bulletinDimension'
 import { useAuthorities } from '../../context/AuthContext'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs'
 import { SaveVisualModal } from '@/features/visualizers'
@@ -262,14 +264,31 @@ function ReportPage() {
                             setIsShowOrganizationUnit={setIsShowOrganizationUnit}
                         />
                     </GenericModal>
-                    <GenericModal isOpen={isShowPeriod} setIsOpen={setIsShowPeriod}>
+                    {isShowPeriod && (
                         <PeriodModal
-                            setIsShowPeriod={setIsShowPeriod}
-                            isAnalyticsDataHardCoded={true}
-                            setDataSubmitted={setDataSubmitted}
-                            isPeriodInBulletin={true}
+                            bulletinMode
+                            onClose={() => setIsShowPeriod(false)}
+                            updating={isFetchAnalyticsDataLoading}
+                            onUpdate={async () => {
+                                // Bulletins always use the fixed bulletin data items (a new object:
+                                // Redux state is immutable).
+                                await fetchAnalyticsData({
+                                    dimension: formatAnalyticsDimensions({
+                                        ...analyticsDimensions,
+                                        dx: dimensionDataHardCoded,
+                                    }),
+                                    instance: selectedDataSourceDetails,
+                                    analyticsPayloadDeterminer,
+                                    selectedOrganizationUnits,
+                                    selectedOrgUnitGroups,
+                                    selectedOrganizationUnitsLevels,
+                                    isUseCurrentUserOrgUnits,
+                                    isSetPredifinedUserOrgUnits,
+                                })
+                                setDataSubmitted(true)
+                            }}
                         />
-                    </GenericModal>
+                    )}
                     {/* save visual type form */}
                     {isShowSaveVisualTypeForm && (
                         <SaveVisualModal

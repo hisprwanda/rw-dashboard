@@ -1,3 +1,4 @@
+import { PeriodPicker } from '@/features/periods'
 import { DataItemsPicker } from '@/features/data-items'
 import { useOrgUnitMetadata } from '@/features/org-units'
 import { useEffect, useState } from 'react'
@@ -20,10 +21,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '../../../components/ui/select'
-import {
-    OrganizationModal,
-    PeriodModal,
-} from '../../../pages/visualizers/Components/MetaDataModals'
+import { OrganizationModal } from '../../visualizers/Components/MetaDataModals'
 import { useAuthorities } from '../../../context/AuthContext'
 import { formatAnalyticsDimensions } from '@/features/analytics'
 import { useRunGeoFeatures } from '../../../services/maps'
@@ -131,7 +129,7 @@ export function MapMetaDataConfigModal({
             case 'period':
                 return (
                     <div className="py-4">
-                        <PeriodModal isDataModalBeingUsedInMap={true} />
+                        <PeriodPicker />
                     </div>
                 )
             case 'orgUnits':

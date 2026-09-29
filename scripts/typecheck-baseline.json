@@ -1,6 +1,6 @@
 {
-  "errors": 280,
-  "any": 148,
+  "errors": 249,
+  "any": 146,
   "files": {
     "src/components/OrganisationUnitTree/OrganisationUnitSelector.tsx": 7,
     "src/components/header/HeaderApps.tsx": 1,
@@ -34,7 +34,6 @@
     "src/pages/visualizers/Components/MetaDataModals/CustomOrganisationUnitTree.tsx": 26,
     "src/pages/visualizers/Components/MetaDataModals/OrganizationUnitGroup.tsx": 2,
     "src/pages/visualizers/Components/MetaDataModals/OrganizationUnitLevels.tsx": 1,
-    "src/pages/visualizers/Components/MetaDataModals/PeriodModal.tsx": 31,
     "src/pages/visualizers/Components/SelectChartType.tsx": 7,
     "src/services/fetchDashboard.ts": 7,
     "src/services/fetchLegends.ts": 4,
