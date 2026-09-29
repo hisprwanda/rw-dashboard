@@ -3,7 +3,7 @@ import { Button, InputField } from '@dhis2/ui'
 import { useAppDispatch, useAppSelector } from '@/app/store'
 import type { AxisSettings } from '@/features/charts'
 import { visualizerActions as actions } from '../store/visualizerSlice'
-import { ColorField } from './ColorField'
+import { ColorField } from '@/shared/components'
 import { ColorPalettePicker } from './ColorPalettePicker'
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (

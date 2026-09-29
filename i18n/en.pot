@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-09-29T20:10:30.984Z\n"
-"PO-Revision-Date: 2026-09-29T20:10:30.985Z\n"
+"POT-Creation-Date: 2026-09-29T20:21:01.056Z\n"
+"PO-Revision-Date: 2026-09-29T20:21:01.056Z\n"
 
 msgid "Dashboards"
 msgstr "Dashboards"
@@ -32,6 +32,9 @@ msgstr "Search in table..."
 msgid "No data found"
 msgstr "No data found"
 
+msgid "Remove {{name}}"
+msgstr "Remove {{name}}"
+
 msgid "Open {{name}}"
 msgstr "Open {{name}}"
 
@@ -43,6 +46,99 @@ msgstr "Open"
 
 msgid "Present"
 msgstr "Present"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Name is required"
+msgstr "Name is required"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "Official dashboard (pinned on the home page)"
+msgstr "Official dashboard (pinned on the home page)"
+
+msgid "Background"
+msgstr "Background"
+
+msgid "Export to PowerPoint"
+msgstr "Export to PowerPoint"
+
+msgid "Full screen"
+msgstr "Full screen"
+
+msgid "Save changes"
+msgstr "Save changes"
+
+msgid "Save dashboard"
+msgstr "Save dashboard"
+
+msgid "No match"
+msgstr "No match"
+
+msgid "Add a visualization"
+msgstr "Add a visualization"
+
+msgid "Select a visualization"
+msgstr "Select a visualization"
+
+msgid "Add a map"
+msgstr "Add a map"
+
+msgid "Select a map"
+msgstr "Select a map"
+
+msgid "Slide {{current}} of {{total}}"
+msgstr "Slide {{current}} of {{total}}"
+
+msgid "Items per slide"
+msgstr "Items per slide"
+
+msgid "Seconds per slide"
+msgstr "Seconds per slide"
+
+msgid "Background music"
+msgstr "Background music"
+
+msgid "None"
+msgstr "None"
+
+msgid "Track {{number}}"
+msgstr "Track {{number}}"
+
+msgid "Pause"
+msgstr "Pause"
+
+msgid "Play"
+msgstr "Play"
+
+msgid "Exit full screen"
+msgstr "Exit full screen"
+
+msgid "Exit"
+msgstr "Exit"
+
+msgid "Previous slide"
+msgstr "Previous slide"
+
+msgid "This dashboard has no items."
+msgstr "This dashboard has no items."
+
+msgid "Next slide"
+msgstr "Next slide"
+
+msgid "Data source not found"
+msgstr "Data source not found"
+
+msgid "The data source of this visualization was deleted or is not shared with you."
+msgstr "The data source of this visualization was deleted or is not shared with you."
+
+msgid "Could not load this visualization"
+msgstr "Could not load this visualization"
 
 msgid "You have not created any dashboard yet."
 msgstr "You have not created any dashboard yet."
@@ -64,9 +160,6 @@ msgstr "Cards"
 
 msgid "List"
 msgstr "List"
-
-msgid "Name"
-msgstr "Name"
 
 msgid "Created by"
 msgstr "Created by"
@@ -131,9 +224,6 @@ msgstr "User"
 msgid "Group"
 msgstr "Group"
 
-msgid "No match"
-msgstr "No match"
-
 msgid "Access"
 msgstr "Access"
 
@@ -163,6 +253,18 @@ msgstr "Dashboard deleted"
 
 msgid "Could not delete the dashboard. Please try again."
 msgstr "Could not delete the dashboard. Please try again."
+
+msgid "PowerPoint file downloaded"
+msgstr "PowerPoint file downloaded"
+
+msgid "Exporting to PowerPoint failed"
+msgstr "Exporting to PowerPoint failed"
+
+msgid "Dashboard saved"
+msgstr "Dashboard saved"
+
+msgid "Could not save the dashboard. Please try again."
+msgstr "Could not save the dashboard. Please try again."
 
 msgid "Could not update the dashboard. Please try again."
 msgstr "Could not update the dashboard. Please try again."
@@ -226,9 +328,6 @@ msgstr "Current instance"
 
 msgid "URL"
 msgstr "URL"
-
-msgid "Description"
-msgstr "Description"
 
 msgid "No description provided"
 msgstr "No description provided"
@@ -308,9 +407,6 @@ msgstr "Token cannot exceed 256 characters"
 
 msgid "Token can only contain letters, numbers, dashes or underscores"
 msgstr "Token can only contain letters, numbers, dashes or underscores"
-
-msgid "Save changes"
-msgstr "Save changes"
 
 msgid "Save map"
 msgstr "Save map"
@@ -457,9 +553,6 @@ msgstr "Map saved"
 msgid "Could not save the map. Please try again."
 msgstr "Could not save the map. Please try again."
 
-msgid "Name is required"
-msgstr "Name is required"
-
 msgid "Collapse"
 msgstr "Collapse"
 
@@ -580,9 +673,6 @@ msgstr "Edit title and subtitle"
 msgid "Colors"
 msgstr "Colors"
 
-msgid "Background"
-msgstr "Background"
-
 msgid "Fill"
 msgstr "Fill"
 
@@ -597,9 +687,6 @@ msgstr "Y axis"
 
 msgid "Chart title"
 msgstr "Chart title"
-
-msgid "None"
-msgstr "None"
 
 msgid "Custom"
 msgstr "Custom"
@@ -655,90 +742,6 @@ msgstr "Visualization saved"
 
 msgid "Could not save the visualization. Please try again."
 msgstr "Could not save the visualization. Please try again."
-
-msgid "PowerPoint file downloaded"
-msgstr "PowerPoint file downloaded"
-
-msgid "Exporting to PowerPoint failed"
-msgstr "Exporting to PowerPoint failed"
-
-msgid "Dashboard saved"
-msgstr "Dashboard saved"
-
-msgid "Something went wrong. Please try again."
-msgstr "Something went wrong. Please try again."
-
-msgid "Dashboard Name"
-msgstr "Dashboard Name"
-
-msgid "Dashboard Description"
-msgstr "Dashboard Description"
-
-msgid "Is Official Dashboard"
-msgstr "Is Official Dashboard"
-
-msgid "Exporting..."
-msgstr "Exporting..."
-
-msgid "Export to PPT"
-msgstr "Export to PPT"
-
-msgid "FullScreen"
-msgstr "FullScreen"
-
-msgid "Background Color"
-msgstr "Background Color"
-
-msgid "Select a visual"
-msgstr "Select a visual"
-
-msgid "Select a Map"
-msgstr "Select a Map"
-
-msgid "Data source not found"
-msgstr "Data source not found"
-
-msgid "The data source of this visualization was deleted or is not shared with you."
-msgstr "The data source of this visualization was deleted or is not shared with you."
-
-msgid "Could not load this visualization"
-msgstr "Could not load this visualization"
-
-msgid "Slide"
-msgstr "Slide"
-
-msgid "of"
-msgstr "of"
-
-msgid "Slides"
-msgstr "Slides"
-
-msgid "Delay"
-msgstr "Delay"
-
-msgid "Background Music"
-msgstr "Background Music"
-
-msgid "Stop"
-msgstr "Stop"
-
-msgid "Play slideshow"
-msgstr "Play slideshow"
-
-msgid "Pause slideshow"
-msgstr "Pause slideshow"
-
-msgid "Exit Fullscreen"
-msgstr "Exit Fullscreen"
-
-msgid "Exit"
-msgstr "Exit"
-
-msgid "Play"
-msgstr "Play"
-
-msgid "Pause"
-msgstr "Pause"
 
 msgid "ERROR"
 msgstr "ERROR"

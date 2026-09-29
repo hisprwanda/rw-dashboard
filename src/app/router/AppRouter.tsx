@@ -8,7 +8,8 @@ import { LoadingState } from '@/shared/components'
 // Legacy page components are loaded from src/pages/** until their feature is migrated.
 const HomePage = lazy(() => import('@/pages/home/HomePage'))
 const DashboardsPage = lazy(() => import('@/pages/dashboards/DashboardsPage'))
-const CreateDashboardPage = lazy(() => import('@/pages/dashboards/CreateDashboardPage'))
+const DashboardEditorPage = lazy(() => import('@/pages/dashboards/[id]/DashboardEditorPage'))
+const DashboardPresentPage = lazy(() => import('@/pages/dashboards/[id]/DashboardPresentPage'))
 const VisualizationsPage = lazy(() => import('@/pages/visualizers/VisualizationsPage'))
 const VisualizerBuilderPage = lazy(() => import('@/pages/visualizers/[id]/VisualizerBuilderPage'))
 const MapsPage = lazy(() => import('@/pages/maps/MapsPage'))
@@ -36,7 +37,8 @@ export const AppRouter = () => (
             <Route path="/" element={<MainLayout />}>
                 <Route index element={page(HomePage)} />
                 <Route path="dashboards" element={page(DashboardsPage)} />
-                <Route path="dashboard/:id?/:present?" element={page(CreateDashboardPage)} />
+                <Route path="dashboard/:id?" element={page(DashboardEditorPage)} />
+                <Route path="dashboard/:id/present" element={page(DashboardPresentPage)} />
                 <Route path="visualization" element={page(VisualizationsPage)} />
                 <Route path="visualizers/:id?" element={page(VisualizerBuilderPage)} />
                 <Route path="maps" element={page(MapsPage)} />

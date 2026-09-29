@@ -1,3 +1,4 @@
+export { ColorField } from './ColorField'
 export { ConfirmModal } from './ConfirmModal'
 export { DataTable, type DataTableColumn } from './DataTable/DataTable'
 export { ExportModal } from './ExportModal'

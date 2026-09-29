@@ -1,12 +1,10 @@
 {
-  "errors": 116,
-  "any": 46,
+  "errors": 102,
+  "any": 32,
   "files": {
     "src/components/header/HeaderApps.tsx": 1,
     "src/components/header/UserProfile.tsx": 3,
     "src/components/header/header.tsx": 4,
-    "src/pages/dashboards/CreateDashboardPage.tsx": 13,
-    "src/pages/dashboards/components/PresentDashboard.tsx": 1,
     "src/pages/report/ReportPage.tsx": 1,
     "src/pages/report/components/BulletinAreaChartFormat.tsx": 5,
     "src/pages/report/components/BulletinAreaCharts.tsx": 5,
