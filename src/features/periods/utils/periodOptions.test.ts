@@ -1,11 +1,11 @@
 import {
     fixedPeriodOptions,
-    humanizeRelativePeriod,
     isRelativePeriod,
     periodLabel,
     periodRange,
     relativePeriodOptions,
 } from './periodOptions'
+import { humanizeRelativePeriod } from './labels'
 
 describe('relative periods', () => {
     it('humanizes ids', () => {

@@ -44,7 +44,7 @@ export const ExportModal = ({ targetRef, defaultFileName = '', onClose }: Export
             onClose()
         } catch (error) {
             notify.error(
-                i18n.t('Export failed: {{message}}', {
+                i18n.t('Export failed. {{message}}', {
                     message: error instanceof Error ? error.message : String(error),
                 })
             )

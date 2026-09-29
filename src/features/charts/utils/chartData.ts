@@ -1,3 +1,4 @@
+import i18n from '@dhis2/d2-i18n'
 import type { AnalyticsResponse } from '@/shared/types/dhis2.types'
 import type { ColorPalette, SeriesConfig, SeriesRow, Slice, TreeNode } from '../types/chart.types'
 
@@ -71,7 +72,8 @@ export const toSeriesRows = (data: AnalyticsResponse): SeriesRow[] => {
 export const toSeriesConfig = (data: AnalyticsResponse, palette?: ColorPalette): SeriesConfig => {
     const { dimensions, items } = data.metaData
     const ids = dimensions.dx?.length ? dimensions.dx : (dimensions.ou ?? [])
-    if (ids.length === 0) return { Value: { label: 'Value', color: paletteColor(palette, 0) } }
+    if (ids.length === 0)
+        return { Value: { label: i18n.t('Value'), color: paletteColor(palette, 0) } }
     return Object.fromEntries(
         ids.map((id, index) => {
             const name = items[id]?.name ?? id

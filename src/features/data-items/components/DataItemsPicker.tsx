@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from '@/app/store'
 import { selectionActions } from '@/features/analytics'
 import { useDebouncedValue } from '@/shared/hooks'
 import { DATA_ITEM_TYPES, DATA_SET_METRICS } from '../constants/dataItemTypes'
+import { dataItemGroupLabel, dataItemTypeLabel, dataSetMetricLabel } from '../utils/labels'
 import { useDataItemGroups } from '../hooks/useDataItemGroups'
 import { useDataItems } from '../hooks/useDataItems'
 import type {
@@ -17,12 +18,6 @@ import type {
 import { toPickerOptions, uniqueOptions } from '../utils/pickerOptions'
 
 const ALL = '__all__'
-const GROUP_LABEL: Partial<Record<DataItemTypeValue, string>> = {
-    indicators: 'Indicator group',
-    dataElements: 'Data element group',
-    'Event Data Item': 'Program',
-    'Program Indicator': 'Program',
-}
 
 /**
  * Pick data items (dx) for the builder: type, group and search filters on the left,
@@ -95,15 +90,15 @@ export const DataItemsPicker = () => {
                     {DATA_ITEM_TYPES.map((option) => (
                         <SingleSelectOption
                             key={option.value}
-                            label={i18n.t(option.label)}
+                            label={dataItemTypeLabel(option.value)}
                             value={option.value}
                         />
                     ))}
                 </SingleSelectField>
 
-                {GROUP_LABEL[type] && (
+                {dataItemGroupLabel(type) && (
                     <SingleSelectField
-                        label={i18n.t(GROUP_LABEL[type] ?? '')}
+                        label={dataItemGroupLabel(type)}
                         selected={groupId || ALL}
                         loading={groups.isLoading}
                         filterable
@@ -141,11 +136,15 @@ export const DataItemsPicker = () => {
                             setMetric(DATA_SET_METRICS.find((m) => m.value === value)?.value ?? '')
                         }
                     >
-                        {[{ label: 'All metrics', value: ALL }, ...DATA_SET_METRICS].map(
+                        {[{ label: i18n.t('All metrics'), value: ALL }, ...DATA_SET_METRICS].map(
                             (option) => (
                                 <SingleSelectOption
                                     key={option.value}
-                                    label={i18n.t(option.label)}
+                                    label={
+                                        option.value === ALL
+                                            ? option.label
+                                            : dataSetMetricLabel(option.value)
+                                    }
                                     value={option.value}
                                 />
                             )

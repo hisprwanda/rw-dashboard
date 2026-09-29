@@ -67,7 +67,9 @@ export const SharingModal = ({ dashboardKey, dashboardName, onClose }: SharingMo
 
     return (
         <Modal onClose={onClose} position="middle">
-            <ModalTitle>{i18n.t('Sharing: {{name}}', { name: dashboardName })}</ModalTitle>
+            <ModalTitle>
+                {i18n.t('Sharing settings for {{name}}', { name: dashboardName })}
+            </ModalTitle>
             <ModalContent>
                 {dashboard.isLoading && <LoadingState />}
                 {dashboard.error && <ErrorState error={dashboard.error} />}

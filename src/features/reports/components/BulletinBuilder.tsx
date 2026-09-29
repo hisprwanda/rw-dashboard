@@ -52,7 +52,7 @@ export const BulletinBuilder = () => {
             return (
                 <EmptyState
                     message={i18n.t(
-                        'Weekly epidemiological bulletin: choose a week on the left, then click Update.'
+                        'Weekly epidemiological bulletin. Choose a week on the left, then click Update.'
                     )}
                 />
             )

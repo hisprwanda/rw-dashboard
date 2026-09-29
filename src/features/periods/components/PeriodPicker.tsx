@@ -6,12 +6,12 @@ import { selectionActions } from '@/features/analytics'
 import {
     BULLETIN_PERIOD_TYPES,
     FIXED_PERIOD_TYPES,
-    RELATIVE_GROUP_LABELS,
     RELATIVE_PERIOD_GROUPS,
     type PeriodType,
     type RelativePeriodGroup,
 } from '../constants/periods'
 import { useSystemCalendar } from '../hooks/useSystemCalendar'
+import { periodTypeLabel, relativeGroupLabel } from '../utils/labels'
 import { fixedPeriodOptions, periodLabel, relativePeriodOptions } from '../utils/periodOptions'
 
 interface PeriodPickerProps {
@@ -34,7 +34,7 @@ export const PeriodPicker = ({ bulletinMode = false }: PeriodPickerProps) => {
     const [year, setYear] = useState(new Date().getFullYear())
 
     const periodTypes = bulletinMode
-        ? FIXED_PERIOD_TYPES.filter((type) => BULLETIN_PERIOD_TYPES.includes(type.value))
+        ? FIXED_PERIOD_TYPES.filter((type) => BULLETIN_PERIOD_TYPES.includes(type))
         : FIXED_PERIOD_TYPES
 
     const options = useMemo(
@@ -85,7 +85,7 @@ export const PeriodPicker = ({ bulletinMode = false }: PeriodPickerProps) => {
                             <SingleSelectOption
                                 key={key}
                                 value={key}
-                                label={i18n.t(RELATIVE_GROUP_LABELS[key])}
+                                label={relativeGroupLabel(key)}
                             />
                         ))}
                     </SingleSelectField>
@@ -98,16 +98,15 @@ export const PeriodPicker = ({ bulletinMode = false }: PeriodPickerProps) => {
                             selected={periodType}
                             onChange={({ selected: value }) =>
                                 setPeriodType(
-                                    periodTypes.find((type) => type.value === value)?.value ??
-                                        periodType
+                                    periodTypes.find((type) => type === value) ?? periodType
                                 )
                             }
                         >
                             {periodTypes.map((type) => (
                                 <SingleSelectOption
-                                    key={type.value}
-                                    value={type.value}
-                                    label={i18n.t(type.label)}
+                                    key={type}
+                                    value={type}
+                                    label={periodTypeLabel(type)}
                                 />
                             ))}
                         </SingleSelectField>

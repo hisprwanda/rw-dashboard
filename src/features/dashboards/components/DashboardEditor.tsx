@@ -14,7 +14,8 @@ import { useNavigate } from 'react-router-dom'
 import { paths } from '@/app/router/paths'
 import { useAppDispatch, useAppSelector } from '@/app/store'
 import { useMe } from '@/features/auth'
-import { useMaps } from '@/features/maps'
+import { chartTypeLabel } from '@/features/charts'
+import { mapTypeLabel, useMaps } from '@/features/maps'
 import { useVisuals } from '@/features/visualizers'
 import { ColorField, ErrorState, LoadingState } from '@/shared/components'
 import { useFullscreen } from '@/shared/hooks'
@@ -182,7 +183,7 @@ export const DashboardEditor = ({ dashboardId }: DashboardEditorProps) => {
                             key={entry.key}
                             value={entry.key}
                             disabled={inDashboard.has(entry.key)}
-                            label={`${entry.value.visualName} (${entry.value.visualType})`}
+                            label={`${entry.value.visualName} (${chartTypeLabel(entry.value.visualType)})`}
                         />
                     ))}
                 </SingleSelectField>
@@ -204,7 +205,7 @@ export const DashboardEditor = ({ dashboardId }: DashboardEditorProps) => {
                             key={entry.key}
                             value={entry.key}
                             disabled={inDashboard.has(entry.key)}
-                            label={`${entry.value.mapName} (${entry.value.mapType})`}
+                            label={`${entry.value.mapName} (${mapTypeLabel(entry.value.mapType)})`}
                         />
                     ))}
                 </SingleSelectField>

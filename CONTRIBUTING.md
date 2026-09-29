@@ -110,6 +110,15 @@ the only contexts.
 
 Every user-facing string goes through `i18n.t()` from `@dhis2/d2-i18n`. Use
 interpolation, not concatenation: `i18n.t('Saved {{name}}', { name })`.
+
+- Call `i18n.t()` at render time with a literal key. Module-level constants are evaluated
+  before the locale is loaded, and `i18n.t(variable)` is invisible to the extractor: use a
+  label function instead (see `periodTypeLabel`, `dataItemTypeLabel`, `chartTypeLabel`).
+- No `:` in keys (the extractor reads it as a namespace separator): write
+  `Export failed. {{message}}`, not `Export failed: {{message}}`.
+- ESLint (`i18next/no-literal-string`, JSX text) rejects untranslated text in components.
+- `yarn build` (or `npx d2-app-scripts i18n extract`) regenerates `i18n/en.pot`; add the
+  translations to `i18n/fr.po` in the same change.
 Always `import i18n from '@dhis2/d2-i18n'`. Never import `src/locales` (generated):
 it is imported once in `src/App.tsx` to register the translations.
 

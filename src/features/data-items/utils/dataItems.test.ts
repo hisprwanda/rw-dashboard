@@ -61,7 +61,7 @@ describe('toPickerOptions', () => {
         expect(toPickerOptions(items, { ...base, type: 'dataSets' })).toHaveLength(4)
         expect(
             toPickerOptions(items, { ...base, type: 'dataSets', metric: 'REPORTING_RATE' })
-        ).toEqual([{ label: 'ANC - Reporting Rate', value: 'ds1.REPORTING_RATE' }])
+        ).toEqual([{ label: 'ANC - Reporting rate', value: 'ds1.REPORTING_RATE' }])
     })
 
     it('maps other items one to one and removes duplicates', () => {

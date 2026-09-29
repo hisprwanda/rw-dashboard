@@ -6,6 +6,7 @@ export {
     RELATIVE_PERIOD_GROUPS,
     type PeriodType,
 } from './constants/periods'
+export { periodTypeLabel, relativePeriodLabel } from './utils/labels'
 export { useSystemCalendar } from './hooks/useSystemCalendar'
 export {
     fixedPeriodOptions,

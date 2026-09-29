@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { paths } from '@/app/router/paths'
 import { useMe } from '@/features/auth'
+import { chartTypeLabel } from '@/features/charts'
 import { ConfirmModal, DataTable, PageHeader, type DataTableColumn } from '@/shared/components'
 import { isCreatedBy, isSharedWith } from '@/shared/utils/sharing'
 import { useDeleteVisual } from '../hooks/useDeleteVisual'
@@ -46,7 +47,7 @@ export const VisualsManagement = () => {
             {
                 key: 'type',
                 header: i18n.t('Type'),
-                value: (e) => e.value.visualType,
+                value: (e) => chartTypeLabel(e.value.visualType),
                 sortable: true,
             },
             ...(scope === 'shared'

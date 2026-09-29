@@ -1,3 +1,4 @@
+export { chartTypeLabel } from './utils/labels'
 export { chartRegistry, DEFAULT_CHART_TYPE, findChart, type ChartDefinition } from './chartRegistry'
 export { DEFAULT_COLOR_PALETTE, systemDefaultColorPalettes } from './constants/colorPalettes'
 export { ChartHeading } from './components/ChartHeading'

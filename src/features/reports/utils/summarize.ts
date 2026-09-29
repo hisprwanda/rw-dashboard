@@ -1,3 +1,4 @@
+import i18n from '@dhis2/d2-i18n'
 import { DISEASE_TYPE_ATTRIBUTE, EVENT_DATA_ELEMENTS } from '../constants/bulletin'
 import type { NameValue, TrackedEntityRow, TrackerEventRow } from '../types/bulletin.types'
 
@@ -47,19 +48,35 @@ export const summarizeEnrollments = (
     }
 
     const unitsOf = (type: string) => unitsPerType.get(type)?.size ?? 0
-    const diseaseMessages = [...diseases].map(
-        ([type, count]) => `${count} cases of ${pretty(type)} reported by ${unitsOf(type)} HFs`
+    const diseaseMessages = [...diseases].map(([type, count]) =>
+        i18n.t('{{count}} cases of {{name}} reported by {{facilities}} HFs', {
+            count,
+            name: pretty(type),
+            facilities: unitsOf(type),
+        })
     )
-    const publicEventMessages = [...publicEvents].map(
-        ([type, count]) => `${count} cases of ${type} reported by ${unitsOf(type)} HFs`
+    const publicEventMessages = [...publicEvents].map(([type, count]) =>
+        i18n.t('{{count}} cases of {{name}} reported by {{facilities}} HFs', {
+            count,
+            name: type,
+            facilities: unitsOf(type),
+        })
     )
 
     const deathsByFacility: NameValue[] = []
     const deathMessages: string[] = []
     for (const [unit, types] of deathsByUnit) {
         const total = [...types.values()].reduce((sum, n) => sum + n, 0)
-        const details = [...types].map(([type, n]) => `${n} were ${type}`).join(', ')
-        deathMessages.push(`${total} deaths were reported by ${orgUnitName(unit)} (${details})`)
+        const details = [...types]
+            .map(([type, n]) => i18n.t('{{count}} were {{type}}', { count: n, type }))
+            .join(', ')
+        deathMessages.push(
+            i18n.t('{{count}} deaths were reported by {{facility}} ({{details}})', {
+                count: total,
+                facility: orgUnitName(unit),
+                details,
+            })
+        )
         deathsByFacility.push({ name: orgUnitName(unit), value: total })
     }
 
@@ -76,16 +93,27 @@ export const summarizeEnrollments = (
     const highlights: string[] = []
     if (rows.length) {
         highlights.push(
-            `${rows.length} immediate reportable events were notified by health facilities countrywide. These include: ${[...diseases.keys()].join(', ')}.`
+            i18n.t(
+                '{{count}} immediate reportable events were notified by health facilities countrywide. These include {{diseases}}.',
+                { count: rows.length, diseases: [...diseases.keys()].join(', ') }
+            )
         )
     }
     if (totalDeaths) {
         highlights.push(
-            `A total of ${totalDeaths} deaths were reported through the electronic Integrated Disease Surveillance and Response (eIDSR) system. Most of the deaths were ${topDeathTypes}.`
+            i18n.t(
+                'A total of {{count}} deaths were reported through the electronic Integrated Disease Surveillance and Response (eIDSR) system. Most of the deaths were {{types}}.',
+                { count: totalDeaths, types: topDeathTypes }
+            )
         )
     }
-    if (totalPublicEvents)
-        highlights.push(`A total of ${totalPublicEvents} public events were reported.`)
+    if (totalPublicEvents) {
+        highlights.push(
+            i18n.t('A total of {{count}} public events were reported.', {
+                count: totalPublicEvents,
+            })
+        )
+    }
 
     return {
         diseaseMessages,
@@ -96,12 +124,25 @@ export const summarizeEnrollments = (
         totalEnrollments: rows.length,
         deathsByType,
         deathsByFacility,
-        deathsDescription: `${totalDeaths} deaths were reported from ${deathsByUnit.size} health facilities as follows:`,
-        pieDescription: `As summarized in the Pie Chart below, a total number of ${totalDeaths} deaths were reported through the electronic Integrated Disease Surveillance and Response (eIDSR) system. ${deathsByType
-            .map(
-                (d) => `${d.value} (${((d.value / totalDeaths) * 100).toFixed(2)}%) were ${d.name}`
-            )
-            .join(', ')}.`,
+        deathsDescription: i18n.t(
+            '{{count}} deaths were reported from {{facilities}} health facilities as follows:',
+            { count: totalDeaths, facilities: deathsByUnit.size }
+        ),
+        pieDescription: i18n.t(
+            'As summarized in the Pie Chart below, a total number of {{count}} deaths were reported through the electronic Integrated Disease Surveillance and Response (eIDSR) system. {{details}}.',
+            {
+                count: totalDeaths,
+                details: deathsByType
+                    .map((d) =>
+                        i18n.t('{{count}} ({{percent}}%) were {{type}}', {
+                            count: d.value,
+                            percent: ((d.value / totalDeaths) * 100).toFixed(2),
+                            type: d.name,
+                        })
+                    )
+                    .join(', '),
+            }
+        ),
     }
 }
 
@@ -137,14 +178,23 @@ export const summarizeCommunityEvents = (events: readonly TrackerEventRow[]) => 
     const messages: string[] = []
     const alerts: string[] = []
     if (malariaCases > 0) {
-        messages.push(`${malariaCases} cases of Malaria reported by ${malariaUnits.size} villages`)
-        alerts.push(`${malariaCases} malaria cases`)
+        messages.push(
+            i18n.t('{{count}} cases of Malaria reported by {{villages}} villages', {
+                count: malariaCases,
+                villages: malariaUnits.size,
+            })
+        )
+        alerts.push(i18n.t('{{count}} malaria cases', { count: malariaCases }))
     }
     for (const [key, count] of counts) {
         messages.push(
-            `${count} cases of ${pretty(key)} reported by ${units.get(key)?.size ?? 0} villages`
+            i18n.t('{{count}} cases of {{name}} reported by {{villages}} villages', {
+                count,
+                name: pretty(key),
+                villages: units.get(key)?.size ?? 0,
+            })
         )
-        alerts.push(`${count} ${pretty(key)} cases`)
+        alerts.push(i18n.t('{{count}} {{name}} cases', { count, name: pretty(key) }))
     }
     return { messages, alerts }
 }

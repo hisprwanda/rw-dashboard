@@ -5,6 +5,7 @@ import {
     type PeriodType,
     type RelativePeriodGroup,
 } from '../constants/periods'
+import { relativePeriodLabel } from './labels'
 
 export interface PeriodOption {
     label: string
@@ -15,14 +16,8 @@ const RELATIVE_IDS = new Set<string>(Object.values(RELATIVE_PERIOD_GROUPS).flat(
 
 export const isRelativePeriod = (id: string) => RELATIVE_IDS.has(id)
 
-/** `LAST_12_MONTHS` -> `Last 12 months`. */
-export const humanizeRelativePeriod = (id: string) => {
-    const words = id.toLowerCase().split('_').join(' ')
-    return words.charAt(0).toUpperCase() + words.slice(1)
-}
-
 export const relativePeriodOptions = (group: RelativePeriodGroup): PeriodOption[] =>
-    RELATIVE_PERIOD_GROUPS[group].map((id) => ({ value: id, label: humanizeRelativePeriod(id) }))
+    RELATIVE_PERIOD_GROUPS[group].map((id) => ({ value: id, label: relativePeriodLabel(id) }))
 
 /** All periods of a type in a year, with DHIS2 ids (e.g. `2026W1`, `202601B`). */
 export const fixedPeriodOptions = (
@@ -42,7 +37,7 @@ export const periodLabel = (
     calendar: SupportedCalendar = 'gregory',
     locale = 'en'
 ): string => {
-    if (isRelativePeriod(id)) return humanizeRelativePeriod(id)
+    if (isRelativePeriod(id)) return relativePeriodLabel(id)
     try {
         return createFixedPeriodFromPeriodId({ periodId: id, calendar, locale }).displayName
     } catch {

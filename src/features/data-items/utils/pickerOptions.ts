@@ -1,4 +1,5 @@
 import { DATA_SET_METRICS } from '../constants/dataItemTypes'
+import { dataSetMetricLabel } from './labels'
 import type { DataItem, DataItemsFilters, PickerOption } from '../types/dataItem.types'
 
 /**
@@ -16,7 +17,7 @@ export const toPickerOptions = (
         : DATA_SET_METRICS
     return items.flatMap((item) =>
         metrics.map((metric) => ({
-            label: `${item.name} - ${metric.label}`,
+            label: `${item.name} - ${dataSetMetricLabel(metric.value)}`,
             value: `${item.id}.${metric.value}`,
         }))
     )

@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-09-29T20:44:58.882Z\n"
-"PO-Revision-Date: 2026-09-29T20:44:58.883Z\n"
+"POT-Creation-Date: 2026-09-29T21:11:14.342Z\n"
+"PO-Revision-Date: 2026-09-29T21:11:14.343Z\n"
 
 msgid "No data available"
 msgstr "No data available"
@@ -16,6 +16,51 @@ msgstr "Search in table..."
 
 msgid "No data found"
 msgstr "No data found"
+
+msgid "Value"
+msgstr "Value"
+
+msgid "Column"
+msgstr "Column"
+
+msgid "Stacked column"
+msgstr "Stacked column"
+
+msgid "Bar"
+msgstr "Bar"
+
+msgid "Stacked bar"
+msgstr "Stacked bar"
+
+msgid "Line"
+msgstr "Line"
+
+msgid "Area"
+msgstr "Area"
+
+msgid "Scatter"
+msgstr "Scatter"
+
+msgid "Radar"
+msgstr "Radar"
+
+msgid "Pie"
+msgstr "Pie"
+
+msgid "Radial"
+msgstr "Radial"
+
+msgid "Gauge"
+msgstr "Gauge"
+
+msgid "Single value"
+msgstr "Single value"
+
+msgid "Tree map"
+msgstr "Tree map"
+
+msgid "Table"
+msgstr "Table"
 
 msgid "Remove {{name}}"
 msgstr "Remove {{name}}"
@@ -197,6 +242,9 @@ msgstr "View and edit"
 msgid "Sharing settings saved"
 msgstr "Sharing settings saved"
 
+msgid "Sharing settings for {{name}}"
+msgstr "Sharing settings for {{name}}"
+
 msgid "Give access to a user or group"
 msgstr "Give access to a user or group"
 
@@ -287,6 +335,9 @@ msgstr "Details only"
 msgid "Metric"
 msgstr "Metric"
 
+msgid "All metrics"
+msgstr "All metrics"
+
 msgid "Could not load data items"
 msgstr "Could not load data items"
 
@@ -307,6 +358,48 @@ msgstr "Loading…"
 
 msgid "No items found"
 msgstr "No items found"
+
+msgid "All types"
+msgstr "All types"
+
+msgid "Indicator"
+msgstr "Indicator"
+
+msgid "Data element"
+msgstr "Data element"
+
+msgid "Data set"
+msgstr "Data set"
+
+msgid "Event data item"
+msgstr "Event data item"
+
+msgid "Program indicator"
+msgstr "Program indicator"
+
+msgid "Calculation"
+msgstr "Calculation"
+
+msgid "Indicator group"
+msgstr "Indicator group"
+
+msgid "Data element group"
+msgstr "Data element group"
+
+msgid "Program"
+msgstr "Program"
+
+msgid "Reporting rate"
+msgstr "Reporting rate"
+
+msgid "Reporting rate on time"
+msgstr "Reporting rate on time"
+
+msgid "Actual reports"
+msgstr "Actual reports"
+
+msgid "Expected reports"
+msgstr "Expected reports"
 
 msgid "Type"
 msgstr "Type"
@@ -472,9 +565,6 @@ msgstr "Data name"
 msgid "Period"
 msgstr "Period"
 
-msgid "Value"
-msgstr "Value"
-
 msgid "Labels"
 msgstr "Labels"
 
@@ -540,6 +630,9 @@ msgstr "Map saved"
 
 msgid "Could not save the map. Please try again."
 msgstr "Could not save the map. Please try again."
+
+msgid "Thematic"
+msgstr "Thematic"
 
 msgid "Visualizers"
 msgstr "Visualizers"
@@ -658,8 +751,204 @@ msgstr "Selected periods"
 msgid "No periods selected"
 msgstr "No periods selected"
 
+msgid "Daily"
+msgstr "Daily"
+
+msgid "Weekly"
+msgstr "Weekly"
+
+msgid "Weekly (Start Wednesday)"
+msgstr "Weekly (Start Wednesday)"
+
+msgid "Weekly (Start Thursday)"
+msgstr "Weekly (Start Thursday)"
+
+msgid "Weekly (Start Saturday)"
+msgstr "Weekly (Start Saturday)"
+
+msgid "Weekly (Start Sunday)"
+msgstr "Weekly (Start Sunday)"
+
+msgid "Bi-weekly"
+msgstr "Bi-weekly"
+
+msgid "Monthly"
+msgstr "Monthly"
+
+msgid "Bi-monthly"
+msgstr "Bi-monthly"
+
+msgid "Quarterly"
+msgstr "Quarterly"
+
+msgid "Six-monthly"
+msgstr "Six-monthly"
+
+msgid "Six-monthly April"
+msgstr "Six-monthly April"
+
+msgid "Yearly"
+msgstr "Yearly"
+
+msgid "Financial year (April)"
+msgstr "Financial year (April)"
+
+msgid "Financial year (July)"
+msgstr "Financial year (July)"
+
+msgid "Financial year (October)"
+msgstr "Financial year (October)"
+
+msgid "Days"
+msgstr "Days"
+
+msgid "Weeks"
+msgstr "Weeks"
+
+msgid "Bi-weeks"
+msgstr "Bi-weeks"
+
+msgid "Months"
+msgstr "Months"
+
+msgid "Bi-months"
+msgstr "Bi-months"
+
+msgid "Quarters"
+msgstr "Quarters"
+
+msgid "Six-months"
+msgstr "Six-months"
+
+msgid "Financial years"
+msgstr "Financial years"
+
+msgid "Years"
+msgstr "Years"
+
+msgid "Today"
+msgstr "Today"
+
+msgid "Yesterday"
+msgstr "Yesterday"
+
+msgid "Last 3 days"
+msgstr "Last 3 days"
+
+msgid "Last 7 days"
+msgstr "Last 7 days"
+
+msgid "Last 14 days"
+msgstr "Last 14 days"
+
+msgid "Last 30 days"
+msgstr "Last 30 days"
+
+msgid "This week"
+msgstr "This week"
+
+msgid "Last week"
+msgstr "Last week"
+
+msgid "Last 4 weeks"
+msgstr "Last 4 weeks"
+
+msgid "Last 12 weeks"
+msgstr "Last 12 weeks"
+
+msgid "Last 52 weeks"
+msgstr "Last 52 weeks"
+
+msgid "This bi-week"
+msgstr "This bi-week"
+
+msgid "Last bi-week"
+msgstr "Last bi-week"
+
+msgid "Last 4 bi-weeks"
+msgstr "Last 4 bi-weeks"
+
+msgid "This month"
+msgstr "This month"
+
+msgid "Last month"
+msgstr "Last month"
+
+msgid "Last 3 months"
+msgstr "Last 3 months"
+
+msgid "Last 6 months"
+msgstr "Last 6 months"
+
+msgid "Last 12 months"
+msgstr "Last 12 months"
+
+msgid "Months this year"
+msgstr "Months this year"
+
+msgid "This bi-month"
+msgstr "This bi-month"
+
+msgid "Last bi-month"
+msgstr "Last bi-month"
+
+msgid "Last 6 bi-months"
+msgstr "Last 6 bi-months"
+
+msgid "This quarter"
+msgstr "This quarter"
+
+msgid "Last quarter"
+msgstr "Last quarter"
+
+msgid "Last 4 quarters"
+msgstr "Last 4 quarters"
+
+msgid "Quarters this year"
+msgstr "Quarters this year"
+
+msgid "This six-month"
+msgstr "This six-month"
+
+msgid "Last six-month"
+msgstr "Last six-month"
+
+msgid "Last 2 six-months"
+msgstr "Last 2 six-months"
+
+msgid "This financial year"
+msgstr "This financial year"
+
+msgid "Last financial year"
+msgstr "Last financial year"
+
+msgid "Last 5 financial years"
+msgstr "Last 5 financial years"
+
+msgid "Last 10 financial years"
+msgstr "Last 10 financial years"
+
+msgid "This year"
+msgstr "This year"
+
+msgid "Last year"
+msgstr "Last year"
+
+msgid "Last 5 years"
+msgstr "Last 5 years"
+
+msgid "Last 10 years"
+msgstr "Last 10 years"
+
 msgid "Loading the bulletin data"
 msgstr "Loading the bulletin data"
+
+msgid ""
+"Weekly epidemiological bulletin. Choose a week on the left, then click "
+"Update."
+msgstr ""
+"Weekly epidemiological bulletin. Choose a week on the left, then click "
+"Update."
 
 msgid "Dimensions"
 msgstr "Dimensions"
@@ -732,6 +1021,98 @@ msgstr "Hospital catchment area"
 
 msgid "Completeness"
 msgstr "Completeness"
+
+msgid "{{count}} cases of {{name}} reported by {{facilities}} HFs"
+msgid_plural "{{count}} cases of {{name}} reported by {{facilities}} HFs"
+msgstr[0] "{{count}} cases of {{name}} reported by {{facilities}} HFs"
+msgstr[1] "{{count}} cases of {{name}} reported by {{facilities}} HFs"
+
+msgid "{{count}} were {{type}}"
+msgid_plural "{{count}} were {{type}}"
+msgstr[0] "{{count}} were {{type}}"
+msgstr[1] "{{count}} were {{type}}"
+
+msgid "{{count}} deaths were reported by {{facility}} ({{details}})"
+msgid_plural "{{count}} deaths were reported by {{facility}} ({{details}})"
+msgstr[0] "{{count}} deaths were reported by {{facility}} ({{details}})"
+msgstr[1] "{{count}} deaths were reported by {{facility}} ({{details}})"
+
+msgid ""
+"{{count}} immediate reportable events were notified by health facilities "
+"countrywide. These include {{diseases}}."
+msgid_plural ""
+"{{count}} immediate reportable events were notified by health facilities "
+"countrywide. These include {{diseases}}."
+msgstr[0] ""
+"{{count}} immediate reportable events were notified by health facilities "
+"countrywide. These include {{diseases}}."
+msgstr[1] ""
+"{{count}} immediate reportable events were notified by health facilities "
+"countrywide. These include {{diseases}}."
+
+msgid ""
+"A total of {{count}} deaths were reported through the electronic Integrated "
+"Disease Surveillance and Response (eIDSR) system. Most of the deaths were "
+"{{types}}."
+msgid_plural ""
+"A total of {{count}} deaths were reported through the electronic Integrated "
+"Disease Surveillance and Response (eIDSR) system. Most of the deaths were "
+"{{types}}."
+msgstr[0] ""
+"A total of {{count}} deaths were reported through the electronic Integrated "
+"Disease Surveillance and Response (eIDSR) system. Most of the deaths were "
+"{{types}}."
+msgstr[1] ""
+"A total of {{count}} deaths were reported through the electronic Integrated "
+"Disease Surveillance and Response (eIDSR) system. Most of the deaths were "
+"{{types}}."
+
+msgid "A total of {{count}} public events were reported."
+msgid_plural "A total of {{count}} public events were reported."
+msgstr[0] "A total of {{count}} public events were reported."
+msgstr[1] "A total of {{count}} public events were reported."
+
+msgid ""
+"As summarized in the Pie Chart below, a total number of {{count}} deaths "
+"were reported through the electronic Integrated Disease Surveillance and "
+"Response (eIDSR) system. {{details}}."
+msgid_plural ""
+"As summarized in the Pie Chart below, a total number of {{count}} deaths "
+"were reported through the electronic Integrated Disease Surveillance and "
+"Response (eIDSR) system. {{details}}."
+msgstr[0] ""
+"As summarized in the Pie Chart below, a total number of {{count}} deaths "
+"were reported through the electronic Integrated Disease Surveillance and "
+"Response (eIDSR) system. {{details}}."
+msgstr[1] ""
+"As summarized in the Pie Chart below, a total number of {{count}} deaths "
+"were reported through the electronic Integrated Disease Surveillance and "
+"Response (eIDSR) system. {{details}}."
+
+msgid "{{count}} ({{percent}}%) were {{type}}"
+msgid_plural "{{count}} ({{percent}}%) were {{type}}"
+msgstr[0] "{{count}} ({{percent}}%) were {{type}}"
+msgstr[1] "{{count}} ({{percent}}%) were {{type}}"
+
+msgid "{{count}} cases of Malaria reported by {{villages}} villages"
+msgid_plural "{{count}} cases of Malaria reported by {{villages}} villages"
+msgstr[0] "{{count}} cases of Malaria reported by {{villages}} villages"
+msgstr[1] "{{count}} cases of Malaria reported by {{villages}} villages"
+
+msgid "{{count}} malaria cases"
+msgid_plural "{{count}} malaria cases"
+msgstr[0] "{{count}} malaria cases"
+msgstr[1] "{{count}} malaria cases"
+
+msgid "{{count}} cases of {{name}} reported by {{villages}} villages"
+msgid_plural "{{count}} cases of {{name}} reported by {{villages}} villages"
+msgstr[0] "{{count}} cases of {{name}} reported by {{villages}} villages"
+msgstr[1] "{{count}} cases of {{name}} reported by {{villages}} villages"
+
+msgid "{{count}} {{name}} cases"
+msgid_plural "{{count}} {{name}} cases"
+msgstr[0] "{{count}} {{name}} cases"
+msgstr[1] "{{count}} {{name}} cases"
 
 msgid ""
 "Configure where your data comes from. By default, data is read from this "
@@ -909,6 +1290,9 @@ msgstr "PDF"
 
 msgid "PowerPoint"
 msgstr "PowerPoint"
+
+msgid "Export failed. {{message}}"
+msgstr "Export failed. {{message}}"
 
 msgid "File name"
 msgstr "File name"

@@ -28,35 +28,24 @@ export const RELATIVE_PERIOD_GROUPS = {
 
 export type RelativePeriodGroup = keyof typeof RELATIVE_PERIOD_GROUPS
 
-export const RELATIVE_GROUP_LABELS: Record<RelativePeriodGroup, string> = {
-    days: 'Days',
-    weeks: 'Weeks',
-    biweeks: 'Bi-weeks',
-    months: 'Months',
-    bimonths: 'Bi-months',
-    quarters: 'Quarters',
-    sixmonths: 'Six-months',
-    financialYears: 'Financial years',
-    years: 'Years',
-}
-
-export const FIXED_PERIOD_TYPES: Array<{ label: string; value: PeriodType }> = [
-    { label: 'Daily', value: 'DAILY' },
-    { label: 'Weekly', value: 'WEEKLY' },
-    { label: 'Weekly (Start Wednesday)', value: 'WEEKLYWED' },
-    { label: 'Weekly (Start Thursday)', value: 'WEEKLYTHU' },
-    { label: 'Weekly (Start Saturday)', value: 'WEEKLYSAT' },
-    { label: 'Weekly (Start Sunday)', value: 'WEEKLYSUN' },
-    { label: 'Bi-weekly', value: 'BIWEEKLY' },
-    { label: 'Monthly', value: 'MONTHLY' },
-    { label: 'Bi-monthly', value: 'BIMONTHLY' },
-    { label: 'Quarterly', value: 'QUARTERLY' },
-    { label: 'Six-monthly', value: 'SIXMONTHLY' },
-    { label: 'Six-monthly April', value: 'SIXMONTHLYAPR' },
-    { label: 'Yearly', value: 'YEARLY' },
-    { label: 'Financial year (April)', value: 'FYAPR' },
-    { label: 'Financial year (July)', value: 'FYJUL' },
-    { label: 'Financial year (October)', value: 'FYOCT' },
+/** Fixed period types offered in the period picker (labels: utils/labels.ts). */
+export const FIXED_PERIOD_TYPES: PeriodType[] = [
+    'DAILY',
+    'WEEKLY',
+    'WEEKLYWED',
+    'WEEKLYTHU',
+    'WEEKLYSAT',
+    'WEEKLYSUN',
+    'BIWEEKLY',
+    'MONTHLY',
+    'BIMONTHLY',
+    'QUARTERLY',
+    'SIXMONTHLY',
+    'SIXMONTHLYAPR',
+    'YEARLY',
+    'FYAPR',
+    'FYJUL',
+    'FYOCT',
 ]
 
 /** Period types allowed for weekly epidemiological bulletins. */

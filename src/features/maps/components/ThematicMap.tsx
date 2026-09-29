@@ -153,9 +153,7 @@ export const ThematicMap = ({
                                 escapeHtml(dataName),
                                 escapeHtml(periodName),
                                 escapeHtml(
-                                    i18n.t('Value: {{value}}', {
-                                        value: value === null ? i18n.t('No data') : value,
-                                    })
+                                    `${i18n.t('Value')} ${value === null ? i18n.t('No data') : value}`
                                 ),
                             ]
                                 .filter(Boolean)

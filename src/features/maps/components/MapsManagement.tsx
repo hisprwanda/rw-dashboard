@@ -7,6 +7,7 @@ import { useMe } from '@/features/auth'
 import { ConfirmModal, DataTable, PageHeader, type DataTableColumn } from '@/shared/components'
 import { isCreatedBy, isSharedWith } from '@/shared/utils/sharing'
 import { useDeleteMap } from '../hooks/useDeleteMap'
+import { mapTypeLabel } from '../utils/labels'
 import { useMaps } from '../hooks/useMaps'
 import type { SavedMapEntry } from '../types/map.types'
 
@@ -46,7 +47,7 @@ export const MapsManagement = () => {
             {
                 key: 'type',
                 header: i18n.t('Type'),
-                value: (e) => e.value.mapType,
+                value: (e) => mapTypeLabel(e.value.mapType),
                 sortable: true,
             },
             ...(scope === 'shared'

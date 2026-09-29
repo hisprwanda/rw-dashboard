@@ -5,6 +5,7 @@ import jsxA11y from 'eslint-plugin-jsx-a11y'
 import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
 import globals from 'globals'
+import i18next from 'eslint-plugin-i18next'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
@@ -73,8 +74,10 @@ export default tseslint.config(
     {
         // The whole app is strict. Only the shadcn primitives (removed in Phase 9) are exempt.
         files: ['src/**/*.{ts,tsx}'],
-        ignores: ['src/components/ui/**', 'src/lib/**'],
+        plugins: { i18next },
         rules: {
+            // Text rendered in JSX must go through i18n.t() (tests are exempt below).
+            'i18next/no-literal-string': ['error', { mode: 'jsx-text-only' }],
             '@typescript-eslint/no-explicit-any': 'error',
             'no-console': ['error', { allow: ['warn', 'error'] }],
             'react-hooks/exhaustive-deps': 'error',
@@ -109,6 +112,10 @@ export default tseslint.config(
                 },
             ],
         },
+    },
+    {
+        files: ['src/**/*.test.{ts,tsx}'],
+        rules: { 'i18next/no-literal-string': 'off' },
     },
     prettier
 )

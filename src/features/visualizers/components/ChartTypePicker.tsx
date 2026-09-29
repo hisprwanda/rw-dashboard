@@ -1,7 +1,7 @@
 import i18n from '@dhis2/d2-i18n'
 import { Button, Input, Modal, ModalContent, ModalTitle } from '@dhis2/ui'
 import { useState } from 'react'
-import { chartRegistry, findChart, type ChartType } from '@/features/charts'
+import { chartRegistry, chartTypeLabel, findChart, type ChartType } from '@/features/charts'
 
 interface ChartTypePickerProps {
     value: ChartType
@@ -14,7 +14,7 @@ export const ChartTypePicker = ({ value, onChange }: ChartTypePickerProps) => {
     const [search, setSearch] = useState('')
     const current = findChart(value)
     const charts = chartRegistry.filter((chart) =>
-        chart.type.toLowerCase().includes(search.trim().toLowerCase())
+        chartTypeLabel(chart.type).toLowerCase().includes(search.trim().toLowerCase())
     )
 
     const pick = (type: ChartType) => {
@@ -29,7 +29,7 @@ export const ChartTypePicker = ({ value, onChange }: ChartTypePickerProps) => {
                 icon={current ? <span className="flex">{current.icon}</span> : undefined}
                 onClick={() => setOpen(true)}
             >
-                {current?.type ?? i18n.t('Chart type')}
+                {current ? chartTypeLabel(current.type) : i18n.t('Chart type')}
             </Button>
             {open && (
                 <Modal onClose={() => setOpen(false)} position="middle">
@@ -54,7 +54,7 @@ export const ChartTypePicker = ({ value, onChange }: ChartTypePickerProps) => {
                                     }`}
                                 >
                                     <span className="text-xl">{chart.icon}</span>
-                                    <span>{chart.type}</span>
+                                    <span>{chartTypeLabel(chart.type)}</span>
                                 </button>
                             ))}
                         </div>
