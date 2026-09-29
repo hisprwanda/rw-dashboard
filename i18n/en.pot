@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-09-29T13:04:39.361Z\n"
-"PO-Revision-Date: 2026-09-29T13:04:39.361Z\n"
+"POT-Creation-Date: 2026-09-29T14:38:24.543Z\n"
+"PO-Revision-Date: 2026-09-29T14:38:24.543Z\n"
 
 msgid "Dashboards"
 msgstr "Dashboards"
@@ -122,6 +122,9 @@ msgstr "Cancel"
 msgid "Save"
 msgstr "Save"
 
+msgid "Data source"
+msgstr "Data source"
+
 msgid "Actions"
 msgstr "Actions"
 
@@ -180,6 +183,102 @@ msgstr "Token cannot exceed 256 characters"
 msgid "Token can only contain letters, numbers, dashes or underscores"
 msgstr "Token can only contain letters, numbers, dashes or underscores"
 
+msgid "Collapse"
+msgstr "Collapse"
+
+msgid "Expand"
+msgstr "Expand"
+
+msgid "Could not load the sub-units."
+msgstr "Could not load the sub-units."
+
+msgid "Organisation units"
+msgstr "Organisation units"
+
+msgid "User org unit"
+msgstr "User org unit"
+
+msgid "User sub-units"
+msgstr "User sub-units"
+
+msgid "User sub-x2-units"
+msgstr "User sub-x2-units"
+
+msgid "Levels"
+msgstr "Levels"
+
+msgid "Select levels"
+msgstr "Select levels"
+
+msgid "Groups"
+msgstr "Groups"
+
+msgid "Select groups"
+msgstr "Select groups"
+
+msgid "Deselect all"
+msgstr "Deselect all"
+
+msgid "Period"
+msgstr "Period"
+
+msgid "Relative periods"
+msgstr "Relative periods"
+
+msgid "Fixed periods"
+msgstr "Fixed periods"
+
+msgid "Period group"
+msgstr "Period group"
+
+msgid "Period type"
+msgstr "Period type"
+
+msgid "Year"
+msgstr "Year"
+
+msgid "Available periods"
+msgstr "Available periods"
+
+msgid "Selected periods"
+msgstr "Selected periods"
+
+msgid "No periods selected"
+msgstr "No periods selected"
+
+msgid "Chart type"
+msgstr "Chart type"
+
+msgid "Select chart type"
+msgstr "Select chart type"
+
+msgid "Search chart types"
+msgstr "Search chart types"
+
+msgid "Search palettes"
+msgstr "Search palettes"
+
+msgid "Main dimensions"
+msgstr "Main dimensions"
+
+msgid "Organisation unit"
+msgstr "Organisation unit"
+
+msgid "Export"
+msgstr "Export"
+
+msgid "File"
+msgstr "File"
+
+msgid "Columns"
+msgstr "Columns"
+
+msgid "Rows"
+msgstr "Rows"
+
+msgid "Filter"
+msgstr "Filter"
+
 msgid "Another visualization already uses this name."
 msgstr "Another visualization already uses this name."
 
@@ -197,6 +296,70 @@ msgstr "Select data, period and organisation unit, then click Update."
 
 msgid "Name"
 msgstr "Name"
+
+msgid "Color"
+msgstr "Color"
+
+msgid "Font size"
+msgstr "Font size"
+
+msgid "Titles"
+msgstr "Titles"
+
+msgid "Edit title and subtitle"
+msgstr "Edit title and subtitle"
+
+msgid "Colors"
+msgstr "Colors"
+
+msgid "Background"
+msgstr "Background"
+
+msgid "Fill"
+msgstr "Fill"
+
+msgid "Color palette"
+msgstr "Color palette"
+
+msgid "X axis"
+msgstr "X axis"
+
+msgid "Y axis"
+msgstr "Y axis"
+
+msgid "Chart title"
+msgstr "Chart title"
+
+msgid "None"
+msgstr "None"
+
+msgid "Custom"
+msgstr "Custom"
+
+msgid "Chart subtitle"
+msgstr "Chart subtitle"
+
+msgid "Automatic (filter items)"
+msgstr "Automatic (filter items)"
+
+msgid "Apply"
+msgstr "Apply"
+
+msgid "Running analytics"
+msgstr "Running analytics"
+
+msgid "Dimensions"
+msgstr "Dimensions"
+
+msgid "Data source not available"
+msgstr "Data source not available"
+
+msgid ""
+"The data source of this visualization was deleted or is not shared with "
+"you. Pick another data source."
+msgstr ""
+"The data source of this visualization was deleted or is not shared with "
+"you. Pick another data source."
 
 msgid "Created by"
 msgstr "Created by"
@@ -390,21 +553,6 @@ msgstr "ERROR"
 msgid "Loading..."
 msgstr "Loading..."
 
-msgid "SETTINGS"
-msgstr "SETTINGS"
-
-msgid "Data Source"
-msgstr "Data Source"
-
-msgid "Main Dimensions"
-msgstr "Main Dimensions"
-
-msgid "Period"
-msgstr "Period"
-
-msgid "Organization Unit"
-msgstr "Organization Unit"
-
 msgid "Sharing settings saved"
 msgstr "Sharing settings saved"
 
@@ -419,6 +567,24 @@ msgstr "No results match \"{{search}}\""
 
 msgid "Nothing to show yet"
 msgstr "Nothing to show yet"
+
+msgid "PNG image"
+msgstr "PNG image"
+
+msgid "JPEG image"
+msgstr "JPEG image"
+
+msgid "PDF"
+msgstr "PDF"
+
+msgid "PowerPoint"
+msgstr "PowerPoint"
+
+msgid "File name"
+msgstr "File name"
+
+msgid "Format"
+msgstr "Format"
 
 msgid "Something went wrong"
 msgstr "Something went wrong"

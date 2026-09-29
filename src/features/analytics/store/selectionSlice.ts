@@ -49,6 +49,17 @@ const selectionSlice = createSlice({
         setSelectedDataItems: (state, action: PayloadAction<DataItemRef[] | undefined>) => {
             state.selectedDataItems = action.payload ?? []
         },
+        /** A new data source invalidates every other choice (items differ per instance). */
+        changeDataSource: (
+            _state,
+            action: PayloadAction<{ id: string; dataSource: SelectedDataSource }>
+        ) => ({
+            ...initialSelection,
+            dataSourceId: action.payload.id,
+            dataSource: action.payload.dataSource,
+        }),
+        /** Replaces the whole selection (e.g. when a saved visual is opened). */
+        setSelection: (_state, action: PayloadAction<SelectionState>) => action.payload,
         resetSelection: () => initialSelection,
     },
 })

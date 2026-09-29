@@ -1,5 +1,6 @@
 export { ConfirmModal } from './ConfirmModal'
 export { DataTable, type DataTableColumn } from './DataTable/DataTable'
+export { ExportModal } from './ExportModal'
 export { EmptyState } from './feedback/EmptyState'
 export { ErrorState } from './feedback/ErrorState'
 export { LoadingState } from './feedback/LoadingState'

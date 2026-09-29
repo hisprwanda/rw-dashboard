@@ -14,6 +14,5 @@ export const paths = {
     dataSources: '/datasource',
     alerts: '/alerts',
     admin: '/admin',
-    user: '/user',
     unauthorized: '/unauthorized',
 } as const

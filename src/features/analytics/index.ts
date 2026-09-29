@@ -1,6 +1,7 @@
 export { analyticsQueryOptions } from './hooks/analyticsQueryOptions'
 export { analyticsKeys } from './hooks/queryKeys'
 export { useAnalytics } from './hooks/useAnalytics'
+export { useAnalyticsRun } from './hooks/useAnalyticsRun'
 export type {
     AnalyticsDimensions,
     AnalyticsLayout,
@@ -15,7 +16,8 @@ export {
     type AnalyticsRequestInput,
 } from './utils/buildAnalyticsRequest'
 export { formatAnalyticsDimensions, parseAnalyticsDimensions } from './utils/dimensions'
-export { applyLayout } from './utils/layout'
+export { applyLayout, moveDimension, type LayoutArea } from './utils/layout'
+export { buildSelectionRequest } from './utils/selectionRequest'
 export {
     getDimensionItems,
     transformMetadataLabels,

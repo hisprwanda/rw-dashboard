@@ -1,6 +1,6 @@
 import { PeriodPicker } from '@/features/periods'
 import { DataItemsPicker } from '@/features/data-items'
-import { useOrgUnitMetadata } from '@/features/org-units'
+import { OrgUnitPicker } from '@/features/org-units'
 import { useEffect, useState } from 'react'
 
 import { Button } from '../../../components/ui/button'
@@ -21,7 +21,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from '../../../components/ui/select'
-import { OrganizationModal } from '../../visualizers/Components/MetaDataModals'
 import { useAuthorities } from '../../../context/AuthContext'
 import { formatAnalyticsDimensions } from '@/features/analytics'
 import { useRunGeoFeatures } from '../../../services/maps'
@@ -48,7 +47,6 @@ export function MapMetaDataConfigModal({
     const {
         selectedDataSourceOption,
         setSelectedDataSourceOption,
-        currentUserInfoAndOrgUnitsData,
         selectedDataSourceDetails,
         setSelectedDataSourceDetails,
         setSelectedDimensionItemType,
@@ -68,8 +66,6 @@ export function MapMetaDataConfigModal({
         selectedOrganizationUnitsLevels,
         fetchAnalyticsData,
     } = useAuthorities()
-    const { isLoading: orgUnitLoading, error: fetchOrgUnitError } =
-        useOrgUnitMetadata(selectedDataSourceDetails)
     const [activeTab, setActiveTab] = useState('data')
     const [isLoading, setIsLoading] = useState(false)
     const [formData, setFormData] = useState({
@@ -135,12 +131,7 @@ export function MapMetaDataConfigModal({
             case 'orgUnits':
                 return (
                     <div className="py-4">
-                        <OrganizationModal
-                            isDataModalBeingUsedInMap={true}
-                            data={currentUserInfoAndOrgUnitsData}
-                            loading={orgUnitLoading}
-                            error={fetchOrgUnitError}
-                        />
+                        <OrgUnitPicker instance={selectedDataSourceDetails} levelValue="level" />
                     </div>
                 )
             case 'filter':

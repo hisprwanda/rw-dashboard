@@ -5,19 +5,17 @@ import { useApplicationTitle } from '@/features/system'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Button from '../../components/Button'
 import { useDataSources } from '@/features/data-sources'
-import { GenericModal, Loading } from '../../components'
+import { Loading } from '../../components'
 import { PeriodModal } from '@/features/periods'
-import { OrganizationModal } from '../visualizers/Components/MetaDataModals'
 import { dimensionDataHardCoded } from '../../constants/bulletinDimension'
 import { useAuthorities } from '../../context/AuthContext'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs'
 import { SaveVisualModal } from '@/features/visualizers'
-import { useOrgUnitMetadata } from '@/features/org-units'
+import { OrgUnitModal } from '@/features/org-units'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useFetchSingleVisualData } from '../../services/fetchVisuals'
 import { formatAnalyticsDimensions } from '@/features/analytics'
 import { DEFAULT_CHART_TYPE } from '@/features/charts'
-import GeneralChartsStyles from '../visualizers/Components/GeneralChartsOptions'
 import { systemDefaultColorPalettes } from '../../constants/colorPalettes'
 import { currentInstanceId } from '../../constants/currentInstanceInfo'
 import debounce from 'lodash/debounce'
@@ -66,8 +64,6 @@ function ReportPage() {
         selectedDimensionItemType,
         analyticsPayloadDeterminer,
     } = useAuthorities()
-    const { isLoading: orgUnitLoading, error: fetchOrgUnitError } =
-        useOrgUnitMetadata(selectedDataSourceDetails)
     const {
         data: singleSavedVisualData,
         isError,
@@ -80,9 +76,6 @@ function ReportPage() {
     const [isShowOrganizationUnit, setIsShowOrganizationUnit] = useState<boolean>(false)
     const [isShowPeriod, setIsShowPeriod] = useState<boolean>(false)
     const [isShowSaveVisualTypeForm, setIsShowSaveVisualTypeForm] = useState<boolean>(false)
-    const [isShowStyles, setIsShowStyles] = useState<boolean>(false)
-    const [titleOption, setTitleOption] = useState<'none' | 'custom'>('none')
-    const [subtitleOption, setSubtitleOption] = useState<'auto' | 'none' | 'custom'>('auto')
     const [dataSubmitted, setDataSubmitted] = useState(false)
     const [isPeriodInBulletin, setisPeriodInBulletin] = useState(false)
 
@@ -253,17 +246,25 @@ function ReportPage() {
                             updating={isFetchAnalyticsDataLoading}
                         />
                     )}
-                    <GenericModal
-                        isOpen={isShowOrganizationUnit}
-                        setIsOpen={setIsShowOrganizationUnit}
-                    >
-                        <OrganizationModal
-                            data={currentUserInfoAndOrgUnitsData}
-                            loading={orgUnitLoading}
-                            error={fetchOrgUnitError}
-                            setIsShowOrganizationUnit={setIsShowOrganizationUnit}
+                    {isShowOrganizationUnit && (
+                        <OrgUnitModal
+                            instance={selectedDataSourceDetails}
+                            onClose={() => setIsShowOrganizationUnit(false)}
+                            onUpdate={() =>
+                                fetchAnalyticsData({
+                                    dimension: formatAnalyticsDimensions(analyticsDimensions),
+                                    instance: selectedDataSourceDetails,
+                                    analyticsPayloadDeterminer,
+                                    selectedOrganizationUnits,
+                                    selectedOrgUnitGroups,
+                                    selectedOrganizationUnitsLevels,
+                                    isUseCurrentUserOrgUnits,
+                                    isSetPredifinedUserOrgUnits,
+                                })
+                            }
+                            updating={isFetchAnalyticsDataLoading}
                         />
-                    </GenericModal>
+                    )}
                     {isShowPeriod && (
                         <PeriodModal
                             bulletinMode
@@ -307,16 +308,6 @@ function ReportPage() {
                             }}
                         />
                     )}
-                    {/* general charts option */}
-                    <GenericModal isOpen={isShowStyles} setIsOpen={setIsShowStyles}>
-                        <GeneralChartsStyles
-                            setIsShowStyles={setIsShowStyles}
-                            titleOption={titleOption}
-                            setTitleOption={setTitleOption}
-                            subtitleOption={subtitleOption}
-                            setSubtitleOption={setSubtitleOption}
-                        />
-                    </GenericModal>
                 </>
             )}
         </div>

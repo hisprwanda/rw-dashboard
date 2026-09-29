@@ -1,4 +1,4 @@
-import { applyLayout } from './layout'
+import { applyLayout, moveDimension } from './layout'
 
 const params = {
     dimension: ['dx:a', 'pe:2024'],
@@ -49,5 +49,22 @@ describe('applyLayout', () => {
         const copy = JSON.parse(JSON.stringify(params))
         applyLayout(params, { Columns: ['Period'], Rows: ['Data'], Filter: ['Organisation unit'] })
         expect(params).toEqual(copy)
+    })
+})
+
+describe('moveDimension', () => {
+    const layout = { Columns: ['Data'], Rows: ['Period'], Filter: ['Organisation unit'] }
+
+    it('moves a dimension between areas', () => {
+        expect(moveDimension(layout, 'Period', 'Rows', 'Filter')).toEqual({
+            Columns: ['Data'],
+            Rows: [],
+            Filter: ['Organisation unit', 'Period'],
+        })
+    })
+
+    it('ignores moves to the same area or of a missing item', () => {
+        expect(moveDimension(layout, 'Data', 'Columns', 'Columns')).toBe(layout)
+        expect(moveDimension(layout, 'Data', 'Rows', 'Filter')).toBe(layout)
     })
 })

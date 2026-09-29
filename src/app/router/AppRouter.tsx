@@ -10,7 +10,7 @@ const HomePage = lazy(() => import('@/pages/home/HomePage'))
 const DashboardsPage = lazy(() => import('@/pages/dashboards/DashboardsPage'))
 const CreateDashboardPage = lazy(() => import('@/pages/dashboards/CreateDashboardPage'))
 const VisualizationsPage = lazy(() => import('@/pages/visualizers/VisualizationsPage'))
-const VisualizersPage = lazy(() => import('@/pages/visualizers/VisualizersPage'))
+const VisualizerBuilderPage = lazy(() => import('@/pages/visualizers/[id]/VisualizerBuilderPage'))
 const AllMapsPage = lazy(() => import('@/pages/Map/AllMapsPage'))
 const MapHomepage = lazy(() => import('@/pages/Map/MapHomepage'))
 const ReportPage = lazy(() => import('@/pages/report/ReportPage'))
@@ -18,7 +18,6 @@ const SettingsPage = lazy(() => import('@/pages/settings/SettingsPage'))
 const DataSourcesPage = lazy(() => import('@/pages/settings/data-sources/DataSourcesPage'))
 const AlertsPage = lazy(() => import('@/pages/alerts/AlertsPage'))
 const AdminPage = lazy(() => import('@/pages/AdminPage'))
-const UserPage = lazy(() => import('@/pages/UserPage'))
 const UnauthorizedPage = lazy(() => import('@/pages/UnauthorizedPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
@@ -39,7 +38,7 @@ export const AppRouter = () => (
                 <Route path="dashboards" element={page(DashboardsPage)} />
                 <Route path="dashboard/:id?/:present?" element={page(CreateDashboardPage)} />
                 <Route path="visualization" element={page(VisualizationsPage)} />
-                <Route path="visualizers/:id?" element={page(VisualizersPage)} />
+                <Route path="visualizers/:id?" element={page(VisualizerBuilderPage)} />
                 <Route path="maps" element={page(AllMapsPage)} />
                 <Route path="map/:id?/:mapName?" element={page(MapHomepage)} />
                 <Route path="report" element={page(ReportPage)} />
@@ -55,14 +54,6 @@ export const AppRouter = () => (
                 element={
                     <RequireAuthority authorities={['F_SYSTEM_SETTING']}>
                         {page(AdminPage)}
-                    </RequireAuthority>
-                }
-            />
-            <Route
-                path="user"
-                element={
-                    <RequireAuthority authorities={['M_dhis-web-dashboard']}>
-                        {page(UserPage)}
                     </RequireAuthority>
                 }
             />

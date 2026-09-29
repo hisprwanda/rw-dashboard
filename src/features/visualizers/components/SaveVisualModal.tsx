@@ -27,7 +27,7 @@ interface SaveVisualModalProps {
     visualId?: string
     /** The stored version of the visual being updated (keeps creator and creation date). */
     saved?: SavedVisual
-    /** Query of the last analytics run (still held by the legacy context). */
+    /** Query of the last analytics run. */
     query: StoredAnalyticsQuery | null | undefined
     onClose: () => void
     onSaved: (key: string) => void

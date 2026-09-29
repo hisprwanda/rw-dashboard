@@ -48,7 +48,18 @@ const visualizerSlice = createSlice({
         },
         setColorPalette: (state, action: PayloadAction<ColorPalette>) => {
             state.colorPalette = action.payload
+            // Charts read the palette from the settings.
+            state.settings.visualColorPalette = action.payload
         },
+        updateSettings: (state, action: PayloadAction<Partial<VisualSettings>>) => {
+            state.settings = { ...state.settings, ...action.payload }
+        },
+        /** The automatic subtitle follows the items of the last analytics run. */
+        setDefaultSubTitle: (state, action: PayloadAction<VisualTitles['DefaultSubTitle']>) => {
+            state.titles.DefaultSubTitle = action.payload
+        },
+        /** Replaces the whole state (e.g. when a saved visual is opened). */
+        setVisualizer: (_state, action: PayloadAction<VisualizerState>) => action.payload,
         resetVisualizer: () => initialVisualizer,
     },
 })

@@ -1,3 +1,4 @@
+export { DataSourceSelect } from './components/DataSourceSelect'
 export { DataSourcesManagement } from './components/DataSourcesManagement'
 export { CURRENT_INSTANCE_ID } from './constants'
 export { dataSourceKeys } from './hooks/queryKeys'

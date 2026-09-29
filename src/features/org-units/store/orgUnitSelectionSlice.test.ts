@@ -26,4 +26,36 @@ describe('orgUnitSelectionSlice', () => {
         const dirty = reducer(undefined, actions.setSelectedOrgUnitIds(['x']))
         expect(reducer(dirty, actions.resetOrgUnitSelection())).toEqual(initialOrgUnitSelection)
     })
+
+    it('toggles a tree unit by id and path', () => {
+        const unit = { id: 'a', path: '/root/a' }
+        let state = reducer(undefined, actions.toggleOrgUnit(unit))
+        expect(state.selectedOrgUnitIds).toEqual(['a'])
+        expect(state.selectedTreePaths).toEqual(['/root/a'])
+        state = reducer(state, actions.toggleOrgUnit(unit))
+        expect(state.selectedOrgUnitIds).toEqual([])
+        expect(state.selectedTreePaths).toEqual([])
+    })
+
+    it('switches between user org units and an explicit selection', () => {
+        let state = reducer(undefined, actions.toggleOrgUnit({ id: 'a' }))
+        state = reducer(
+            state,
+            actions.toggleUserOrgUnitScope({ key: 'is_USER_ORGUNIT', checked: false })
+        )
+        expect(state.useCurrentUserOrgUnits).toBe(false)
+        expect(state.selectedOrgUnitIds).toEqual([])
+        state = reducer(
+            state,
+            actions.toggleUserOrgUnitScope({ key: 'is_USER_ORGUNIT_CHILDREN', checked: true })
+        )
+        expect(state.useCurrentUserOrgUnits).toBe(true)
+        expect(state.userOrgUnitScope.is_USER_ORGUNIT_CHILDREN).toBe(true)
+    })
+
+    it('stores levels for the UI and for analytics together', () => {
+        const state = reducer(undefined, actions.setLevels({ levels: [2], levelIds: ['lvl2'] }))
+        expect(state.selectedLevels).toEqual([2])
+        expect(state.selectedLevelIds).toEqual(['lvl2'])
+    })
 })

@@ -45,3 +45,20 @@ export const applyLayout = (
     else delete result.filter
     return result
 }
+
+export type LayoutArea = keyof AnalyticsLayout
+
+/** Moves a dimension from one layout area to another (appended at the end). */
+export const moveDimension = (
+    layout: AnalyticsLayout,
+    item: LayoutDimensionName,
+    from: LayoutArea,
+    to: LayoutArea
+): AnalyticsLayout => {
+    if (from === to || !layout[from].includes(item)) return layout
+    return {
+        ...layout,
+        [from]: layout[from].filter((name) => name !== item),
+        [to]: [...layout[to], item],
+    }
+}

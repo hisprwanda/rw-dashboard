@@ -88,6 +88,8 @@ UI state that must be shared across components (builder selections, settings,
 layout) lives in a Redux Toolkit slice inside the owning feature
 (`features/<x>/store/xxxSlice.ts`). Use the typed `useAppSelector` /
 `useAppDispatch` from `@/app/store`. Local component state stays in `useState`.
+`@/app/store` exports hooks and types only; the store instance (`@/app/store/store`) is
+imported by `AppProviders` alone, otherwise feature barrels and the store import each other.
 Server data is **never** copied into Redux.
 
 **No React Context API** for app state. Do not call `createContext`/`useContext`

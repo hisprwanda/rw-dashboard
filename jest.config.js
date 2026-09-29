@@ -13,5 +13,7 @@ module.exports = {
     moduleNameMapper: {
         ...defaults.moduleNameMapper,
         '^@/(.*)$': '<rootDir>/src/$1',
+        // axios ships ESM by default, which Jest 27 cannot parse: use its CommonJS build.
+        '^axios$': '<rootDir>/node_modules/axios/dist/node/axios.cjs',
     },
 }
