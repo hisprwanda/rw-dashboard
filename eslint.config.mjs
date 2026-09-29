@@ -71,8 +71,9 @@ export default tseslint.config(
         },
     },
     {
-        // New architecture: stricter from day one.
-        files: ['src/app/**', 'src/features/**', 'src/shared/**'],
+        // The whole app is strict. Only the shadcn primitives (removed in Phase 9) are exempt.
+        files: ['src/**/*.{ts,tsx}'],
+        ignores: ['src/components/ui/**', 'src/lib/**'],
         rules: {
             '@typescript-eslint/no-explicit-any': 'error',
             'no-console': ['error', { allow: ['warn', 'error'] }],
@@ -103,13 +104,6 @@ export default tseslint.config(
                         {
                             group: ['../../*'],
                             message: 'Use the @/ alias instead of deep relative imports.',
-                        },
-                    ],
-                    paths: [
-                        {
-                            name: '@/context/AuthContext',
-                            message:
-                                'AuthContext is legacy. Use feature hooks / Redux selectors.',
                         },
                     ],
                 },

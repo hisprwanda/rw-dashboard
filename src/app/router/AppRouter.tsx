@@ -1,11 +1,10 @@
 import { lazy, Suspense, type ComponentType, type LazyExoticComponent } from 'react'
 import { HashRouter, Route, Routes } from 'react-router-dom'
-import MainLayout from '@/components/layout/MainLayout'
-import { RequireAuthority } from '@/features/auth'
+import { MainLayout } from '@/app/layout/MainLayout'
 import { LoadingState } from '@/shared/components'
 
 // Pages are code-split: each route downloads its code on first visit.
-// Legacy page components are loaded from src/pages/** until their feature is migrated.
+// Every route renders a thin page from src/pages, which renders one feature component.
 const HomePage = lazy(() => import('@/pages/home/HomePage'))
 const DashboardsPage = lazy(() => import('@/pages/dashboards/DashboardsPage'))
 const DashboardEditorPage = lazy(() => import('@/pages/dashboards/[id]/DashboardEditorPage'))
@@ -17,8 +16,6 @@ const MapBuilderPage = lazy(() => import('@/pages/maps/[id]/MapBuilderPage'))
 const ReportPage = lazy(() => import('@/pages/report/ReportPage'))
 const SettingsPage = lazy(() => import('@/pages/settings/SettingsPage'))
 const DataSourcesPage = lazy(() => import('@/pages/settings/data-sources/DataSourcesPage'))
-const AlertsPage = lazy(() => import('@/pages/alerts/AlertsPage'))
-const AdminPage = lazy(() => import('@/pages/AdminPage'))
 const UnauthorizedPage = lazy(() => import('@/pages/UnauthorizedPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
@@ -46,19 +43,9 @@ export const AppRouter = () => (
                 <Route path="report" element={page(ReportPage)} />
                 <Route path="settings" element={page(SettingsPage)} />
                 <Route path="datasource" element={page(DataSourcesPage)} />
-                <Route path="alerts" element={page(AlertsPage)} />
                 <Route path="unauthorized" element={page(UnauthorizedPage)} />
                 <Route path="*" element={page(NotFoundPage)} />
             </Route>
-
-            <Route
-                path="admin"
-                element={
-                    <RequireAuthority authorities={['F_SYSTEM_SETTING']}>
-                        {page(AdminPage)}
-                    </RequireAuthority>
-                }
-            />
         </Routes>
     </HashRouter>
 )

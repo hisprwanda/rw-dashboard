@@ -5,23 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-09-29T20:34:16.998Z\n"
-"PO-Revision-Date: 2026-09-29T20:34:16.998Z\n"
-
-msgid "Dashboards"
-msgstr "Dashboards"
-
-msgid "Visualizers"
-msgstr "Visualizers"
-
-msgid "Map"
-msgstr "Map"
-
-msgid "Settings"
-msgstr "Settings"
-
-msgid "report"
-msgstr "report"
+"POT-Creation-Date: 2026-09-29T20:44:58.882Z\n"
+"PO-Revision-Date: 2026-09-29T20:44:58.883Z\n"
 
 msgid "No data available"
 msgstr "No data available"
@@ -145,6 +130,9 @@ msgstr "You have not created any dashboard yet."
 
 msgid "No dashboard is shared with you."
 msgstr "No dashboard is shared with you."
+
+msgid "Dashboards"
+msgstr "Dashboards"
 
 msgid "New dashboard"
 msgstr "New dashboard"
@@ -553,6 +541,63 @@ msgstr "Map saved"
 msgid "Could not save the map. Please try again."
 msgstr "Could not save the map. Please try again."
 
+msgid "Visualizers"
+msgstr "Visualizers"
+
+msgid "Map"
+msgstr "Map"
+
+msgid "Settings"
+msgstr "Settings"
+
+msgid "Report"
+msgstr "Report"
+
+msgid "Main"
+msgstr "Main"
+
+msgid "DHIS2 home"
+msgstr "DHIS2 home"
+
+msgid "{{title}} - Data Analytics Lab"
+msgstr "{{title}} - Data Analytics Lab"
+
+msgid "Interpretations"
+msgstr "Interpretations"
+
+msgid "Messages"
+msgstr "Messages"
+
+msgid "Search apps"
+msgstr "Search apps"
+
+msgid "Manage apps"
+msgstr "Manage apps"
+
+msgid "No app found"
+msgstr "No app found"
+
+msgid "Apps"
+msgstr "Apps"
+
+msgid "Account"
+msgstr "Account"
+
+msgid "Help"
+msgstr "Help"
+
+msgid "About"
+msgstr "About"
+
+msgid "Log out"
+msgstr "Log out"
+
+msgid "Profile"
+msgstr "Profile"
+
+msgid "Edit profile"
+msgstr "Edit profile"
+
 msgid "Collapse"
 msgstr "Collapse"
 
@@ -688,6 +733,16 @@ msgstr "Hospital catchment area"
 msgid "Completeness"
 msgstr "Completeness"
 
+msgid ""
+"Configure where your data comes from. By default, data is read from this "
+"DHIS2 instance."
+msgstr ""
+"Configure where your data comes from. By default, data is read from this "
+"DHIS2 instance."
+
+msgid "Prepare the weekly epidemiological bulletin."
+msgstr "Prepare the weekly epidemiological bulletin."
+
 msgid "Chart type"
 msgstr "Chart type"
 
@@ -815,6 +870,22 @@ msgstr "Visualization saved"
 msgid "Could not save the visualization. Please try again."
 msgstr "Could not save the visualization. Please try again."
 
+msgid "Page not found"
+msgstr "Page not found"
+
+msgid "Sorry, we couldn’t find the page you’re looking for."
+msgstr "Sorry, we couldn’t find the page you’re looking for."
+
+msgid "Unauthorized"
+msgstr "Unauthorized"
+
+msgid ""
+"You are not allowed to access this resource. Please contact the "
+"administrator for assistance."
+msgstr ""
+"You are not allowed to access this resource. Please contact the "
+"administrator for assistance."
+
 msgid "Confirm"
 msgstr "Confirm"
 
@@ -844,6 +915,9 @@ msgstr "File name"
 
 msgid "Format"
 msgstr "Format"
+
+msgid "Back to home"
+msgstr "Back to home"
 
 msgid "Something went wrong"
 msgstr "Something went wrong"

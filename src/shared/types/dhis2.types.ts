@@ -40,6 +40,7 @@ export interface UserSettings {
 
 export interface Me extends IdentifiableObject {
     username: string
+    email?: string
     authorities: string[]
     organisationUnits: OrgUnit[]
     dataViewOrganisationUnits?: OrgUnit[]

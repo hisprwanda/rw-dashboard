@@ -12,7 +12,5 @@ export const paths = {
     report: '/report',
     settings: '/settings',
     dataSources: '/datasource',
-    alerts: '/alerts',
-    admin: '/admin',
     unauthorized: '/unauthorized',
 } as const

@@ -6,6 +6,7 @@ const ME_FIELDS = [
     'username',
     'name',
     'displayName',
+    'email',
     'authorities',
     'settings',
     'userGroups[id,name,displayName]',
