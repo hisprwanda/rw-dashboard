@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-09-29T14:38:24.543Z\n"
-"PO-Revision-Date: 2026-09-29T14:38:24.543Z\n"
+"POT-Creation-Date: 2026-09-29T19:43:20.501Z\n"
+"PO-Revision-Date: 2026-09-29T19:43:20.502Z\n"
 
 msgid "Dashboards"
 msgstr "Dashboards"
@@ -183,6 +183,175 @@ msgstr "Token cannot exceed 256 characters"
 msgid "Token can only contain letters, numbers, dashes or underscores"
 msgstr "Token can only contain letters, numbers, dashes or underscores"
 
+msgid "Save changes"
+msgstr "Save changes"
+
+msgid "Save map"
+msgstr "Save map"
+
+msgid "Layers"
+msgstr "Layers"
+
+msgid "Edit thematic layer"
+msgstr "Edit thematic layer"
+
+msgid "Add thematic layer"
+msgstr "Add thematic layer"
+
+msgid "Basemap"
+msgstr "Basemap"
+
+msgid "Data source not available"
+msgstr "Data source not available"
+
+msgid ""
+"The data source of this map was deleted or is not shared with you. Pick "
+"another one in the thematic layer."
+msgstr ""
+"The data source of this map was deleted or is not shared with you. Pick "
+"another one in the thematic layer."
+
+msgid "Loading the layer"
+msgstr "Loading the layer"
+
+msgid "Collapse legend"
+msgstr "Collapse legend"
+
+msgid "Expand legend"
+msgstr "Expand legend"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Created by"
+msgstr "Created by"
+
+msgid "Created"
+msgstr "Created"
+
+msgid "Last updated"
+msgstr "Last updated"
+
+msgid "Open"
+msgstr "Open"
+
+msgid "Maps"
+msgstr "Maps"
+
+msgid "New map"
+msgstr "New map"
+
+msgid "My maps"
+msgstr "My maps"
+
+msgid "Shared with me"
+msgstr "Shared with me"
+
+msgid "You have not saved any map yet."
+msgstr "You have not saved any map yet."
+
+msgid "No map is shared with you."
+msgstr "No map is shared with you."
+
+msgid "Delete map"
+msgstr "Delete map"
+
+msgid "Delete \"{{name}}\"? Dashboards that show it will lose this item."
+msgstr "Delete \"{{name}}\"? Dashboards that show it will lose this item."
+
+msgid "Another map already uses this name."
+msgstr "Another map already uses this name."
+
+msgid "Update map"
+msgstr "Update map"
+
+msgid "Nothing to save yet"
+msgstr "Nothing to save yet"
+
+msgid "Add a thematic layer first."
+msgstr "Add a thematic layer first."
+
+msgid "Area name"
+msgstr "Area name"
+
+msgid "Data name"
+msgstr "Data name"
+
+msgid "Period"
+msgstr "Period"
+
+msgid "Value"
+msgstr "Value"
+
+msgid "Labels"
+msgstr "Labels"
+
+msgid "Legend"
+msgstr "Legend"
+
+msgid "Automatic (5 classes)"
+msgstr "Automatic (5 classes)"
+
+msgid "Legend set"
+msgstr "Legend set"
+
+msgid "Could not load the legend sets."
+msgstr "Could not load the legend sets."
+
+msgid "Org units"
+msgstr "Org units"
+
+msgid "Style"
+msgstr "Style"
+
+msgid "Update layer"
+msgstr "Update layer"
+
+msgid "Add layer"
+msgstr "Add layer"
+
+msgid "No data"
+msgstr "No data"
+
+msgid "Very low"
+msgstr "Very low"
+
+msgid "Low"
+msgstr "Low"
+
+msgid "Medium"
+msgstr "Medium"
+
+msgid "High"
+msgstr "High"
+
+msgid "Very high"
+msgstr "Very high"
+
+msgid "No areas to show"
+msgstr "No areas to show"
+
+msgid "Light"
+msgstr "Light"
+
+msgid "OpenStreetMap"
+msgstr "OpenStreetMap"
+
+msgid "Map deleted"
+msgstr "Map deleted"
+
+msgid "Could not delete the map. Please try again."
+msgstr "Could not delete the map. Please try again."
+
+msgid "Map saved"
+msgstr "Map saved"
+
+msgid "Could not save the map. Please try again."
+msgstr "Could not save the map. Please try again."
+
+msgid "Name is required"
+msgstr "Name is required"
+
 msgid "Collapse"
 msgstr "Collapse"
 
@@ -218,9 +387,6 @@ msgstr "Select groups"
 
 msgid "Deselect all"
 msgstr "Deselect all"
-
-msgid "Period"
-msgstr "Period"
 
 msgid "Relative periods"
 msgstr "Relative periods"
@@ -288,14 +454,8 @@ msgstr "Update visualization"
 msgid "Save visualization"
 msgstr "Save visualization"
 
-msgid "Nothing to save yet"
-msgstr "Nothing to save yet"
-
 msgid "Select data, period and organisation unit, then click Update."
 msgstr "Select data, period and organisation unit, then click Update."
-
-msgid "Name"
-msgstr "Name"
 
 msgid "Color"
 msgstr "Color"
@@ -351,27 +511,12 @@ msgstr "Running analytics"
 msgid "Dimensions"
 msgstr "Dimensions"
 
-msgid "Data source not available"
-msgstr "Data source not available"
-
 msgid ""
 "The data source of this visualization was deleted or is not shared with "
 "you. Pick another data source."
 msgstr ""
 "The data source of this visualization was deleted or is not shared with "
 "you. Pick another data source."
-
-msgid "Created by"
-msgstr "Created by"
-
-msgid "Created"
-msgstr "Created"
-
-msgid "Last updated"
-msgstr "Last updated"
-
-msgid "Open"
-msgstr "Open"
 
 msgid "Visualizations"
 msgstr "Visualizations"
@@ -382,9 +527,6 @@ msgstr "New visualization"
 msgid "My visualizations"
 msgstr "My visualizations"
 
-msgid "Shared with me"
-msgstr "Shared with me"
-
 msgid "You have not saved any visualization yet."
 msgstr "You have not saved any visualization yet."
 
@@ -393,9 +535,6 @@ msgstr "No visualization is shared with you."
 
 msgid "Delete visualization"
 msgstr "Delete visualization"
-
-msgid "Delete \"{{name}}\"? Dashboards that show it will lose this item."
-msgstr "Delete \"{{name}}\"? Dashboards that show it will lose this item."
 
 msgid "Visualization deleted"
 msgstr "Visualization deleted"
@@ -409,47 +548,17 @@ msgstr "Visualization saved"
 msgid "Could not save the visualization. Please try again."
 msgstr "Could not save the visualization. Please try again."
 
-msgid "Name is required"
-msgstr "Name is required"
-
 msgid "PowerPoint file downloaded"
 msgstr "PowerPoint file downloaded"
 
 msgid "Exporting to PowerPoint failed"
 msgstr "Exporting to PowerPoint failed"
 
-msgid "My Maps"
-msgstr "My Maps"
-
-msgid "Other Charts"
-msgstr "Other Charts"
-
-msgid "New Map"
-msgstr "New Map"
-
-msgid "Created At"
-msgstr "Created At"
-
-msgid "Updated At"
-msgstr "Updated At"
-
-msgid "Map deleted"
-msgstr "Map deleted"
+msgid "Dashboard saved"
+msgstr "Dashboard saved"
 
 msgid "Something went wrong. Please try again."
 msgstr "Something went wrong. Please try again."
-
-msgid "Created By"
-msgstr "Created By"
-
-msgid "Map saved"
-msgstr "Map saved"
-
-msgid "Failed to save the map. Please try again."
-msgstr "Failed to save the map. Please try again."
-
-msgid "Dashboard saved"
-msgstr "Dashboard saved"
 
 msgid "Dashboard Name"
 msgstr "Dashboard Name"
@@ -471,9 +580,6 @@ msgstr "FullScreen"
 
 msgid "Present"
 msgstr "Present"
-
-msgid "Save changes"
-msgstr "Save changes"
 
 msgid "Background Color"
 msgstr "Background Color"
@@ -546,6 +652,15 @@ msgstr "Pinned Dashboards"
 
 msgid "Dashboard deleted"
 msgstr "Dashboard deleted"
+
+msgid "Created At"
+msgstr "Created At"
+
+msgid "Updated At"
+msgstr "Updated At"
+
+msgid "Created By"
+msgstr "Created By"
 
 msgid "ERROR"
 msgstr "ERROR"

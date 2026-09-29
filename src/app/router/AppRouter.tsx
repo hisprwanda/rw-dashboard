@@ -12,7 +12,7 @@ const CreateDashboardPage = lazy(() => import('@/pages/dashboards/CreateDashboar
 const VisualizationsPage = lazy(() => import('@/pages/visualizers/VisualizationsPage'))
 const VisualizerBuilderPage = lazy(() => import('@/pages/visualizers/[id]/VisualizerBuilderPage'))
 const MapsPage = lazy(() => import('@/pages/maps/MapsPage'))
-const MapHomepage = lazy(() => import('@/pages/Map/MapHomepage'))
+const MapBuilderPage = lazy(() => import('@/pages/maps/[id]/MapBuilderPage'))
 const ReportPage = lazy(() => import('@/pages/report/ReportPage'))
 const SettingsPage = lazy(() => import('@/pages/settings/SettingsPage'))
 const DataSourcesPage = lazy(() => import('@/pages/settings/data-sources/DataSourcesPage'))
@@ -40,7 +40,7 @@ export const AppRouter = () => (
                 <Route path="visualization" element={page(VisualizationsPage)} />
                 <Route path="visualizers/:id?" element={page(VisualizerBuilderPage)} />
                 <Route path="maps" element={page(MapsPage)} />
-                <Route path="map/:id?/:mapName?" element={page(MapHomepage)} />
+                <Route path="map/:id?/:mapName?" element={page(MapBuilderPage)} />
                 <Route path="report" element={page(ReportPage)} />
                 <Route path="settings" element={page(SettingsPage)} />
                 <Route path="datasource" element={page(DataSourcesPage)} />

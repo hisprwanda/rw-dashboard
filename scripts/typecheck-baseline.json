@@ -1,22 +1,16 @@
 {
-  "errors": 187,
-  "any": 124,
+  "errors": 160,
+  "any": 58,
   "files": {
     "src/components/header/HeaderApps.tsx": 1,
     "src/components/header/UserProfile.tsx": 3,
     "src/components/header/header.tsx": 4,
     "src/hooks/useUpdateDashFavorite.ts": 1,
-    "src/lib/mapHelpers.ts": 1,
-    "src/pages/Map/components/LegendControls.tsx": 4,
-    "src/pages/Map/components/MapBody.tsx": 3,
-    "src/pages/Map/components/MapMetaDataConfigModal.tsx": 2,
-    "src/pages/Map/components/SaveMapModal.tsx": 4,
-    "src/pages/Map/components/SelectOtherMapLayer.tsx": 2,
-    "src/pages/dashboards/CreateDashboardPage.tsx": 23,
+    "src/pages/dashboards/CreateDashboardPage.tsx": 22,
     "src/pages/dashboards/components/BoxView.tsx": 1,
     "src/pages/dashboards/components/MyDashboardsPageView.tsx": 2,
     "src/pages/dashboards/components/OtherDashboardsPageView.tsx": 1,
-    "src/pages/dashboards/components/PresentDashboard.tsx": 2,
+    "src/pages/dashboards/components/PresentDashboard.tsx": 1,
     "src/pages/home/components/MyDashboardsTable.tsx": 5,
     "src/pages/home/components/SharedUsersAndGroups.tsx": 8,
     "src/pages/home/components/SharingDashboardModal.tsx": 9,
@@ -26,10 +20,8 @@
     "src/pages/report/components/BulletinService.tsx": 3,
     "src/pages/report/components/ReportTemplate.tsx": 75,
     "src/services/fetchDashboard.ts": 7,
-    "src/services/fetchLegends.ts": 4,
     "src/services/fetchSystemInfo.ts": 1,
     "src/services/fetchVisuals.ts": 4,
-    "src/services/fetchusers.ts": 1,
-    "src/services/maps.ts": 5
+    "src/services/fetchusers.ts": 1
   }
 }

@@ -1,0 +1,12 @@
+import i18n from '@dhis2/d2-i18n'
+import { z } from 'zod'
+
+export const saveMapSchema = z.object({
+    mapName: z
+        .string()
+        .trim()
+        .min(1, { message: i18n.t('Name is required') }),
+    description: z.string(),
+})
+
+export type SaveMapFormValues = z.infer<typeof saveMapSchema>

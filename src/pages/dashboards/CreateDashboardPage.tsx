@@ -37,8 +37,7 @@ import { useNotify } from '@/shared/hooks'
 import { Loader, Loader2, Maximize2, Minimize2 } from 'lucide-react'
 import { FileText } from 'lucide-react'
 import { usePPTXExport } from '../../hooks/useExportDashboard'
-import { useMaps } from '@/features/maps'
-import SingleMapItem from '../Map/components/SingleMapItem'
+import { SavedMapView, useMaps } from '@/features/maps'
 import { env } from '@/shared/constants/env'
 
 const CreateDashboardPage: React.FC = () => {
@@ -600,12 +599,12 @@ const MemoizedGridLayout = React.memo(
                             />
                         ) : (
                             <div className="h-full w-full">
-                                <SingleMapItem
+                                <SavedMapView
                                     geoFeaturesQuery={widget.geoFeaturesQuery}
-                                    mapAnalyticsQueryOneQuery={widget.mapAnalyticsQueryOneQuery}
-                                    mapAnalyticsQueryTwo={widget.mapAnalyticsQueryTwo}
-                                    basemapType={widget.BasemapType}
-                                    mapSettings={widget.mapSettings}
+                                    analyticsQuery={widget.mapAnalyticsQueryOneQuery}
+                                    basemap={widget.BasemapType}
+                                    settings={widget.mapSettings}
+                                    dataSourceId={widget.dataSourceId}
                                 />
                             </div>
                         )}

@@ -16,7 +16,7 @@ import {
     SelectValue,
 } from '../../../components/ui/select'
 import DashboardVisualItem from './DashboardVisualItem'
-import SingleMapItem from '../../Map/components/SingleMapItem'
+import { SavedMapView } from '@/features/maps'
 import song1 from '../../../songs/song1.mp3'
 import song2 from '../../../songs/song2.mp3'
 import song3 from '../../../songs/song3.mp3'
@@ -490,14 +490,14 @@ const PresentDashboard: React.FC<PresentDashboardProps> = ({
                                                 />
                                             ) : (
                                                 <div className=" h-[calc(100vh-50px)] ">
-                                                    <SingleMapItem
+                                                    <SavedMapView
                                                         geoFeaturesQuery={item.geoFeaturesQuery}
-                                                        mapAnalyticsQueryOneQuery={
+                                                        analyticsQuery={
                                                             item.mapAnalyticsQueryOneQuery
                                                         }
-                                                        mapAnalyticsQueryTwo={
-                                                            item.mapAnalyticsQueryTwo
-                                                        }
+                                                        basemap={item.BasemapType}
+                                                        settings={item.mapSettings}
+                                                        dataSourceId={item.dataSourceId}
                                                     />
                                                 </div>
                                             )}

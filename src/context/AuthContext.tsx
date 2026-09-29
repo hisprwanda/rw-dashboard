@@ -23,16 +23,10 @@ import type { Me } from '@/shared/types/dhis2.types'
 import { useLegacyBuilderState } from './useLegacyBuilderState'
 import { useLegacyOrgUnitSelection } from './useLegacyOrgUnitSelection'
 import { analyticsPayloadDeterminerTypes } from '../types/analyticsTypes'
-import { BasemapType } from '../types/maps'
-import { legendTypeTypes, mapSettingsTypes } from '../types/mapFormTypes'
 
 export type FetchAnalyticsDataInput = {
     dimension: string[]
     instance: InstanceConnection
-    isAnalyticsApiUsedInMap?: boolean
-    selectedPeriodsOnMap?: string[]
-    /** Maps: the `ou:` dimension (see buildOrgUnitDimension). */
-    selectedOrgUnitsWhenUsingMap?: string
     analyticsPayloadDeterminer?: analyticsPayloadDeterminerTypes
 
     selectedOrganizationUnits?: string[]
@@ -60,24 +54,8 @@ interface AuthContextProps extends LegacyOrgUnitSelection, LegacyBuilderState {
     fetchAnalyticsDataError: any
     analyticsQuery: any
     setAnalyticsQuery: any
-    mapAnalyticsQueryTwo: any
-    setMapAnalyticsQueryTwo: any
-    geoFeaturesQuery: any
-    setGeoFeaturesQuery: any
-    geoFeaturesData: any
-    setGeoFeaturesData: any
-    analyticsMapData: any
-    setAnalyticsMapData: any
-    metaMapData: any
-    setMetaMapData: any
     metaDataLabels: any
     setMetaDataLabels: any
-    currentBasemap: BasemapType
-    setCurrentBasemap: any
-    legendType: legendTypeTypes
-    setLegendType: any
-    mapSettings: mapSettingsTypes
-    setMapSettings: any
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined)
@@ -91,18 +69,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const orgUnitSelection = useLegacyOrgUnitSelection()
     const builder = useLegacyBuilderState()
     const queryClient = useQueryClient()
-    const [geoFeaturesData, setGeoFeaturesData] = useState<any>([])
-    const [analyticsMapData, setAnalyticsMapData] = useState<any>([])
-    const [metaMapData, setMetaMapData] = useState<any>([])
     const [metaDataLabels, setMetaDataLabels] = useState<any>({})
-    const [currentBasemap, setCurrentBasemap] = useState<BasemapType>('osm-light')
-    const [legendType, setLegendType] = useState<legendTypeTypes>('auto')
-    const [mapSettings, setMapSettings] = useState<mapSettingsTypes>({
-        appliedLabels: {},
-        selectedLabels: [],
-        legend: {},
-        legendType: 'auto',
-    })
 
     // metadata states
     //
@@ -110,8 +77,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [analyticsData, setAnalyticsData] = useState<any>(null)
     const [fetchAnalyticsDataError, setFetchAnalyticsDataError] = useState<any>(false)
     const [analyticsQuery, setAnalyticsQuery] = useState<any>(null)
-    const [mapAnalyticsQueryTwo, setMapAnalyticsQueryTwo] = useState<any>(null)
-    const [geoFeaturesQuery, setGeoFeaturesQuery] = useState<any>(null)
 
     // Server data for the org-unit pickers follows the selected data source.
     const { data: currentUserInfoAndOrgUnitsData } = useOrgUnitMetadata(
@@ -125,15 +90,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (meError || !me) return <ErrorState error={meError} onRetry={() => void refetchMe()} />
 
     /**
-     * Legacy imperative entry point (kept until the builders move to features in Phases 6–7).
+     * Legacy imperative entry point for the report page (Phase 8); maps and the visualizer
+     * use `useAnalyticsRun` from @/features/analytics.
      * Request building lives in @/features/analytics; this only stores results in context.
      */
     const fetchAnalyticsData = async ({
         dimension,
         instance,
-        isAnalyticsApiUsedInMap,
-        selectedPeriodsOnMap = [],
-        selectedOrgUnitsWhenUsingMap = '',
         analyticsPayloadDeterminer: layout,
         selectedOrganizationUnits = [],
         selectedOrgUnitGroups = [],
@@ -151,12 +114,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 levelIds: selectedOrganizationUnitsLevels,
                 groupIds: selectedOrgUnitGroups,
             },
-            map: isAnalyticsApiUsedInMap
-                ? {
-                      periodFilter: selectedPeriodsOnMap.join(';'),
-                      orgUnitDimension: selectedOrgUnitsWhenUsingMap,
-                  }
-                : undefined,
         })
         if (!request) {
             console.warn('Analytics request skipped: select data, period and org unit first.')
@@ -178,13 +135,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 run(request.metadataParams),
             ])
             setAnalyticsQuery(request.storedQuery)
-
-            if (isAnalyticsApiUsedInMap) {
-                setMapAnalyticsQueryTwo(request.storedMapQuery)
-                setMetaMapData(metadata)
-                setAnalyticsMapData(data)
-                return
-            }
 
             setAnalyticsData(data)
             setMetaDataLabels(metadata.metaData)
@@ -211,24 +161,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return (
         <AuthContext.Provider
             value={{
-                mapSettings,
-                setMapSettings,
-                legendType,
-                setLegendType,
-                currentBasemap,
-                setCurrentBasemap,
                 metaDataLabels,
                 setMetaDataLabels,
-                geoFeaturesQuery,
-                mapAnalyticsQueryTwo,
-                analyticsMapData,
-                setGeoFeaturesQuery,
-                setMapAnalyticsQueryTwo,
-                geoFeaturesData,
-                metaMapData,
-                setAnalyticsMapData,
-                setGeoFeaturesData,
-                setMetaMapData,
                 fetchSingleOrgUnitName,
                 setAnalyticsData,
                 setAnalyticsQuery,
