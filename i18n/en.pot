@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-09-29T19:43:20.501Z\n"
-"PO-Revision-Date: 2026-09-29T19:43:20.502Z\n"
+"POT-Creation-Date: 2026-09-29T20:10:30.984Z\n"
+"PO-Revision-Date: 2026-09-29T20:10:30.985Z\n"
 
 msgid "Dashboards"
 msgstr "Dashboards"
@@ -31,6 +31,141 @@ msgstr "Search in table..."
 
 msgid "No data found"
 msgstr "No data found"
+
+msgid "Open {{name}}"
+msgstr "Open {{name}}"
+
+msgid "Updated {{date}}"
+msgstr "Updated {{date}}"
+
+msgid "Open"
+msgstr "Open"
+
+msgid "Present"
+msgstr "Present"
+
+msgid "You have not created any dashboard yet."
+msgstr "You have not created any dashboard yet."
+
+msgid "No dashboard is shared with you."
+msgstr "No dashboard is shared with you."
+
+msgid "New dashboard"
+msgstr "New dashboard"
+
+msgid "My dashboards"
+msgstr "My dashboards"
+
+msgid "Shared with me"
+msgstr "Shared with me"
+
+msgid "Cards"
+msgstr "Cards"
+
+msgid "List"
+msgstr "List"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Created by"
+msgstr "Created by"
+
+msgid "Created"
+msgstr "Created"
+
+msgid "Last updated"
+msgstr "Last updated"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Share"
+msgstr "Share"
+
+msgid "Delete"
+msgstr "Delete"
+
+msgid "Delete dashboard"
+msgstr "Delete dashboard"
+
+msgid "Delete \"{{name}}\"? This cannot be undone."
+msgstr "Delete \"{{name}}\"? This cannot be undone."
+
+msgid "Remove from favorites"
+msgstr "Remove from favorites"
+
+msgid "Add to favorites"
+msgstr "Add to favorites"
+
+msgid "Pinned dashboards"
+msgstr "Pinned dashboards"
+
+msgid "Official dashboards shared with you will appear here."
+msgstr "Official dashboards shared with you will appear here."
+
+msgid "No access"
+msgstr "No access"
+
+msgid "View only"
+msgstr "View only"
+
+msgid "View and edit"
+msgstr "View and edit"
+
+msgid "Sharing settings saved"
+msgstr "Sharing settings saved"
+
+msgid "Give access to a user or group"
+msgstr "Give access to a user or group"
+
+msgid "User or group"
+msgstr "User or group"
+
+msgid "Search users or groups"
+msgstr "Search users or groups"
+
+msgid "User"
+msgstr "User"
+
+msgid "Group"
+msgstr "Group"
+
+msgid "No match"
+msgstr "No match"
+
+msgid "Access"
+msgstr "Access"
+
+msgid "Give access"
+msgstr "Give access"
+
+msgid "Already has access; change it below."
+msgstr "Already has access; change it below."
+
+msgid "Users and groups with access"
+msgstr "Users and groups with access"
+
+msgid "All users"
+msgstr "All users"
+
+msgid "Anyone logged in"
+msgstr "Anyone logged in"
+
+msgid "Remove access"
+msgstr "Remove access"
+
+msgid "Close"
+msgstr "Close"
+
+msgid "Dashboard deleted"
+msgstr "Dashboard deleted"
+
+msgid "Could not delete the dashboard. Please try again."
+msgstr "Could not delete the dashboard. Please try again."
+
+msgid "Could not update the dashboard. Please try again."
+msgstr "Could not update the dashboard. Please try again."
 
 msgid "Data"
 msgstr "Data"
@@ -98,9 +233,6 @@ msgstr "Description"
 msgid "No description provided"
 msgstr "No description provided"
 
-msgid "Close"
-msgstr "Close"
-
 msgid "Edit data source"
 msgstr "Edit data source"
 
@@ -125,17 +257,11 @@ msgstr "Save"
 msgid "Data source"
 msgstr "Data source"
 
-msgid "Actions"
-msgstr "Actions"
-
 msgid "View"
 msgstr "View"
 
 msgid "Edit"
 msgstr "Edit"
-
-msgid "Delete"
-msgstr "Delete"
 
 msgid "Data sources"
 msgstr "Data sources"
@@ -220,21 +346,6 @@ msgstr "Collapse legend"
 msgid "Expand legend"
 msgstr "Expand legend"
 
-msgid "Name"
-msgstr "Name"
-
-msgid "Created by"
-msgstr "Created by"
-
-msgid "Created"
-msgstr "Created"
-
-msgid "Last updated"
-msgstr "Last updated"
-
-msgid "Open"
-msgstr "Open"
-
 msgid "Maps"
 msgstr "Maps"
 
@@ -243,9 +354,6 @@ msgstr "New map"
 
 msgid "My maps"
 msgstr "My maps"
-
-msgid "Shared with me"
-msgstr "Shared with me"
 
 msgid "You have not saved any map yet."
 msgstr "You have not saved any map yet."
@@ -578,9 +686,6 @@ msgstr "Export to PPT"
 msgid "FullScreen"
 msgstr "FullScreen"
 
-msgid "Present"
-msgstr "Present"
-
 msgid "Background Color"
 msgstr "Background Color"
 
@@ -589,18 +694,6 @@ msgstr "Select a visual"
 
 msgid "Select a Map"
 msgstr "Select a Map"
-
-msgid "My Dashboards"
-msgstr "My Dashboards"
-
-msgid "Other Dashboards"
-msgstr "Other Dashboards"
-
-msgid "New Dashboard"
-msgstr "New Dashboard"
-
-msgid "Modified"
-msgstr "Modified"
 
 msgid "Data source not found"
 msgstr "Data source not found"
@@ -647,29 +740,11 @@ msgstr "Play"
 msgid "Pause"
 msgstr "Pause"
 
-msgid "Pinned Dashboards"
-msgstr "Pinned Dashboards"
-
-msgid "Dashboard deleted"
-msgstr "Dashboard deleted"
-
-msgid "Created At"
-msgstr "Created At"
-
-msgid "Updated At"
-msgstr "Updated At"
-
-msgid "Created By"
-msgstr "Created By"
-
 msgid "ERROR"
 msgstr "ERROR"
 
 msgid "Loading..."
 msgstr "Loading..."
-
-msgid "Sharing settings saved"
-msgstr "Sharing settings saved"
 
 msgid "Confirm"
 msgstr "Confirm"

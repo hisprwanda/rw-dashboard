@@ -1,5 +1,5 @@
 import i18n from '@dhis2/d2-i18n'
-import React, { useEffect, useState, useRef, useCallback } from 'react'
+import React, { useEffect, useMemo, useState, useRef, useCallback } from 'react'
 import Button from '../../components/Button'
 import {
     Select,
@@ -27,7 +27,8 @@ import {
     dashboardSettings,
     ExtendedLayout,
 } from '../../types/dashboard'
-import { useFetchSingleDashboardData } from '../../services/fetchDashboard'
+import { dashboardKeys, useDashboard } from '@/features/dashboards'
+import { useQueryClient } from '@tanstack/react-query'
 import { Loading } from '../../components'
 import html2canvas from 'html2canvas'
 import PresentDashboard from './components/PresentDashboard'
@@ -47,12 +48,15 @@ const CreateDashboardPage: React.FC = () => {
     const navigate = useNavigate()
     const { data: allSavedVisuals, error, isError, loading } = useFetchVisualsData()
     const { data: allSavedMaps } = useMaps()
-    const {
-        data: singleSavedDashboardData,
-        error: singleSavedDashboardDataError,
-        isError: isErrorFetchSingleSavedDashboardData,
-        loading: isLoadingFetchSingleSavedDashboardData,
-    } = useFetchSingleDashboardData(dashboardId)
+    const { data: savedDashboard, isLoading: isLoadingFetchSingleSavedDashboardData } =
+        useDashboard(dashboardId)
+    // Legacy shape `{ dataStore: dashboard }` still read below (rewritten in Phase 8b).
+    // Memoized: the form-reset effect below depends on it.
+    const singleSavedDashboardData = useMemo(
+        () => (savedDashboard ? { dataStore: savedDashboard } : undefined),
+        [savedDashboard]
+    )
+    const queryClient = useQueryClient()
     const [isPresentMode, setIsPresentMode] = useState(false)
 
     const [tempDashboardSettings, setTempDashboardSettings] = useState<dashboardSettings>({
@@ -352,6 +356,7 @@ const CreateDashboardPage: React.FC = () => {
             })
 
             notify.success(i18n.t('Dashboard saved'))
+            await queryClient.invalidateQueries({ queryKey: dashboardKeys.all })
 
             setIsSuccess(true)
 

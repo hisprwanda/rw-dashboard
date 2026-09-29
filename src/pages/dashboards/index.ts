@@ -1,3 +1,3 @@
-import CreateDashboardPage from "./CreateDashboardPage";
+import CreateDashboardPage from './CreateDashboardPage'
 
-export {CreateDashboardPage}
+export { CreateDashboardPage }
