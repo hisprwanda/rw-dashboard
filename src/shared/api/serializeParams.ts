@@ -10,9 +10,11 @@ export const serializeParams = (params: QueryParams = {}): string =>
         .flatMap(([key, value]) => {
             if (value === null || value === undefined) return []
             if (key === 'filter' && Array.isArray(value)) {
-                return value.map((item) => [key, String(item)])
+                return value.map((item): [string, string] => [key, String(item)])
             }
-            return [[key, Array.isArray(value) ? value.join(',') : String(value)]]
+            return [
+                [key, Array.isArray(value) ? value.join(',') : String(value)] as [string, string],
+            ]
         })
         .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
         .join('&')

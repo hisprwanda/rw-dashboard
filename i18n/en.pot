@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-09-29T21:11:14.342Z\n"
-"PO-Revision-Date: 2026-09-29T21:11:14.343Z\n"
+"POT-Creation-Date: 2026-09-29T21:24:07.522Z\n"
+"PO-Revision-Date: 2026-09-29T21:24:07.522Z\n"
 
 msgid "No data available"
 msgstr "No data available"
@@ -1156,6 +1156,9 @@ msgstr "Rows"
 
 msgid "Filter"
 msgstr "Filter"
+
+msgid "Move to {{area}}"
+msgstr "Move to {{area}}"
 
 msgid "Another visualization already uses this name."
 msgstr "Another visualization already uses this name."

@@ -18,7 +18,7 @@ const POINT_HALF_SIDE = 0.005
 const depth = (value: unknown): number =>
     Array.isArray(value) ? 1 + (value.length ? depth(value[0]) : 0) : 0
 
-const square = ([lon, lat]: Position): Polygon['coordinates'] => {
+const square = ([lon = 0, lat = 0]: Position): Polygon['coordinates'] => {
     const d = POINT_HALF_SIDE
     return [
         [

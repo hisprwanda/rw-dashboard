@@ -26,6 +26,7 @@ export const useDataItems = (
         initialPageParam: 1,
         getNextPageParam: (last) => (last.page < last.pageCount ? last.page + 1 : undefined),
     })
-    const items = useMemo(() => query.data?.pages.flatMap((page) => page.items) ?? [], [query.data])
-    return { ...query, items }
+    const { data, error, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } = query
+    const items = useMemo(() => data?.pages.flatMap((page) => page.items) ?? [], [data])
+    return { items, error, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage }
 }

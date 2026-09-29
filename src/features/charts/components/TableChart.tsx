@@ -7,7 +7,7 @@ import { useChartData } from '../hooks/useChartData'
 
 /** The chart rows as a searchable, sortable table (one column per series). */
 export const TableChart = (props: ChartProps) => {
-    const { rows, config, error } = useChartData(props)
+    const { rows, error } = useChartData(props)
 
     const columns = useMemo<DataTableColumn<SeriesRow>[]>(() => {
         const first = rows[0]

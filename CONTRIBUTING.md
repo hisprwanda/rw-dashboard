@@ -90,6 +90,10 @@ layout) lives in a Redux Toolkit slice inside the owning feature
 `useAppDispatch` from `@/app/store`. Local component state stays in `useState`.
 `@/app/store` exports hooks and types only; the store instance (`@/app/store/store`) is
 imported by `AppProviders` alone, otherwise feature barrels and the store import each other.
+`store.ts` imports the slice files directly (the only allowed deep import): a feature barrel
+also re-exports components, which would pull recharts/leaflet into the main bundle. For the
+same reason a slice needing another feature's defaults imports its light
+`@/features/<name>/constants` entry, never the barrel.
 Server data is **never** copied into Redux.
 
 **No React Context API** for app state. Do not call `createContext`/`useContext`
@@ -138,11 +142,9 @@ Copy `.env.example` to `.env`. Read them only through `env` from
 ## TypeScript
 
 - **No `any`, anywhere.** Not as an annotation, not `as any`, not `any[]`. Use a real
-  type, a generic, or `unknown` + narrowing. It is an ESLint error in `app/`,
-  `features/`, `shared/`, and the `yarn typecheck` ratchet fails the commit if the total
-  `any` count in legacy code goes up.
-- **All existing type errors get fixed.** Every phase lowers the `tsc` error count and
-  the `any` count; files you create or migrate must have 0 of both. Target: 0 / 0.
+  type, a generic, or `unknown` + narrowing. It is an ESLint error in all of `src/`.
+- **Zero type errors.** `tsc` runs in strict mode with `noUncheckedIndexedAccess`: an
+  indexed read (`list[0]`, `record[key]`) may be `undefined`, so handle it.
 - No `@ts-ignore` / `@ts-nocheck`. If truly unavoidable, `@ts-expect-error` with a reason.
 - Type DHIS2 payloads in `shared/types/dhis2.types.ts` or the feature's `types/`.
 
@@ -160,7 +162,7 @@ rm -rf node_modules/.vite   # drop Vite's cached pre-bundled deps
 ## Quality gates
 
 ```
-yarn typecheck   # ratchet: tsc errors and `any` count may never go up; app/features/shared must have 0
+yarn typecheck   # tsc --noEmit: must report 0 errors
 yarn lint
 yarn test        # jest via d2-app-scripts; put *.test.ts next to the code
 yarn format
@@ -168,5 +170,4 @@ yarn build
 ```
 
 A Husky pre-commit hook runs lint-staged (prettier + eslint on staged files) and
-the typecheck ratchet. CI runs typecheck, lint and build on every PR.
-When you fix legacy type errors or remove `any`, run `yarn typecheck:update-baseline` to lock in progress.
+`yarn typecheck`. CI runs typecheck, lint, tests and build on every PR.

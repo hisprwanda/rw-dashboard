@@ -63,7 +63,5 @@ export const chartRegistry: readonly ChartDefinition[] = [
     { type: 'Scatter', icon: <IconVisualizationScatter24 />, component: cartesian('Scatter') },
 ]
 
-export const DEFAULT_CHART_TYPE: ChartType = 'Column'
-
 export const findChart = (type: string | undefined) =>
     chartRegistry.find((chart) => chart.type === type)

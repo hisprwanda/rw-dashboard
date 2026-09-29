@@ -30,6 +30,9 @@ export const useAnalyticsRun = () => {
                 [request.dataParams, request.metadataParams].map((params) =>
                     queryClient.invalidateQueries({
                         queryKey: analyticsKeys.request(instance, params),
+                        // Keys hold params objects: without `exact`, the data params (a
+                        // subset of the metadata params) would also match the metadata query.
+                        exact: true,
                     })
                 )
             )

@@ -1,12 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import {
-    DEFAULT_CHART_TYPE,
-    DEFAULT_COLOR_PALETTE,
-    type ChartType,
-    type ColorPalette,
-    type VisualSettings,
-    type VisualTitles,
-} from '@/features/charts'
+import type { ChartType, ColorPalette, VisualSettings, VisualTitles } from '@/features/charts'
+// The light entry: importing the charts barrel would put recharts in the main bundle.
+import { DEFAULT_CHART_TYPE, DEFAULT_COLOR_PALETTE } from '@/features/charts/constants'
 
 /** Appearance of the visualization being built. */
 export interface VisualizerState {

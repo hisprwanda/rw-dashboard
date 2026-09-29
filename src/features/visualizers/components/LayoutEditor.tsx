@@ -1,6 +1,13 @@
 import i18n from '@dhis2/d2-i18n'
-import { IconClock16, IconDimensionData16, IconDimensionOrgUnit16 } from '@dhis2/ui'
-import { useState, type ReactNode } from 'react'
+import {
+    FlyoutMenu,
+    IconClock16,
+    IconDimensionData16,
+    IconDimensionOrgUnit16,
+    MenuItem,
+    Popover,
+} from '@dhis2/ui'
+import { useRef, useState, type ReactNode } from 'react'
 import { useAppDispatch, useAppSelector } from '@/app/store'
 import {
     moveDimension,
@@ -30,6 +37,70 @@ const dimensionLabel = (name: LayoutDimensionName): string => {
     return labels[name] ?? name
 }
 
+const AREAS: LayoutArea[] = ['Columns', 'Rows', 'Filter']
+
+interface ChipTarget {
+    label: string
+    onSelect: () => void
+}
+
+/** A draggable dimension; its menu moves it with the keyboard too. */
+const DimensionChip = ({
+    label,
+    icon,
+    targets,
+    onDragStart,
+    onDragEnd,
+}: {
+    label: string
+    icon: ReactNode
+    targets: ChipTarget[]
+    onDragStart: () => void
+    onDragEnd: () => void
+}) => {
+    const ref = useRef<HTMLButtonElement>(null)
+    const [open, setOpen] = useState(false)
+    return (
+        <>
+            <button
+                ref={ref}
+                type="button"
+                draggable
+                onDragStart={onDragStart}
+                onDragEnd={onDragEnd}
+                onClick={() => setOpen((value) => !value)}
+                aria-haspopup="menu"
+                aria-expanded={open}
+                className="inline-flex cursor-move items-center gap-1 rounded border border-teal-200 bg-teal-50 px-2 text-sm text-teal-800"
+            >
+                {icon}
+                {label}
+            </button>
+            {open && (
+                <Popover
+                    reference={ref}
+                    placement="bottom-start"
+                    arrow={false}
+                    onClickOutside={() => setOpen(false)}
+                >
+                    <FlyoutMenu dense>
+                        {targets.map((target) => (
+                            <MenuItem
+                                key={target.label}
+                                label={i18n.t('Move to {{area}}', { area: target.label })}
+                                onClick={() => {
+                                    setOpen(false)
+                                    target.onSelect()
+                                }}
+                            />
+                        ))}
+                    </FlyoutMenu>
+                </Popover>
+            )}
+        </>
+    )
+}
+
 interface Dragged {
     item: LayoutDimensionName
     from: LayoutArea
@@ -51,26 +122,32 @@ export const LayoutEditor = () => {
         setDragged(null)
     }
 
+    const move = (item: LayoutDimensionName, from: LayoutArea, to: LayoutArea) =>
+        dispatch(selectionActions.setLayout(moveDimension(layout, item, from, to)))
+
     const area = (name: LayoutArea) => (
-        <div
-            className="grid grid-cols-[72px_1fr] items-center gap-2"
-            onDragOver={(event) => event.preventDefault()}
-            onDrop={() => drop(name)}
-            data-test={`layout-${name.toLowerCase()}`}
-        >
+        <div className="grid grid-cols-[72px_1fr] items-center gap-2">
             <span className="text-sm font-medium text-gray-600">{labels[name]}</span>
-            <div className="flex min-h-[30px] flex-wrap gap-1 rounded border border-gray-300 bg-white p-1">
+            {/* Drop target for mouse users; keyboard users move chips with their menu. */}
+            {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+            <div
+                className="flex min-h-[30px] flex-wrap gap-1 rounded border border-gray-300 bg-white p-1"
+                onDragOver={(event) => event.preventDefault()}
+                onDrop={() => drop(name)}
+                data-test={`layout-${name.toLowerCase()}`}
+            >
                 {layout[name].map((item) => (
-                    <span
+                    <DimensionChip
                         key={item}
-                        draggable
+                        label={dimensionLabel(item)}
+                        icon={ICONS[item]}
+                        targets={AREAS.filter((to) => to !== name).map((to) => ({
+                            label: labels[to],
+                            onSelect: () => move(item, name, to),
+                        }))}
                         onDragStart={() => setDragged({ item, from: name })}
                         onDragEnd={() => setDragged(null)}
-                        className="inline-flex cursor-move items-center gap-1 rounded border border-teal-200 bg-teal-50 px-2 text-sm text-teal-800"
-                    >
-                        {ICONS[item]}
-                        {dimensionLabel(item)}
-                    </span>
+                    />
                 ))}
             </div>
         </div>

@@ -10,6 +10,9 @@ const defaults = require(
 )
 
 module.exports = {
+    setupFiles: ['<rootDir>/jest.setup.js'],
+    // react-leaflet only ships ES modules: let Babel transform it (as the default does for moment).
+    transformIgnorePatterns: ['/node_modules/(?!(moment/dist/|react-leaflet/|@react-leaflet/))'],
     moduleNameMapper: {
         ...defaults.moduleNameMapper,
         '^@/(.*)$': '<rootDir>/src/$1',

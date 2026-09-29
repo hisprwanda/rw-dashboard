@@ -75,7 +75,16 @@ export default tseslint.config(
         // The whole app is strict. Only the shadcn primitives (removed in Phase 9) are exempt.
         files: ['src/**/*.{ts,tsx}'],
         plugins: { i18next },
+        languageOptions: {
+            parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname },
+        },
         rules: {
+            // Type-aware: a forgotten promise hides failures (and unhandled rejections).
+            '@typescript-eslint/no-floating-promises': 'error',
+            '@typescript-eslint/no-misused-promises': [
+                'error',
+                { checksVoidReturn: { attributes: false } },
+            ],
             // Text rendered in JSX must go through i18n.t() (tests are exempt below).
             'i18next/no-literal-string': ['error', { mode: 'jsx-text-only' }],
             '@typescript-eslint/no-explicit-any': 'error',
@@ -100,9 +109,9 @@ export default tseslint.config(
                 {
                     patterns: [
                         {
-                            group: ['@/features/*/*'],
+                            group: ['@/features/*/*', '!@/features/*/constants'],
                             message:
-                                'Import a feature through its public barrel: @/features/<name>',
+                                'Import a feature through its public barrel: @/features/<name> (or its light @/features/<name>/constants).',
                         },
                         {
                             group: ['../../*'],
@@ -112,6 +121,11 @@ export default tseslint.config(
                 },
             ],
         },
+    },
+    {
+        // The store wires the slices directly (see the comment in store.ts).
+        files: ['src/app/store/store.ts'],
+        rules: { 'no-restricted-imports': 'off' },
     },
     {
         files: ['src/**/*.test.{ts,tsx}'],

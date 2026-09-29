@@ -95,7 +95,7 @@ const TreeTooltip = ({ active, payload }: TreeTooltipProps) => {
 
 export const TreeMapChart = (props: ChartProps) => {
     const { visualSettings } = props
-    const { rows, config, error } = useChartData(props)
+    const { rows, error } = useChartData(props)
     const nodes = useMemo(() => toTreeNodes(rows), [rows])
     return (
         <ChartFrame {...props} error={error} isEmpty={nodes.length === 0}>

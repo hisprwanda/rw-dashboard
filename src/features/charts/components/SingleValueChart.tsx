@@ -7,7 +7,7 @@ import { useChartData } from '../hooks/useChartData'
 /** The total of the first series as one big number. */
 export const SingleValueChart = (props: ChartProps) => {
     const { visualSettings } = props
-    const { rows, config, error } = useChartData(props)
+    const { rows, error } = useChartData(props)
     const first = useMemo(() => toSlices(rows)[0], [rows])
     return (
         <ChartFrame {...props} error={error} isEmpty={!first} hideHeading>
