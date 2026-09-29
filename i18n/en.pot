@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-09-25T12:30:23.902Z\n"
-"PO-Revision-Date: 2026-09-25T12:30:23.902Z\n"
+"POT-Creation-Date: 2026-09-29T13:04:39.361Z\n"
+"PO-Revision-Date: 2026-09-29T13:04:39.361Z\n"
 
 msgid "Dashboards"
 msgstr "Dashboards"
@@ -23,6 +23,232 @@ msgstr "Settings"
 msgid "report"
 msgstr "report"
 
+msgid "No data available"
+msgstr "No data available"
+
+msgid "Search in table..."
+msgstr "Search in table..."
+
+msgid "No data found"
+msgstr "No data found"
+
+msgid "Data"
+msgstr "Data"
+
+msgid "Hide"
+msgstr "Hide"
+
+msgid "Update"
+msgstr "Update"
+
+msgid "Data type"
+msgstr "Data type"
+
+msgid "No match found"
+msgstr "No match found"
+
+msgid "All"
+msgstr "All"
+
+msgid "Disaggregation"
+msgstr "Disaggregation"
+
+msgid "Totals only"
+msgstr "Totals only"
+
+msgid "Details only"
+msgstr "Details only"
+
+msgid "Metric"
+msgstr "Metric"
+
+msgid "Could not load data items"
+msgstr "Could not load data items"
+
+msgid "Search data items"
+msgstr "Search data items"
+
+msgid "Available items"
+msgstr "Available items"
+
+msgid "Selected items"
+msgstr "Selected items"
+
+msgid "No items selected"
+msgstr "No items selected"
+
+msgid "Loading…"
+msgstr "Loading…"
+
+msgid "No items found"
+msgstr "No items found"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "Current instance"
+msgstr "Current instance"
+
+msgid "URL"
+msgstr "URL"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "No description provided"
+msgstr "No description provided"
+
+msgid "Close"
+msgstr "Close"
+
+msgid "Edit data source"
+msgstr "Edit data source"
+
+msgid "New data source"
+msgstr "New data source"
+
+msgid "Instance name"
+msgstr "Instance name"
+
+msgid "Personal access token"
+msgstr "Personal access token"
+
+msgid "Created in the remote instance under Profile > Personal access tokens."
+msgstr "Created in the remote instance under Profile > Personal access tokens."
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Save"
+msgstr "Save"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "View"
+msgstr "View"
+
+msgid "Edit"
+msgstr "Edit"
+
+msgid "Delete"
+msgstr "Delete"
+
+msgid "Data sources"
+msgstr "Data sources"
+
+msgid "External DHIS2 instances that visualizations and maps can read data from."
+msgstr "External DHIS2 instances that visualizations and maps can read data from."
+
+msgid "No data sources yet. Create one to read data from another instance."
+msgstr "No data sources yet. Create one to read data from another instance."
+
+msgid "Delete data source"
+msgstr "Delete data source"
+
+msgid ""
+"Delete \"{{name}}\"? Visualizations and maps using it will no longer load "
+"data."
+msgstr ""
+"Delete \"{{name}}\"? Visualizations and maps using it will no longer load "
+"data."
+
+msgid "Data source deleted"
+msgstr "Data source deleted"
+
+msgid "Could not delete the data source. Please try again."
+msgstr "Could not delete the data source. Please try again."
+
+msgid "Data source saved"
+msgstr "Data source saved"
+
+msgid "Could not save the data source. Please try again."
+msgstr "Could not save the data source. Please try again."
+
+msgid "Instance name is required"
+msgstr "Instance name is required"
+
+msgid "Must be a valid URL"
+msgstr "Must be a valid URL"
+
+msgid "Token must be at least 20 characters long"
+msgstr "Token must be at least 20 characters long"
+
+msgid "Token cannot exceed 256 characters"
+msgstr "Token cannot exceed 256 characters"
+
+msgid "Token can only contain letters, numbers, dashes or underscores"
+msgstr "Token can only contain letters, numbers, dashes or underscores"
+
+msgid "Another visualization already uses this name."
+msgstr "Another visualization already uses this name."
+
+msgid "Update visualization"
+msgstr "Update visualization"
+
+msgid "Save visualization"
+msgstr "Save visualization"
+
+msgid "Nothing to save yet"
+msgstr "Nothing to save yet"
+
+msgid "Select data, period and organisation unit, then click Update."
+msgstr "Select data, period and organisation unit, then click Update."
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Created by"
+msgstr "Created by"
+
+msgid "Created"
+msgstr "Created"
+
+msgid "Last updated"
+msgstr "Last updated"
+
+msgid "Open"
+msgstr "Open"
+
+msgid "Visualizations"
+msgstr "Visualizations"
+
+msgid "New visualization"
+msgstr "New visualization"
+
+msgid "My visualizations"
+msgstr "My visualizations"
+
+msgid "Shared with me"
+msgstr "Shared with me"
+
+msgid "You have not saved any visualization yet."
+msgstr "You have not saved any visualization yet."
+
+msgid "No visualization is shared with you."
+msgstr "No visualization is shared with you."
+
+msgid "Delete visualization"
+msgstr "Delete visualization"
+
+msgid "Delete \"{{name}}\"? Dashboards that show it will lose this item."
+msgstr "Delete \"{{name}}\"? Dashboards that show it will lose this item."
+
+msgid "Visualization deleted"
+msgstr "Visualization deleted"
+
+msgid "Could not delete the visualization. Please try again."
+msgstr "Could not delete the visualization. Please try again."
+
+msgid "Visualization saved"
+msgstr "Visualization saved"
+
+msgid "Could not save the visualization. Please try again."
+msgstr "Could not save the visualization. Please try again."
+
+msgid "Name is required"
+msgstr "Name is required"
+
 msgid "PowerPoint file downloaded"
 msgstr "PowerPoint file downloaded"
 
@@ -38,12 +264,6 @@ msgstr "Other Charts"
 msgid "New Map"
 msgstr "New Map"
 
-msgid "Name"
-msgstr "Name"
-
-msgid "Type"
-msgstr "Type"
-
 msgid "Created At"
 msgstr "Created At"
 
@@ -55,9 +275,6 @@ msgstr "Map deleted"
 
 msgid "Something went wrong. Please try again."
 msgstr "Something went wrong. Please try again."
-
-msgid "Actions"
-msgstr "Actions"
 
 msgid "Created By"
 msgstr "Created By"
@@ -173,62 +390,14 @@ msgstr "ERROR"
 msgid "Loading..."
 msgstr "Loading..."
 
-msgid "Data source saved"
-msgstr "Data source saved"
-
-msgid "Instance Name"
-msgstr "Instance Name"
-
-msgid "Token"
-msgstr "Token"
-
-msgid "Data Source Type"
-msgstr "Data Source Type"
-
-msgid "Update"
-msgstr "Update"
-
-msgid "Save"
-msgstr "Save"
+msgid "SETTINGS"
+msgstr "SETTINGS"
 
 msgid "Data Source"
 msgstr "Data Source"
 
-msgid "New data source"
-msgstr "New data source"
-
-msgid "Data Source Details"
-msgstr "Data Source Details"
-
-msgid "Are you sure you want to delete this visual?"
-msgstr "Are you sure you want to delete this visual?"
-
-msgid "Please wait..."
-msgstr "Please wait..."
-
-msgid "Confirm"
-msgstr "Confirm"
-
-msgid "Visual Name"
-msgstr "Visual Name"
-
-msgid "Visualization saved"
-msgstr "Visualization saved"
-
-msgid "My Charts"
-msgstr "My Charts"
-
-msgid "New Visualizer"
-msgstr "New Visualizer"
-
-msgid "SETTINGS"
-msgstr "SETTINGS"
-
 msgid "Main Dimensions"
 msgstr "Main Dimensions"
-
-msgid "Data"
-msgstr "Data"
 
 msgid "Period"
 msgstr "Period"
@@ -239,8 +408,8 @@ msgstr "Organization Unit"
 msgid "Sharing settings saved"
 msgstr "Sharing settings saved"
 
-msgid "Cancel"
-msgstr "Cancel"
+msgid "Confirm"
+msgstr "Confirm"
 
 msgid "Search"
 msgstr "Search"

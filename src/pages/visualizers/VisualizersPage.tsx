@@ -1,3 +1,4 @@
+import { DataItemsModal } from '@/features/data-items'
 import type { SelectedDataSource } from '@/features/analytics'
 import { useApplicationTitle } from '@/features/system'
 import React, { useEffect, useRef, useState } from 'react'
@@ -5,7 +6,7 @@ import Button from '../../components/Button'
 import { FileActionMenu } from './Components/FileActionMenu'
 import { useDataSources } from '@/features/data-sources'
 import { GenericModal, Loading } from '../../components'
-import { DataModal, OrganizationModal, PeriodModal } from './Components/MetaDataModals'
+import { OrganizationModal, PeriodModal } from './Components/MetaDataModals'
 import { useAuthorities } from '../../context/AuthContext'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs'
 import SelectChartType from './Components/SelectChartType'
@@ -13,11 +14,9 @@ import { SaveVisualModal } from '@/features/visualizers'
 import { useOrgUnitMetadata } from '@/features/org-units'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useFetchSingleVisualData } from '../../services/fetchVisuals'
-import { useDataItems } from '../../services/fetchDataItems'
 import { ChartRenderer, chartRegistry } from '@/features/charts'
 import GeneralChartsStyles from './Components/GeneralChartsOptions'
 import VisualSettings from './Components/VisualSettings'
-import { useExternalDataItems } from '../../services/useExternalDataItems'
 import { currentInstanceId } from '../../constants/currentInstanceInfo'
 import ExportModal from './Components/ExportModal'
 import i18n from '@dhis2/d2-i18n'
@@ -32,13 +31,10 @@ function Visualizers() {
     const {
         fetchAnalyticsData,
         analyticsPayloadDeterminer,
-        subDataItemsData,
-        setDataItemsDataPage,
         metaDataLabels,
         selectedDataSourceOption,
         setSelectedDataSourceOption,
         currentUserInfoAndOrgUnitsData,
-        dataItemsData,
         selectedDataSourceDetails,
         setSelectedDataSourceDetails,
         setSelectedDimensionItemType,
@@ -72,17 +68,6 @@ function Visualizers() {
         isError,
         loading: isFetchSingleVisualLoading,
     } = useFetchSingleVisualData(visualId)
-    const {
-        error: dataItemsFetchError,
-        loading: isFetchCurrentInstanceDataItemsLoading,
-        fetchCurrentInstanceData,
-    } = useDataItems()
-    const {
-        fetchExternalDataItems,
-        response,
-        error,
-        loading: isFetchExternalInstanceDataItemsLoading,
-    } = useExternalDataItems()
     const defaultUserOrgUnit =
         currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName
     const { data: savedDataSources, isLoading: loading } = useDataSources()
@@ -92,7 +77,6 @@ function Visualizers() {
     const [isShowPeriod, setIsShowPeriod] = useState<boolean>(false)
     const [isShowSaveVisualTypeForm, setIsShowSaveVisualTypeForm] = useState<boolean>(false)
     const [isShowStyles, setIsShowStyles] = useState<boolean>(false)
-    const selectedDataSourceDetailsRef = useRef(selectedDataSourceDetails)
     const [titleOption, setTitleOption] = useState<'none' | 'custom'>('none')
     const [subtitleOption, setSubtitleOption] = useState<'auto' | 'none' | 'custom'>('auto')
     const visualizationRef = useRef<HTMLDivElement>(null)
@@ -111,8 +95,6 @@ function Visualizers() {
     useEffect(() => {
         if (!visualId) {
             resetAnalyticsStatesToDefaultValues()
-            /// if no visual created , fetch data of current instance
-            fetchCurrentInstanceData(selectedDimensionItemType)
         }
     }, [visualId])
 
@@ -151,12 +133,10 @@ function Visualizers() {
         let newSelectedDetails: SelectedDataSource
         if (selectedValue === currentInstanceId) {
             newSelectedDetails = { instanceName: applicationTitle, isCurrentInstance: true }
-            fetchCurrentInstanceData(selectedDimensionItemType)
         } else {
             const saved = savedDataSources?.find((item) => item.key === selectedValue)?.value
             if (!saved) return
             newSelectedDetails = saved
-            fetchExternalDataItems(saved.url, saved.token, selectedDimensionItemType)
         }
 
         // Step 3: Update details and reset default values *afterwards*
@@ -177,12 +157,6 @@ function Visualizers() {
             isSetPredifinedUserOrgUnits,
         })
     }
-
-    useEffect(() => {
-        selectedDataSourceDetailsRef.current = selectedDataSourceDetails
-        // reset to pagination to page one if datasource is changed
-        setDataItemsDataPage(1)
-    }, [selectedDataSourceDetails])
 
     /// main return
     return (
@@ -235,36 +209,24 @@ function Visualizers() {
                                             {i18n.t('Main Dimensions')}
                                         </label>
                                         <Button
-                                            disabled={
-                                                isFetchCurrentInstanceDataItemsLoading ||
-                                                isFetchExternalInstanceDataItemsLoading
-                                            }
                                             variant="source"
-                                            text={`${isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading ? 'Loading..' : `${i18n.t('Data')} ${analyticsDimensions?.dx?.length === 0 ? '' : `(${analyticsDimensions?.dx?.length})`}`} `}
+                                            text={`${`${i18n.t('Data')} ${analyticsDimensions?.dx?.length === 0 ? '' : `(${analyticsDimensions?.dx?.length})`}`} `}
                                             onClick={handleShowDataModal}
                                         />
                                     </div>
                                     {/* Period */}
                                     <div className="mb-4">
                                         <Button
-                                            disabled={
-                                                isFetchCurrentInstanceDataItemsLoading ||
-                                                isFetchExternalInstanceDataItemsLoading
-                                            }
                                             variant="source"
-                                            text={`${isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading ? 'Loading..' : `${i18n.t('Period')} ${analyticsDimensions?.pe?.length === 0 ? '' : `(${analyticsDimensions?.pe?.length})`} `} `}
+                                            text={`${`${i18n.t('Period')} ${analyticsDimensions?.pe?.length === 0 ? '' : `(${analyticsDimensions?.pe?.length})`} `} `}
                                             onClick={handleShowPeriodModal}
                                         />
                                     </div>
                                     {/* Organization Unit */}
                                     <div className="mb-4">
                                         <Button
-                                            disabled={
-                                                isFetchCurrentInstanceDataItemsLoading ||
-                                                isFetchExternalInstanceDataItemsLoading
-                                            }
                                             variant="source"
-                                            text={`${isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading ? 'Loading..' : `${i18n.t('Organization Unit')} `} `}
+                                            text={`${`${i18n.t('Organization Unit')} `} `}
                                             onClick={handleShowOrganizationUnitModal}
                                         />
                                     </div>
@@ -333,18 +295,13 @@ function Visualizers() {
                         </div>
                     </div>
                     {/* Data, Organization Unit, and Period Modals */}
-                    <GenericModal isOpen={isShowDataModal} setIsOpen={setIsShowDataModal}>
-                        <DataModal
-                            data={dataItemsData}
-                            loading={
-                                isFetchCurrentInstanceDataItemsLoading ||
-                                isFetchExternalInstanceDataItemsLoading
-                            }
-                            error={dataItemsFetchError}
-                            setIsShowDataModal={setIsShowDataModal}
-                            subDataItemsData={subDataItemsData}
+                    {isShowDataModal && (
+                        <DataItemsModal
+                            onClose={() => setIsShowDataModal(false)}
+                            onUpdate={handleRunAnalytics}
+                            updating={isFetchAnalyticsDataLoading}
                         />
-                    </GenericModal>
+                    )}
                     <GenericModal
                         isOpen={isShowOrganizationUnit}
                         setIsOpen={setIsShowOrganizationUnit}

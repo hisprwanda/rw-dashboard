@@ -16,8 +16,6 @@ import {
     formatSelectedOrganizationUnit,
 } from '../lib/formatCurrentUserOrgUnit'
 import { currentInstanceId } from '../constants/currentInstanceInfo'
-import { useDataItems } from './fetchDataItems'
-import { useExternalDataItems } from './useExternalDataItems'
 import { analyticsPayloadDeterminerTypes } from '../types/analyticsTypes'
 import { env } from '@/shared/constants/env'
 
@@ -35,18 +33,6 @@ type handleDataSourceChangeProps = {
 export const useFetchSingleVisualData = (visualId: string | undefined) => {
     const previousDataRef = useRef<{ dataStore: SavedVisual } | null>(null)
     const [dataSourceChangeLoading, setDataSourceChangeLoading] = useState(false)
-
-    const {
-        fetchCurrentInstanceData,
-        error: dataItemsFetchError,
-        loading: isFetchCurrentInstanceDataItemsLoading,
-    } = useDataItems()
-
-    const {
-        fetchExternalDataItems,
-        error: fetchExternalDataError,
-        loading: isFetchExternalInstanceDataItemsLoading,
-    } = useExternalDataItems()
 
     const applicationTitle = useApplicationTitle()
     const { data: savedDataSources } = useDataSources()
@@ -118,7 +104,6 @@ export const useFetchSingleVisualData = (visualId: string | undefined) => {
                     })
                     // fetch necessary data for selected instance
                     setSelectedDataSourceDetails(currentInstanceDetails)
-                    await fetchCurrentInstanceData(selectedDimensionItemType)
                 } else if (dataSourceDetails) {
                     // clear existing analytics data
                     setAnalyticsData([])
@@ -135,11 +120,6 @@ export const useFetchSingleVisualData = (visualId: string | undefined) => {
                     })
                     // fetch necessary data for selected instance
                     setSelectedDataSourceDetails(dataSourceDetails)
-                    await fetchExternalDataItems(
-                        dataSourceDetails.url,
-                        dataSourceDetails.token,
-                        selectedDimensionItemType
-                    )
                 }
             } finally {
                 setDataSourceChangeLoading(false)
@@ -148,8 +128,6 @@ export const useFetchSingleVisualData = (visualId: string | undefined) => {
         [
             applicationTitle,
             selectedDimensionItemType,
-            fetchCurrentInstanceData,
-            fetchExternalDataItems,
             fetchAnalyticsData,
             setAnalyticsData,
             setMetaDataLabels,
@@ -242,10 +220,6 @@ export const useFetchSingleVisualData = (visualId: string | undefined) => {
         isError: !!error,
         refetch,
         isHandleDataSourceChangeLoading: dataSourceChangeLoading,
-        dataItemsFetchError,
-        isFetchCurrentInstanceDataItemsLoading,
-        fetchExternalDataError,
-        isFetchExternalInstanceDataItemsLoading,
     }
 }
 

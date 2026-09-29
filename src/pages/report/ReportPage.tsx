@@ -1,3 +1,4 @@
+import { DataItemsModal } from '@/features/data-items'
 import { useApplicationTitle } from '@/features/system'
 ;('use client')
 
@@ -5,7 +6,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import Button from '../../components/Button'
 import { useDataSources } from '@/features/data-sources'
 import { GenericModal, Loading } from '../../components'
-import { DataModal, OrganizationModal, PeriodModal } from '../visualizers/Components/MetaDataModals'
+import { OrganizationModal, PeriodModal } from '../visualizers/Components/MetaDataModals'
 import { useAuthorities } from '../../context/AuthContext'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs'
 import { SaveVisualModal } from '@/features/visualizers'
@@ -13,11 +14,9 @@ import { useOrgUnitMetadata } from '@/features/org-units'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useFetchSingleVisualData } from '../../services/fetchVisuals'
 import { formatAnalyticsDimensions } from '@/features/analytics'
-import { useDataItems } from '../../services/fetchDataItems'
 import { DEFAULT_CHART_TYPE } from '@/features/charts'
 import GeneralChartsStyles from '../visualizers/Components/GeneralChartsOptions'
 import { systemDefaultColorPalettes } from '../../constants/colorPalettes'
-import { useExternalDataItems } from '../../services/useExternalDataItems'
 import { currentInstanceId } from '../../constants/currentInstanceInfo'
 import debounce from 'lodash/debounce'
 import { dimensionItemTypes } from '../../constants/dimensionItemTypes'
@@ -29,11 +28,9 @@ function ReportPage() {
     const navigate = useNavigate()
     const applicationTitle = useApplicationTitle()
     const {
-        setDataItemsDataPage,
         selectedDataSourceOption,
         setSelectedDataSourceOption,
         currentUserInfoAndOrgUnitsData,
-        dataItemsData,
         selectedDataSourceDetails,
         setSelectedDataSourceDetails,
         setSelectedDimensionItemType,
@@ -74,17 +71,6 @@ function ReportPage() {
         isError,
         loading: isFetchSingleVisualLoading,
     } = useFetchSingleVisualData(visualId)
-    const {
-        error: dataItemsFetchError,
-        loading: isFetchCurrentInstanceDataItemsLoading,
-        fetchCurrentInstanceData,
-    } = useDataItems()
-    const {
-        fetchExternalDataItems,
-        response,
-        error,
-        loading: isFetchExternalInstanceDataItemsLoading,
-    } = useExternalDataItems()
     const defaultUserOrgUnit =
         currentUserInfoAndOrgUnitsData?.currentUser?.organisationUnits?.[0]?.displayName
     const { data: savedDataSources, isLoading: loading } = useDataSources()
@@ -93,7 +79,6 @@ function ReportPage() {
     const [isShowPeriod, setIsShowPeriod] = useState<boolean>(false)
     const [isShowSaveVisualTypeForm, setIsShowSaveVisualTypeForm] = useState<boolean>(false)
     const [isShowStyles, setIsShowStyles] = useState<boolean>(false)
-    const selectedDataSourceDetailsRef = useRef(selectedDataSourceDetails)
     const [titleOption, setTitleOption] = useState<'none' | 'custom'>('none')
     const [subtitleOption, setSubtitleOption] = useState<'auto' | 'none' | 'custom'>('auto')
     const [dataSubmitted, setDataSubmitted] = useState(false)
@@ -137,7 +122,6 @@ function ReportPage() {
         if (!visualId) {
             resetToDefaultValues()
             /// if no visual created , fetch data of current instance
-            fetchCurrentInstanceData(selectedDimensionItemType)
         }
     }, [visualId])
 
@@ -145,7 +129,6 @@ function ReportPage() {
     const debounceRunAnalytics = useCallback(
         debounce(() => {
             if (singleSavedVisualData && visualId) {
-                keepUpWithSelectedDataSource()
                 setAnalyticsData([])
                 setAnalyticsQuery(null)
                 // Previously called with positional args, so it never ran (see Phase 4 notes).
@@ -191,33 +174,9 @@ function ReportPage() {
         // setDataSubmitted(false);
     }
 
-    // keepUp with selected data source
-    function keepUpWithSelectedDataSource() {
-        const details = selectedDataSourceDetailsRef.current
-
-        if (!details) return
-
-        // Proceed with using the latest `details`
-        if (details.isCurrentInstance) {
-            fetchCurrentInstanceData(selectedDimensionItemType)
-        } else if (details.url && details.token) {
-            fetchExternalDataItems(details.url, details.token, selectedDimensionItemType)
-        } else {
-            console.error('Invalid data source details: Missing URL or token.')
-        }
-    }
-    useEffect(() => {
-        selectedDataSourceDetailsRef.current = selectedDataSourceDetails
-        // reset to page one
-        setDataItemsDataPage(1)
-    }, [selectedDataSourceDetails])
-
-    //// testing data items
-
     /// main return
     return (
         <div className="min-h-screen bg-gray-50 p-4">
-            <div>{/* <h3>Test Total: {dataItemsData?.pager?.total}</h3> */}</div>
             {isFetchSingleVisualLoading || loading ? (
                 <Loading />
             ) : (
@@ -244,12 +203,8 @@ function ReportPage() {
                                             Period
                                         </label>
                                         <Button
-                                            disabled={
-                                                isFetchCurrentInstanceDataItemsLoading ||
-                                                isFetchExternalInstanceDataItemsLoading
-                                            }
                                             variant="source"
-                                            text={`${isFetchCurrentInstanceDataItemsLoading || isFetchExternalInstanceDataItemsLoading ? 'Loading..' : `Period ${analyticsDimensions?.pe?.length === 0 ? '' : `(${analyticsDimensions?.pe?.length})`} `} `}
+                                            text={`${`Period ${analyticsDimensions?.pe?.length === 0 ? '' : `(${analyticsDimensions?.pe?.length})`} `} `}
                                             onClick={handleShowPeriodModal}
                                         />
                                     </div>
@@ -278,17 +233,24 @@ function ReportPage() {
                         </div>
                     </div>
                     {/* Data, Organization Unit, and Period Modals */}
-                    <GenericModal isOpen={isShowDataModal} setIsOpen={setIsShowDataModal}>
-                        <DataModal
-                            data={dataItemsData}
-                            loading={
-                                isFetchCurrentInstanceDataItemsLoading ||
-                                isFetchExternalInstanceDataItemsLoading
+                    {isShowDataModal && (
+                        <DataItemsModal
+                            onClose={() => setIsShowDataModal(false)}
+                            onUpdate={() =>
+                                fetchAnalyticsData({
+                                    dimension: formatAnalyticsDimensions(analyticsDimensions),
+                                    instance: selectedDataSourceDetails,
+                                    analyticsPayloadDeterminer,
+                                    selectedOrganizationUnits,
+                                    selectedOrgUnitGroups,
+                                    selectedOrganizationUnitsLevels,
+                                    isUseCurrentUserOrgUnits,
+                                    isSetPredifinedUserOrgUnits,
+                                })
                             }
-                            error={dataItemsFetchError}
-                            setIsShowDataModal={setIsShowDataModal}
+                            updating={isFetchAnalyticsDataLoading}
                         />
-                    </GenericModal>
+                    )}
                     <GenericModal
                         isOpen={isShowOrganizationUnit}
                         setIsOpen={setIsShowOrganizationUnit}

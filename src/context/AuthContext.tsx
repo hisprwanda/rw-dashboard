@@ -64,12 +64,6 @@ interface AuthContextProps extends LegacyOrgUnitSelection, LegacyBuilderState {
     setMapAnalyticsQueryTwo: any
     geoFeaturesQuery: any
     setGeoFeaturesQuery: any
-    dataItemsData: any
-    setDataItemsData: any
-    dataItemsDataPage: number
-    setDataItemsDataPage: any
-    subDataItemsData: any
-    setSubDataItemsData: any
     geoFeaturesData: any
     setGeoFeaturesData: any
     analyticsMapData: any
@@ -112,9 +106,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     // metadata states
     //
-    const [dataItemsData, setDataItemsData] = useState<any>()
-    const [subDataItemsData, setSubDataItemsData] = useState<any>()
-    const [dataItemsDataPage, setDataItemsDataPage] = useState<number>(1)
     const [isFetchAnalyticsDataLoading, setIsFetchAnalyticsDataLoading] = useState(false)
     const [analyticsData, setAnalyticsData] = useState<any>(null)
     const [fetchAnalyticsDataError, setFetchAnalyticsDataError] = useState<any>(false)
@@ -238,12 +229,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 setAnalyticsMapData,
                 setGeoFeaturesData,
                 setMetaMapData,
-                setSubDataItemsData,
-                subDataItemsData,
-                dataItemsDataPage,
-                setDataItemsDataPage,
-                dataItemsData,
-                setDataItemsData,
                 fetchSingleOrgUnitName,
                 setAnalyticsData,
                 setAnalyticsQuery,

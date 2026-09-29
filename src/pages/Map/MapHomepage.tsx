@@ -26,8 +26,6 @@ const MapHomepage: React.FC = () => {
         error,
         isError,
         loading,
-        isFetchCurrentInstanceDataItemsLoading,
-        isFetchExternalInstanceDataItemsLoading,
         isHandleDataSourceChangeLoading,
     } = useFetchSingleMapData(mapId)
     const { loading: isFetchingGeoFeaturesLoading } = useRunGeoFeatures()

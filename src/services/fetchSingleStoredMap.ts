@@ -15,8 +15,6 @@ import {
     formatSelectedOrganizationUnit,
 } from '../lib/formatCurrentUserOrgUnit'
 import { currentInstanceId } from '../constants/currentInstanceInfo'
-import { useDataItems } from './fetchDataItems'
-import { useExternalDataItems } from './useExternalDataItems'
 import { useRunGeoFeatures } from './maps'
 import {
     buildOrgUnitDimension,
@@ -63,18 +61,6 @@ type handleDataSourceChangeProps = {
 export const useFetchSingleMapData = (mapId: string | undefined) => {
     const previousDataRef = useRef<VisualData | null>(null)
     const [dataSourceChangeLoading, setDataSourceChangeLoading] = useState(false)
-
-    const {
-        fetchCurrentInstanceData,
-        error: dataItemsFetchError,
-        loading: isFetchCurrentInstanceDataItemsLoading,
-    } = useDataItems()
-
-    const {
-        fetchExternalDataItems,
-        error: fetchExternalDataError,
-        loading: isFetchExternalInstanceDataItemsLoading,
-    } = useExternalDataItems()
 
     const applicationTitle = useApplicationTitle()
     const { data: savedDataSources } = useDataSources()
@@ -173,7 +159,6 @@ export const useFetchSingleMapData = (mapId: string | undefined) => {
                         isSetPredifinedUserOrgUnits,
                     })
                     setSelectedDataSourceDetails(currentInstanceDetails)
-                    await fetchCurrentInstanceData(selectedDimensionItemType)
                 } else if (dataSourceDetails) {
                     setAnalyticsData([])
                     setMetaDataLabels({})
@@ -185,11 +170,6 @@ export const useFetchSingleMapData = (mapId: string | undefined) => {
                         selectedPeriodsOnMap,
                     })
                     setSelectedDataSourceDetails(dataSourceDetails)
-                    await fetchExternalDataItems(
-                        dataSourceDetails.url,
-                        dataSourceDetails.token,
-                        selectedDimensionItemType
-                    )
                 }
             } finally {
                 setDataSourceChangeLoading(false)
@@ -198,8 +178,6 @@ export const useFetchSingleMapData = (mapId: string | undefined) => {
         [
             applicationTitle,
             selectedDimensionItemType,
-            fetchCurrentInstanceData,
-            fetchExternalDataItems,
             fetchAnalyticsData,
             fetchGeoFeatures,
             setAnalyticsData,
@@ -294,9 +272,5 @@ export const useFetchSingleMapData = (mapId: string | undefined) => {
         isError: !!error,
         refetch,
         isHandleDataSourceChangeLoading: dataSourceChangeLoading,
-        dataItemsFetchError,
-        isFetchCurrentInstanceDataItemsLoading,
-        fetchExternalDataError,
-        isFetchExternalInstanceDataItemsLoading,
     }
 }

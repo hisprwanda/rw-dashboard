@@ -1,3 +1,4 @@
+import { DataItemsPicker } from '@/features/data-items'
 import { useOrgUnitMetadata } from '@/features/org-units'
 import { useEffect, useState } from 'react'
 
@@ -20,13 +21,10 @@ import {
     SelectValue,
 } from '../../../components/ui/select'
 import {
-    DataModal,
     OrganizationModal,
     PeriodModal,
 } from '../../../pages/visualizers/Components/MetaDataModals'
 import { useAuthorities } from '../../../context/AuthContext'
-import { useDataItems } from '../../../services/fetchDataItems'
-import { useExternalDataItems } from '../../../services/useExternalDataItems'
 import { formatAnalyticsDimensions } from '@/features/analytics'
 import { useRunGeoFeatures } from '../../../services/maps'
 import { buildOrgUnitDimension } from '@/features/analytics'
@@ -50,13 +48,9 @@ export function MapMetaDataConfigModal({
 }: MapMetaDataConfigModalProps) {
     const { fetchGeoFeatures, loading: isFetchGeoDataLoading } = useRunGeoFeatures()
     const {
-        subDataItemsData,
-        setDataItemsDataPage,
-        dataItemsDataPage,
         selectedDataSourceOption,
         setSelectedDataSourceOption,
         currentUserInfoAndOrgUnitsData,
-        dataItemsData,
         selectedDataSourceDetails,
         setSelectedDataSourceDetails,
         setSelectedDimensionItemType,
@@ -78,17 +72,6 @@ export function MapMetaDataConfigModal({
     } = useAuthorities()
     const { isLoading: orgUnitLoading, error: fetchOrgUnitError } =
         useOrgUnitMetadata(selectedDataSourceDetails)
-    const {
-        error: dataItemsFetchError,
-        loading: isFetchCurrentInstanceDataItemsLoading,
-        fetchCurrentInstanceData,
-    } = useDataItems()
-    const {
-        fetchExternalDataItems,
-        response,
-        error,
-        loading: isFetchExternalInstanceDataItemsLoading,
-    } = useExternalDataItems()
     const [activeTab, setActiveTab] = useState('data')
     const [isLoading, setIsLoading] = useState(false)
     const [formData, setFormData] = useState({
@@ -142,16 +125,7 @@ export function MapMetaDataConfigModal({
             case 'data':
                 return (
                     <div className="space-y-6 py-4">
-                        <DataModal
-                            data={dataItemsData}
-                            isDataModalBeingUsedInMap={true}
-                            loading={
-                                isFetchCurrentInstanceDataItemsLoading ||
-                                isFetchExternalInstanceDataItemsLoading
-                            }
-                            error={dataItemsFetchError}
-                            subDataItemsData={subDataItemsData}
-                        />
+                        <DataItemsPicker />
                     </div>
                 )
             case 'period':

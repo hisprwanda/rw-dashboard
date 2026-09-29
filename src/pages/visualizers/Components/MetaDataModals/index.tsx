@@ -1,6 +1,4 @@
-import OrganizationModal from "./OrganizationModal"
-import DataModal from "./DataModal"
-import PeriodModal from "./PeriodModal"
+import OrganizationModal from './OrganizationModal'
+import PeriodModal from './PeriodModal'
 
-
-export {OrganizationModal, DataModal,PeriodModal}
+export { OrganizationModal, PeriodModal }
