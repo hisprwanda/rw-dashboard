@@ -3,6 +3,7 @@ import {
     humanizeRelativePeriod,
     isRelativePeriod,
     periodLabel,
+    periodRange,
     relativePeriodOptions,
 } from './periodOptions'
 
@@ -51,5 +52,19 @@ describe('periodLabel', () => {
         expect(periodLabel('LAST_3_MONTHS')).toBe('Last 3 months')
         expect(periodLabel('202401B')).toBe('January - February 2024')
         expect(periodLabel('not-a-period')).toBe('not-a-period')
+    })
+})
+
+describe('periodRange', () => {
+    it('gives the dates of a week', () => {
+        expect(periodRange('2024W1')).toMatchObject({
+            startDate: '2024-01-01',
+            endDate: '2024-01-07',
+        })
+    })
+
+    it('is null for relative and invalid ids', () => {
+        expect(periodRange('LAST_12_MONTHS')).toBeNull()
+        expect(periodRange('nonsense')).toBeNull()
     })
 })

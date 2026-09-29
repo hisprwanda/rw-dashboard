@@ -49,3 +49,20 @@ export const periodLabel = (
         return id
     }
 }
+
+/** Name and ISO start/end dates of a fixed period id (`2026W10`); `null` for relative or unknown ids. */
+export const periodRange = (
+    id: string,
+    calendar: SupportedCalendar = 'gregory'
+): { displayName: string; startDate: string; endDate: string } | null => {
+    if (isRelativePeriod(id)) return null
+    try {
+        const { displayName, startDate, endDate } = createFixedPeriodFromPeriodId({
+            periodId: id,
+            calendar,
+        })
+        return { displayName, startDate, endDate }
+    } catch {
+        return null
+    }
+}

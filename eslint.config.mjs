@@ -51,10 +51,15 @@ export default tseslint.config(
             'react/no-unescaped-entities': 'warn',
             'react/display-name': 'warn',
             'react-hooks/exhaustive-deps': 'warn',
-            // The DHIS2 data engine is an app-wide singleton, not a query input.
+            // The DHIS2 data engine and the query client are app-wide singletons, not inputs.
             '@tanstack/query/exhaustive-deps': [
                 'error',
-                { allowlist: { variables: ['engine'], types: ['DataEngine'] } },
+                {
+                    allowlist: {
+                        variables: ['engine', 'queryClient'],
+                        types: ['DataEngine', 'QueryClient'],
+                    },
+                },
             ],
             // A local variable named like an import silently replaces it
             // (e.g. state `analyticsQuery` hid the imported factory -> "not a function").

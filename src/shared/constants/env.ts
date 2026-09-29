@@ -15,6 +15,9 @@ const required = (name: string, value: string | undefined): string => {
 }
 
 export const env = {
+    /** Epidemiological bulletin template (`<namespace>/<key>`); optional, kept for old setups. */
+    bulletinStore: process.env.DHIS2_BULLETIN_STORE || 'epide-bulletin',
+    bulletinTemplateKey: process.env.DHIS2_BULLETIN_TEMPLATE_KEY || 'epide',
     dataSourcesStore: required('DHIS2_DATA_SOURCES_STORE', process.env.DHIS2_DATA_SOURCES_STORE),
     dashboardStore: required('DHIS2_DASHBOARD_STORE', process.env.DHIS2_DASHBOARD_STORE),
     visualsStore: required('DHIS2_VISUALS_STORE', process.env.DHIS2_VISUALS_STORE),

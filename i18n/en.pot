@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-09-29T20:21:01.056Z\n"
-"PO-Revision-Date: 2026-09-29T20:21:01.056Z\n"
+"POT-Creation-Date: 2026-09-29T20:34:16.998Z\n"
+"PO-Revision-Date: 2026-09-29T20:34:16.998Z\n"
 
 msgid "Dashboards"
 msgstr "Dashboards"
@@ -613,6 +613,81 @@ msgstr "Selected periods"
 msgid "No periods selected"
 msgstr "No periods selected"
 
+msgid "Loading the bulletin data"
+msgstr "Loading the bulletin data"
+
+msgid "Dimensions"
+msgstr "Dimensions"
+
+msgid "Period ({{count}})"
+msgid_plural "Period ({{count}})"
+msgstr[0] "Period ({{count}})"
+msgstr[1] "Period ({{count}})"
+
+msgid "No cases found."
+msgstr "No cases found."
+
+msgid "Bulletin template not found"
+msgstr "Bulletin template not found"
+
+msgid "Pick a week"
+msgstr "Pick a week"
+
+msgid "The bulletin needs a weekly period."
+msgstr "The bulletin needs a weekly period."
+
+msgid "Tracker data could not be loaded"
+msgstr "Tracker data could not be loaded"
+
+msgid ""
+"Alerts, immediate reportable diseases and deaths are missing from this "
+"bulletin."
+msgstr ""
+"Alerts, immediate reportable diseases and deaths are missing from this "
+"bulletin."
+
+msgid "Epidemiological bulletin"
+msgstr "Epidemiological bulletin"
+
+msgid "Republic of Rwanda Ministry of Health"
+msgstr "Republic of Rwanda Ministry of Health"
+
+msgid "Rwanda Biomedical Centre"
+msgstr "Rwanda Biomedical Centre"
+
+msgid "alerts"
+msgstr "alerts"
+
+msgid "IMMEDIATE REPORTABLE DISEASES – EPI {{week}}"
+msgstr "IMMEDIATE REPORTABLE DISEASES – EPI {{week}}"
+
+msgid "Immediate reportable diseases notes"
+msgstr "Immediate reportable diseases notes"
+
+msgid "WEEKLY REPORTABLE DISEASES – EPI {{week}}"
+msgstr "WEEKLY REPORTABLE DISEASES – EPI {{week}}"
+
+msgid "No data found for {{name}}"
+msgstr "No data found for {{name}}"
+
+msgid "DISTRIBUTION OF REPORTED DEATHS IN eIDSR – EPIDEMIOLOGICAL {{week}}"
+msgstr "DISTRIBUTION OF REPORTED DEATHS IN eIDSR – EPIDEMIOLOGICAL {{week}}"
+
+msgid "Notes"
+msgstr "Notes"
+
+msgid "Enter notes..."
+msgstr "Enter notes..."
+
+msgid "Outbreak summary (sample)"
+msgstr "Outbreak summary (sample)"
+
+msgid "Hospital catchment area"
+msgstr "Hospital catchment area"
+
+msgid "Completeness"
+msgstr "Completeness"
+
 msgid "Chart type"
 msgstr "Chart type"
 
@@ -703,9 +778,6 @@ msgstr "Apply"
 msgid "Running analytics"
 msgstr "Running analytics"
 
-msgid "Dimensions"
-msgstr "Dimensions"
-
 msgid ""
 "The data source of this visualization was deleted or is not shared with "
 "you. Pick another data source."
@@ -742,12 +814,6 @@ msgstr "Visualization saved"
 
 msgid "Could not save the visualization. Please try again."
 msgstr "Could not save the visualization. Please try again."
-
-msgid "ERROR"
-msgstr "ERROR"
-
-msgid "Loading..."
-msgstr "Loading..."
 
 msgid "Confirm"
 msgstr "Confirm"

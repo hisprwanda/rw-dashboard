@@ -11,5 +11,6 @@ export {
     fixedPeriodOptions,
     isRelativePeriod,
     periodLabel,
+    periodRange,
     relativePeriodOptions,
 } from './utils/periodOptions'
