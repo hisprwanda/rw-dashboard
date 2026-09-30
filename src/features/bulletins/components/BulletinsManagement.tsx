@@ -170,7 +170,7 @@ export const BulletinsManagement = () => {
             <PageHeader
                 title={i18n.t('Bulletins')}
                 description={i18n.t(
-                    'Periodic bulletins built from your data: design them once, then publish one issue per period.'
+                    'Periodic bulletins built from your data. Design them once, then publish one issue per period.'
                 )}
                 actions={
                     <>

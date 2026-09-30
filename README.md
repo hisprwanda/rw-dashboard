@@ -71,11 +71,23 @@ and switch between a light and an OpenStreetMap basemap. Maps can be added to da
 
 ---
 
-### 5. Weekly Epidemiological Bulletin
+### 5. Bulletins
 
-Pick a week to generate the eIDSR bulletin: weekly reportable diseases, immediate
-reportable events, deaths and community alerts, with texts taken from a dataStore template
-(`DHIS2_BULLETIN_STORE` / `DHIS2_BULLETIN_TEMPLATE_KEY`, default `epide-bulletin/epide`).
+Design periodic bulletins (weekly, monthly…) for any DHIS2 instance, with no country
+configuration in the code:
+
+- **Templates**, saved in the dataStore (`DHIS2_BULLETIN_TEMPLATES_STORE`) and shared like
+  dashboards: a data source (the current or an external instance), a period type, org
+  units, content languages and an ordered list of sections.
+- **Sections**: cover (logos, subtitle), free text, indicator trends (charts of data
+  items), tracker cases and deaths (classified by rules), event signals, reporting
+  completeness (reporting rates coloured by thresholds), an outbreak table and notes. All
+  titles and texts can be written in each content language.
+- **Issues**: open a period, fill the notes and outbreak rows, save a draft or publish
+  (`DHIS2_BULLETIN_ISSUES_STORE`), and print or save as PDF.
+- **Import / export**: templates are JSON files. `docs/bulletin-presets/rwanda-eidsr.json`
+  is the Rwanda eIDSR bulletin as an example; "Import old bulletin texts" converts the texts
+  of the previous bulletin (`epide-bulletin/epide`).
 
 ---
 
@@ -113,7 +125,7 @@ Data Analytics Lab is evolving! Here are the planned features for future release
 - **TanStack Query** + the **DHIS2 data engine** for all server state (external instances through the same hooks).
 - **Redux Toolkit** for builder state (selection, org units, visualizer, map, dashboard editor).
 - **Recharts** (charts), **react-leaflet** (maps), **react-grid-layout** (dashboards).
-- **React Hook Form + Zod** for forms; **@dhis2/d2-i18n** for translations (English, French).
+- **React Hook Form + Zod** for forms; **@dhis2/d2-i18n** for translations (English, French; Kinyarwanda draft).
 
 ---
 
@@ -159,6 +171,7 @@ Quality gates (also run by the pre-commit hook and CI):
 ```bash
 yarn typecheck   # tsc, must report 0 errors
 yarn lint        # ESLint, 0 errors (no any, no untranslated JSX text, no floating promises)
+yarn i18n:check  # i18n/en.pot up to date and French complete
 yarn test        # Jest: utils, hooks with a mocked data engine, a smoke test per page
 yarn build       # also extracts translations into i18n/en.pot
 ```

@@ -1,3 +1,4 @@
+import i18n from '@dhis2/d2-i18n'
 import { fetchResource, type DataEngine, type QueryParams } from './dhis2Client'
 import { createExternalClient } from './externalClient'
 
@@ -26,7 +27,7 @@ export const createInstanceClient = (
         }
     }
     if (!instance.url || !instance.token) {
-        throw new Error('An external instance needs both a url and a token.')
+        throw new Error(i18n.t('An external instance needs both a url and a token.'))
     }
     const client = createExternalClient({ url: instance.url, token: instance.token })
     return {

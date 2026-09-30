@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useAppDispatch, useAppStore } from '@/app/store'
 import { selectionActions, useAnalyticsRun, type SelectedDataSource } from '@/features/analytics'
+import { useDisplayProperty } from '@/features/auth'
 import { CURRENT_INSTANCE_ID, useDataSources } from '@/features/data-sources'
 import { orgUnitSelectionActions } from '@/features/org-units'
 import { useApplicationTitle } from '@/features/system'
@@ -27,6 +28,7 @@ export const useMapBuilder = (mapId: string | undefined) => {
     const dispatch = useAppDispatch()
     const store = useAppStore()
     const applicationTitle = useApplicationTitle()
+    const displayProperty = useDisplayProperty()
     const analytics = useAnalyticsRun()
     const { run: runAnalytics, reset: resetAnalytics } = analytics
     const map = useMap(mapId)
@@ -52,9 +54,9 @@ export const useMapBuilder = (mapId: string | undefined) => {
     /** Runs the thematic layer of the current selection (no-op while it is incomplete). */
     const run = useCallback(async () => {
         const { selection, orgUnitSelection } = store.getState()
-        const request = buildMapRequest(selection, orgUnitSelection)
+        const request = buildMapRequest(selection, orgUnitSelection, displayProperty)
         if (request) await start(request, selection.dataSource)
-    }, [store, start])
+    }, [store, start, displayProperty])
 
     useEffect(() => {
         const target = mapId ?? NEW_MAP
@@ -90,10 +92,20 @@ export const useMapBuilder = (mapId: string | undefined) => {
         setMissingDataSource(!dataSource)
         setLoadedId(target)
 
-        const request = buildMapRequest(state.selection, state.orgUnits)
+        const request = buildMapRequest(state.selection, state.orgUnits, displayProperty)
         if (dataSource && request) void start(request, dataSource)
         else reset()
-    }, [mapId, map.data, dataSources.data, loadedId, applicationTitle, dispatch, start, reset])
+    }, [
+        mapId,
+        map.data,
+        dataSources.data,
+        loadedId,
+        applicationTitle,
+        displayProperty,
+        dispatch,
+        start,
+        reset,
+    ])
 
     /** After saving a new map: its URL changes but the store already holds it. */
     const adopt = useCallback((id: string) => setLoadedId(id), [])

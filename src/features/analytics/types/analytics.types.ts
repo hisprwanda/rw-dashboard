@@ -1,5 +1,8 @@
 import type { UserOrgUnitScope } from '@/features/org-units'
 
+/** Whether analytics answers with names or short names. */
+export type DisplayProperty = 'NAME' | 'SHORTNAME'
+
 /** Selected items per dimension, e.g. `{ dx: ['abc', 'def'], pe: ['LAST_12_MONTHS'] }`. */
 export type AnalyticsDimensions = Record<string, string[]>
 
@@ -18,7 +21,7 @@ export interface AnalyticsLayout {
 export type AnalyticsParams = {
     dimension?: string[]
     filter?: string | string[]
-    displayProperty?: 'NAME' | 'SHORTNAME'
+    displayProperty?: DisplayProperty
     includeNumDen?: boolean
     skipMeta?: boolean
     skipData?: boolean

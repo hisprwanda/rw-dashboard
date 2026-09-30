@@ -1,4 +1,4 @@
-import { formatDate, formatNumber, formatPercent } from './format'
+import { formatDate, formatLanguageName, formatNumber, formatPercent } from './format'
 
 describe('locale-aware formatting', () => {
     it('formats numbers per locale', () => {
@@ -15,5 +15,11 @@ describe('locale-aware formatting', () => {
     it('formats percentages and survives unknown locales', () => {
         expect(formatPercent(95.5, 1, 'en')).toBe('95.5%')
         expect(formatNumber(1, undefined, 'not_a_locale!!')).toBe('1')
+    })
+
+    it('names languages in the user language', () => {
+        expect(formatLanguageName('fr', 'en')).toBe('French')
+        expect(formatLanguageName('en', 'fr')).toBe('anglais')
+        expect(formatLanguageName('??', 'en')).toBe('??')
     })
 })

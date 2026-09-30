@@ -20,3 +20,23 @@ export const chartTypeLabel = (type: string): string => {
     }
     return labels[type] ?? type
 }
+
+/** Display name of a built-in color palette (the stored name stays in English). */
+export const paletteLabel = (name: string): string => {
+    const labels: Record<string, string> = {
+        'Nature Essence': i18n.t('Nature Essence'),
+        'Tranquil Hues': i18n.t('Tranquil Hues'),
+        'Tropical Vibes': i18n.t('Tropical Vibes'),
+        'Retro Vibes': i18n.t('Retro Vibes'),
+        'Cyberpunk Neon': i18n.t('Cyberpunk Neon'),
+        'Berry Bliss': i18n.t('Berry Bliss'),
+        'Ocean Breeze': i18n.t('Ocean Breeze'),
+        'Sunset Glow': i18n.t('Sunset Glow'),
+        'Forest Harmony': i18n.t('Forest Harmony'),
+        'Elegant Neutrals': i18n.t('Elegant Neutrals'),
+        'Pastel Dreams': i18n.t('Pastel Dreams'),
+        'Autumn Serenity': i18n.t('Autumn Serenity'),
+        Default: i18n.t('Default'),
+    }
+    return labels[name] ?? name
+}

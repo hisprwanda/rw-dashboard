@@ -7,14 +7,15 @@ import { useMe } from '@/features/auth'
 import { chartTypeLabel } from '@/features/charts'
 import { ConfirmModal, DataTable, PageHeader, type DataTableColumn } from '@/shared/components'
 import { isCreatedBy, isSharedWith } from '@/shared/utils/sharing'
+import { formatDateTime } from '@/shared/utils/format'
 import { useDeleteVisual } from '../hooks/useDeleteVisual'
 import { useVisuals } from '../hooks/useVisuals'
 import type { SavedVisualEntry } from '../types/visual.types'
 
 type Scope = 'mine' | 'shared'
 
-const formatDate = (timestamp: number | undefined) =>
-    timestamp ? new Date(timestamp).toLocaleString() : ''
+const formatUpdated = (timestamp: number | undefined) =>
+    timestamp ? formatDateTime(timestamp) : ''
 
 /** Visualizations list: mine vs. shared with me, open and delete. */
 export const VisualsManagement = () => {
@@ -64,7 +65,7 @@ export const VisualsManagement = () => {
                 key: 'created',
                 header: i18n.t('Created'),
                 value: (e) => e.value.createdAt,
-                render: (e) => formatDate(e.value.createdAt),
+                render: (e) => formatUpdated(e.value.createdAt),
                 sortable: true,
                 searchable: false,
             },
@@ -72,7 +73,7 @@ export const VisualsManagement = () => {
                 key: 'updated',
                 header: i18n.t('Last updated'),
                 value: (e) => e.value.updatedAt,
-                render: (e) => formatDate(e.value.updatedAt),
+                render: (e) => formatUpdated(e.value.updatedAt),
                 sortable: true,
                 searchable: false,
             },

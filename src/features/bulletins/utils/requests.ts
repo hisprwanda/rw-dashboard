@@ -1,4 +1,8 @@
-import { buildOrgUnitDimension, type AnalyticsParams } from '@/features/analytics'
+import {
+    buildOrgUnitDimension,
+    type AnalyticsParams,
+    type DisplayProperty,
+} from '@/features/analytics'
 import type { QueryParams } from '@/shared/api'
 import type { BulletinOrgUnits } from '../types/bulletin.types'
 
@@ -23,7 +27,7 @@ export const trendParams = (
     dataItemIds: readonly string[],
     periodIds: readonly string[],
     orgUnits: BulletinOrgUnits,
-    displayProperty: 'NAME' | 'SHORTNAME' = 'NAME'
+    displayProperty: DisplayProperty = 'NAME'
 ): AnalyticsParams => ({
     dimension: [`dx:${dataItemIds.join(';')}`, `pe:${periodIds.join(';')}`],
     filter: orgUnitDimension(orgUnits),
@@ -40,7 +44,7 @@ export const completenessParams = (
     periodIds: readonly string[],
     orgUnits: BulletinOrgUnits,
     level: number,
-    displayProperty: 'NAME' | 'SHORTNAME' = 'NAME'
+    displayProperty: DisplayProperty = 'NAME'
 ): AnalyticsParams => ({
     dimension: [
         `dx:${dataSetIds.map((id) => `${id}.REPORTING_RATE`).join(';')}`,

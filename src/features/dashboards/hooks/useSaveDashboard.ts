@@ -26,7 +26,7 @@ export const useSaveDashboard = () => {
     const { data: me } = useMe()
     return useMutation({
         mutationFn: async ({ key, draft, saved, previewElement }: SaveDashboardInput) => {
-            if (!me) throw new Error('The current user is not loaded yet.')
+            if (!me) throw new Error(i18n.t('The current user is not loaded yet.'))
             // A failed screenshot must not block saving.
             const preview = previewElement
                 ? await capturePreview(previewElement).catch(() => undefined)

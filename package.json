@@ -14,6 +14,8 @@
     "lint:fix": "eslint src --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json}\"",
+    "i18n:extract": "d2-app-scripts i18n extract",
+    "i18n:check": "node scripts/check-i18n.mjs",
     "prepare": "husky"
   },
   "devDependencies": {

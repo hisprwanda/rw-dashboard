@@ -7,6 +7,7 @@ export type {
     AnalyticsDimensions,
     AnalyticsLayout,
     AnalyticsParams,
+    DisplayProperty,
     LayoutDimensionName,
     OrgUnitRequestInput,
     StoredAnalyticsQuery,

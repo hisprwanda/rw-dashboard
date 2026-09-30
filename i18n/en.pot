@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-09-30T08:15:29.248Z\n"
-"PO-Revision-Date: 2026-09-30T08:15:29.248Z\n"
+"POT-Creation-Date: 2026-09-30T08:56:28.444Z\n"
+"PO-Revision-Date: 2026-09-30T08:56:28.445Z\n"
 
 msgid "Data items"
 msgstr "Data items"
@@ -64,9 +64,6 @@ msgstr "Could not save the sharing settings."
 
 msgid "The user's org units"
 msgstr "The user's org units"
-
-msgid "{{units}} org units, {{levels}} levels, {{groups}} groups"
-msgstr "{{units}} org units, {{levels}} levels, {{groups}} groups"
 
 msgid "New bulletin"
 msgstr "New bulletin"
@@ -176,6 +173,13 @@ msgstr "Delete"
 msgid "Bulletins"
 msgstr "Bulletins"
 
+msgid ""
+"Periodic bulletins built from your data. Design them once, then publish one "
+"issue per period."
+msgstr ""
+"Periodic bulletins built from your data. Design them once, then publish one "
+"issue per period."
+
 msgid "Import old bulletin texts"
 msgstr "Import old bulletin texts"
 
@@ -209,15 +213,15 @@ msgstr "Organisation unit"
 msgid "No reporting data for these periods."
 msgstr "No reporting data for these periods."
 
-msgid "{{count}} alerts from {{events}} reports."
-msgid_plural "{{count}} alerts from {{events}} reports."
-msgstr[0] "{{count}} alerts from {{events}} reports."
-msgstr[1] "{{count}} alerts from {{events}} reports."
+msgid "{{count}} alert from {{reports}}."
+msgid_plural "{{count}} alert from {{reports}}."
+msgstr[0] "{{count}} alert from {{reports}}."
+msgstr[1] "{{count}} alerts from {{reports}}."
 
-msgid "{{count}} {{name}} reported by {{places}} org units"
-msgid_plural "{{count}} {{name}} reported by {{places}} org units"
-msgstr[0] "{{count}} {{name}} reported by {{places}} org units"
-msgstr[1] "{{count}} {{name}} reported by {{places}} org units"
+msgid "{{count}} alert of {{name}} reported by {{orgUnits}}"
+msgid_plural "{{count}} alert of {{name}} reported by {{orgUnits}}"
+msgstr[0] "{{count}} alert of {{name}} reported by {{orgUnits}}"
+msgstr[1] "{{count}} alerts of {{name}} reported by {{orgUnits}}"
 
 msgid "None reported."
 msgstr "None reported."
@@ -325,11 +329,20 @@ msgstr "Events are grouped by its value."
 msgid "Location data element"
 msgstr "Location data element"
 
+msgid "Optional. Also groups by this value."
+msgstr "Optional. Also groups by this value."
+
 msgid "Count data element"
 msgstr "Count data element"
 
+msgid "Optional. Sums this number instead of counting events."
+msgstr "Optional. Sums this number instead of counting events."
+
 msgid "Data sets"
 msgstr "Data sets"
+
+msgid "Org unit level of the rows"
+msgstr "Org unit level of the rows"
 
 msgid "Good from (%)"
 msgstr "Good from (%)"
@@ -367,15 +380,15 @@ msgstr "Edit the bulletin to choose the data this section uses."
 msgid "This section could not be loaded"
 msgstr "This section could not be loaded"
 
-msgid "{{count}} cases of {{name}} reported by {{facilities}} facilities"
-msgid_plural "{{count}} cases of {{name}} reported by {{facilities}} facilities"
-msgstr[0] "{{count}} cases of {{name}} reported by {{facilities}} facilities"
-msgstr[1] "{{count}} cases of {{name}} reported by {{facilities}} facilities"
+msgid "{{count}} case of {{name}} reported by {{facilities}}"
+msgid_plural "{{count}} case of {{name}} reported by {{facilities}}"
+msgstr[0] "{{count}} case of {{name}} reported by {{facilities}}"
+msgstr[1] "{{count}} cases of {{name}} reported by {{facilities}}"
 
-msgid "{{count}} records were notified by {{facilities}} facilities."
-msgid_plural "{{count}} records were notified by {{facilities}} facilities."
-msgstr[0] "{{count}} records were notified by {{facilities}} facilities."
-msgstr[1] "{{count}} records were notified by {{facilities}} facilities."
+msgid "{{count}} record notified by {{facilities}}."
+msgid_plural "{{count}} record notified by {{facilities}}."
+msgstr[0] "{{count}} record notified by {{facilities}}."
+msgstr[1] "{{count}} records notified by {{facilities}}."
 
 msgid "Cases"
 msgstr "Cases"
@@ -386,10 +399,18 @@ msgstr "Public health events"
 msgid "Deaths"
 msgstr "Deaths"
 
-msgid "{{count}} deaths were reported by {{facilities}} facilities."
-msgid_plural "{{count}} deaths were reported by {{facilities}} facilities."
-msgstr[0] "{{count}} deaths were reported by {{facilities}} facilities."
-msgstr[1] "{{count}} deaths were reported by {{facilities}} facilities."
+msgid "{{count}} death reported by {{facilities}}."
+msgid_plural "{{count}} death reported by {{facilities}}."
+msgstr[0] "{{count}} death reported by {{facilities}}."
+msgstr[1] "{{count}} deaths reported by {{facilities}}."
+
+msgid "{{name}} {{value}} ({{percent}})"
+msgstr "{{name}} {{value}} ({{percent}})"
+
+msgid "{{count}} death in {{facility}}"
+msgid_plural "{{count}} death in {{facility}}"
+msgstr[0] "{{count}} death in {{facility}}"
+msgstr[1] "{{count}} deaths in {{facility}}"
 
 msgid "Bulletin published"
 msgstr "Bulletin published"
@@ -411,6 +432,31 @@ msgstr "Could not delete the bulletin. Please try again."
 
 msgid "Name is required"
 msgstr "Name is required"
+
+msgid "{{count}} facility"
+msgid_plural "{{count}} facility"
+msgstr[0] "{{count}} facility"
+msgstr[1] "{{count}} facilities"
+
+msgid "{{count}} org unit"
+msgid_plural "{{count}} org unit"
+msgstr[0] "{{count}} org unit"
+msgstr[1] "{{count}} org units"
+
+msgid "{{count}} report"
+msgid_plural "{{count}} report"
+msgstr[0] "{{count}} report"
+msgstr[1] "{{count}} reports"
+
+msgid "{{count}} level"
+msgid_plural "{{count}} level"
+msgstr[0] "{{count}} level"
+msgstr[1] "{{count}} levels"
+
+msgid "{{count}} group"
+msgid_plural "{{count}} group"
+msgstr[0] "{{count}} group"
+msgstr[1] "{{count}} groups"
 
 msgid "Cover"
 msgstr "Cover"
@@ -439,8 +485,17 @@ msgstr "No data available"
 msgid "Search in table..."
 msgstr "Search in table..."
 
+msgid "Item"
+msgstr "Item"
+
+msgid "Size {{value}}"
+msgstr "Size {{value}}"
+
 msgid "No data found"
 msgstr "No data found"
+
+msgid "Required headers (value and a category) are missing"
+msgstr "Required headers (value and a category) are missing"
 
 msgid "Value"
 msgstr "Value"
@@ -486,6 +541,45 @@ msgstr "Tree map"
 
 msgid "Table"
 msgstr "Table"
+
+msgid "Nature Essence"
+msgstr "Nature Essence"
+
+msgid "Tranquil Hues"
+msgstr "Tranquil Hues"
+
+msgid "Tropical Vibes"
+msgstr "Tropical Vibes"
+
+msgid "Retro Vibes"
+msgstr "Retro Vibes"
+
+msgid "Cyberpunk Neon"
+msgstr "Cyberpunk Neon"
+
+msgid "Berry Bliss"
+msgstr "Berry Bliss"
+
+msgid "Ocean Breeze"
+msgstr "Ocean Breeze"
+
+msgid "Sunset Glow"
+msgstr "Sunset Glow"
+
+msgid "Forest Harmony"
+msgstr "Forest Harmony"
+
+msgid "Elegant Neutrals"
+msgstr "Elegant Neutrals"
+
+msgid "Pastel Dreams"
+msgstr "Pastel Dreams"
+
+msgid "Autumn Serenity"
+msgstr "Autumn Serenity"
+
+msgid "Default"
+msgstr "Default"
 
 msgid "Remove {{name}}"
 msgstr "Remove {{name}}"
@@ -633,6 +727,9 @@ msgstr "PowerPoint file downloaded"
 
 msgid "Exporting to PowerPoint failed"
 msgstr "Exporting to PowerPoint failed"
+
+msgid "The current user is not loaded yet."
+msgstr "The current user is not loaded yet."
 
 msgid "Dashboard saved"
 msgstr "Dashboard saved"
@@ -1398,6 +1495,9 @@ msgid ""
 msgstr ""
 "You are not allowed to access this resource. Please contact the "
 "administrator for assistance."
+
+msgid "An external instance needs both a url and a token."
+msgstr "An external instance needs both a url and a token."
 
 msgid "Confirm"
 msgstr "Confirm"

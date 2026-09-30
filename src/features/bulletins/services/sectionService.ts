@@ -1,4 +1,4 @@
-import { fetchAnalytics } from '@/features/analytics'
+import { fetchAnalytics, type DisplayProperty } from '@/features/analytics'
 import { fetchAllPages, type InstanceClient } from '@/shared/api'
 import type { AnalyticsResponse, IdentifiableObject } from '@/shared/types/dhis2.types'
 import type {
@@ -98,7 +98,7 @@ export const fetchTrends = (
     dataItemIds: readonly string[],
     periodIds: readonly string[],
     orgUnits: BulletinOrgUnits,
-    displayProperty: 'NAME' | 'SHORTNAME',
+    displayProperty: DisplayProperty,
     signal?: AbortSignal
 ): Promise<AnalyticsResponse> =>
     fetchAnalytics(client, trendParams(dataItemIds, periodIds, orgUnits, displayProperty), signal)
@@ -109,7 +109,7 @@ export const fetchCompleteness = (
     periodIds: readonly string[],
     orgUnits: BulletinOrgUnits,
     level: number,
-    displayProperty: 'NAME' | 'SHORTNAME',
+    displayProperty: DisplayProperty,
     signal?: AbortSignal
 ): Promise<AnalyticsResponse> =>
     fetchAnalytics(

@@ -2,16 +2,19 @@ import i18n from '@dhis2/d2-i18n'
 import { formatNumber } from '@/shared/utils/format'
 import { useTrackerCases } from '../hooks/useSectionData'
 import type { BulletinContext, TrackerCasesSection } from '../types/bulletin.types'
+import { facilityCount } from '../utils/counts'
 import { pickText } from '../utils/localizedText'
 import type { GroupCount } from '../utils/summaries'
 import { DistributionPie, DistributionTreemap } from './DistributionCharts'
 import { ItemList, SectionFrame, SectionStatus } from './SectionFrame'
 
 const sentence = (group: GroupCount) =>
-    i18n.t('{{count}} cases of {{name}} reported by {{facilities}} facilities', {
+    i18n.t('{{count}} case of {{name}} reported by {{facilities}}', {
         count: group.count,
         name: group.name,
-        facilities: group.orgUnits,
+        facilities: facilityCount(group.orgUnits),
+        defaultValue: '{{count}} case of {{name}} reported by {{facilities}}',
+        defaultValue_plural: '{{count}} cases of {{name}} reported by {{facilities}}',
     })
 
 /** Cases, deaths and public health events of a tracker program for the period. */
@@ -37,9 +40,11 @@ export const TrackerCasesSectionView = ({
             {data && (
                 <div className="flex flex-col gap-4">
                     <p>
-                        {i18n.t('{{count}} records were notified by {{facilities}} facilities.', {
+                        {i18n.t('{{count}} record notified by {{facilities}}.', {
                             count: data.totalEnrollments,
-                            facilities: data.facilities,
+                            facilities: facilityCount(data.facilities),
+                            defaultValue: '{{count}} record notified by {{facilities}}.',
+                            defaultValue_plural: '{{count}} records notified by {{facilities}}.',
                         })}
                     </p>
                     <div>
@@ -59,18 +64,18 @@ export const TrackerCasesSectionView = ({
                         {data.totalDeaths > 0 ? (
                             <>
                                 <p>
-                                    {i18n.t(
-                                        '{{count}} deaths were reported by {{facilities}} facilities.',
-                                        {
-                                            count: data.totalDeaths,
-                                            facilities: data.deathsByFacility.length,
-                                        }
-                                    )}{' '}
+                                    {i18n.t('{{count}} death reported by {{facilities}}.', {
+                                        count: data.totalDeaths,
+                                        facilities: facilityCount(data.deathsByFacility.length),
+                                        defaultValue: '{{count}} death reported by {{facilities}}.',
+                                        defaultValue_plural:
+                                            '{{count}} deaths reported by {{facilities}}.',
+                                    })}{' '}
                                     {data.deathsByType
                                         .map((d) =>
-                                            i18n.t('{{name}}: {{count}} ({{percent}})', {
+                                            i18n.t('{{name}} {{value}} ({{percent}})', {
                                                 name: d.name,
-                                                count: d.value,
+                                                value: formatNumber(d.value),
                                                 percent: formatNumber(d.value / data.totalDeaths, {
                                                     style: 'percent',
                                                     maximumFractionDigits: 1,
@@ -82,9 +87,11 @@ export const TrackerCasesSectionView = ({
                                 <DistributionPie data={data.deathsByType} />
                                 <ItemList
                                     items={data.deathsByFacility.map((f) =>
-                                        i18n.t('{{facility}}: {{count}} deaths', {
-                                            facility: f.name,
+                                        i18n.t('{{count}} death in {{facility}}', {
                                             count: f.value,
+                                            facility: f.name,
+                                            defaultValue: '{{count}} death in {{facility}}',
+                                            defaultValue_plural: '{{count}} deaths in {{facility}}',
                                         })
                                     )}
                                     empty={noCases}

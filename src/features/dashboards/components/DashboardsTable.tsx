@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { paths } from '@/app/router/paths'
 import { useMe } from '@/features/auth'
 import { ConfirmModal, DataTable, type DataTableColumn } from '@/shared/components'
+import { formatDate } from '@/shared/utils/format'
 import { useDeleteDashboard } from '../hooks/useDeleteDashboard'
 import { useToggleFavorite } from '../hooks/useToggleFavorite'
 import type { SavedDashboardEntry } from '../types/dashboard.types'
@@ -20,8 +21,7 @@ interface DashboardsTableProps {
     onRetry?: () => void
 }
 
-const formatDate = (timestamp: number | undefined) =>
-    timestamp ? new Date(timestamp).toLocaleDateString() : ''
+const formatUpdated = (timestamp: number | undefined) => (timestamp ? formatDate(timestamp) : '')
 
 /** Dashboards with open, present, star and (for own dashboards) share and delete. */
 export const DashboardsTable = ({ rows, scope, loading, error, onRetry }: DashboardsTableProps) => {
@@ -54,7 +54,7 @@ export const DashboardsTable = ({ rows, scope, loading, error, onRetry }: Dashbo
                 key: 'created',
                 header: i18n.t('Created'),
                 value: (e) => e.value.createdAt,
-                render: (e) => formatDate(e.value.createdAt),
+                render: (e) => formatUpdated(e.value.createdAt),
                 sortable: true,
                 searchable: false,
             },
@@ -62,7 +62,7 @@ export const DashboardsTable = ({ rows, scope, loading, error, onRetry }: Dashbo
                 key: 'updated',
                 header: i18n.t('Last updated'),
                 value: (e) => e.value.updatedAt,
-                render: (e) => formatDate(e.value.updatedAt),
+                render: (e) => formatUpdated(e.value.updatedAt),
                 sortable: true,
                 searchable: false,
             },

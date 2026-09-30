@@ -5,6 +5,7 @@ import type { ChartProps } from '../types/chart.types'
 import { toSlices } from '../utils/chartData'
 import { ChartFrame } from './ChartFrame'
 import { useChartData } from '../hooks/useChartData'
+import { formatNumber } from '@/shared/utils/format'
 
 const EMPTY_COLOR = '#e5e7eb'
 
@@ -54,7 +55,10 @@ export const GaugeChart = (props: ChartProps) => {
                         className="font-bold"
                         style={{ fill: visualSettings.fillColor || '#1f2937', fontSize }}
                     >
-                        {percentage.toFixed(1)}
+                        {formatNumber(percentage, {
+                            minimumFractionDigits: 1,
+                            maximumFractionDigits: 1,
+                        })}
                     </text>
                 </PieChart>
             </div>

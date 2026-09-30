@@ -29,3 +29,12 @@ export const formatDateTime = (value: number | string | Date, locale = currentLo
 
 export const formatPercent = (value: number, fractionDigits = 1, locale = currentLocale()) =>
     formatNumber(value / 100, { style: 'percent', maximumFractionDigits: fractionDigits }, locale)
+
+/** Name of a language in the user's language (`fr` -> `French`, or `français` in French). */
+export const formatLanguageName = (code: string, locale = currentLocale()): string => {
+    try {
+        return new Intl.DisplayNames([safeLocale(locale)], { type: 'language' }).of(code) ?? code
+    } catch {
+        return code
+    }
+}

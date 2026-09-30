@@ -12,6 +12,7 @@ import type { ChartProps } from '../types/chart.types'
 import { toSlices } from '../utils/chartData'
 import { ChartFrame } from './ChartFrame'
 import { useChartData } from '../hooks/useChartData'
+import { formatNumber, formatPercent } from '@/shared/utils/format'
 
 const RADIAN = Math.PI / 180
 const LINE_HEIGHT = 20
@@ -32,14 +33,14 @@ export const PieChart = (props: ChartProps) => {
         const x = Number(cx) + radius * Math.cos(-Number(midAngle) * RADIAN)
         const y = Number(cy) + radius * Math.sin(-Number(midAngle) * RADIAN)
         const anchor = x > Number(cx) ? 'start' : 'end'
-        const percentage = total ? ((Number(value) / total) * 100).toFixed(1) : '0'
+        const percentage = formatPercent(total ? (Number(value) / total) * 100 : 0)
         return (
             <g>
                 <text x={x} y={y - LINE_HEIGHT / 2} textAnchor={anchor} style={textStyle}>
                     {name}
                 </text>
                 <text x={x} y={y + LINE_HEIGHT / 2} textAnchor={anchor} style={textStyle}>
-                    {`${value} (${percentage}%)`}
+                    {`${formatNumber(Number(value))} (${percentage})`}
                 </text>
             </g>
         )

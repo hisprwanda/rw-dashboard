@@ -8,6 +8,7 @@ import {
     useAnalyticsRun,
     type SelectedDataSource,
 } from '@/features/analytics'
+import { useDisplayProperty } from '@/features/auth'
 import { CURRENT_INSTANCE_ID, useDataSources } from '@/features/data-sources'
 import { orgUnitSelectionActions } from '@/features/org-units'
 import { useApplicationTitle } from '@/features/system'
@@ -26,6 +27,7 @@ export const useVisualBuilder = (visualId: string | undefined) => {
     const dispatch = useAppDispatch()
     const store = useAppStore()
     const applicationTitle = useApplicationTitle()
+    const displayProperty = useDisplayProperty()
     const analytics = useAnalyticsRun()
     const { run, reset } = analytics
     const visual = useVisual(visualId)
@@ -37,9 +39,9 @@ export const useVisualBuilder = (visualId: string | undefined) => {
     /** Runs the analytics of the current selection (no-op while it is incomplete). */
     const runAnalytics = useCallback(async () => {
         const { selection, orgUnitSelection } = store.getState()
-        const request = buildSelectionRequest(selection, orgUnitSelection)
+        const request = buildSelectionRequest(selection, orgUnitSelection, displayProperty)
         if (request) await run(request, selection.dataSource)
-    }, [store, run])
+    }, [store, run, displayProperty])
 
     useEffect(() => {
         const target = visualId ?? NEW_VISUAL
@@ -76,10 +78,20 @@ export const useVisualBuilder = (visualId: string | undefined) => {
         setMissingDataSource(!dataSource)
         setLoadedId(target)
 
-        const request = buildSelectionRequest(state.selection, state.orgUnits)
+        const request = buildSelectionRequest(state.selection, state.orgUnits, displayProperty)
         if (dataSource && request) void run(request, dataSource)
         else reset()
-    }, [visualId, visual.data, dataSources.data, loadedId, applicationTitle, dispatch, run, reset])
+    }, [
+        visualId,
+        visual.data,
+        dataSources.data,
+        loadedId,
+        applicationTitle,
+        displayProperty,
+        dispatch,
+        run,
+        reset,
+    ])
 
     // The automatic subtitle lists the items of the last result.
     useEffect(() => {

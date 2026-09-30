@@ -30,6 +30,7 @@ import {
     type PeriodType,
 } from '@/features/periods'
 import { useApplicationTitle } from '@/features/system'
+import { formatLanguageName } from '@/shared/utils/format'
 import { ErrorState, LoadingState } from '@/shared/components'
 import { useBulletinTemplate, useSaveBulletinTemplate } from '../hooks/useBulletinTemplates'
 import { useUiLocales } from '../hooks/useBulletinMetadata'
@@ -42,10 +43,14 @@ import type {
 } from '../types/bulletin.types'
 import { pickText } from '../utils/localizedText'
 import { move, newSection, SECTION_TYPES, sectionTypeLabel } from '../utils/newSection'
+import { groupCount, levelCount, orgUnitCount } from '../utils/counts'
 import { newTemplate } from '../utils/newTemplate'
 import { BulletinSectionView } from './BulletinSectionView'
 import { OrgUnitsModal } from './OrgUnitsModal'
 import { SectionEditor } from './SectionEditor'
+
+/** Content languages offered when the server's UI locales cannot be read. */
+const FALLBACK_LANGUAGES = ['en', 'fr']
 
 interface BulletinTemplateEditorProps {
     /** Template to edit; omitted to create a new one. */
@@ -55,11 +60,11 @@ interface BulletinTemplateEditorProps {
 const orgUnitsSummary = (template: BulletinTemplate) => {
     const { orgUnits } = template
     if (orgUnits.useCurrentUserOrgUnits) return i18n.t("The user's org units")
-    return i18n.t('{{units}} org units, {{levels}} levels, {{groups}} groups', {
-        units: orgUnits.orgUnitIds.length,
-        levels: orgUnits.levelIds.length,
-        groups: orgUnits.groupIds.length,
-    })
+    return [
+        orgUnitCount(orgUnits.orgUnitIds.length),
+        levelCount(orgUnits.levelIds.length),
+        groupCount(orgUnits.groupIds.length),
+    ].join(', ')
 }
 
 /** Design a bulletin: settings, ordered sections and their data, with a live preview. */
@@ -158,10 +163,9 @@ export const BulletinTemplateEditor = ({ templateId }: BulletinTemplateEditorPro
               }
             : null
 
-    const languageOptions = uiLocales.data ?? [
-        { locale: 'en', name: 'English' },
-        { locale: 'fr', name: 'French' },
-    ]
+    const languageOptions =
+        uiLocales.data ??
+        FALLBACK_LANGUAGES.map((code) => ({ locale: code, name: formatLanguageName(code) }))
 
     return (
         <div className="flex flex-col gap-3 p-4">

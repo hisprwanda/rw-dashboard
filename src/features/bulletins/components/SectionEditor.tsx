@@ -28,6 +28,8 @@ import { BulletinDataItemsModal } from './BulletinDataItemsModal'
 import { LocalizedTextField } from './LocalizedTextField'
 import { RefSelect } from './RefSelect'
 
+const CASE_CATEGORIES: readonly CaseCategory[] = ['case', 'death', 'publicEvent']
+
 /** Logos are stored inside the template: keep them small. */
 export const MAX_LOGO_BYTES = 200 * 1024
 
@@ -265,7 +267,7 @@ const TrackerCasesForm = ({ section, onChange, instance }: FormProps<TrackerCase
                                     })
                                 }
                             >
-                                {(['case', 'death', 'publicEvent'] as const).map((category) => (
+                                {CASE_CATEGORIES.map((category) => (
                                     <SingleSelectOption
                                         key={category}
                                         value={category}
@@ -353,12 +355,12 @@ const EventSignalsForm = ({ section, onChange, instance }: FormProps<EventSignal
             {elementSelect(
                 'locationElement',
                 i18n.t('Location data element'),
-                i18n.t('Optional: also group by this value.')
+                i18n.t('Optional. Also groups by this value.')
             )}
             {elementSelect(
                 'countElement',
                 i18n.t('Count data element'),
-                i18n.t('Optional: sum this number instead of counting events.')
+                i18n.t('Optional. Sums this number instead of counting events.')
             )}
         </>
     )
@@ -398,7 +400,7 @@ const CompletenessForm = ({ section, onChange, instance }: FormProps<Completenes
             </MultiSelectField>
             <SingleSelectField
                 dense
-                label={i18n.t('Rows: org unit level')}
+                label={i18n.t('Org unit level of the rows')}
                 loading={metadata.isLoading}
                 selected={
                     levels.some((l) => l.level === section.orgUnitLevel)

@@ -1,6 +1,7 @@
 import type {
     AnalyticsLayout,
     AnalyticsParams,
+    DisplayProperty,
     OrgUnitRequestInput,
     StoredAnalyticsQuery,
 } from '../types/analytics.types'
@@ -15,6 +16,8 @@ export interface AnalyticsRequestInput {
     orgUnit?: OrgUnitRequestInput
     /** Maps: periods go in the filter and the org units become a dimension. */
     map?: { periodFilter: string; orgUnitDimension: string }
+    /** Names or short names in the response (the user's analytics setting). */
+    displayProperty?: DisplayProperty
 }
 
 export interface AnalyticsRequest {
@@ -40,6 +43,7 @@ export const buildAnalyticsRequest = ({
     layout,
     orgUnit,
     map,
+    displayProperty = 'NAME',
 }: AnalyticsRequestInput): AnalyticsRequest | null => {
     const filter = map ? map.periodFilter : orgUnit ? buildOrgUnitDimension(orgUnit) : ''
 
@@ -49,7 +53,7 @@ export const buildAnalyticsRequest = ({
     if (!hasData || !hasPeriod || !hasOrgUnit) return null
 
     const fullDimension = map ? [...dimension, map.orgUnitDimension] : [...dimension]
-    const base: AnalyticsParams = { dimension: fullDimension, filter, displayProperty: 'NAME' }
+    const base: AnalyticsParams = { dimension: fullDimension, filter, displayProperty }
     const original: AnalyticsParams = { ...base, includeNumDen: true }
 
     const labelsParams: AnalyticsParams = {
