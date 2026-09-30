@@ -14,7 +14,11 @@ export const DashboardPresenter = ({ dashboardId }: { dashboardId: string }) => 
     return (
         <DashboardPresentation
             name={data.dashboardName}
-            items={inReadingOrder([...(data.selectedVisuals ?? []), ...(data.selectedMaps ?? [])])}
+            items={inReadingOrder([
+                ...(data.selectedVisuals ?? []),
+                ...(data.selectedMaps ?? []),
+                ...(data.selectedDhis2Items ?? []),
+            ])}
             onExit={() => navigate(paths.dashboard(dashboardId))}
         />
     )

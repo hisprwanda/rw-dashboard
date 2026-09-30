@@ -1,5 +1,6 @@
 import type { AnalyticsLayout, StoredAnalyticsQuery } from '@/features/analytics'
 import type { VisualSettings, VisualTitles } from '@/features/charts'
+import type { Dhis2ObjectType } from '@/features/dhis2-objects'
 import type { BasemapType, MapSettings, StoredGeoFeaturesQuery } from '@/features/maps'
 import type { Shareable, UserRef } from '@/shared/types/common.types'
 import type { DataStoreEntry } from '@/shared/types/dhis2.types'
@@ -38,6 +39,22 @@ export interface DashboardMapItem extends GridPosition {
     dataSourceId: string
 }
 
+/**
+ * A live link to a visualization or map made in DHIS2 (Data Visualizer, Maps). Only the
+ * reference is stored: the favorite is read on every view, so edits made in DHIS2 show.
+ */
+export interface DashboardDhis2Item extends GridPosition {
+    kind: 'dhis2'
+    objectType: Dhis2ObjectType
+    /** DHIS2 uid of the favorite. */
+    objectId: string
+    /** Name when added (shown as the title, also if the favorite disappears). */
+    name: string
+    /** `PIVOT_TABLE`, `COLUMN`… or the map's layer kinds. */
+    subtype: string
+    dataSourceId: string
+}
+
 /** A dashboard as stored in the dashboards dataStore namespace. */
 export type SavedDashboard = Shareable & {
     dashboardName: string
@@ -48,6 +65,8 @@ export type SavedDashboard = Shareable & {
     updatedAt: number
     selectedVisuals: DashboardVisualItem[]
     selectedMaps?: DashboardMapItem[]
+    /** Live DHIS2 visualizations and maps (absent on older dashboards). */
+    selectedDhis2Items?: DashboardDhis2Item[]
     /** Base64 screenshot shown on cards. */
     previewImg?: string
     /** Official dashboards are pinned on the home page. */

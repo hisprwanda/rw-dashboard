@@ -1,6 +1,7 @@
-import { screen, waitFor } from '@testing-library/react'
+import { act, screen, waitFor } from '@testing-library/react'
 import { renderWithProviders } from '@/shared/testing'
 import { Dhis2ObjectView } from './Dhis2ObjectView'
+import { PLUGIN_HANDSHAKE_MS } from './Dhis2PluginView'
 
 const PLUGIN = 'https://dhis2.example.org/dhis-web-data-visualizer/plugin.html'
 
@@ -63,5 +64,27 @@ describe('Dhis2ObjectView (current instance)', () => {
         expect(screen.getByText('ANC 1st visit')).toBeTruthy()
         // Column total of 1,200 + 800.
         expect(screen.getByText('2,000')).toBeTruthy()
+    })
+
+    it('draws the favorite itself when the plugin stays silent (frame refused)', async () => {
+        jest.useFakeTimers()
+        try {
+            const { container } = renderWithProviders(view, {
+                data: {
+                    apps: [{ key: 'data-visualizer', pluginLaunchUrl: PLUGIN }],
+                    'visualizations/pt1': pivotTable,
+                    analytics,
+                    me: { id: 'u1', settings: {} },
+                },
+            })
+            await waitFor(() => expect(container.querySelector('iframe')).not.toBeNull())
+            act(() => {
+                jest.advanceTimersByTime(PLUGIN_HANDSHAKE_MS + 1)
+            })
+            expect(await screen.findByText('Kenema')).toBeTruthy()
+            expect(container.querySelector('iframe')).toBeNull()
+        } finally {
+            jest.useRealTimers()
+        }
     })
 })

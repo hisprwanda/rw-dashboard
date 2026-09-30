@@ -1,5 +1,10 @@
 import i18n from '@dhis2/d2-i18n'
-import type { InstanceClient } from '@/shared/api'
+import {
+    createInstanceClient,
+    type DataEngine,
+    type InstanceClient,
+    type InstanceConnection,
+} from '@/shared/api'
 import type {
     Dhis2Map,
     Dhis2ObjectPage,
@@ -159,6 +164,30 @@ export const fetchObjectImage = async (
         throw new Error(i18n.t('DHIS2 has no image of this item.'))
     }
     return blob
+}
+
+const toDataUrl = (blob: Blob) =>
+    new Promise<string>((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => resolve(String(reader.result))
+        reader.onerror = () => reject(reader.error ?? new Error('read'))
+        reader.readAsDataURL(blob)
+    })
+
+/** The server-rendered image as a data URL (exports), or `null` when there is none. */
+export const fetchObjectImageDataUrl = async (
+    engine: DataEngine,
+    instance: InstanceConnection,
+    objectType: Dhis2ObjectType,
+    id: string
+): Promise<string | null> => {
+    try {
+        return await toDataUrl(
+            await fetchObjectImage(createInstanceClient(engine, instance), objectType, id)
+        )
+    } catch {
+        return null
+    }
 }
 
 /** Installed apps, to find the plugin of the Data Visualizer and Maps apps. */

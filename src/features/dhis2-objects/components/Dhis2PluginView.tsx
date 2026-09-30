@@ -1,6 +1,6 @@
 // The platform's plugin host (iframe + post-robot), as used by the official Dashboard app.
 import { Plugin } from '@dhis2/app-runtime/experimental'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useMe } from '@/features/auth'
 import type { InstanceConnection } from '@/shared/api'
 import { LoadingState } from '@/shared/components'
@@ -11,6 +11,33 @@ import { Dhis2NativeVisualization } from './Dhis2NativeVisualization'
 import { Dhis2ObjectError } from './Dhis2ObjectError'
 
 const CURRENT_INSTANCE: InstanceConnection = { isCurrentInstance: true }
+
+/**
+ * How long a plugin may stay silent. A plugin asks for its props as soon as it starts; a
+ * frame the server refuses to be embedded in (CSP `frame-ancestors`, e.g. an app served
+ * from another origin) never does, and would otherwise stay blank.
+ */
+export const PLUGIN_HANDSHAKE_MS = 20_000
+
+/** `true` once the iframe inside `container` has posted a message; `false` after the timeout. */
+const usePluginHandshake = (active: boolean) => {
+    const container = useRef<HTMLDivElement>(null)
+    const [alive, setAlive] = useState<boolean | undefined>(undefined)
+    useEffect(() => {
+        if (!active) return undefined
+        const onMessage = (event: MessageEvent) => {
+            const frame = container.current?.querySelector('iframe')
+            if (frame && event.source === frame.contentWindow) setAlive(true)
+        }
+        window.addEventListener('message', onMessage)
+        const timer = setTimeout(() => setAlive((current) => current ?? false), PLUGIN_HANDSHAKE_MS)
+        return () => {
+            window.removeEventListener('message', onMessage)
+            clearTimeout(timer)
+        }
+    }, [active])
+    return { container, silent: alive === false }
+}
 
 interface Dhis2PluginViewProps {
     objectType: Dhis2ObjectType
@@ -43,6 +70,7 @@ export const Dhis2PluginView = ({
     const error = objectType === 'map' ? map.error : visualization.error
     const [failed, setFailed] = useState(false)
     const onError = useCallback(() => setFailed(true), [])
+    const handshake = usePluginHandshake(!!definition && !failed)
 
     // Same props as the official Dashboard app (dashboard-app IframePlugin).
     const pluginProps = useMemo(
@@ -56,7 +84,7 @@ export const Dhis2PluginView = ({
         [definition, me?.settings?.keyAnalysisDisplayProperty, onError]
     )
 
-    if (failed) {
+    if (failed || handshake.silent) {
         return objectType === 'map' ? (
             <Dhis2NativeMap
                 instance={CURRENT_INSTANCE}
@@ -71,12 +99,14 @@ export const Dhis2PluginView = ({
     if (error) return <Dhis2ObjectError error={error} />
     if (!definition) return <LoadingState />
     return (
-        <Plugin
-            pluginSource={pluginSource}
-            width="100%"
-            height="100%"
-            className="block h-full w-full"
-            {...pluginProps}
-        />
+        <div ref={handshake.container} className="h-full w-full">
+            <Plugin
+                pluginSource={pluginSource}
+                width="100%"
+                height="100%"
+                className="block h-full w-full"
+                {...pluginProps}
+            />
+        </div>
     )
 }

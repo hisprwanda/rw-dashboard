@@ -9,6 +9,7 @@ import {
     buildDashboard,
     inReadingOrder,
     nextPosition,
+    toDhis2Item,
     toMapItem,
     toVisualItem,
     withGridLayout,
@@ -102,5 +103,48 @@ describe('dashboardEditorSlice', () => {
         expect(state.visuals).toHaveLength(1)
         state = reducer(state, actions.removeItem('m1'))
         expect(state.maps).toHaveLength(0)
+    })
+})
+
+describe('DHIS2 favorites on dashboards', () => {
+    const summary = {
+        id: 'pt1',
+        name: 'ANC table',
+        objectType: 'visualization' as const,
+        subtype: 'PIVOT_TABLE',
+    }
+
+    it('links a favorite per data source, loads and saves it', () => {
+        const here = toDhis2Item(summary, '1', 0)
+        const there = toDhis2Item(summary, 'ext', 1)
+        expect(here).toMatchObject({ i: '1_visualization_pt1', kind: 'dhis2', objectId: 'pt1' })
+        expect(there.i).toBe('ext_visualization_pt1')
+
+        let state = reducer(initialDashboardEditor, actions.addDhis2Item(here))
+        state = reducer(state, actions.addDhis2Item(here))
+        state = reducer(state, actions.addDhis2Item(there))
+        expect(state.dhis2Items.map((item) => item.i)).toEqual([here.i, there.i])
+
+        state = reducer(state, actions.applyGridLayout([{ i: here.i, x: 6, y: 0, w: 6, h: 4 }]))
+        expect(state.dhis2Items[0]).toMatchObject({ x: 6, w: 6, h: 4 })
+
+        const saved = buildDashboard(state, undefined, { id: 'u', name: 'U' }, 1, undefined)
+        expect(saved.selectedDhis2Items).toHaveLength(2)
+        expect(reducer(state, actions.loadDashboard(saved)).dhis2Items).toHaveLength(2)
+
+        state = reducer(state, actions.removeItem(there.i))
+        expect(state.dhis2Items).toHaveLength(1)
+    })
+
+    it('loads older dashboards without DHIS2 items', () => {
+        const saved = buildDashboard(
+            initialDashboardEditor,
+            undefined,
+            { id: 'u', name: 'U' },
+            1,
+            undefined
+        )
+        delete saved.selectedDhis2Items
+        expect(reducer(initialDashboardEditor, actions.loadDashboard(saved)).dhis2Items).toEqual([])
     })
 })

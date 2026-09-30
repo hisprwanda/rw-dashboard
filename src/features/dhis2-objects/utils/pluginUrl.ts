@@ -34,3 +34,11 @@ export const pluginUrl = ({
     const path = launchUrl.slice(prefix.length)
     return new URL(`${baseUrl.replace(/\/+$/, '')}${path}`, pageUrl).href
 }
+
+/** Where a favorite opens in its own DHIS2 app (`baseUrl` of that instance). */
+export const openInDhis2Url = (baseUrl: string, objectType: Dhis2ObjectType, id: string) => {
+    const base = baseUrl.replace(/\/+$/, '')
+    return objectType === 'map'
+        ? `${base}/dhis-web-maps/index.html?id=${encodeURIComponent(id)}`
+        : `${base}/dhis-web-data-visualizer/index.html#/${encodeURIComponent(id)}`
+}

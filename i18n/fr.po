@@ -4,8 +4,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-30T15:14:20.091Z\n"
-"PO-Revision-Date: 2026-09-30T15:14:20.092Z\n"
+"POT-Creation-Date: 2026-09-30T18:58:51.071Z\n"
+"PO-Revision-Date: 2026-09-30T18:58:51.071Z\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 "Language: fr\n"
 
@@ -622,6 +622,9 @@ msgstr "Ajouter une carte"
 msgid "Select a map"
 msgstr "Sélectionner une carte"
 
+msgid "Add from DHIS2"
+msgstr "Ajouter depuis DHIS2"
+
 msgid "Slide {{current}} of {{total}}"
 msgstr "Diapositive {{current}} sur {{total}}"
 
@@ -907,6 +910,15 @@ msgstr "Le jeton ne peut pas dépasser 256 caractères"
 msgid "Token can only contain letters, numbers, dashes or underscores"
 msgstr "Le jeton ne peut contenir que des lettres, des chiffres, des tirets ou des traits de soulignement"
 
+msgid "Shown only in DHIS2"
+msgstr "Affiché uniquement dans DHIS2"
+
+msgid "This item uses features that can only be drawn by DHIS2 itself."
+msgstr "Cet élément utilise des fonctionnalités que seul DHIS2 peut afficher."
+
+msgid "Open in DHIS2"
+msgstr "Ouvrir dans DHIS2"
+
 msgid "Not available"
 msgstr "Non disponible"
 
@@ -916,8 +928,86 @@ msgstr "Cet élément a été supprimé dans DHIS2 ou n'est pas partagé avec vo
 msgid "Could not load this item"
 msgstr "Impossible de charger cet élément"
 
+msgid "Visualizations and maps made in the Data Visualizer and Maps apps. They stay linked, so changes made in DHIS2 show on the dashboard."
+msgstr "Visualisations et cartes créées dans les applications Data Visualizer et Maps. Elles restent liées : les modifications faites dans DHIS2 apparaissent sur le tableau de bord."
+
+msgid "Search"
+msgstr "Rechercher"
+
+msgid "Name contains"
+msgstr "Le nom contient"
+
+msgid "Visualizations"
+msgstr "Visualisations"
+
+msgid "Maps"
+msgstr "Cartes"
+
+msgid "Nothing found."
+msgstr "Aucun résultat."
+
+msgid "Added"
+msgstr "Ajouté"
+
+msgid "Previous"
+msgstr "Précédent"
+
+msgid "Page {{page}} of {{pages}}"
+msgstr "Page {{page}} sur {{pages}}"
+
+msgid "Next"
+msgstr "Suivant"
+
 msgid "DHIS2 has no image of this item."
 msgstr "DHIS2 n'a pas d'image de cet élément."
+
+msgid "Pivot table"
+msgstr "Tableau croisé dynamique"
+
+msgid "Year over year (line)"
+msgstr "Année sur année (ligne)"
+
+msgid "Year over year (column)"
+msgstr "Année sur année (colonne)"
+
+msgid "Stacked area"
+msgstr "Aire empilée"
+
+msgid "Bubble"
+msgstr "Bulles"
+
+msgid "Outlier table"
+msgstr "Tableau des valeurs aberrantes"
+
+msgid "Thematic"
+msgstr "Thématique"
+
+msgid "Events"
+msgstr "Événements"
+
+msgid "Tracked entities"
+msgstr "Entités suivies"
+
+msgid "Facilities"
+msgstr "Établissements"
+
+msgid "Boundaries"
+msgstr "Limites"
+
+msgid "Org units"
+msgstr "Unités d'organisation"
+
+msgid "Earth Engine"
+msgstr "Earth Engine"
+
+msgid "External layer"
+msgstr "Couche externe"
+
+msgid "GeoJSON layer"
+msgstr "Couche GeoJSON"
+
+msgid "Map"
+msgstr "Carte"
 
 msgid "Save map"
 msgstr "Enregistrer la carte"
@@ -945,9 +1035,6 @@ msgstr "Réduire la légende"
 
 msgid "Expand legend"
 msgstr "Développer la légende"
-
-msgid "Maps"
-msgstr "Cartes"
 
 msgid "New map"
 msgstr "Nouvelle carte"
@@ -1000,9 +1087,6 @@ msgstr "Jeu de légendes"
 msgid "Could not load the legend sets."
 msgstr "Impossible de charger les jeux de légendes."
 
-msgid "Org units"
-msgstr "Unités d'organisation"
-
 msgid "Style"
 msgstr "Style"
 
@@ -1051,14 +1135,8 @@ msgstr "Carte enregistrée"
 msgid "Could not save the map. Please try again."
 msgstr "Impossible d'enregistrer la carte. Veuillez réessayer."
 
-msgid "Thematic"
-msgstr "Thématique"
-
 msgid "Visualizers"
 msgstr "Visualisations"
-
-msgid "Map"
-msgstr "Carte"
 
 msgid "Settings"
 msgstr "Paramètres"
@@ -1438,9 +1516,6 @@ msgstr "Dimensions"
 msgid "The data source of this visualization was deleted or is not shared with you. Pick another data source."
 msgstr "La source de données de cette visualisation a été supprimée ou n'est pas partagée avec vous. Choisissez une autre source de données."
 
-msgid "Visualizations"
-msgstr "Visualisations"
-
 msgid "New visualization"
 msgstr "Nouvelle visualisation"
 
@@ -1488,9 +1563,6 @@ msgstr "Une instance externe nécessite une URL et un jeton."
 
 msgid "Confirm"
 msgstr "Confirmer"
-
-msgid "Search"
-msgstr "Rechercher"
 
 msgid "No results match \"{{search}}\""
 msgstr "Aucun résultat pour « {{search}} »"

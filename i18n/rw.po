@@ -7,8 +7,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-30T15:14:20.091Z\n"
-"PO-Revision-Date: 2026-09-30T15:14:20.092Z\n"
+"POT-Creation-Date: 2026-09-30T18:58:51.071Z\n"
+"PO-Revision-Date: 2026-09-30T18:58:51.071Z\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "Language: rw\n"
 
@@ -99,8 +99,14 @@ msgstr "Ubwoko"
 msgid "Close"
 msgstr "Funga"
 
+msgid "Search"
+msgstr "Shakisha"
+
 msgid "Maps"
 msgstr "Amakarita"
+
+msgid "Map"
+msgstr "Ikarita"
 
 msgid "No data"
 msgstr "Nta makuru"
@@ -113,9 +119,6 @@ msgstr "Hagati"
 
 msgid "High"
 msgstr "Hejuru"
-
-msgid "Map"
-msgstr "Ikarita"
 
 msgid "Settings"
 msgstr "Igenamiterere"
@@ -215,9 +218,6 @@ msgstr "Urupapuro ntirwabonetse"
 
 msgid "Confirm"
 msgstr "Emeza"
-
-msgid "Search"
-msgstr "Shakisha"
 
 msgid "File name"
 msgstr "Izina rya dosiye"
