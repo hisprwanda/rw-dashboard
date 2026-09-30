@@ -10,7 +10,7 @@ import { useToggleFavorite } from '../hooks/useToggleFavorite'
 import type { SavedDashboardEntry } from '../types/dashboard.types'
 import { isFavoriteOf } from '../utils/dashboardLists'
 import { FavoriteButton } from './FavoriteButton'
-import { SharingModal } from './SharingModal'
+import { DashboardSharingModal } from './DashboardSharingModal'
 
 interface DashboardsTableProps {
     rows: SavedDashboardEntry[] | undefined
@@ -119,7 +119,7 @@ export const DashboardsTable = ({ rows, scope, loading, error, onRetry }: Dashbo
                 }
             />
             {toShare && (
-                <SharingModal
+                <DashboardSharingModal
                     dashboardKey={toShare.key}
                     dashboardName={toShare.value.dashboardName}
                     onClose={() => setToShare(null)}

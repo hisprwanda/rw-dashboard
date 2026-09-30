@@ -2,15 +2,21 @@ import { buildOrgUnitDimension, type AnalyticsParams } from '@/features/analytic
 import type { QueryParams } from '@/shared/api'
 import type { BulletinOrgUnits } from '../types/bulletin.types'
 
-/** The bulletin's org units as an analytics `ou:` dimension (levels and groups included). */
-export const orgUnitDimension = (orgUnits: BulletinOrgUnits, extraLevel?: number) =>
-    buildOrgUnitDimension({
+/**
+ * The bulletin's org units as an analytics `ou:` dimension. With `level`, the rows are
+ * the units of that level under the bulletin's units (`USER_ORGUNIT;LEVEL-3`,
+ * `abc;LEVEL-3`); groups do not apply then.
+ */
+export const orgUnitDimension = (orgUnits: BulletinOrgUnits, level?: number) => {
+    const base = buildOrgUnitDimension({
         useCurrentUserOrgUnits: orgUnits.useCurrentUserOrgUnits,
         userOrgUnitScope: orgUnits.userOrgUnitScope,
-        orgUnitIds: orgUnits.orgUnits.map((unit) => unit.id),
-        levelIds: extraLevel ? [String(extraLevel)] : orgUnits.levelIds,
-        groupIds: extraLevel ? [] : orgUnits.groupIds,
+        orgUnitIds: orgUnits.orgUnitIds,
+        levelIds: level ? [] : orgUnits.levelIds,
+        groupIds: level ? [] : orgUnits.groupIds,
     })
+    return level ? `${base === 'ou:' ? 'ou:USER_ORGUNIT' : base};LEVEL-${level}` : base
+}
 
 /** Trend of data items over periods (data on columns, periods on rows, org units filter). */
 export const trendParams = (
@@ -49,6 +55,6 @@ export const completenessParams = (
  * searched with their descendants, user org units with the user's capture scope.
  */
 export const trackerOrgUnitParams = (orgUnits: BulletinOrgUnits): QueryParams =>
-    orgUnits.useCurrentUserOrgUnits || !orgUnits.orgUnits.length
+    orgUnits.useCurrentUserOrgUnits || !orgUnits.orgUnitIds.length
         ? { ouMode: 'CAPTURE' }
-        : { orgUnit: orgUnits.orgUnits.map((unit) => unit.id).join(';'), ouMode: 'DESCENDANTS' }
+        : { orgUnit: orgUnits.orgUnitIds.join(';'), ouMode: 'DESCENDANTS' }

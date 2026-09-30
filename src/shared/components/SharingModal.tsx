@@ -14,12 +14,16 @@ import {
     SingleSelectOption,
 } from '@dhis2/ui'
 import { useState } from 'react'
-import { ErrorState, LoadingState } from '@/shared/components'
-import type { SharingEntry } from '@/shared/types/common.types'
-import { useDashboard } from '../hooks/useDashboard'
 import { useSharingSearch } from '../hooks/useSharingSearch'
-import { useUpdateDashboard } from '../hooks/useUpdateDashboard'
-import type { AccessLevel, GeneralAccess, SharingCandidate } from '../types/dashboard.types'
+import type {
+    AccessLevel,
+    GeneralAccess,
+    Shareable,
+    SharingCandidate,
+    SharingEntry,
+} from '../types/common.types'
+import { ErrorState } from './feedback/ErrorState'
+import { LoadingState } from './feedback/LoadingState'
 
 const REMOVE = 'remove'
 
@@ -29,16 +33,35 @@ const accessLabels = (): Record<GeneralAccess, string> => ({
     'View and edit': i18n.t('View and edit'),
 })
 
+/** The sharing part of a saved item. */
+export type SharingValue = Pick<Shareable, 'sharing' | 'generalDashboardAccess'>
+
 interface SharingModalProps {
-    dashboardKey: string
-    dashboardName: string
+    /** Name of the shared item, shown in the title. */
+    name: string
+    /** Current sharing (undefined while loading). */
+    value: SharingValue | undefined
+    loading?: boolean
+    error?: unknown
+    saving?: boolean
+    /** Applies a change to the latest stored sharing and saves it. */
+    onSave: (change: (current: SharingValue) => SharingValue) => void
     onClose: () => void
 }
 
-/** Who can see a dashboard: everyone (general access) and specific users or groups. */
-export const SharingModal = ({ dashboardKey, dashboardName, onClose }: SharingModalProps) => {
-    const dashboard = useDashboard(dashboardKey)
-    const update = useUpdateDashboard()
+/**
+ * Who can see an item (dashboard, bulletin…): everyone (general access) and specific
+ * users or groups. The owner always keeps access.
+ */
+export const SharingModal = ({
+    name,
+    value,
+    loading = false,
+    error,
+    saving = false,
+    onSave,
+    onClose,
+}: SharingModalProps) => {
     const [search, setSearch] = useState('')
     const [picked, setPicked] = useState<SharingCandidate | null>(null)
     const [access, setAccess] = useState<AccessLevel>('View only')
@@ -46,13 +69,9 @@ export const SharingModal = ({ dashboardKey, dashboardName, onClose }: SharingMo
     const labels = accessLabels()
 
     const save = (change: (sharing: SharingEntry[]) => SharingEntry[]) =>
-        update.mutate({
-            key: dashboardKey,
-            update: (current) => ({ ...current, sharing: change(current.sharing ?? []) }),
-            successMessage: i18n.t('Sharing settings saved'),
-        })
+        onSave((current) => ({ ...current, sharing: change(current.sharing ?? []) }))
 
-    const sharing = dashboard.data?.sharing ?? []
+    const sharing = value?.sharing ?? []
     const alreadyShared = !!picked && sharing.some((share) => share.id === picked.id)
 
     const giveAccess = () => {
@@ -67,13 +86,11 @@ export const SharingModal = ({ dashboardKey, dashboardName, onClose }: SharingMo
 
     return (
         <Modal onClose={onClose} position="middle">
-            <ModalTitle>
-                {i18n.t('Sharing settings for {{name}}', { name: dashboardName })}
-            </ModalTitle>
+            <ModalTitle>{i18n.t('Sharing settings for {{name}}', { name })}</ModalTitle>
             <ModalContent>
-                {dashboard.isLoading && <LoadingState />}
-                {dashboard.error && <ErrorState error={dashboard.error} />}
-                {dashboard.data && (
+                {loading && <LoadingState />}
+                {!!error && <ErrorState error={error} />}
+                {value && (
                     <div className="flex flex-col gap-5">
                         <section>
                             <h4 className="mb-2 mt-0 text-sm font-semibold">
@@ -86,9 +103,9 @@ export const SharingModal = ({ dashboardKey, dashboardName, onClose }: SharingMo
                                         label={i18n.t('User or group')}
                                         placeholder={i18n.t('Search users or groups')}
                                         value={picked ? picked.name : search}
-                                        onChange={({ value }) => {
+                                        onChange={({ value: text }) => {
                                             setPicked(null)
-                                            setSearch(value ?? '')
+                                            setSearch(text ?? '')
                                         }}
                                     />
                                     {!picked && search.trim() && (
@@ -144,7 +161,7 @@ export const SharingModal = ({ dashboardKey, dashboardName, onClose }: SharingMo
                                 <Button
                                     primary
                                     disabled={!picked || alreadyShared}
-                                    loading={update.isPending}
+                                    loading={saving}
                                     onClick={giveAccess}
                                 >
                                     {i18n.t('Give access')}
@@ -174,18 +191,12 @@ export const SharingModal = ({ dashboardKey, dashboardName, onClose }: SharingMo
                                 <div className="w-40">
                                     <SingleSelectField
                                         dense
-                                        selected={
-                                            dashboard.data.generalDashboardAccess ?? 'No access'
-                                        }
+                                        selected={value.generalDashboardAccess ?? 'No access'}
                                         onChange={({ selected }) =>
-                                            update.mutate({
-                                                key: dashboardKey,
-                                                update: (current) => ({
-                                                    ...current,
-                                                    generalDashboardAccess: selected,
-                                                }),
-                                                successMessage: i18n.t('Sharing settings saved'),
-                                            })
+                                            onSave((current) => ({
+                                                ...current,
+                                                generalDashboardAccess: selected,
+                                            }))
                                         }
                                     >
                                         {(Object.keys(labels) as GeneralAccess[]).map((key) => (

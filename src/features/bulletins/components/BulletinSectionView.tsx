@@ -56,15 +56,12 @@ export const BulletinSectionView = ({
                 <NotesSectionView
                     section={section}
                     context={context}
-                    value={
-                        editing.editable
-                            ? (editing.notes[section.id]?.[context.language] ?? '')
-                            : pickText(
-                                  editing.notes[section.id],
-                                  context.language,
-                                  context.languages
-                              )
-                    }
+                    value={editing.notes[section.id]?.[context.language] ?? ''}
+                    displayValue={pickText(
+                        editing.notes[section.id],
+                        context.language,
+                        context.languages
+                    )}
                     editable={editing.editable}
                     onChange={(value) => editing.onNotesChange(section.id, value)}
                 />

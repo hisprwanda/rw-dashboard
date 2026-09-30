@@ -1,4 +1,6 @@
 import { CustomDataProvider } from '@dhis2/app-runtime'
+// Part of the app runtime (not re-exported): lets `useAlert` work in tests.
+import { AlertsProvider } from '@dhis2/app-service-alerts'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, renderHook } from '@testing-library/react'
 import type { ComponentProps, ReactElement, ReactNode } from 'react'
@@ -27,11 +29,13 @@ const makeWrapper = ({ data = {}, route = '/', store = makeStore() }: Options) =
     const Wrapper = ({ children }: { children: ReactNode }) => (
         // Test boundary: fixtures are app types (not JsonValue); the provider accepts any JSON.
         <CustomDataProvider data={data as CustomData}>
-            <Provider store={store}>
-                <QueryClientProvider client={queryClient}>
-                    <MemoryRouter initialEntries={[route]}>{children}</MemoryRouter>
-                </QueryClientProvider>
-            </Provider>
+            <AlertsProvider>
+                <Provider store={store}>
+                    <QueryClientProvider client={queryClient}>
+                        <MemoryRouter initialEntries={[route]}>{children}</MemoryRouter>
+                    </QueryClientProvider>
+                </Provider>
+            </AlertsProvider>
         </CustomDataProvider>
     )
     return { Wrapper, store, queryClient }

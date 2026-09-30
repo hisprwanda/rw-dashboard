@@ -11,7 +11,7 @@ export const CoverSectionView = ({
     const text = (value: CoverSection['title']) =>
         pickText(value, context.language, context.languages)
     return (
-        <header className="bulletin-section mb-8 text-center">
+        <div className="bulletin-section mb-8 text-center">
             {section.logos.length > 0 && (
                 <div className="mb-6 flex items-center justify-between gap-4">
                     {section.logos.map((logo, index) => (
@@ -30,6 +30,6 @@ export const CoverSectionView = ({
             {section.description && (
                 <p className="mt-6 whitespace-pre-line text-left">{text(section.description)}</p>
             )}
-        </header>
+        </div>
     )
 }

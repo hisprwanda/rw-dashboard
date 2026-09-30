@@ -14,7 +14,10 @@ export interface MetadataRef {
     name: string
 }
 
-/** Org-unit dimension of a bulletin (same keywords as the analytics `ou:` dimension). */
+/**
+ * Org units of a bulletin, in the shape of the org-unit picker (Redux `orgUnitSelection`):
+ * the user's org units, or explicit units plus levels and groups.
+ */
 export interface BulletinOrgUnits {
     useCurrentUserOrgUnits: boolean
     userOrgUnitScope: {
@@ -22,8 +25,11 @@ export interface BulletinOrgUnits {
         is_USER_ORGUNIT_CHILDREN: boolean
         is_USER_ORGUNIT_GRANDCHILDREN: boolean
     }
-    orgUnits: MetadataRef[]
+    orgUnitIds: string[]
+    /** Tree paths of the explicit units (to restore the tree selection). */
+    treePaths: string[]
     levelIds: string[]
+    levels: number[]
     groupIds: string[]
 }
 

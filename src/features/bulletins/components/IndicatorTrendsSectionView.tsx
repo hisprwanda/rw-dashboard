@@ -40,7 +40,7 @@ export const IndicatorTrendsSectionView = ({
                 return (
                     <figure key={id} className="m-0 mb-6 break-inside-avoid-page">
                         {response.rows.length ? (
-                            <div className="h-72">
+                            <div className="w-full">
                                 <ChartRenderer
                                     type={section.chartType}
                                     data={response}

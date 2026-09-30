@@ -5,8 +5,433 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-09-29T21:24:07.522Z\n"
-"PO-Revision-Date: 2026-09-29T21:24:07.522Z\n"
+"POT-Creation-Date: 2026-09-30T08:15:29.248Z\n"
+"PO-Revision-Date: 2026-09-30T08:15:29.248Z\n"
+
+msgid "Data items"
+msgstr "Data items"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Apply"
+msgstr "Apply"
+
+msgid "Data source not available"
+msgstr "Data source not available"
+
+msgid "The data source of this bulletin was deleted or is not shared with you."
+msgstr "The data source of this bulletin was deleted or is not shared with you."
+
+msgid "Pick a period"
+msgstr "Pick a period"
+
+msgid "This bulletin needs a fixed period of its period type."
+msgstr "This bulletin needs a fixed period of its period type."
+
+msgid "Content language"
+msgstr "Content language"
+
+msgid "Published"
+msgstr "Published"
+
+msgid "Draft"
+msgstr "Draft"
+
+msgid "Saved by {{name}} on {{date}}"
+msgstr "Saved by {{name}} on {{date}}"
+
+msgid "Edit bulletin"
+msgstr "Edit bulletin"
+
+msgid "Print / PDF"
+msgstr "Print / PDF"
+
+msgid "Save draft"
+msgstr "Save draft"
+
+msgid "Publish"
+msgstr "Publish"
+
+msgid "This bulletin has no sections yet. Edit it to add some."
+msgstr "This bulletin has no sections yet. Edit it to add some."
+
+msgid "Sharing settings saved"
+msgstr "Sharing settings saved"
+
+msgid "Could not save the sharing settings."
+msgstr "Could not save the sharing settings."
+
+msgid "The user's org units"
+msgstr "The user's org units"
+
+msgid "{{units}} org units, {{levels}} levels, {{groups}} groups"
+msgstr "{{units}} org units, {{levels}} levels, {{groups}} groups"
+
+msgid "New bulletin"
+msgstr "New bulletin"
+
+msgid "Back to list"
+msgstr "Back to list"
+
+msgid "Open bulletin"
+msgstr "Open bulletin"
+
+msgid "Save"
+msgstr "Save"
+
+msgid "The bulletin cannot be saved yet"
+msgstr "The bulletin cannot be saved yet"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "Period type"
+msgstr "Period type"
+
+msgid "No match"
+msgstr "No match"
+
+msgid "Content languages"
+msgstr "Content languages"
+
+msgid "Texts are written in each language; the first is the fallback."
+msgstr "Texts are written in each language; the first is the fallback."
+
+msgid "Organisation units"
+msgstr "Organisation units"
+
+msgid "Choose org units"
+msgstr "Choose org units"
+
+msgid "Sections"
+msgstr "Sections"
+
+msgid "Move up"
+msgstr "Move up"
+
+msgid "Move down"
+msgstr "Move down"
+
+msgid "Remove section"
+msgstr "Remove section"
+
+msgid "New section"
+msgstr "New section"
+
+msgid "Add"
+msgstr "Add"
+
+msgid "Section settings"
+msgstr "Section settings"
+
+msgid "Preview"
+msgstr "Preview"
+
+msgid "Pick a data source to configure and preview the sections."
+msgstr "Pick a data source to configure and preview the sections."
+
+msgid "Add a section to start."
+msgstr "Add a section to start."
+
+msgid "Preview for {{period}} (not saved)."
+msgstr "Preview for {{period}} (not saved)."
+
+msgid "The file is not valid JSON."
+msgstr "The file is not valid JSON."
+
+msgid "The file is not a bulletin template. {{details}}"
+msgstr "The file is not a bulletin template. {{details}}"
+
+msgid "Imported bulletin"
+msgstr "Imported bulletin"
+
+msgid "Created by"
+msgstr "Created by"
+
+msgid "Last updated"
+msgstr "Last updated"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Open"
+msgstr "Open"
+
+msgid "Export"
+msgstr "Export"
+
+msgid "Edit"
+msgstr "Edit"
+
+msgid "Share"
+msgstr "Share"
+
+msgid "Delete"
+msgstr "Delete"
+
+msgid "Bulletins"
+msgstr "Bulletins"
+
+msgid "Import old bulletin texts"
+msgstr "Import old bulletin texts"
+
+msgid "Import JSON"
+msgstr "Import JSON"
+
+msgid "Import failed"
+msgstr "Import failed"
+
+msgid "My bulletins"
+msgstr "My bulletins"
+
+msgid "Shared with me"
+msgstr "Shared with me"
+
+msgid "You have not created any bulletin yet."
+msgstr "You have not created any bulletin yet."
+
+msgid "No bulletin is shared with you."
+msgstr "No bulletin is shared with you."
+
+msgid "Delete bulletin"
+msgstr "Delete bulletin"
+
+msgid "Delete \"{{name}}\"? Its saved issues stay in the data store."
+msgstr "Delete \"{{name}}\"? Its saved issues stay in the data store."
+
+msgid "Organisation unit"
+msgstr "Organisation unit"
+
+msgid "No reporting data for these periods."
+msgstr "No reporting data for these periods."
+
+msgid "{{count}} alerts from {{events}} reports."
+msgid_plural "{{count}} alerts from {{events}} reports."
+msgstr[0] "{{count}} alerts from {{events}} reports."
+msgstr[1] "{{count}} alerts from {{events}} reports."
+
+msgid "{{count}} {{name}} reported by {{places}} org units"
+msgid_plural "{{count}} {{name}} reported by {{places}} org units"
+msgstr[0] "{{count}} {{name}} reported by {{places}} org units"
+msgstr[1] "{{count}} {{name}} reported by {{places}} org units"
+
+msgid "None reported."
+msgstr "None reported."
+
+msgid "No data found for {{name}}"
+msgstr "No data found for {{name}}"
+
+msgid "Year"
+msgstr "Year"
+
+msgid "Period"
+msgstr "Period"
+
+msgid "Write the notes for this period"
+msgstr "Write the notes for this period"
+
+msgid "Remove"
+msgstr "Remove"
+
+msgid "No rows yet."
+msgstr "No rows yet."
+
+msgid "Add row"
+msgstr "Add row"
+
+msgid "Could not load the list."
+msgstr "Could not load the list."
+
+msgid "Logos must be smaller than 200 KB."
+msgstr "Logos must be smaller than 200 KB."
+
+msgid "Subtitle"
+msgstr "Subtitle"
+
+msgid "Logos"
+msgstr "Logos"
+
+msgid "Add logo"
+msgstr "Add logo"
+
+msgid "Data items (one chart each)"
+msgstr "Data items (one chart each)"
+
+msgid "Change data items"
+msgstr "Change data items"
+
+msgid "Choose data items"
+msgstr "Choose data items"
+
+msgid "Previous periods shown"
+msgstr "Previous periods shown"
+
+msgid "The chart shows the bulletin period and this many periods before it."
+msgstr "The chart shows the bulletin period and this many periods before it."
+
+msgid "Chart type"
+msgstr "Chart type"
+
+msgid "Case"
+msgstr "Case"
+
+msgid "Death"
+msgstr "Death"
+
+msgid "Public health event"
+msgstr "Public health event"
+
+msgid "Tracker program"
+msgstr "Tracker program"
+
+msgid "Group by attribute"
+msgstr "Group by attribute"
+
+msgid "The attribute holding the disease or event type."
+msgstr "The attribute holding the disease or event type."
+
+msgid "Classification rules"
+msgstr "Classification rules"
+
+msgid ""
+"Values containing the text are classified in the category. Values matching "
+"no rule are cases."
+msgstr ""
+"Values containing the text are classified in the category. Values matching "
+"no rule are cases."
+
+msgid "Text contained in the value"
+msgstr "Text contained in the value"
+
+msgid "Category"
+msgstr "Category"
+
+msgid "Add rule"
+msgstr "Add rule"
+
+msgid "Program"
+msgstr "Program"
+
+msgid "Signal data element"
+msgstr "Signal data element"
+
+msgid "Events are grouped by its value."
+msgstr "Events are grouped by its value."
+
+msgid "Location data element"
+msgstr "Location data element"
+
+msgid "Count data element"
+msgstr "Count data element"
+
+msgid "Data sets"
+msgstr "Data sets"
+
+msgid "Good from (%)"
+msgstr "Good from (%)"
+
+msgid "Fair from (%)"
+msgstr "Fair from (%)"
+
+msgid "Columns"
+msgstr "Columns"
+
+msgid "Column {{number}}"
+msgstr "Column {{number}}"
+
+msgid "Add column"
+msgstr "Add column"
+
+msgid "Title"
+msgstr "Title"
+
+msgid "Introduction"
+msgstr "Introduction"
+
+msgid "Text"
+msgstr "Text"
+
+msgid "The notes are written for each period in the bulletin itself."
+msgstr "The notes are written for each period in the bulletin itself."
+
+msgid "Section not configured"
+msgstr "Section not configured"
+
+msgid "Edit the bulletin to choose the data this section uses."
+msgstr "Edit the bulletin to choose the data this section uses."
+
+msgid "This section could not be loaded"
+msgstr "This section could not be loaded"
+
+msgid "{{count}} cases of {{name}} reported by {{facilities}} facilities"
+msgid_plural "{{count}} cases of {{name}} reported by {{facilities}} facilities"
+msgstr[0] "{{count}} cases of {{name}} reported by {{facilities}} facilities"
+msgstr[1] "{{count}} cases of {{name}} reported by {{facilities}} facilities"
+
+msgid "{{count}} records were notified by {{facilities}} facilities."
+msgid_plural "{{count}} records were notified by {{facilities}} facilities."
+msgstr[0] "{{count}} records were notified by {{facilities}} facilities."
+msgstr[1] "{{count}} records were notified by {{facilities}} facilities."
+
+msgid "Cases"
+msgstr "Cases"
+
+msgid "Public health events"
+msgstr "Public health events"
+
+msgid "Deaths"
+msgstr "Deaths"
+
+msgid "{{count}} deaths were reported by {{facilities}} facilities."
+msgid_plural "{{count}} deaths were reported by {{facilities}} facilities."
+msgstr[0] "{{count}} deaths were reported by {{facilities}} facilities."
+msgstr[1] "{{count}} deaths were reported by {{facilities}} facilities."
+
+msgid "Bulletin published"
+msgstr "Bulletin published"
+
+msgid "Draft saved"
+msgstr "Draft saved"
+
+msgid "Could not save the bulletin. Please try again."
+msgstr "Could not save the bulletin. Please try again."
+
+msgid "Bulletin saved"
+msgstr "Bulletin saved"
+
+msgid "Bulletin deleted"
+msgstr "Bulletin deleted"
+
+msgid "Could not delete the bulletin. Please try again."
+msgstr "Could not delete the bulletin. Please try again."
+
+msgid "Name is required"
+msgstr "Name is required"
+
+msgid "Cover"
+msgstr "Cover"
+
+msgid "Indicator trends"
+msgstr "Indicator trends"
+
+msgid "Tracker cases and deaths"
+msgstr "Tracker cases and deaths"
+
+msgid "Event signals"
+msgstr "Event signals"
+
+msgid "Reporting completeness"
+msgstr "Reporting completeness"
+
+msgid "Outbreak table"
+msgstr "Outbreak table"
+
+msgid "Notes"
+msgstr "Notes"
 
 msgid "No data available"
 msgstr "No data available"
@@ -71,23 +496,11 @@ msgstr "Open {{name}}"
 msgid "Updated {{date}}"
 msgstr "Updated {{date}}"
 
-msgid "Open"
-msgstr "Open"
-
 msgid "Present"
 msgstr "Present"
 
 msgid "Dashboard"
 msgstr "Dashboard"
-
-msgid "Name"
-msgstr "Name"
-
-msgid "Name is required"
-msgstr "Name is required"
-
-msgid "Description"
-msgstr "Description"
 
 msgid "Official dashboard (pinned on the home page)"
 msgstr "Official dashboard (pinned on the home page)"
@@ -106,9 +519,6 @@ msgstr "Save changes"
 
 msgid "Save dashboard"
 msgstr "Save dashboard"
-
-msgid "No match"
-msgstr "No match"
 
 msgid "Add a visualization"
 msgstr "Add a visualization"
@@ -185,32 +595,14 @@ msgstr "New dashboard"
 msgid "My dashboards"
 msgstr "My dashboards"
 
-msgid "Shared with me"
-msgstr "Shared with me"
-
 msgid "Cards"
 msgstr "Cards"
 
 msgid "List"
 msgstr "List"
 
-msgid "Created by"
-msgstr "Created by"
-
 msgid "Created"
 msgstr "Created"
-
-msgid "Last updated"
-msgstr "Last updated"
-
-msgid "Actions"
-msgstr "Actions"
-
-msgid "Share"
-msgstr "Share"
-
-msgid "Delete"
-msgstr "Delete"
 
 msgid "Delete dashboard"
 msgstr "Delete dashboard"
@@ -229,60 +621,6 @@ msgstr "Pinned dashboards"
 
 msgid "Official dashboards shared with you will appear here."
 msgstr "Official dashboards shared with you will appear here."
-
-msgid "No access"
-msgstr "No access"
-
-msgid "View only"
-msgstr "View only"
-
-msgid "View and edit"
-msgstr "View and edit"
-
-msgid "Sharing settings saved"
-msgstr "Sharing settings saved"
-
-msgid "Sharing settings for {{name}}"
-msgstr "Sharing settings for {{name}}"
-
-msgid "Give access to a user or group"
-msgstr "Give access to a user or group"
-
-msgid "User or group"
-msgstr "User or group"
-
-msgid "Search users or groups"
-msgstr "Search users or groups"
-
-msgid "User"
-msgstr "User"
-
-msgid "Group"
-msgstr "Group"
-
-msgid "Access"
-msgstr "Access"
-
-msgid "Give access"
-msgstr "Give access"
-
-msgid "Already has access; change it below."
-msgstr "Already has access; change it below."
-
-msgid "Users and groups with access"
-msgstr "Users and groups with access"
-
-msgid "All users"
-msgstr "All users"
-
-msgid "Anyone logged in"
-msgstr "Anyone logged in"
-
-msgid "Remove access"
-msgstr "Remove access"
-
-msgid "Close"
-msgstr "Close"
 
 msgid "Dashboard deleted"
 msgstr "Dashboard deleted"
@@ -386,9 +724,6 @@ msgstr "Indicator group"
 msgid "Data element group"
 msgstr "Data element group"
 
-msgid "Program"
-msgstr "Program"
-
 msgid "Reporting rate"
 msgstr "Reporting rate"
 
@@ -413,6 +748,9 @@ msgstr "URL"
 msgid "No description provided"
 msgstr "No description provided"
 
+msgid "Close"
+msgstr "Close"
+
 msgid "Edit data source"
 msgstr "Edit data source"
 
@@ -428,20 +766,11 @@ msgstr "Personal access token"
 msgid "Created in the remote instance under Profile > Personal access tokens."
 msgstr "Created in the remote instance under Profile > Personal access tokens."
 
-msgid "Cancel"
-msgstr "Cancel"
-
-msgid "Save"
-msgstr "Save"
-
 msgid "Data source"
 msgstr "Data source"
 
 msgid "View"
 msgstr "View"
-
-msgid "Edit"
-msgstr "Edit"
 
 msgid "Data sources"
 msgstr "Data sources"
@@ -504,9 +833,6 @@ msgstr "Add thematic layer"
 msgid "Basemap"
 msgstr "Basemap"
 
-msgid "Data source not available"
-msgstr "Data source not available"
-
 msgid ""
 "The data source of this map was deleted or is not shared with you. Pick "
 "another one in the thematic layer."
@@ -561,9 +887,6 @@ msgstr "Area name"
 
 msgid "Data name"
 msgstr "Data name"
-
-msgid "Period"
-msgstr "Period"
 
 msgid "Labels"
 msgstr "Labels"
@@ -643,9 +966,6 @@ msgstr "Map"
 msgid "Settings"
 msgstr "Settings"
 
-msgid "Report"
-msgstr "Report"
-
 msgid "Main"
 msgstr "Main"
 
@@ -700,9 +1020,6 @@ msgstr "Expand"
 msgid "Could not load the sub-units."
 msgstr "Could not load the sub-units."
 
-msgid "Organisation units"
-msgstr "Organisation units"
-
 msgid "User org unit"
 msgstr "User org unit"
 
@@ -735,12 +1052,6 @@ msgstr "Fixed periods"
 
 msgid "Period group"
 msgstr "Period group"
-
-msgid "Period type"
-msgstr "Period type"
-
-msgid "Year"
-msgstr "Year"
 
 msgid "Available periods"
 msgstr "Available periods"
@@ -940,180 +1251,6 @@ msgstr "Last 5 years"
 msgid "Last 10 years"
 msgstr "Last 10 years"
 
-msgid "Loading the bulletin data"
-msgstr "Loading the bulletin data"
-
-msgid ""
-"Weekly epidemiological bulletin. Choose a week on the left, then click "
-"Update."
-msgstr ""
-"Weekly epidemiological bulletin. Choose a week on the left, then click "
-"Update."
-
-msgid "Dimensions"
-msgstr "Dimensions"
-
-msgid "Period ({{count}})"
-msgid_plural "Period ({{count}})"
-msgstr[0] "Period ({{count}})"
-msgstr[1] "Period ({{count}})"
-
-msgid "No cases found."
-msgstr "No cases found."
-
-msgid "Bulletin template not found"
-msgstr "Bulletin template not found"
-
-msgid "Pick a week"
-msgstr "Pick a week"
-
-msgid "The bulletin needs a weekly period."
-msgstr "The bulletin needs a weekly period."
-
-msgid "Tracker data could not be loaded"
-msgstr "Tracker data could not be loaded"
-
-msgid ""
-"Alerts, immediate reportable diseases and deaths are missing from this "
-"bulletin."
-msgstr ""
-"Alerts, immediate reportable diseases and deaths are missing from this "
-"bulletin."
-
-msgid "Epidemiological bulletin"
-msgstr "Epidemiological bulletin"
-
-msgid "Republic of Rwanda Ministry of Health"
-msgstr "Republic of Rwanda Ministry of Health"
-
-msgid "Rwanda Biomedical Centre"
-msgstr "Rwanda Biomedical Centre"
-
-msgid "alerts"
-msgstr "alerts"
-
-msgid "IMMEDIATE REPORTABLE DISEASES – EPI {{week}}"
-msgstr "IMMEDIATE REPORTABLE DISEASES – EPI {{week}}"
-
-msgid "Immediate reportable diseases notes"
-msgstr "Immediate reportable diseases notes"
-
-msgid "WEEKLY REPORTABLE DISEASES – EPI {{week}}"
-msgstr "WEEKLY REPORTABLE DISEASES – EPI {{week}}"
-
-msgid "No data found for {{name}}"
-msgstr "No data found for {{name}}"
-
-msgid "DISTRIBUTION OF REPORTED DEATHS IN eIDSR – EPIDEMIOLOGICAL {{week}}"
-msgstr "DISTRIBUTION OF REPORTED DEATHS IN eIDSR – EPIDEMIOLOGICAL {{week}}"
-
-msgid "Notes"
-msgstr "Notes"
-
-msgid "Enter notes..."
-msgstr "Enter notes..."
-
-msgid "Outbreak summary (sample)"
-msgstr "Outbreak summary (sample)"
-
-msgid "Hospital catchment area"
-msgstr "Hospital catchment area"
-
-msgid "Completeness"
-msgstr "Completeness"
-
-msgid "{{count}} cases of {{name}} reported by {{facilities}} HFs"
-msgid_plural "{{count}} cases of {{name}} reported by {{facilities}} HFs"
-msgstr[0] "{{count}} cases of {{name}} reported by {{facilities}} HFs"
-msgstr[1] "{{count}} cases of {{name}} reported by {{facilities}} HFs"
-
-msgid "{{count}} were {{type}}"
-msgid_plural "{{count}} were {{type}}"
-msgstr[0] "{{count}} were {{type}}"
-msgstr[1] "{{count}} were {{type}}"
-
-msgid "{{count}} deaths were reported by {{facility}} ({{details}})"
-msgid_plural "{{count}} deaths were reported by {{facility}} ({{details}})"
-msgstr[0] "{{count}} deaths were reported by {{facility}} ({{details}})"
-msgstr[1] "{{count}} deaths were reported by {{facility}} ({{details}})"
-
-msgid ""
-"{{count}} immediate reportable events were notified by health facilities "
-"countrywide. These include {{diseases}}."
-msgid_plural ""
-"{{count}} immediate reportable events were notified by health facilities "
-"countrywide. These include {{diseases}}."
-msgstr[0] ""
-"{{count}} immediate reportable events were notified by health facilities "
-"countrywide. These include {{diseases}}."
-msgstr[1] ""
-"{{count}} immediate reportable events were notified by health facilities "
-"countrywide. These include {{diseases}}."
-
-msgid ""
-"A total of {{count}} deaths were reported through the electronic Integrated "
-"Disease Surveillance and Response (eIDSR) system. Most of the deaths were "
-"{{types}}."
-msgid_plural ""
-"A total of {{count}} deaths were reported through the electronic Integrated "
-"Disease Surveillance and Response (eIDSR) system. Most of the deaths were "
-"{{types}}."
-msgstr[0] ""
-"A total of {{count}} deaths were reported through the electronic Integrated "
-"Disease Surveillance and Response (eIDSR) system. Most of the deaths were "
-"{{types}}."
-msgstr[1] ""
-"A total of {{count}} deaths were reported through the electronic Integrated "
-"Disease Surveillance and Response (eIDSR) system. Most of the deaths were "
-"{{types}}."
-
-msgid "A total of {{count}} public events were reported."
-msgid_plural "A total of {{count}} public events were reported."
-msgstr[0] "A total of {{count}} public events were reported."
-msgstr[1] "A total of {{count}} public events were reported."
-
-msgid ""
-"As summarized in the Pie Chart below, a total number of {{count}} deaths "
-"were reported through the electronic Integrated Disease Surveillance and "
-"Response (eIDSR) system. {{details}}."
-msgid_plural ""
-"As summarized in the Pie Chart below, a total number of {{count}} deaths "
-"were reported through the electronic Integrated Disease Surveillance and "
-"Response (eIDSR) system. {{details}}."
-msgstr[0] ""
-"As summarized in the Pie Chart below, a total number of {{count}} deaths "
-"were reported through the electronic Integrated Disease Surveillance and "
-"Response (eIDSR) system. {{details}}."
-msgstr[1] ""
-"As summarized in the Pie Chart below, a total number of {{count}} deaths "
-"were reported through the electronic Integrated Disease Surveillance and "
-"Response (eIDSR) system. {{details}}."
-
-msgid "{{count}} ({{percent}}%) were {{type}}"
-msgid_plural "{{count}} ({{percent}}%) were {{type}}"
-msgstr[0] "{{count}} ({{percent}}%) were {{type}}"
-msgstr[1] "{{count}} ({{percent}}%) were {{type}}"
-
-msgid "{{count}} cases of Malaria reported by {{villages}} villages"
-msgid_plural "{{count}} cases of Malaria reported by {{villages}} villages"
-msgstr[0] "{{count}} cases of Malaria reported by {{villages}} villages"
-msgstr[1] "{{count}} cases of Malaria reported by {{villages}} villages"
-
-msgid "{{count}} malaria cases"
-msgid_plural "{{count}} malaria cases"
-msgstr[0] "{{count}} malaria cases"
-msgstr[1] "{{count}} malaria cases"
-
-msgid "{{count}} cases of {{name}} reported by {{villages}} villages"
-msgid_plural "{{count}} cases of {{name}} reported by {{villages}} villages"
-msgstr[0] "{{count}} cases of {{name}} reported by {{villages}} villages"
-msgstr[1] "{{count}} cases of {{name}} reported by {{villages}} villages"
-
-msgid "{{count}} {{name}} cases"
-msgid_plural "{{count}} {{name}} cases"
-msgstr[0] "{{count}} {{name}} cases"
-msgstr[1] "{{count}} {{name}} cases"
-
 msgid ""
 "Configure where your data comes from. By default, data is read from this "
 "DHIS2 instance."
@@ -1121,11 +1258,12 @@ msgstr ""
 "Configure where your data comes from. By default, data is read from this "
 "DHIS2 instance."
 
-msgid "Prepare the weekly epidemiological bulletin."
-msgstr "Prepare the weekly epidemiological bulletin."
-
-msgid "Chart type"
-msgstr "Chart type"
+msgid ""
+"Design bulletins (sections, data, texts, logos) and publish them period by "
+"period."
+msgstr ""
+"Design bulletins (sections, data, texts, logos) and publish them period by "
+"period."
 
 msgid "Select chart type"
 msgstr "Select chart type"
@@ -1139,17 +1277,8 @@ msgstr "Search palettes"
 msgid "Main dimensions"
 msgstr "Main dimensions"
 
-msgid "Organisation unit"
-msgstr "Organisation unit"
-
-msgid "Export"
-msgstr "Export"
-
 msgid "File"
 msgstr "File"
-
-msgid "Columns"
-msgstr "Columns"
 
 msgid "Rows"
 msgstr "Rows"
@@ -1211,11 +1340,11 @@ msgstr "Chart subtitle"
 msgid "Automatic (filter items)"
 msgstr "Automatic (filter items)"
 
-msgid "Apply"
-msgstr "Apply"
-
 msgid "Running analytics"
 msgstr "Running analytics"
+
+msgid "Dimensions"
+msgstr "Dimensions"
 
 msgid ""
 "The data source of this visualization was deleted or is not shared with "
@@ -1302,6 +1431,54 @@ msgstr "File name"
 
 msgid "Format"
 msgstr "Format"
+
+msgid "No access"
+msgstr "No access"
+
+msgid "View only"
+msgstr "View only"
+
+msgid "View and edit"
+msgstr "View and edit"
+
+msgid "Sharing settings for {{name}}"
+msgstr "Sharing settings for {{name}}"
+
+msgid "Give access to a user or group"
+msgstr "Give access to a user or group"
+
+msgid "User or group"
+msgstr "User or group"
+
+msgid "Search users or groups"
+msgstr "Search users or groups"
+
+msgid "User"
+msgstr "User"
+
+msgid "Group"
+msgstr "Group"
+
+msgid "Access"
+msgstr "Access"
+
+msgid "Give access"
+msgstr "Give access"
+
+msgid "Already has access; change it below."
+msgstr "Already has access; change it below."
+
+msgid "Users and groups with access"
+msgstr "Users and groups with access"
+
+msgid "All users"
+msgstr "All users"
+
+msgid "Anyone logged in"
+msgstr "Anyone logged in"
+
+msgid "Remove access"
+msgstr "Remove access"
 
 msgid "Back to home"
 msgstr "Back to home"

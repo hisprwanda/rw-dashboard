@@ -8,6 +8,8 @@ interface NotesSectionViewProps {
     section: NotesSection
     context: BulletinContext
     value: string
+    /** Text printed (and shown read-only): falls back to another language when empty. */
+    displayValue: string
     editable: boolean
     onChange: (value: string) => void
 }
@@ -17,6 +19,7 @@ export const NotesSectionView = ({
     section,
     context,
     value,
+    displayValue,
     editable,
     onChange,
 }: NotesSectionViewProps) => (
@@ -25,7 +28,7 @@ export const NotesSectionView = ({
         description={pickText(section.description, context.language, context.languages)}
     >
         {editable ? (
-            <div className="no-print-border">
+            <div className="no-print">
                 <TextAreaField
                     rows={5}
                     placeholder={i18n.t('Write the notes for this period')}
@@ -35,6 +38,6 @@ export const NotesSectionView = ({
             </div>
         ) : null}
         {/* Printed / read-only text. */}
-        <p className={`whitespace-pre-line ${editable ? 'print-only' : ''}`}>{value}</p>
+        <p className={`whitespace-pre-line ${editable ? 'print-only' : ''}`}>{displayValue}</p>
     </SectionFrame>
 )

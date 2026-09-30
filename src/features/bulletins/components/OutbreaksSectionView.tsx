@@ -42,17 +42,20 @@ export const OutbreaksSectionView = ({
                         <tr key={rowIndex}>
                             {section.columns.map((column) => (
                                 <td key={column.id} className="border px-2 py-1">
-                                    {editable ? (
-                                        <Input
-                                            dense
-                                            value={row[column.id] ?? ''}
-                                            onChange={({ value }) =>
-                                                setCell(rowIndex, column.id, value ?? '')
-                                            }
-                                        />
-                                    ) : (
-                                        row[column.id]
+                                    {editable && (
+                                        <div className="no-print">
+                                            <Input
+                                                dense
+                                                value={row[column.id] ?? ''}
+                                                onChange={({ value }) =>
+                                                    setCell(rowIndex, column.id, value ?? '')
+                                                }
+                                            />
+                                        </div>
                                     )}
+                                    <span className={editable ? 'print-only' : undefined}>
+                                        {row[column.id]}
+                                    </span>
                                 </td>
                             ))}
                             {editable && (

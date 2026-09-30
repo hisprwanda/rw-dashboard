@@ -67,6 +67,12 @@ export const BulletinIssueView = ({ templateId, periodId }: BulletinIssueViewPro
         setDirty(false)
     }, [issue.data, period])
 
+    // Put the default period in the URL, so the link always points at this exact issue.
+    useEffect(() => {
+        if (!periodId && period)
+            navigate(paths.bulletinIssue(templateId, period), { replace: true })
+    }, [periodId, period, templateId, navigate])
+
     const range = useMemo(
         () => (period ? periodRange(period, calendar, locale) : null),
         [period, calendar, locale]
