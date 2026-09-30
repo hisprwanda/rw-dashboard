@@ -3,6 +3,7 @@ import type { ChartProps } from '../types/chart.types'
 import { toSlices } from '../utils/chartData'
 import { ChartFrame } from './ChartFrame'
 import { useChartData } from '../hooks/useChartData'
+import { formatNumber } from '@/shared/utils/format'
 
 /** The total of the first series as one big number. */
 export const SingleValueChart = (props: ChartProps) => {
@@ -23,7 +24,7 @@ export const SingleValueChart = (props: ChartProps) => {
                             fontWeight: 'bold',
                         }}
                     >
-                        {first?.total.toLocaleString()}
+                        {first ? formatNumber(first.total) : null}
                     </p>
                 </article>
             </div>

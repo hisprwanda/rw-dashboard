@@ -1,0 +1,235 @@
+# Kinyarwanda: DRAFT, to be reviewed by a native speaker.
+# Only translated strings are listed: an empty msgstr would show an empty text,
+# while a missing entry falls back to English.
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-09-30T08:56:28.444Z\n"
+"PO-Revision-Date: 2026-09-30T08:56:28.445Z\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Language: rw\n"
+
+msgid "Cancel"
+msgstr "Hagarika"
+
+msgid "Content language"
+msgstr "Ururimi rw'ibirimo"
+
+msgid "Published"
+msgstr "Byatangajwe"
+
+msgid "Draft"
+msgstr "Umushinga"
+
+msgid "Publish"
+msgstr "Tangaza"
+
+msgid "Save"
+msgstr "Bika"
+
+msgid "Name"
+msgstr "Izina"
+
+msgid "Description"
+msgstr "Ibisobanuro"
+
+msgid "Add"
+msgstr "Ongeraho"
+
+msgid "Open"
+msgstr "Fungura"
+
+msgid "Edit"
+msgstr "Hindura"
+
+msgid "Share"
+msgstr "Sangiza"
+
+msgid "Delete"
+msgstr "Siba"
+
+msgid "Year"
+msgstr "Umwaka"
+
+msgid "Period"
+msgstr "Igihe"
+
+msgid "Remove"
+msgstr "Kuraho"
+
+msgid "Death"
+msgstr "Urupfu"
+
+msgid "Title"
+msgstr "Umutwe"
+
+msgid "Text"
+msgstr "Umwandiko"
+
+msgid "Deaths"
+msgstr "Impfu"
+
+msgid "Notes"
+msgstr "Inyandiko"
+
+msgid "No data available"
+msgstr "Nta makuru ahari"
+
+msgid "Value"
+msgstr "Agaciro"
+
+msgid "Exit"
+msgstr "Sohoka"
+
+msgid "Data"
+msgstr "Amakuru"
+
+msgid "Update"
+msgstr "Vugurura"
+
+msgid "All"
+msgstr "Byose"
+
+msgid "Type"
+msgstr "Ubwoko"
+
+msgid "Close"
+msgstr "Funga"
+
+msgid "Maps"
+msgstr "Amakarita"
+
+msgid "No data"
+msgstr "Nta makuru"
+
+msgid "Low"
+msgstr "Hasi"
+
+msgid "Medium"
+msgstr "Hagati"
+
+msgid "High"
+msgstr "Hejuru"
+
+msgid "Map"
+msgstr "Ikarita"
+
+msgid "Settings"
+msgstr "Igenamiterere"
+
+msgid "Messages"
+msgstr "Ubutumwa"
+
+msgid "Account"
+msgstr "Konti"
+
+msgid "Help"
+msgstr "Ubufasha"
+
+msgid "About"
+msgstr "Ibyerekeye"
+
+msgid "Log out"
+msgstr "Sohoka"
+
+msgid "Profile"
+msgstr "Umwirondoro"
+
+msgid "Groups"
+msgstr "Amatsinda"
+
+msgid "Daily"
+msgstr "Buri munsi"
+
+msgid "Weekly"
+msgstr "Buri cyumweru"
+
+msgid "Monthly"
+msgstr "Buri kwezi"
+
+msgid "Yearly"
+msgstr "Buri mwaka"
+
+msgid "Days"
+msgstr "Iminsi"
+
+msgid "Weeks"
+msgstr "Ibyumweru"
+
+msgid "Months"
+msgstr "Amezi"
+
+msgid "Years"
+msgstr "Imyaka"
+
+msgid "Today"
+msgstr "Uyu munsi"
+
+msgid "Yesterday"
+msgstr "Ejo hashize"
+
+msgid "Last 7 days"
+msgstr "Iminsi 7 ishize"
+
+msgid "Last 30 days"
+msgstr "Iminsi 30 ishize"
+
+msgid "This week"
+msgstr "Iki cyumweru"
+
+msgid "Last week"
+msgstr "Icyumweru gishize"
+
+msgid "This month"
+msgstr "Uku kwezi"
+
+msgid "Last month"
+msgstr "Ukwezi gushize"
+
+msgid "Last 12 months"
+msgstr "Amezi 12 ashize"
+
+msgid "This year"
+msgstr "Uyu mwaka"
+
+msgid "Last year"
+msgstr "Umwaka ushize"
+
+msgid "Last 5 years"
+msgstr "Imyaka 5 ishize"
+
+msgid "File"
+msgstr "Dosiye"
+
+msgid "Color"
+msgstr "Ibara"
+
+msgid "Colors"
+msgstr "Amabara"
+
+msgid "Page not found"
+msgstr "Urupapuro ntirwabonetse"
+
+msgid "Confirm"
+msgstr "Emeza"
+
+msgid "Search"
+msgstr "Shakisha"
+
+msgid "File name"
+msgstr "Izina rya dosiye"
+
+msgid "User"
+msgstr "Ukoresha"
+
+msgid "Group"
+msgstr "Itsinda"
+
+msgid "Back to home"
+msgstr "Subira ahabanza"
+
+msgid "Try again"
+msgstr "Ongera ugerageze"

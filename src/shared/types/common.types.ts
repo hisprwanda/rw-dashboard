@@ -4,7 +4,15 @@ export interface UserRef {
     name: string
 }
 
-export type GeneralAccess = 'No access' | 'View only' | 'View and edit'
+export type AccessLevel = 'View only' | 'View and edit'
+export type GeneralAccess = 'No access' | AccessLevel
+
+/** A user or user group found by `GET /api/sharing/search`. */
+export interface SharingCandidate {
+    id: string
+    name: string
+    type: 'User' | 'Group'
+}
 
 export interface SharingEntry {
     id: string

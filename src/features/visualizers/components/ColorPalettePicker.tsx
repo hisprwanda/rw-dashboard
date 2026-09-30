@@ -1,7 +1,7 @@
 import i18n from '@dhis2/d2-i18n'
 import { Input } from '@dhis2/ui'
 import { useState } from 'react'
-import { systemDefaultColorPalettes, type ColorPalette } from '@/features/charts'
+import { paletteLabel, systemDefaultColorPalettes, type ColorPalette } from '@/features/charts'
 
 interface ColorPalettePickerProps {
     value: ColorPalette
@@ -20,7 +20,7 @@ const Swatches = ({ palette }: { palette: ColorPalette }) => (
 export const ColorPalettePicker = ({ value, onChange }: ColorPalettePickerProps) => {
     const [search, setSearch] = useState('')
     const palettes = systemDefaultColorPalettes.filter((palette) =>
-        palette.name.toLowerCase().includes(search.trim().toLowerCase())
+        paletteLabel(palette.name).toLowerCase().includes(search.trim().toLowerCase())
     )
     return (
         <div className="flex flex-col gap-2">
@@ -43,7 +43,7 @@ export const ColorPalettePicker = ({ value, onChange }: ColorPalettePickerProps)
                                 : 'border-gray-200 hover:bg-gray-50'
                         }`}
                     >
-                        <span className="mb-1 block">{palette.name}</span>
+                        <span className="mb-1 block">{paletteLabel(palette.name)}</span>
                         <Swatches palette={palette} />
                     </button>
                 ))}

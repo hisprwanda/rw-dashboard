@@ -18,6 +18,10 @@ export const env = {
     /** Epidemiological bulletin template (`<namespace>/<key>`); optional, kept for old setups. */
     bulletinStore: process.env.DHIS2_BULLETIN_STORE || 'epide-bulletin',
     bulletinTemplateKey: process.env.DHIS2_BULLETIN_TEMPLATE_KEY || 'epide',
+    /** Bulletin definitions and their weekly issues (defaults keep existing .env files valid). */
+    bulletinTemplatesStore:
+        process.env.DHIS2_BULLETIN_TEMPLATES_STORE || 'BULLETIN_TEMPLATES_STORE',
+    bulletinIssuesStore: process.env.DHIS2_BULLETIN_ISSUES_STORE || 'BULLETIN_ISSUES_STORE',
     dataSourcesStore: required('DHIS2_DATA_SOURCES_STORE', process.env.DHIS2_DATA_SOURCES_STORE),
     dashboardStore: required('DHIS2_DASHBOARD_STORE', process.env.DHIS2_DASHBOARD_STORE),
     visualsStore: required('DHIS2_VISUALS_STORE', process.env.DHIS2_VISUALS_STORE),

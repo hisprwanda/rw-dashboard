@@ -1,7 +1,9 @@
+import i18n from '@dhis2/d2-i18n'
 import { useMemo } from 'react'
 import { ResponsiveContainer, Tooltip, Treemap } from 'recharts'
 import type { ChartProps } from '../types/chart.types'
 import { toTreeNodes } from '../utils/chartData'
+import { formatNumber } from '@/shared/utils/format'
 import { ChartFrame } from './ChartFrame'
 import { useChartData } from '../hooks/useChartData'
 
@@ -87,8 +89,10 @@ const TreeTooltip = ({ active, payload }: TreeTooltipProps) => {
     if (!active || !item) return null
     return (
         <div className="rounded-md border border-gray-300 bg-white p-2 shadow-md">
-            <p className="font-semibold">{`${item.root?.name || 'Category'} - ${item.name || 'Item'}`}</p>
-            <p>{`size: ${item.size || 0}`}</p>
+            <p className="font-semibold">
+                {`${item.root?.name || i18n.t('Category')} - ${item.name || i18n.t('Item')}`}
+            </p>
+            <p>{i18n.t('Size {{value}}', { value: formatNumber(item.size || 0) })}</p>
         </div>
     )
 }

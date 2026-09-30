@@ -120,9 +120,40 @@ interpolation, not concatenation: `i18n.t('Saved {{name}}', { name })`.
   label function instead (see `periodTypeLabel`, `dataItemTypeLabel`, `chartTypeLabel`).
 - No `:` in keys (the extractor reads it as a namespace separator): write
   `Export failed. {{message}}`, not `Export failed: {{message}}`.
-- ESLint (`i18next/no-literal-string`, JSX text) rejects untranslated text in components.
-- `yarn build` (or `npx d2-app-scripts i18n extract`) regenerates `i18n/en.pot`; add the
-  translations to `i18n/fr.po` in the same change.
+- Counts use real plural forms, with the counted value named `count`:
+  `i18n.t('{{count}} report', { count, defaultValue: '{{count}} report', defaultValue_plural: '{{count}} reports' })`.
+  A sentence counts one thing; embed other counts as their own plural strings
+  (`{{count}} case of {{name}} reported by {{facilities}}`, with `facilities` from
+  `facilityCount(n)`).
+- Dates, numbers and percentages go through `@/shared/utils/format` (`formatDate`,
+  `formatDateTime`, `formatNumber`, `formatPercent`, `formatLanguageName`). They follow the
+  user's interface language, never the browser's. No bare `toLocaleString()` or
+  `toFixed()` in UI code.
+- Period names come from `@dhis2/multi-calendar-dates` with the user's locale
+  (`useUserLocale()`) and the system calendar (`useSystemCalendar()`).
+- Metadata is requested with `displayName` (`displayName~rename(name)` when the code
+  expects `name`), so the server translates it. Analytics requests pass the user's
+  `displayProperty` (`useDisplayProperty()`: names or short names).
+- User-written content that must exist in several languages (bulletin titles, texts, column
+  labels) is a `LocalizedText` (`{ en: '…', fr: '…' }`) read with `pickText`, which falls
+  back to the other content languages. This is the only place the app translates data.
+- ESLint (`i18next/no-literal-string`, `jsx-only`) rejects untranslated JSX text and
+  literals, and untranslated `label`, `title`, `placeholder`, `aria-label`, `helpText`…
+  attributes. Another rule rejects `:` in keys.
+- `yarn i18n:extract` regenerates `i18n/en.pot` (`yarn build` does too); add the
+  translations to `i18n/fr.po` in the same change. `yarn i18n:check` (run by CI) fails when
+  `en.pot` is stale or a string has no French translation.
+
+### Adding a language
+
+1. Copy `i18n/en.pot` to `i18n/<code>.po` (e.g. `rw.po`), set `Language` and
+   `Plural-Forms` in its header.
+2. List only translated strings: an entry with an empty `msgstr` shows an empty text,
+   while a missing entry falls back to English.
+3. Once it is complete and reviewed, add the code to `COMPLETE` in
+   `scripts/check-i18n.mjs` so CI keeps it complete. `rw.po` is a draft waiting for a
+   native speaker's review.
+
 Always `import i18n from '@dhis2/d2-i18n'`. Never import `src/locales` (generated):
 it is imported once in `src/App.tsx` to register the translations.
 
@@ -164,10 +195,11 @@ rm -rf node_modules/.vite   # drop Vite's cached pre-bundled deps
 ```
 yarn typecheck   # tsc --noEmit: must report 0 errors
 yarn lint
+yarn i18n:check  # en.pot up to date, French complete
 yarn test        # jest via d2-app-scripts; put *.test.ts next to the code
 yarn format
 yarn build
 ```
 
 A Husky pre-commit hook runs lint-staged (prettier + eslint on staged files) and
-`yarn typecheck`. CI runs typecheck, lint, tests and build on every PR.
+`yarn typecheck`. CI runs typecheck, lint, the i18n check, tests and build on every PR.

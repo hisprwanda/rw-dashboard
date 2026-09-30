@@ -3,6 +3,7 @@ import {
     buildOrgUnitDimension,
     formatAnalyticsDimensions,
     type AnalyticsRequest,
+    type DisplayProperty,
     type SelectionState,
 } from '@/features/analytics'
 import type { OrgUnitSelectionState } from '@/features/org-units'
@@ -17,7 +18,8 @@ export interface MapRequest {
 /** The thematic layer requests of the current selection; `null` while incomplete. */
 export const buildMapRequest = (
     selection: Pick<SelectionState, 'dimensions'>,
-    orgUnits: OrgUnitSelectionState
+    orgUnits: OrgUnitSelectionState,
+    displayProperty: DisplayProperty = 'NAME'
 ): MapRequest | null => {
     const orgUnitDimension = buildOrgUnitDimension({
         useCurrentUserOrgUnits: orgUnits.useCurrentUserOrgUnits,
@@ -33,7 +35,8 @@ export const buildMapRequest = (
             periodFilter: `pe:${(selection.dimensions.pe ?? []).join(';')}`,
             orgUnitDimension,
         },
+        displayProperty,
     })
     if (!analytics) return null
-    return { analytics, geoFeatures: { ou: orgUnitDimension, displayProperty: 'NAME' } }
+    return { analytics, geoFeatures: { ou: orgUnitDimension, displayProperty } }
 }

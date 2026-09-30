@@ -1,6 +1,11 @@
 import type { TooltipProps } from 'recharts'
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 import type { SeriesConfig } from '../types/chart.types'
+import { formatNumber } from '@/shared/utils/format'
+
+/** Series key when an item has no name, and the payload field holding its colour. */
+const FALLBACK_KEY = 'value'
+const FILL_FIELD = 'fill'
 
 interface ChartTooltipContentProps extends TooltipProps<ValueType, NameType> {
     /** Labels and colors of the series (passed explicitly: no React Context). */
@@ -32,8 +37,8 @@ export const ChartTooltipContent = ({
             )}
             {payload.map((item, index) => {
                 const named = nameKey ? readField(item.payload, nameKey) : undefined
-                const key = String(named ?? item.name ?? item.dataKey ?? 'value')
-                const fill = readField(item.payload, 'fill')
+                const key = String(named ?? item.name ?? item.dataKey ?? FALLBACK_KEY)
+                const fill = readField(item.payload, FILL_FIELD)
                 const color =
                     (typeof fill === 'string' ? fill : undefined) ??
                     item.color ??
@@ -48,7 +53,7 @@ export const ChartTooltipContent = ({
                         {item.value !== undefined && item.value !== null && (
                             <span className="font-mono font-medium tabular-nums text-gray-900">
                                 {typeof item.value === 'number'
-                                    ? item.value.toLocaleString()
+                                    ? formatNumber(item.value)
                                     : String(item.value)}
                             </span>
                         )}

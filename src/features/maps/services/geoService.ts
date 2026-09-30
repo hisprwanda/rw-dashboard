@@ -30,6 +30,6 @@ export const fetchLegendSet = (
     fetchResource<LegendSet>(
         engine,
         `legendSets/${id}`,
-        { fields: 'id,displayName,legends[name,startValue,endValue,color]' },
+        { fields: 'id,displayName,legends[displayName~rename(name),startValue,endValue,color]' },
         signal
     )

@@ -26,3 +26,56 @@ header:has([data-test='headerbar-logo']) {
         --chart-5: 340 75% 55%;
     }
 }
+
+/* Text only shown on paper (e.g. notes typed in a field on screen). */
+.print-only {
+    display: none;
+}
+
+@media print {
+    /* The app header (nav), toolbars and alert toasts are not part of the document. */
+    nav,
+    .no-print,
+    [data-test='dhis2-uicore-alertstack'] {
+        display: none !important;
+    }
+    .print-only {
+        display: revert;
+    }
+    body {
+        background: #ffffff;
+    }
+    /* On screen the page scrolls inside the platform shell and the layout; on paper it must
+       flow over pages. */
+    html,
+    body,
+    #dhis2-app-root,
+    .app-shell-adapter,
+    .app-shell-app,
+    .app-layout,
+    .app-content {
+        display: block !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+    .bulletin {
+        box-shadow: none !important;
+        max-width: none !important;
+        padding: 0 !important;
+        /* Keep section banners and table colours on paper. */
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    /* Charts were sized for the screen: scale them down to the page width. */
+    .bulletin .recharts-responsive-container {
+        width: 100% !important;
+        height: auto !important;
+    }
+    .bulletin svg.recharts-surface {
+        max-width: 100%;
+        height: auto;
+    }
+    .bulletin-section {
+        break-inside: avoid-page;
+    }
+}

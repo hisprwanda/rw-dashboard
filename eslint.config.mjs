@@ -86,7 +86,36 @@ export default tseslint.config(
                 { checksVoidReturn: { attributes: false } },
             ],
             // Text rendered in JSX must go through i18n.t() (tests are exempt below).
-            'i18next/no-literal-string': ['error', { mode: 'jsx-text-only' }],
+            'i18next/no-literal-string': [
+                'error',
+                {
+                    // Text and literals in JSX, plus the attributes users read or hear.
+                    mode: 'jsx-only',
+                    'jsx-attributes': {
+                        include: [
+                            'label',
+                            'title',
+                            'placeholder',
+                            'aria-label',
+                            'alt',
+                            'helpText',
+                            'validationText',
+                            'noMatchText',
+                            'loadingText',
+                            'empty',
+                            'emptyText',
+                            'searchPlaceholder',
+                            'confirmLabel',
+                            'cancelLabel',
+                            'heading',
+                            'description',
+                            'content',
+                            'message',
+                        ],
+                        exclude: ['.+'],
+                    },
+                },
+            ],
             '@typescript-eslint/no-explicit-any': 'error',
             'no-console': ['error', { allow: ['warn', 'error'] }],
             'react-hooks/exhaustive-deps': 'error',
@@ -94,14 +123,22 @@ export default tseslint.config(
             'no-restricted-syntax': [
                 'error',
                 {
-                    selector: "CallExpression[callee.name='createContext'], CallExpression[callee.property.name='createContext']",
+                    selector:
+                        "CallExpression[callee.name='createContext'], CallExpression[callee.property.name='createContext']",
                     message:
                         'No React Context for app state: use TanStack Query (server state) or a Redux slice (client state).',
                 },
                 {
-                    selector: "CallExpression[callee.name='useContext'], CallExpression[callee.property.name='useContext']",
+                    selector:
+                        "CallExpression[callee.name='useContext'], CallExpression[callee.property.name='useContext']",
                     message:
                         'No React Context for app state: use TanStack Query (server state) or a Redux slice (client state).',
+                },
+                {
+                    selector:
+                        "CallExpression[callee.object.name='i18n'][callee.property.name='t'] > Literal.arguments:first-child[value=/:/]",
+                    message:
+                        'No ":" in translation keys: the i18n extractor reads it as a namespace separator and drops the string.',
                 },
             ],
             'no-restricted-imports': [

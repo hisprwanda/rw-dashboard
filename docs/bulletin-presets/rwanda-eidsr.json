@@ -1,0 +1,107 @@
+{
+  "format": "dhis2-bulletin-template@1",
+  "name": "Rwanda – Weekly epidemiological bulletin (eIDSR)",
+  "description": "Example preset: the ids below only exist on Rwanda's DHIS2. Import it with Bulletins > Import JSON, then review each section.",
+  "dataSourceId": "1",
+  "periodType": "WEEKLY",
+  "orgUnits": {
+    "useCurrentUserOrgUnits": false,
+    "userOrgUnitScope": {
+      "is_USER_ORGUNIT": false,
+      "is_USER_ORGUNIT_CHILDREN": false,
+      "is_USER_ORGUNIT_GRANDCHILDREN": false
+    },
+    "orgUnitIds": ["Hjw70Lodtf2"],
+    "treePaths": ["/Hjw70Lodtf2"],
+    "levelIds": [],
+    "levels": [],
+    "groupIds": []
+  },
+  "languages": ["en", "fr"],
+  "sections": [
+    {
+      "id": "cover",
+      "type": "cover",
+      "title": { "en": "Epidemiological bulletin", "fr": "Bulletin épidémiologique" },
+      "subtitle": { "en": "Integrated Disease Surveillance and Response", "fr": "Surveillance intégrée de la maladie et riposte" },
+      "logos": []
+    },
+    {
+      "id": "highlights",
+      "type": "notes",
+      "title": { "en": "Highlights of the week", "fr": "Faits saillants de la semaine" }
+    },
+    {
+      "id": "immediate",
+      "type": "trackerCases",
+      "title": { "en": "Immediate reportable diseases and events", "fr": "Maladies et événements à déclaration immédiate" },
+      "program": { "id": "U86iDWxDek8", "name": "Immediate reportable events" },
+      "groupBy": { "id": "uOTHyxNv2W4", "name": "Disease / event type" },
+      "rules": [
+        { "match": "death", "category": "death" },
+        { "match": "public health event", "category": "publicEvent" }
+      ]
+    },
+    {
+      "id": "community",
+      "type": "eventSignals",
+      "title": { "en": "Alerts from the community", "fr": "Alertes communautaires" },
+      "program": { "id": "ecvn9SiIEXz", "name": "Community based surveillance" },
+      "codeElement": { "id": "ockM6peJ7Pe", "name": "Signal" },
+      "locationElement": { "id": "OEVkQ1ds77r", "name": "Signal location" },
+      "countElement": null
+    },
+    {
+      "id": "community-malaria",
+      "type": "eventSignals",
+      "title": { "en": "Malaria cases reported by the community", "fr": "Cas de paludisme signalés par la communauté" },
+      "program": { "id": "zCy7bqFHOpa", "name": "Community malaria" },
+      "codeElement": { "id": "kAnIYiYs5ni", "name": "Disease" },
+      "locationElement": null,
+      "countElement": { "id": "B84KCmNtKPl", "name": "Number of cases" }
+    },
+    {
+      "id": "weekly",
+      "type": "indicatorTrends",
+      "title": { "en": "Weekly reportable diseases", "fr": "Maladies à déclaration hebdomadaire" },
+      "dataItems": [
+        { "id": "CxTT5NVd8o1", "label": "Simple malaria" },
+        { "id": "TnhQi1knkS7", "label": "Flu syndrome" },
+        { "id": "Efu7jw6Y45t", "label": "Severe pneumonia under 5 years" },
+        { "id": "KLdYJhoI1yM", "label": "Rabies exposure" },
+        { "id": "XCuqmbPR8vX", "label": "COVID-19" },
+        { "id": "j10s9Gfed0c", "label": "Non bloody diarrhoea under 5 years" }
+      ],
+      "lookback": 11,
+      "chartType": "Area"
+    },
+    {
+      "id": "outbreaks",
+      "type": "outbreaks",
+      "title": { "en": "Outbreak updates", "fr": "Situation des épidémies" },
+      "columns": [
+        { "id": "disease", "label": { "en": "Disease", "fr": "Maladie" } },
+        { "id": "confirmed", "label": { "en": "Confirmed cases", "fr": "Cas confirmés" } },
+        { "id": "suspected", "label": { "en": "Suspected cases", "fr": "Cas suspects" } },
+        { "id": "deaths", "label": { "en": "Deaths", "fr": "Décès" } },
+        { "id": "places", "label": { "en": "Districts / facilities", "fr": "Districts / formations sanitaires" } },
+        { "id": "risk", "label": { "en": "Risk assessment", "fr": "Évaluation du risque" } }
+      ]
+    },
+    {
+      "id": "completeness",
+      "type": "completeness",
+      "title": { "en": "Completeness and timeliness of reporting", "fr": "Complétude et promptitude des rapports" },
+      "description": { "en": "Choose the weekly surveillance data set(s) in the editor.", "fr": "Choisissez le ou les ensembles de données hebdomadaires dans l'éditeur." },
+      "dataSets": [],
+      "orgUnitLevel": 3,
+      "lookback": 3,
+      "thresholds": { "good": 80, "fair": 60 }
+    },
+    {
+      "id": "notes",
+      "type": "notes",
+      "title": { "en": "Recommendations", "fr": "Recommandations" }
+    }
+  ]
+}

@@ -2,6 +2,7 @@ import i18n from '@dhis2/d2-i18n'
 import { Button, ButtonStrip, IconVisualizationColumn24 } from '@dhis2/ui'
 import { useNavigate } from 'react-router-dom'
 import { paths } from '@/app/router/paths'
+import { formatDate } from '@/shared/utils/format'
 import type { SavedDashboardEntry } from '../types/dashboard.types'
 import { FavoriteButton } from './FavoriteButton'
 
@@ -43,7 +44,7 @@ export const DashboardCard = ({
                     </h3>
                     <p className="m-0 mt-1 text-xs text-gray-500">
                         {i18n.t('Updated {{date}}', {
-                            date: new Date(updatedAt).toLocaleDateString(),
+                            date: formatDate(updatedAt),
                         })}
                     </p>
                 </div>

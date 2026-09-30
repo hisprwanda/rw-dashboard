@@ -1,4 +1,5 @@
 import type { OrgUnitSelectionState } from '@/features/org-units'
+import type { DisplayProperty } from '../types/analytics.types'
 import type { SelectionState } from '../store/selectionSlice'
 import { buildAnalyticsRequest, type AnalyticsRequest } from './buildAnalyticsRequest'
 import { formatAnalyticsDimensions } from './dimensions'
@@ -9,11 +10,13 @@ import { formatAnalyticsDimensions } from './dimensions'
  */
 export const buildSelectionRequest = (
     selection: Pick<SelectionState, 'dimensions' | 'layout'>,
-    orgUnits: OrgUnitSelectionState
+    orgUnits: OrgUnitSelectionState,
+    displayProperty: DisplayProperty = 'NAME'
 ): AnalyticsRequest | null =>
     buildAnalyticsRequest({
         dimension: formatAnalyticsDimensions(selection.dimensions),
         layout: selection.layout,
+        displayProperty,
         orgUnit: {
             useCurrentUserOrgUnits: orgUnits.useCurrentUserOrgUnits,
             userOrgUnitScope: orgUnits.userOrgUnitScope,

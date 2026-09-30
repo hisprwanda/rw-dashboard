@@ -60,6 +60,18 @@ describe('buildAnalyticsRequest (charts)', () => {
         ).toBeNull()
         expect(buildAnalyticsRequest({ dimension: undefined, orgUnit })).toBeNull()
     })
+
+    it("uses the user's display property (short names) in every query", () => {
+        const short = buildAnalyticsRequest({
+            dimension: ['dx:a', 'pe:2024'],
+            layout,
+            orgUnit,
+            displayProperty: 'SHORTNAME',
+        })
+        expect(short?.dataParams.displayProperty).toBe('SHORTNAME')
+        expect(short?.metadataParams.displayProperty).toBe('SHORTNAME')
+        expect(short?.storedQuery.myData.params.displayProperty).toBe('SHORTNAME')
+    })
 })
 
 describe('buildAnalyticsRequest (maps)', () => {

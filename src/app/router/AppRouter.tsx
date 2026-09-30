@@ -1,5 +1,5 @@
 import { lazy, Suspense, type ComponentType, type LazyExoticComponent } from 'react'
-import { HashRouter, Route, Routes } from 'react-router-dom'
+import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { MainLayout } from '@/app/layout/MainLayout'
 import { LoadingState } from '@/shared/components'
 
@@ -13,7 +13,9 @@ const VisualizationsPage = lazy(() => import('@/pages/visualizers/Visualizations
 const VisualizerBuilderPage = lazy(() => import('@/pages/visualizers/[id]/VisualizerBuilderPage'))
 const MapsPage = lazy(() => import('@/pages/maps/MapsPage'))
 const MapBuilderPage = lazy(() => import('@/pages/maps/[id]/MapBuilderPage'))
-const ReportPage = lazy(() => import('@/pages/report/ReportPage'))
+const BulletinsPage = lazy(() => import('@/pages/bulletins/BulletinsPage'))
+const BulletinEditorPage = lazy(() => import('@/pages/bulletins/[id]/BulletinEditorPage'))
+const BulletinIssuePage = lazy(() => import('@/pages/bulletins/[id]/BulletinIssuePage'))
 const SettingsPage = lazy(() => import('@/pages/settings/SettingsPage'))
 const DataSourcesPage = lazy(() => import('@/pages/settings/data-sources/DataSourcesPage'))
 const UnauthorizedPage = lazy(() => import('@/pages/UnauthorizedPage'))
@@ -40,7 +42,12 @@ export const AppRouter = () => (
                 <Route path="visualizers/:id?" element={page(VisualizerBuilderPage)} />
                 <Route path="maps" element={page(MapsPage)} />
                 <Route path="map/:id?/:mapName?" element={page(MapBuilderPage)} />
-                <Route path="report" element={page(ReportPage)} />
+                <Route path="bulletins" element={page(BulletinsPage)} />
+                <Route path="bulletins/new" element={page(BulletinEditorPage)} />
+                <Route path="bulletins/:id/edit" element={page(BulletinEditorPage)} />
+                <Route path="bulletins/:id/:periodId?" element={page(BulletinIssuePage)} />
+                {/* The old single bulletin page. */}
+                <Route path="report" element={<Navigate to="/bulletins" replace />} />
                 <Route path="settings" element={page(SettingsPage)} />
                 <Route path="datasource" element={page(DataSourcesPage)} />
                 <Route path="unauthorized" element={page(UnauthorizedPage)} />

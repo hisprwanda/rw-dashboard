@@ -4,10 +4,473 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-09-30T08:56:28.444Z\n"
+"PO-Revision-Date: 2026-09-30T08:56:28.445Z\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 "Language: fr\n"
-"POT-Creation-Date: 2026-09-29T21:13:21.000Z\n"
-"PO-Revision-Date: 2026-09-29T21:13:21.000Z\n"
+
+msgid "Data items"
+msgstr "Éléments de données"
+
+msgid "Cancel"
+msgstr "Annuler"
+
+msgid "Apply"
+msgstr "Appliquer"
+
+msgid "Data source not available"
+msgstr "Source de données indisponible"
+
+msgid "The data source of this bulletin was deleted or is not shared with you."
+msgstr "La source de données de ce bulletin a été supprimée ou n'est pas partagée avec vous."
+
+msgid "Pick a period"
+msgstr "Choisissez une période"
+
+msgid "This bulletin needs a fixed period of its period type."
+msgstr "Ce bulletin a besoin d'une période fixe de son type de période."
+
+msgid "Content language"
+msgstr "Langue du contenu"
+
+msgid "Published"
+msgstr "Publié"
+
+msgid "Draft"
+msgstr "Brouillon"
+
+msgid "Saved by {{name}} on {{date}}"
+msgstr "Enregistré par {{name}} le {{date}}"
+
+msgid "Edit bulletin"
+msgstr "Modifier le bulletin"
+
+msgid "Print / PDF"
+msgstr "Imprimer / PDF"
+
+msgid "Save draft"
+msgstr "Enregistrer le brouillon"
+
+msgid "Publish"
+msgstr "Publier"
+
+msgid "This bulletin has no sections yet. Edit it to add some."
+msgstr "Ce bulletin n'a pas encore de sections. Modifiez-le pour en ajouter."
+
+msgid "Sharing settings saved"
+msgstr "Paramètres de partage enregistrés"
+
+msgid "Could not save the sharing settings."
+msgstr "Impossible d'enregistrer les paramètres de partage."
+
+msgid "The user's org units"
+msgstr "Les unités d'organisation de l'utilisateur"
+
+msgid "New bulletin"
+msgstr "Nouveau bulletin"
+
+msgid "Back to list"
+msgstr "Retour à la liste"
+
+msgid "Open bulletin"
+msgstr "Ouvrir le bulletin"
+
+msgid "Save"
+msgstr "Enregistrer"
+
+msgid "The bulletin cannot be saved yet"
+msgstr "Le bulletin ne peut pas encore être enregistré"
+
+msgid "Name"
+msgstr "Nom"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "Period type"
+msgstr "Type de période"
+
+msgid "No match"
+msgstr "Aucun résultat"
+
+msgid "Content languages"
+msgstr "Langues du contenu"
+
+msgid "Texts are written in each language; the first is the fallback."
+msgstr "Les textes sont rédigés dans chaque langue ; la première sert de langue par défaut."
+
+msgid "Organisation units"
+msgstr "Unités d'organisation"
+
+msgid "Choose org units"
+msgstr "Choisir les unités d'organisation"
+
+msgid "Sections"
+msgstr "Sections"
+
+msgid "Move up"
+msgstr "Monter"
+
+msgid "Move down"
+msgstr "Descendre"
+
+msgid "Remove section"
+msgstr "Supprimer la section"
+
+msgid "New section"
+msgstr "Nouvelle section"
+
+msgid "Add"
+msgstr "Ajouter"
+
+msgid "Section settings"
+msgstr "Paramètres de la section"
+
+msgid "Preview"
+msgstr "Aperçu"
+
+msgid "Pick a data source to configure and preview the sections."
+msgstr "Choisissez une source de données pour configurer et prévisualiser les sections."
+
+msgid "Add a section to start."
+msgstr "Ajoutez une section pour commencer."
+
+msgid "Preview for {{period}} (not saved)."
+msgstr "Aperçu pour {{period}} (non enregistré)."
+
+msgid "The file is not valid JSON."
+msgstr "Le fichier n'est pas un JSON valide."
+
+msgid "The file is not a bulletin template. {{details}}"
+msgstr "Le fichier n'est pas un modèle de bulletin. {{details}}"
+
+msgid "Imported bulletin"
+msgstr "Bulletin importé"
+
+msgid "Created by"
+msgstr "Créé par"
+
+msgid "Last updated"
+msgstr "Dernière mise à jour"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Open"
+msgstr "Ouvrir"
+
+msgid "Export"
+msgstr "Exporter"
+
+msgid "Edit"
+msgstr "Modifier"
+
+msgid "Share"
+msgstr "Partager"
+
+msgid "Delete"
+msgstr "Supprimer"
+
+msgid "Bulletins"
+msgstr "Bulletins"
+
+msgid "Periodic bulletins built from your data. Design them once, then publish one issue per period."
+msgstr "Bulletins périodiques construits à partir de vos données. Concevez-les une fois, puis publiez un numéro par période."
+
+msgid "Import old bulletin texts"
+msgstr "Importer les anciens textes du bulletin"
+
+msgid "Import JSON"
+msgstr "Importer un JSON"
+
+msgid "Import failed"
+msgstr "Échec de l'importation"
+
+msgid "My bulletins"
+msgstr "Mes bulletins"
+
+msgid "Shared with me"
+msgstr "Partagés avec moi"
+
+msgid "You have not created any bulletin yet."
+msgstr "Vous n'avez encore créé aucun bulletin."
+
+msgid "No bulletin is shared with you."
+msgstr "Aucun bulletin n'est partagé avec vous."
+
+msgid "Delete bulletin"
+msgstr "Supprimer le bulletin"
+
+msgid "Delete \"{{name}}\"? Its saved issues stay in the data store."
+msgstr "Supprimer « {{name}} » ? Ses numéros enregistrés restent dans le data store."
+
+msgid "Organisation unit"
+msgstr "Unité d'organisation"
+
+msgid "No reporting data for these periods."
+msgstr "Aucune donnée de rapportage pour ces périodes."
+
+msgid "{{count}} alert from {{reports}}."
+msgid_plural "{{count}} alert from {{reports}}."
+msgstr[0] "{{count}} alerte sur {{reports}}."
+msgstr[1] "{{count}} alertes sur {{reports}}."
+
+msgid "{{count}} alert of {{name}} reported by {{orgUnits}}"
+msgid_plural "{{count}} alert of {{name}} reported by {{orgUnits}}"
+msgstr[0] "{{count}} alerte de {{name}} signalée par {{orgUnits}}"
+msgstr[1] "{{count}} alertes de {{name}} signalées par {{orgUnits}}"
+
+msgid "None reported."
+msgstr "Aucun signalé."
+
+msgid "No data found for {{name}}"
+msgstr "Aucune donnée trouvée pour {{name}}"
+
+msgid "Year"
+msgstr "Année"
+
+msgid "Period"
+msgstr "Période"
+
+msgid "Write the notes for this period"
+msgstr "Rédigez les notes de cette période"
+
+msgid "Remove"
+msgstr "Supprimer"
+
+msgid "No rows yet."
+msgstr "Aucune ligne pour l'instant."
+
+msgid "Add row"
+msgstr "Ajouter une ligne"
+
+msgid "Could not load the list."
+msgstr "Impossible de charger la liste."
+
+msgid "Logos must be smaller than 200 KB."
+msgstr "Les logos doivent faire moins de 200 Ko."
+
+msgid "Subtitle"
+msgstr "Sous-titre"
+
+msgid "Logos"
+msgstr "Logos"
+
+msgid "Add logo"
+msgstr "Ajouter un logo"
+
+msgid "Data items (one chart each)"
+msgstr "Éléments de données (un graphique chacun)"
+
+msgid "Change data items"
+msgstr "Modifier les éléments de données"
+
+msgid "Choose data items"
+msgstr "Choisir les éléments de données"
+
+msgid "Previous periods shown"
+msgstr "Périodes précédentes affichées"
+
+msgid "The chart shows the bulletin period and this many periods before it."
+msgstr "Le graphique montre la période du bulletin et ce nombre de périodes précédentes."
+
+msgid "Chart type"
+msgstr "Type de graphique"
+
+msgid "Case"
+msgstr "Cas"
+
+msgid "Death"
+msgstr "Décès"
+
+msgid "Public health event"
+msgstr "Événement de santé publique"
+
+msgid "Tracker program"
+msgstr "Programme tracker"
+
+msgid "Group by attribute"
+msgstr "Regrouper par attribut"
+
+msgid "The attribute holding the disease or event type."
+msgstr "L'attribut qui contient la maladie ou le type d'événement."
+
+msgid "Classification rules"
+msgstr "Règles de classification"
+
+msgid "Values containing the text are classified in the category. Values matching no rule are cases."
+msgstr "Les valeurs contenant le texte sont classées dans la catégorie. Les valeurs ne correspondant à aucune règle sont des cas."
+
+msgid "Text contained in the value"
+msgstr "Texte contenu dans la valeur"
+
+msgid "Category"
+msgstr "Catégorie"
+
+msgid "Add rule"
+msgstr "Ajouter une règle"
+
+msgid "Program"
+msgstr "Programme"
+
+msgid "Signal data element"
+msgstr "Élément de données du signal"
+
+msgid "Events are grouped by its value."
+msgstr "Les événements sont regroupés selon sa valeur."
+
+msgid "Location data element"
+msgstr "Élément de données du lieu"
+
+msgid "Optional. Also groups by this value."
+msgstr "Facultatif. Regroupe aussi selon cette valeur."
+
+msgid "Count data element"
+msgstr "Élément de données du nombre"
+
+msgid "Optional. Sums this number instead of counting events."
+msgstr "Facultatif. Additionne ce nombre au lieu de compter les événements."
+
+msgid "Data sets"
+msgstr "Ensembles de données"
+
+msgid "Org unit level of the rows"
+msgstr "Niveau d'unité d'organisation des lignes"
+
+msgid "Good from (%)"
+msgstr "Bon à partir de (%)"
+
+msgid "Fair from (%)"
+msgstr "Moyen à partir de (%)"
+
+msgid "Columns"
+msgstr "Colonnes"
+
+msgid "Column {{number}}"
+msgstr "Colonne {{number}}"
+
+msgid "Add column"
+msgstr "Ajouter une colonne"
+
+msgid "Title"
+msgstr "Titre"
+
+msgid "Introduction"
+msgstr "Introduction"
+
+msgid "Text"
+msgstr "Texte"
+
+msgid "The notes are written for each period in the bulletin itself."
+msgstr "Les notes sont rédigées pour chaque période dans le bulletin lui-même."
+
+msgid "Section not configured"
+msgstr "Section non configurée"
+
+msgid "Edit the bulletin to choose the data this section uses."
+msgstr "Modifiez le bulletin pour choisir les données de cette section."
+
+msgid "This section could not be loaded"
+msgstr "Cette section n'a pas pu être chargée"
+
+msgid "{{count}} case of {{name}} reported by {{facilities}}"
+msgid_plural "{{count}} case of {{name}} reported by {{facilities}}"
+msgstr[0] "{{count}} cas de {{name}} signalé par {{facilities}}"
+msgstr[1] "{{count}} cas de {{name}} signalés par {{facilities}}"
+
+msgid "{{count}} record notified by {{facilities}}."
+msgid_plural "{{count}} record notified by {{facilities}}."
+msgstr[0] "{{count}} enregistrement notifié par {{facilities}}."
+msgstr[1] "{{count}} enregistrements notifiés par {{facilities}}."
+
+msgid "Cases"
+msgstr "Cas"
+
+msgid "Public health events"
+msgstr "Événements de santé publique"
+
+msgid "Deaths"
+msgstr "Décès"
+
+msgid "{{count}} death reported by {{facilities}}."
+msgid_plural "{{count}} death reported by {{facilities}}."
+msgstr[0] "{{count}} décès signalé par {{facilities}}."
+msgstr[1] "{{count}} décès signalés par {{facilities}}."
+
+msgid "{{name}} {{value}} ({{percent}})"
+msgstr "{{name}} {{value}} ({{percent}})"
+
+msgid "{{count}} death in {{facility}}"
+msgid_plural "{{count}} death in {{facility}}"
+msgstr[0] "{{count}} décès à {{facility}}"
+msgstr[1] "{{count}} décès à {{facility}}"
+
+msgid "Bulletin published"
+msgstr "Bulletin publié"
+
+msgid "Draft saved"
+msgstr "Brouillon enregistré"
+
+msgid "Could not save the bulletin. Please try again."
+msgstr "Impossible d'enregistrer le bulletin. Veuillez réessayer."
+
+msgid "Bulletin saved"
+msgstr "Bulletin enregistré"
+
+msgid "Bulletin deleted"
+msgstr "Bulletin supprimé"
+
+msgid "Could not delete the bulletin. Please try again."
+msgstr "Impossible de supprimer le bulletin. Veuillez réessayer."
+
+msgid "Name is required"
+msgstr "Le nom est obligatoire"
+
+msgid "{{count}} facility"
+msgid_plural "{{count}} facility"
+msgstr[0] "{{count}} établissement"
+msgstr[1] "{{count}} établissements"
+
+msgid "{{count}} org unit"
+msgid_plural "{{count}} org unit"
+msgstr[0] "{{count}} unité d'organisation"
+msgstr[1] "{{count}} unités d'organisation"
+
+msgid "{{count}} report"
+msgid_plural "{{count}} report"
+msgstr[0] "{{count}} rapport"
+msgstr[1] "{{count}} rapports"
+
+msgid "{{count}} level"
+msgid_plural "{{count}} level"
+msgstr[0] "{{count}} niveau"
+msgstr[1] "{{count}} niveaux"
+
+msgid "{{count}} group"
+msgid_plural "{{count}} group"
+msgstr[0] "{{count}} groupe"
+msgstr[1] "{{count}} groupes"
+
+msgid "Cover"
+msgstr "Couverture"
+
+msgid "Indicator trends"
+msgstr "Tendances des indicateurs"
+
+msgid "Tracker cases and deaths"
+msgstr "Cas et décès (tracker)"
+
+msgid "Event signals"
+msgstr "Signaux d'événements"
+
+msgid "Reporting completeness"
+msgstr "Complétude des rapports"
+
+msgid "Outbreak table"
+msgstr "Tableau des épidémies"
+
+msgid "Notes"
+msgstr "Notes"
 
 msgid "No data available"
 msgstr "Aucune donnée disponible"
@@ -15,8 +478,17 @@ msgstr "Aucune donnée disponible"
 msgid "Search in table..."
 msgstr "Rechercher dans le tableau..."
 
+msgid "Item"
+msgstr "Élément"
+
+msgid "Size {{value}}"
+msgstr "Taille {{value}}"
+
 msgid "No data found"
 msgstr "Aucune donnée trouvée"
+
+msgid "Required headers (value and a category) are missing"
+msgstr "Les en-têtes requis (valeur et une catégorie) sont manquants"
 
 msgid "Value"
 msgstr "Valeur"
@@ -63,6 +535,45 @@ msgstr "Carte proportionnelle"
 msgid "Table"
 msgstr "Tableau"
 
+msgid "Nature Essence"
+msgstr "Essence de nature"
+
+msgid "Tranquil Hues"
+msgstr "Teintes paisibles"
+
+msgid "Tropical Vibes"
+msgstr "Ambiance tropicale"
+
+msgid "Retro Vibes"
+msgstr "Ambiance rétro"
+
+msgid "Cyberpunk Neon"
+msgstr "Néon cyberpunk"
+
+msgid "Berry Bliss"
+msgstr "Délice de baies"
+
+msgid "Ocean Breeze"
+msgstr "Brise océane"
+
+msgid "Sunset Glow"
+msgstr "Lueur du couchant"
+
+msgid "Forest Harmony"
+msgstr "Harmonie forestière"
+
+msgid "Elegant Neutrals"
+msgstr "Neutres élégants"
+
+msgid "Pastel Dreams"
+msgstr "Rêves pastel"
+
+msgid "Autumn Serenity"
+msgstr "Sérénité d'automne"
+
+msgid "Default"
+msgstr "Par défaut"
+
 msgid "Remove {{name}}"
 msgstr "Retirer {{name}}"
 
@@ -72,23 +583,11 @@ msgstr "Ouvrir {{name}}"
 msgid "Updated {{date}}"
 msgstr "Mis à jour le {{date}}"
 
-msgid "Open"
-msgstr "Ouvrir"
-
 msgid "Present"
 msgstr "Présenter"
 
 msgid "Dashboard"
 msgstr "Tableau de bord"
-
-msgid "Name"
-msgstr "Nom"
-
-msgid "Name is required"
-msgstr "Le nom est obligatoire"
-
-msgid "Description"
-msgstr "Description"
 
 msgid "Official dashboard (pinned on the home page)"
 msgstr "Tableau de bord officiel (épinglé sur la page d'accueil)"
@@ -107,9 +606,6 @@ msgstr "Enregistrer les modifications"
 
 msgid "Save dashboard"
 msgstr "Enregistrer le tableau de bord"
-
-msgid "No match"
-msgstr "Aucun résultat"
 
 msgid "Add a visualization"
 msgstr "Ajouter une visualisation"
@@ -186,32 +682,14 @@ msgstr "Nouveau tableau de bord"
 msgid "My dashboards"
 msgstr "Mes tableaux de bord"
 
-msgid "Shared with me"
-msgstr "Partagés avec moi"
-
 msgid "Cards"
 msgstr "Cartes"
 
 msgid "List"
 msgstr "Liste"
 
-msgid "Created by"
-msgstr "Créé par"
-
 msgid "Created"
 msgstr "Créé le"
-
-msgid "Last updated"
-msgstr "Dernière mise à jour"
-
-msgid "Actions"
-msgstr "Actions"
-
-msgid "Share"
-msgstr "Partager"
-
-msgid "Delete"
-msgstr "Supprimer"
 
 msgid "Delete dashboard"
 msgstr "Supprimer le tableau de bord"
@@ -231,60 +709,6 @@ msgstr "Tableaux de bord épinglés"
 msgid "Official dashboards shared with you will appear here."
 msgstr "Les tableaux de bord officiels partagés avec vous apparaîtront ici."
 
-msgid "No access"
-msgstr "Aucun accès"
-
-msgid "View only"
-msgstr "Lecture seule"
-
-msgid "View and edit"
-msgstr "Lecture et modification"
-
-msgid "Sharing settings saved"
-msgstr "Paramètres de partage enregistrés"
-
-msgid "Sharing settings for {{name}}"
-msgstr "Paramètres de partage de {{name}}"
-
-msgid "Give access to a user or group"
-msgstr "Donner accès à un utilisateur ou un groupe"
-
-msgid "User or group"
-msgstr "Utilisateur ou groupe"
-
-msgid "Search users or groups"
-msgstr "Rechercher des utilisateurs ou des groupes"
-
-msgid "User"
-msgstr "Utilisateur"
-
-msgid "Group"
-msgstr "Groupe"
-
-msgid "Access"
-msgstr "Accès"
-
-msgid "Give access"
-msgstr "Donner l'accès"
-
-msgid "Already has access; change it below."
-msgstr "A déjà accès ; modifiez-le ci-dessous."
-
-msgid "Users and groups with access"
-msgstr "Utilisateurs et groupes ayant accès"
-
-msgid "All users"
-msgstr "Tous les utilisateurs"
-
-msgid "Anyone logged in"
-msgstr "Toute personne connectée"
-
-msgid "Remove access"
-msgstr "Retirer l'accès"
-
-msgid "Close"
-msgstr "Fermer"
-
 msgid "Dashboard deleted"
 msgstr "Tableau de bord supprimé"
 
@@ -296,6 +720,9 @@ msgstr "Fichier PowerPoint téléchargé"
 
 msgid "Exporting to PowerPoint failed"
 msgstr "L'export vers PowerPoint a échoué"
+
+msgid "The current user is not loaded yet."
+msgstr "L'utilisateur actuel n'est pas encore chargé."
 
 msgid "Dashboard saved"
 msgstr "Tableau de bord enregistré"
@@ -387,9 +814,6 @@ msgstr "Groupe d'indicateurs"
 msgid "Data element group"
 msgstr "Groupe d'éléments de données"
 
-msgid "Program"
-msgstr "Programme"
-
 msgid "Reporting rate"
 msgstr "Taux de rapportage"
 
@@ -414,6 +838,9 @@ msgstr "URL"
 msgid "No description provided"
 msgstr "Aucune description fournie"
 
+msgid "Close"
+msgstr "Fermer"
+
 msgid "Edit data source"
 msgstr "Modifier la source de données"
 
@@ -429,20 +856,11 @@ msgstr "Jeton d'accès personnel"
 msgid "Created in the remote instance under Profile > Personal access tokens."
 msgstr "Créé dans l'instance distante sous Profil > Jetons d'accès personnels."
 
-msgid "Cancel"
-msgstr "Annuler"
-
-msgid "Save"
-msgstr "Enregistrer"
-
 msgid "Data source"
 msgstr "Source de données"
 
 msgid "View"
 msgstr "Voir"
-
-msgid "Edit"
-msgstr "Modifier"
 
 msgid "Data sources"
 msgstr "Sources de données"
@@ -501,9 +919,6 @@ msgstr "Ajouter une couche thématique"
 msgid "Basemap"
 msgstr "Fond de carte"
 
-msgid "Data source not available"
-msgstr "Source de données indisponible"
-
 msgid "The data source of this map was deleted or is not shared with you. Pick another one in the thematic layer."
 msgstr "La source de données de cette carte a été supprimée ou n'est pas partagée avec vous. Choisissez-en une autre dans la couche thématique."
 
@@ -554,9 +969,6 @@ msgstr "Nom de la zone"
 
 msgid "Data name"
 msgstr "Nom de la donnée"
-
-msgid "Period"
-msgstr "Période"
 
 msgid "Labels"
 msgstr "Étiquettes"
@@ -636,9 +1048,6 @@ msgstr "Carte"
 msgid "Settings"
 msgstr "Paramètres"
 
-msgid "Report"
-msgstr "Rapport"
-
 msgid "Main"
 msgstr "Principal"
 
@@ -693,9 +1102,6 @@ msgstr "Développer"
 msgid "Could not load the sub-units."
 msgstr "Impossible de charger les sous-unités."
 
-msgid "Organisation units"
-msgstr "Unités d'organisation"
-
 msgid "User org unit"
 msgstr "Unité d'organisation de l'utilisateur"
 
@@ -728,12 +1134,6 @@ msgstr "Périodes fixes"
 
 msgid "Period group"
 msgstr "Groupe de périodes"
-
-msgid "Period type"
-msgstr "Type de période"
-
-msgid "Year"
-msgstr "Année"
 
 msgid "Available periods"
 msgstr "Périodes disponibles"
@@ -933,148 +1333,11 @@ msgstr "5 dernières années"
 msgid "Last 10 years"
 msgstr "10 dernières années"
 
-msgid "Loading the bulletin data"
-msgstr "Chargement des données du bulletin"
-
-msgid "Weekly epidemiological bulletin. Choose a week on the left, then click Update."
-msgstr "Bulletin épidémiologique hebdomadaire. Choisissez une semaine à gauche, puis cliquez sur Mettre à jour."
-
-msgid "Dimensions"
-msgstr "Dimensions"
-
-msgid "Period ({{count}})"
-msgid_plural "Period ({{count}})"
-msgstr[0] "Période ({{count}})"
-msgstr[1] "Période ({{count}})"
-
-msgid "No cases found."
-msgstr "Aucun cas trouvé."
-
-msgid "Bulletin template not found"
-msgstr "Modèle de bulletin introuvable"
-
-msgid "Pick a week"
-msgstr "Choisissez une semaine"
-
-msgid "The bulletin needs a weekly period."
-msgstr "Le bulletin nécessite une période hebdomadaire."
-
-msgid "Tracker data could not be loaded"
-msgstr "Les données Tracker n'ont pas pu être chargées"
-
-msgid "Alerts, immediate reportable diseases and deaths are missing from this bulletin."
-msgstr "Les alertes, les maladies à déclaration immédiate et les décès manquent dans ce bulletin."
-
-msgid "Epidemiological bulletin"
-msgstr "Bulletin épidémiologique"
-
-msgid "Republic of Rwanda Ministry of Health"
-msgstr "République du Rwanda, Ministère de la Santé"
-
-msgid "Rwanda Biomedical Centre"
-msgstr "Rwanda Biomedical Centre"
-
-msgid "alerts"
-msgstr "alertes"
-
-msgid "IMMEDIATE REPORTABLE DISEASES – EPI {{week}}"
-msgstr "MALADIES À DÉCLARATION IMMÉDIATE – EPI {{week}}"
-
-msgid "Immediate reportable diseases notes"
-msgstr "Notes sur les maladies à déclaration immédiate"
-
-msgid "WEEKLY REPORTABLE DISEASES – EPI {{week}}"
-msgstr "MALADIES À DÉCLARATION HEBDOMADAIRE – EPI {{week}}"
-
-msgid "No data found for {{name}}"
-msgstr "Aucune donnée trouvée pour {{name}}"
-
-msgid "DISTRIBUTION OF REPORTED DEATHS IN eIDSR – EPIDEMIOLOGICAL {{week}}"
-msgstr "RÉPARTITION DES DÉCÈS DÉCLARÉS DANS L'eIDSR – ÉPIDÉMIOLOGIQUE {{week}}"
-
-msgid "Notes"
-msgstr "Notes"
-
-msgid "Enter notes..."
-msgstr "Saisir des notes..."
-
-msgid "Outbreak summary (sample)"
-msgstr "Résumé des épidémies (exemple)"
-
-msgid "Hospital catchment area"
-msgstr "Zone de desserte de l'hôpital"
-
-msgid "Completeness"
-msgstr "Complétude"
-
-msgid "{{count}} cases of {{name}} reported by {{facilities}} HFs"
-msgid_plural "{{count}} cases of {{name}} reported by {{facilities}} HFs"
-msgstr[0] "{{count}} cas de {{name}} déclarés par {{facilities}} FOSA"
-msgstr[1] "{{count}} cas de {{name}} déclarés par {{facilities}} FOSA"
-
-msgid "{{count}} were {{type}}"
-msgid_plural "{{count}} were {{type}}"
-msgstr[0] "{{count}} étaient des {{type}}"
-msgstr[1] "{{count}} étaient des {{type}}"
-
-msgid "{{count}} deaths were reported by {{facility}} ({{details}})"
-msgid_plural "{{count}} deaths were reported by {{facility}} ({{details}})"
-msgstr[0] "{{count}} décès ont été déclarés par {{facility}} ({{details}})"
-msgstr[1] "{{count}} décès ont été déclarés par {{facility}} ({{details}})"
-
-msgid "{{count}} immediate reportable events were notified by health facilities countrywide. These include {{diseases}}."
-msgid_plural "{{count}} immediate reportable events were notified by health facilities countrywide. These include {{diseases}}."
-msgstr[0] "{{count}} événements à déclaration immédiate ont été notifiés par les formations sanitaires dans tout le pays. Ils comprennent {{diseases}}."
-msgstr[1] "{{count}} événements à déclaration immédiate ont été notifiés par les formations sanitaires dans tout le pays. Ils comprennent {{diseases}}."
-
-msgid "A total of {{count}} deaths were reported through the electronic Integrated Disease Surveillance and Response (eIDSR) system. Most of the deaths were {{types}}."
-msgid_plural "A total of {{count}} deaths were reported through the electronic Integrated Disease Surveillance and Response (eIDSR) system. Most of the deaths were {{types}}."
-msgstr[0] "Au total, {{count}} décès ont été déclarés dans le système électronique de surveillance intégrée de la maladie et riposte (eIDSR). La plupart des décès étaient des {{types}}."
-msgstr[1] "Au total, {{count}} décès ont été déclarés dans le système électronique de surveillance intégrée de la maladie et riposte (eIDSR). La plupart des décès étaient des {{types}}."
-
-msgid "A total of {{count}} public events were reported."
-msgid_plural "A total of {{count}} public events were reported."
-msgstr[0] "Au total, {{count}} événements de santé publique ont été déclarés."
-msgstr[1] "Au total, {{count}} événements de santé publique ont été déclarés."
-
-msgid "As summarized in the Pie Chart below, a total number of {{count}} deaths were reported through the electronic Integrated Disease Surveillance and Response (eIDSR) system. {{details}}."
-msgid_plural "As summarized in the Pie Chart below, a total number of {{count}} deaths were reported through the electronic Integrated Disease Surveillance and Response (eIDSR) system. {{details}}."
-msgstr[0] "Comme le résume le diagramme circulaire ci-dessous, {{count}} décès au total ont été déclarés dans le système électronique de surveillance intégrée de la maladie et riposte (eIDSR). {{details}}."
-msgstr[1] "Comme le résume le diagramme circulaire ci-dessous, {{count}} décès au total ont été déclarés dans le système électronique de surveillance intégrée de la maladie et riposte (eIDSR). {{details}}."
-
-msgid "{{count}} ({{percent}}%) were {{type}}"
-msgid_plural "{{count}} ({{percent}}%) were {{type}}"
-msgstr[0] "{{count}} ({{percent}} %) étaient des {{type}}"
-msgstr[1] "{{count}} ({{percent}} %) étaient des {{type}}"
-
-msgid "{{count}} cases of Malaria reported by {{villages}} villages"
-msgid_plural "{{count}} cases of Malaria reported by {{villages}} villages"
-msgstr[0] "{{count}} cas de paludisme déclarés par {{villages}} villages"
-msgstr[1] "{{count}} cas de paludisme déclarés par {{villages}} villages"
-
-msgid "{{count}} malaria cases"
-msgid_plural "{{count}} malaria cases"
-msgstr[0] "{{count}} cas de paludisme"
-msgstr[1] "{{count}} cas de paludisme"
-
-msgid "{{count}} cases of {{name}} reported by {{villages}} villages"
-msgid_plural "{{count}} cases of {{name}} reported by {{villages}} villages"
-msgstr[0] "{{count}} cas de {{name}} déclarés par {{villages}} villages"
-msgstr[1] "{{count}} cas de {{name}} déclarés par {{villages}} villages"
-
-msgid "{{count}} {{name}} cases"
-msgid_plural "{{count}} {{name}} cases"
-msgstr[0] "{{count}} cas de {{name}}"
-msgstr[1] "{{count}} cas de {{name}}"
-
 msgid "Configure where your data comes from. By default, data is read from this DHIS2 instance."
 msgstr "Configurez la provenance de vos données. Par défaut, les données sont lues depuis cette instance DHIS2."
 
-msgid "Prepare the weekly epidemiological bulletin."
-msgstr "Préparer le bulletin épidémiologique hebdomadaire."
-
-msgid "Chart type"
-msgstr "Type de graphique"
+msgid "Design bulletins (sections, data, texts, logos) and publish them period by period."
+msgstr "Concevez des bulletins (sections, données, textes, logos) et publiez-les période par période."
 
 msgid "Select chart type"
 msgstr "Choisir le type de graphique"
@@ -1088,23 +1351,17 @@ msgstr "Rechercher une palette"
 msgid "Main dimensions"
 msgstr "Dimensions principales"
 
-msgid "Organisation unit"
-msgstr "Unité d'organisation"
-
-msgid "Export"
-msgstr "Exporter"
-
 msgid "File"
 msgstr "Fichier"
-
-msgid "Columns"
-msgstr "Colonnes"
 
 msgid "Rows"
 msgstr "Lignes"
 
 msgid "Filter"
 msgstr "Filtre"
+
+msgid "Move to {{area}}"
+msgstr "Déplacer vers {{area}}"
 
 msgid "Another visualization already uses this name."
 msgstr "Une autre visualisation utilise déjà ce nom."
@@ -1157,11 +1414,11 @@ msgstr "Sous-titre du graphique"
 msgid "Automatic (filter items)"
 msgstr "Automatique (éléments du filtre)"
 
-msgid "Apply"
-msgstr "Appliquer"
-
 msgid "Running analytics"
 msgstr "Calcul des analyses en cours"
+
+msgid "Dimensions"
+msgstr "Dimensions"
 
 msgid "The data source of this visualization was deleted or is not shared with you. Pick another data source."
 msgstr "La source de données de cette visualisation a été supprimée ou n'est pas partagée avec vous. Choisissez une autre source de données."
@@ -1208,6 +1465,9 @@ msgstr "Non autorisé"
 msgid "You are not allowed to access this resource. Please contact the administrator for assistance."
 msgstr "Vous n'êtes pas autorisé à accéder à cette ressource. Veuillez contacter l'administrateur."
 
+msgid "An external instance needs both a url and a token."
+msgstr "Une instance externe nécessite une URL et un jeton."
+
 msgid "Confirm"
 msgstr "Confirmer"
 
@@ -1240,6 +1500,54 @@ msgstr "Nom du fichier"
 
 msgid "Format"
 msgstr "Format"
+
+msgid "No access"
+msgstr "Aucun accès"
+
+msgid "View only"
+msgstr "Lecture seule"
+
+msgid "View and edit"
+msgstr "Lecture et modification"
+
+msgid "Sharing settings for {{name}}"
+msgstr "Paramètres de partage de {{name}}"
+
+msgid "Give access to a user or group"
+msgstr "Donner accès à un utilisateur ou un groupe"
+
+msgid "User or group"
+msgstr "Utilisateur ou groupe"
+
+msgid "Search users or groups"
+msgstr "Rechercher des utilisateurs ou des groupes"
+
+msgid "User"
+msgstr "Utilisateur"
+
+msgid "Group"
+msgstr "Groupe"
+
+msgid "Access"
+msgstr "Accès"
+
+msgid "Give access"
+msgstr "Donner l'accès"
+
+msgid "Already has access; change it below."
+msgstr "A déjà accès ; modifiez-le ci-dessous."
+
+msgid "Users and groups with access"
+msgstr "Utilisateurs et groupes ayant accès"
+
+msgid "All users"
+msgstr "Tous les utilisateurs"
+
+msgid "Anyone logged in"
+msgstr "Toute personne connectée"
+
+msgid "Remove access"
+msgstr "Retirer l'accès"
 
 msgid "Back to home"
 msgstr "Retour à l'accueil"

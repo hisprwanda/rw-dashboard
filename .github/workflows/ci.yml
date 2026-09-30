@@ -17,6 +17,7 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn typecheck
       - run: yarn lint
+      - run: yarn i18n:check
       - run: yarn test
         env:
           CI: true

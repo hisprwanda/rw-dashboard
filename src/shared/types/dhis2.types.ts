@@ -36,6 +36,8 @@ export type OrgUnitGroup = IdentifiableObject
 export interface UserSettings {
     keyUiLocale?: string
     keyDbLocale?: string
+    /** Whether analytics show names or short names (`name` | `shortName`). */
+    keyAnalysisDisplayProperty?: string
 }
 
 export interface Me extends IdentifiableObject {

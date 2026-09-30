@@ -22,9 +22,11 @@ const settingsLinks = (): SettingsLink[] => [
         icon: <IconDataString24 />,
     },
     {
-        to: paths.report,
-        title: i18n.t('Epidemiological bulletin'),
-        description: i18n.t('Prepare the weekly epidemiological bulletin.'),
+        to: paths.bulletins,
+        title: i18n.t('Bulletins'),
+        description: i18n.t(
+            'Design bulletins (sections, data, texts, logos) and publish them period by period.'
+        ),
         icon: <IconFileDocument24 />,
     },
 ]

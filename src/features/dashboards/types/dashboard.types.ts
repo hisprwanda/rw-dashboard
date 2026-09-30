@@ -38,9 +38,6 @@ export interface DashboardMapItem extends GridPosition {
     dataSourceId: string
 }
 
-export type AccessLevel = 'View only' | 'View and edit'
-export type GeneralAccess = 'No access' | AccessLevel
-
 /** A dashboard as stored in the dashboards dataStore namespace. */
 export type SavedDashboard = Shareable & {
     dashboardName: string
@@ -61,10 +58,3 @@ export type SavedDashboard = Shareable & {
 }
 
 export type SavedDashboardEntry = DataStoreEntry<SavedDashboard>
-
-/** A user or user group found by `GET /api/sharing/search`. */
-export interface SharingCandidate {
-    id: string
-    name: string
-    type: 'User' | 'Group'
-}

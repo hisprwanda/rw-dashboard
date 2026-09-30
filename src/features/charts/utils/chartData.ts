@@ -34,7 +34,7 @@ export const toSeriesRows = (data: AnalyticsResponse): SeriesRow[] => {
             ? headers.find((h) => h.meta && h.name !== 'dx')
             : (headers.find((h) => h.name === 'pe') ?? headers.find((h) => h.meta))
     if (!categoryHeader || valueIndex < 0) {
-        throw new Error('Required headers (value and a category) are missing')
+        throw new Error(i18n.t('Required headers (value and a category) are missing'))
     }
     const categoryIndex = indexOf(categoryHeader.name)
     const seriesIndex = dxIndex >= 0 ? dxIndex : indexOf('ou')

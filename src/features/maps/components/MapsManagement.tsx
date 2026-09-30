@@ -6,6 +6,7 @@ import { paths } from '@/app/router/paths'
 import { useMe } from '@/features/auth'
 import { ConfirmModal, DataTable, PageHeader, type DataTableColumn } from '@/shared/components'
 import { isCreatedBy, isSharedWith } from '@/shared/utils/sharing'
+import { formatDateTime } from '@/shared/utils/format'
 import { useDeleteMap } from '../hooks/useDeleteMap'
 import { mapTypeLabel } from '../utils/labels'
 import { useMaps } from '../hooks/useMaps'
@@ -13,8 +14,8 @@ import type { SavedMapEntry } from '../types/map.types'
 
 type Scope = 'mine' | 'shared'
 
-const formatDate = (timestamp: number | undefined) =>
-    timestamp ? new Date(timestamp).toLocaleString() : ''
+const formatUpdated = (timestamp: number | undefined) =>
+    timestamp ? formatDateTime(timestamp) : ''
 
 /** Maps list: mine vs. shared with me, open and delete. */
 export const MapsManagement = () => {
@@ -64,7 +65,7 @@ export const MapsManagement = () => {
                 key: 'created',
                 header: i18n.t('Created'),
                 value: (e) => e.value.createdAt,
-                render: (e) => formatDate(e.value.createdAt),
+                render: (e) => formatUpdated(e.value.createdAt),
                 sortable: true,
                 searchable: false,
             },
@@ -72,7 +73,7 @@ export const MapsManagement = () => {
                 key: 'updated',
                 header: i18n.t('Last updated'),
                 value: (e) => e.value.updatedAt,
-                render: (e) => formatDate(e.value.updatedAt),
+                render: (e) => formatUpdated(e.value.updatedAt),
                 sortable: true,
                 searchable: false,
             },

@@ -2,6 +2,7 @@ import i18n from '@dhis2/d2-i18n'
 import { IconChevronDown16, IconChevronUp16 } from '@dhis2/ui'
 import { useState } from 'react'
 import type { LegendClass } from '../types/map.types'
+import { formatNumber } from '@/shared/utils/format'
 
 interface MapLegendProps {
     title: string
@@ -9,7 +10,7 @@ interface MapLegendProps {
     defaultOpen?: boolean
 }
 
-const format = (value: number) => (Number.isInteger(value) ? String(value) : value.toFixed(1))
+const format = (value: number) => formatNumber(value, { maximumFractionDigits: 1 })
 
 /** Collapsible legend floating over the bottom-right corner of the map. */
 export const MapLegend = ({ title, classes, defaultOpen = true }: MapLegendProps) => {
