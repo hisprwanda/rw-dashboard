@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-09-30T08:56:28.444Z\n"
-"PO-Revision-Date: 2026-09-30T08:56:28.445Z\n"
+"POT-Creation-Date: 2026-09-30T18:58:51.071Z\n"
+"PO-Revision-Date: 2026-09-30T18:58:51.071Z\n"
 
 msgid "Data items"
 msgstr "Data items"
@@ -482,6 +482,15 @@ msgstr "Notes"
 msgid "No data available"
 msgstr "No data available"
 
+msgid "No data found"
+msgstr "No data found"
+
+msgid "Value"
+msgstr "Value"
+
+msgid "Total"
+msgstr "Total"
+
 msgid "Search in table..."
 msgstr "Search in table..."
 
@@ -491,14 +500,8 @@ msgstr "Item"
 msgid "Size {{value}}"
 msgstr "Size {{value}}"
 
-msgid "No data found"
-msgstr "No data found"
-
 msgid "Required headers (value and a category) are missing"
 msgstr "Required headers (value and a category) are missing"
-
-msgid "Value"
-msgstr "Value"
 
 msgid "Column"
 msgstr "Column"
@@ -625,6 +628,9 @@ msgstr "Add a map"
 
 msgid "Select a map"
 msgstr "Select a map"
+
+msgid "Add from DHIS2"
+msgstr "Add from DHIS2"
 
 msgid "Slide {{current}} of {{total}}"
 msgstr "Slide {{current}} of {{total}}"
@@ -915,6 +921,109 @@ msgstr "Token cannot exceed 256 characters"
 msgid "Token can only contain letters, numbers, dashes or underscores"
 msgstr "Token can only contain letters, numbers, dashes or underscores"
 
+msgid "Shown only in DHIS2"
+msgstr "Shown only in DHIS2"
+
+msgid "This item uses features that can only be drawn by DHIS2 itself."
+msgstr "This item uses features that can only be drawn by DHIS2 itself."
+
+msgid "Open in DHIS2"
+msgstr "Open in DHIS2"
+
+msgid "Not available"
+msgstr "Not available"
+
+msgid "This item was deleted in DHIS2 or is not shared with you."
+msgstr "This item was deleted in DHIS2 or is not shared with you."
+
+msgid "Could not load this item"
+msgstr "Could not load this item"
+
+msgid ""
+"Visualizations and maps made in the Data Visualizer and Maps apps. They "
+"stay linked, so changes made in DHIS2 show on the dashboard."
+msgstr ""
+"Visualizations and maps made in the Data Visualizer and Maps apps. They "
+"stay linked, so changes made in DHIS2 show on the dashboard."
+
+msgid "Search"
+msgstr "Search"
+
+msgid "Name contains"
+msgstr "Name contains"
+
+msgid "Visualizations"
+msgstr "Visualizations"
+
+msgid "Maps"
+msgstr "Maps"
+
+msgid "Nothing found."
+msgstr "Nothing found."
+
+msgid "Added"
+msgstr "Added"
+
+msgid "Previous"
+msgstr "Previous"
+
+msgid "Page {{page}} of {{pages}}"
+msgstr "Page {{page}} of {{pages}}"
+
+msgid "Next"
+msgstr "Next"
+
+msgid "DHIS2 has no image of this item."
+msgstr "DHIS2 has no image of this item."
+
+msgid "Pivot table"
+msgstr "Pivot table"
+
+msgid "Year over year (line)"
+msgstr "Year over year (line)"
+
+msgid "Year over year (column)"
+msgstr "Year over year (column)"
+
+msgid "Stacked area"
+msgstr "Stacked area"
+
+msgid "Bubble"
+msgstr "Bubble"
+
+msgid "Outlier table"
+msgstr "Outlier table"
+
+msgid "Thematic"
+msgstr "Thematic"
+
+msgid "Events"
+msgstr "Events"
+
+msgid "Tracked entities"
+msgstr "Tracked entities"
+
+msgid "Facilities"
+msgstr "Facilities"
+
+msgid "Boundaries"
+msgstr "Boundaries"
+
+msgid "Org units"
+msgstr "Org units"
+
+msgid "Earth Engine"
+msgstr "Earth Engine"
+
+msgid "External layer"
+msgstr "External layer"
+
+msgid "GeoJSON layer"
+msgstr "GeoJSON layer"
+
+msgid "Map"
+msgstr "Map"
+
 msgid "Save map"
 msgstr "Save map"
 
@@ -945,9 +1054,6 @@ msgstr "Collapse legend"
 
 msgid "Expand legend"
 msgstr "Expand legend"
-
-msgid "Maps"
-msgstr "Maps"
 
 msgid "New map"
 msgstr "New map"
@@ -1000,9 +1106,6 @@ msgstr "Legend set"
 msgid "Could not load the legend sets."
 msgstr "Could not load the legend sets."
 
-msgid "Org units"
-msgstr "Org units"
-
 msgid "Style"
 msgstr "Style"
 
@@ -1051,14 +1154,8 @@ msgstr "Map saved"
 msgid "Could not save the map. Please try again."
 msgstr "Could not save the map. Please try again."
 
-msgid "Thematic"
-msgstr "Thematic"
-
 msgid "Visualizers"
 msgstr "Visualizers"
-
-msgid "Map"
-msgstr "Map"
 
 msgid "Settings"
 msgstr "Settings"
@@ -1450,9 +1547,6 @@ msgstr ""
 "The data source of this visualization was deleted or is not shared with "
 "you. Pick another data source."
 
-msgid "Visualizations"
-msgstr "Visualizations"
-
 msgid "New visualization"
 msgstr "New visualization"
 
@@ -1496,14 +1590,14 @@ msgstr ""
 "You are not allowed to access this resource. Please contact the "
 "administrator for assistance."
 
+msgid "The server did not return a file."
+msgstr "The server did not return a file."
+
 msgid "An external instance needs both a url and a token."
 msgstr "An external instance needs both a url and a token."
 
 msgid "Confirm"
 msgstr "Confirm"
-
-msgid "Search"
-msgstr "Search"
 
 msgid "No results match \"{{search}}\""
 msgstr "No results match \"{{search}}\""

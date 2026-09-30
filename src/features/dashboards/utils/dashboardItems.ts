@@ -1,7 +1,9 @@
 import type { SavedMapEntry } from '@/features/maps'
 import type { SavedVisualEntry } from '@/features/visualizers'
 import type { UserRef } from '@/shared/types/common.types'
+import type { Dhis2ObjectSummary } from '@/features/dhis2-objects'
 import type {
+    DashboardDhis2Item,
     DashboardMapItem,
     DashboardVisualItem,
     GridPosition,
@@ -47,6 +49,28 @@ export const toMapItem = (entry: SavedMapEntry, count: number): DashboardMapItem
     dataSourceId: entry.value.dataSourceId,
 })
 
+/** Grid key of a DHIS2 favorite: the same favorite from two data sources are two items. */
+export const dhis2ItemKey = (
+    dataSourceId: string,
+    summary: Pick<Dhis2ObjectSummary, 'objectType' | 'id'>
+) => `${dataSourceId}_${summary.objectType}_${summary.id}`
+
+/** A live link to a DHIS2 visualization or map. */
+export const toDhis2Item = (
+    summary: Dhis2ObjectSummary,
+    dataSourceId: string,
+    count: number
+): DashboardDhis2Item => ({
+    i: dhis2ItemKey(dataSourceId, summary),
+    ...nextPosition(count),
+    kind: 'dhis2',
+    objectType: summary.objectType,
+    objectId: summary.id,
+    name: summary.name,
+    subtype: summary.subtype,
+    dataSourceId,
+})
+
 /** Copies the positions of a react-grid-layout layout onto the items. */
 export const withGridLayout = <T extends GridPosition>(
     items: readonly T[],
@@ -70,6 +94,7 @@ export interface DashboardDraft {
     backgroundColor: string
     visuals: DashboardVisualItem[]
     maps: DashboardMapItem[]
+    dhis2Items: DashboardDhis2Item[]
 }
 
 /** The stored dashboard: the draft over the saved version (keeps sharing, favorites…). */
@@ -87,6 +112,7 @@ export const buildDashboard = (
     dashboardSettings: { backgroundColor: draft.backgroundColor },
     selectedVisuals: draft.visuals,
     selectedMaps: draft.maps,
+    selectedDhis2Items: draft.dhis2Items,
     previewImg: previewImg ?? saved?.previewImg,
     favorites: saved?.favorites ?? [],
     sharing: saved?.sharing ?? [],

@@ -61,6 +61,18 @@ Combine multiple visuals to build fully customizable dashboards:
   2. Pin dashboards to the home page for easy access.  
   3. Mark dashboards as favorites for quick retrieval.  
 
+- **Visualizations and maps made in DHIS2** ("Add from DHIS2"):
+  - Pick pivot tables, charts and maps made in the Data Visualizer and Maps apps, from
+    this instance or an external data source. They are **live links**: only the id is
+    saved, so changes made in DHIS2 show on the dashboard.
+  - On this instance, DHIS2's own plugins draw them (as in the official Dashboard app).
+    If a plugin cannot run, the item is drawn by this app instead.
+  - On external instances (API token), this app draws them: pivot tables, charts and
+    single-layer thematic maps. Other types show DHIS2's server image; maps with event,
+    facility or Earth Engine layers show a link to open them in DHIS2.
+  - The plugins need a same-site session, as when the app is installed on the instance.
+    Behind `yarn start --proxy`, they may not load; the items are then drawn by this app.
+
 ---
 
 ### 4. Thematic Maps

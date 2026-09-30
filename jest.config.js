@@ -18,5 +18,8 @@ module.exports = {
         '^@/(.*)$': '<rootDir>/src/$1',
         // axios ships ESM by default, which Jest 27 cannot parse: use its CommonJS build.
         '^axios$': '<rootDir>/node_modules/axios/dist/node/axios.cjs',
+        // Jest 27 ignores "exports" maps: point the plugin host subpath at its CommonJS build.
+        '^@dhis2/app-runtime/experimental$':
+            '<rootDir>/node_modules/@dhis2/app-runtime/build/cjs/experimental.js',
     },
 }

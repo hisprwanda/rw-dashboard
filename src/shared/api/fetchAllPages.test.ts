@@ -8,6 +8,7 @@ const clientReturning = (pages: unknown[]) => {
             calls.push(params)
             return pages[calls.length - 1] as T
         },
+        getBlob: () => Promise.reject(new Error('not used')),
     }
     return { client, calls }
 }

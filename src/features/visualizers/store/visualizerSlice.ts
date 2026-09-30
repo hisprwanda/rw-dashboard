@@ -1,7 +1,11 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { ChartType, ColorPalette, VisualSettings, VisualTitles } from '@/features/charts'
 // The light entry: importing the charts barrel would put recharts in the main bundle.
-import { DEFAULT_CHART_TYPE, DEFAULT_COLOR_PALETTE } from '@/features/charts/constants'
+import {
+    DEFAULT_CHART_TYPE,
+    DEFAULT_COLOR_PALETTE,
+    DEFAULT_VISUAL_SETTINGS,
+} from '@/features/charts/constants'
 
 /** Appearance of the visualization being built. */
 export interface VisualizerState {
@@ -18,13 +22,7 @@ export const initialVisualizer: VisualizerState = {
         customSubTitle: '',
         DefaultSubTitle: { periods: [], orgUnits: [], dataElements: [] },
     },
-    settings: {
-        backgroundColor: '#ffffff',
-        visualColorPalette: DEFAULT_COLOR_PALETTE,
-        fillColor: '#000000',
-        XAxisSettings: { color: '#000000', fontSize: 12 },
-        YAxisSettings: { color: '#000000', fontSize: 12 },
-    },
+    settings: DEFAULT_VISUAL_SETTINGS,
     colorPalette: DEFAULT_COLOR_PALETTE,
 }
 

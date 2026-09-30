@@ -1,3 +1,4 @@
+import { useDataEngine } from '@dhis2/app-runtime'
 import i18n from '@dhis2/d2-i18n'
 import {
     Button,
@@ -15,6 +16,8 @@ import { paths } from '@/app/router/paths'
 import { useAppDispatch, useAppSelector } from '@/app/store'
 import { useMe } from '@/features/auth'
 import { chartTypeLabel } from '@/features/charts'
+import { CURRENT_INSTANCE_ID, useDataSources } from '@/features/data-sources'
+import { Dhis2ObjectPickerModal, fetchObjectImageDataUrl } from '@/features/dhis2-objects'
 import { mapTypeLabel, useMaps } from '@/features/maps'
 import { useVisuals } from '@/features/visualizers'
 import { ColorField, ErrorState, LoadingState } from '@/shared/components'
@@ -23,9 +26,15 @@ import { useDashboardEditor } from '../hooks/useDashboardEditor'
 import { useExportPptx } from '../hooks/useExportPptx'
 import { useSaveDashboard } from '../hooks/useSaveDashboard'
 import { dashboardEditorActions as actions } from '../store/dashboardEditorSlice'
-import { inReadingOrder, toMapItem, toVisualItem } from '../utils/dashboardItems'
+import {
+    dhis2ItemKey,
+    inReadingOrder,
+    toDhis2Item,
+    toMapItem,
+    toVisualItem,
+} from '../utils/dashboardItems'
 import { DashboardCanvas } from './DashboardCanvas'
-import { itemTitle } from './DashboardItemContent'
+import { isDhis2Item, itemTitle } from './DashboardItemContent'
 import { DashboardPresentation } from './DashboardPresentation'
 
 interface DashboardEditorProps {
@@ -43,13 +52,19 @@ export const DashboardEditor = ({ dashboardId }: DashboardEditorProps) => {
     const visuals = useVisuals()
     const maps = useMaps()
     const save = useSaveDashboard()
+    const engine = useDataEngine()
+    const dataSources = useDataSources()
     const exportPptx = useExportPptx()
     const canvasRef = useRef<HTMLDivElement>(null)
     const fullscreen = useFullscreen(canvasRef)
     const [presenting, setPresenting] = useState(false)
     const [nameError, setNameError] = useState(false)
+    const [pickingDhis2, setPickingDhis2] = useState(false)
 
-    const items = useMemo(() => [...draft.visuals, ...draft.maps], [draft.visuals, draft.maps])
+    const items = useMemo(
+        () => [...draft.visuals, ...draft.maps, ...draft.dhis2Items],
+        [draft.visuals, draft.maps, draft.dhis2Items]
+    )
     const count = items.length
     const onLayoutChange = useCallback(
         (layout: Layout[]) => dispatch(actions.applyGridLayout(layout)),
@@ -92,7 +107,27 @@ export const DashboardEditor = ({ dashboardId }: DashboardEditorProps) => {
         if (!canvasRef.current) return
         exportPptx.mutate({
             name: draft.name || i18n.t('Dashboard'),
-            items: inReadingOrder(items).map((item) => ({ id: item.i, title: itemTitle(item) })),
+            items: inReadingOrder(items).map((item) => {
+                if (!isDhis2Item(item)) return { id: item.i, title: itemTitle(item) }
+                const instance =
+                    item.dataSourceId === CURRENT_INSTANCE_ID
+                        ? { isCurrentInstance: true }
+                        : dataSources.data?.find((entry) => entry.key === item.dataSourceId)?.value
+                return {
+                    id: item.i,
+                    title: itemTitle(item),
+                    // Plugins draw in an iframe: DHIS2's image when the frame cannot be read.
+                    fallbackImage: () =>
+                        instance
+                            ? fetchObjectImageDataUrl(
+                                  engine,
+                                  instance,
+                                  item.objectType,
+                                  item.objectId
+                              )
+                            : Promise.resolve(null),
+                }
+            }),
             backgroundColor: draft.backgroundColor,
             author: me?.displayName ?? '',
             root: canvasRef.current,
@@ -164,7 +199,7 @@ export const DashboardEditor = ({ dashboardId }: DashboardEditorProps) => {
                 </ButtonStrip>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-[1fr_1fr_auto] items-end gap-3">
                 <SingleSelectField
                     dense
                     filterable
@@ -209,7 +244,19 @@ export const DashboardEditor = ({ dashboardId }: DashboardEditorProps) => {
                         />
                     ))}
                 </SingleSelectField>
+                <Button onClick={() => setPickingDhis2(true)}>{i18n.t('Add from DHIS2')}</Button>
             </div>
+            {pickingDhis2 && (
+                <Dhis2ObjectPickerModal
+                    isAdded={(dataSourceId, summary) =>
+                        inDashboard.has(dhis2ItemKey(dataSourceId, summary))
+                    }
+                    onAdd={(dataSourceId, summary) =>
+                        dispatch(actions.addDhis2Item(toDhis2Item(summary, dataSourceId, count)))
+                    }
+                    onClose={() => setPickingDhis2(false)}
+                />
+            )}
 
             <div
                 ref={canvasRef}
