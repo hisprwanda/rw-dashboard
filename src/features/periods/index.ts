@@ -11,7 +11,9 @@ export { useSystemCalendar } from './hooks/useSystemCalendar'
 export {
     fixedPeriodOptions,
     isRelativePeriod,
+    lastCompletePeriod,
     periodLabel,
     periodRange,
+    previousPeriods,
     relativePeriodOptions,
 } from './utils/periodOptions'

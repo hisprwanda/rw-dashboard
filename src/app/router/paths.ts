@@ -9,7 +9,11 @@ export const paths = {
     maps: '/maps',
     map: (id?: string, name?: string) =>
         id ? `/map/${id}${name ? `/${encodeURIComponent(name)}` : ''}` : '/map',
-    report: '/report',
+    bulletins: '/bulletins',
+    newBulletin: '/bulletins/new',
+    editBulletin: (id: string) => `/bulletins/${id}/edit`,
+    bulletinIssue: (id: string, periodId?: string) =>
+        periodId ? `/bulletins/${id}/${periodId}` : `/bulletins/${id}`,
     settings: '/settings',
     dataSources: '/datasource',
     unauthorized: '/unauthorized',

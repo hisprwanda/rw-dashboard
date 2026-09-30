@@ -15,7 +15,7 @@ const navItems = () => [
     { label: i18n.t('Visualizers'), to: paths.visualizations },
     { label: i18n.t('Map'), to: paths.maps },
     { label: i18n.t('Settings'), to: paths.settings },
-    { label: i18n.t('Report'), to: paths.report },
+    { label: i18n.t('Bulletins'), to: paths.bulletins },
 ]
 
 const IconLink = ({

@@ -2,6 +2,7 @@ export { analyticsQueryOptions } from './hooks/analyticsQueryOptions'
 export { analyticsKeys } from './hooks/queryKeys'
 export { useAnalytics } from './hooks/useAnalytics'
 export { useAnalyticsRun } from './hooks/useAnalyticsRun'
+export { fetchAnalytics } from './services/analyticsService'
 export type {
     AnalyticsDimensions,
     AnalyticsLayout,

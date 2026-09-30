@@ -1,8 +1,10 @@
 import {
     fixedPeriodOptions,
     isRelativePeriod,
+    lastCompletePeriod,
     periodLabel,
     periodRange,
+    previousPeriods,
     relativePeriodOptions,
 } from './periodOptions'
 import { humanizeRelativePeriod } from './labels'
@@ -66,5 +68,28 @@ describe('periodRange', () => {
     it('is null for relative and invalid ids', () => {
         expect(periodRange('LAST_12_MONTHS')).toBeNull()
         expect(periodRange('nonsense')).toBeNull()
+    })
+})
+
+describe('previousPeriods', () => {
+    it('lists the earlier periods then the period itself, across years', () => {
+        expect(previousPeriods('2024W3', 2)).toEqual(['2024W1', '2024W2', '2024W3'])
+        expect(previousPeriods('202402', 2)).toEqual(['202312', '202401', '202402'])
+    })
+
+    it('returns just the id without lookback or for relative ids', () => {
+        expect(previousPeriods('2024W3', 0)).toEqual(['2024W3'])
+        expect(previousPeriods('LAST_12_MONTHS', 3)).toEqual(['LAST_12_MONTHS'])
+    })
+})
+
+describe('lastCompletePeriod', () => {
+    it('is the period before the one containing today', () => {
+        expect(lastCompletePeriod('WEEKLY', 'gregory', new Date('2024-01-10T12:00:00Z'))).toBe(
+            '2024W1'
+        )
+        expect(lastCompletePeriod('MONTHLY', 'gregory', new Date('2024-01-10T12:00:00Z'))).toBe(
+            '202312'
+        )
     })
 })
