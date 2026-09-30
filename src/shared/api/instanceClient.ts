@@ -15,6 +15,13 @@ export interface InstanceConnection {
  */
 export interface InstanceClient {
     get<T>(resource: string, params?: QueryParams, signal?: AbortSignal): Promise<T>
+    /** A binary resource (e.g. a server-rendered `data.png`). */
+    getBlob(resource: string, params?: QueryParams, signal?: AbortSignal): Promise<Blob>
+}
+
+const asBlob = (value: unknown): Blob => {
+    if (value instanceof Blob) return value
+    throw new Error(i18n.t('The server did not return a file.'))
 }
 
 export const createInstanceClient = (
@@ -24,6 +31,9 @@ export const createInstanceClient = (
     if (!instance || instance.isCurrentInstance) {
         return {
             get: (resource, params, signal) => fetchResource(engine, resource, params, signal),
+            // The engine returns a Blob for any non-JSON, non-text response.
+            getBlob: async (resource, params, signal) =>
+                asBlob(await fetchResource<unknown>(engine, resource, params, signal)),
         }
     }
     if (!instance.url || !instance.token) {
@@ -33,5 +43,9 @@ export const createInstanceClient = (
     return {
         get: async <T>(resource: string, params?: QueryParams, signal?: AbortSignal) =>
             (await client.get<T>(resource, { params, signal })).data,
+        getBlob: async (resource: string, params?: QueryParams, signal?: AbortSignal) =>
+            asBlob(
+                (await client.get<Blob>(resource, { params, signal, responseType: 'blob' })).data
+            ),
     }
 }

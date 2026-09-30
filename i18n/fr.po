@@ -4,8 +4,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-30T08:56:28.444Z\n"
-"PO-Revision-Date: 2026-09-30T08:56:28.445Z\n"
+"POT-Creation-Date: 2026-09-30T15:08:34.878Z\n"
+"PO-Revision-Date: 2026-09-30T15:08:34.879Z\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 "Language: fr\n"
 
@@ -475,6 +475,15 @@ msgstr "Notes"
 msgid "No data available"
 msgstr "Aucune donnée disponible"
 
+msgid "No data found"
+msgstr "Aucune donnée trouvée"
+
+msgid "Value"
+msgstr "Valeur"
+
+msgid "Total"
+msgstr "Total"
+
 msgid "Search in table..."
 msgstr "Rechercher dans le tableau..."
 
@@ -484,14 +493,8 @@ msgstr "Élément"
 msgid "Size {{value}}"
 msgstr "Taille {{value}}"
 
-msgid "No data found"
-msgstr "Aucune donnée trouvée"
-
 msgid "Required headers (value and a category) are missing"
 msgstr "Les en-têtes requis (valeur et une catégorie) sont manquants"
-
-msgid "Value"
-msgstr "Valeur"
 
 msgid "Column"
 msgstr "Colonnes"
@@ -1464,6 +1467,9 @@ msgstr "Non autorisé"
 
 msgid "You are not allowed to access this resource. Please contact the administrator for assistance."
 msgstr "Vous n'êtes pas autorisé à accéder à cette ressource. Veuillez contacter l'administrateur."
+
+msgid "The server did not return a file."
+msgstr "Le serveur n'a pas renvoyé de fichier."
 
 msgid "An external instance needs both a url and a token."
 msgstr "Une instance externe nécessite une URL et un jeton."

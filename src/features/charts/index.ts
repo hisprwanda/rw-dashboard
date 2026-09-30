@@ -3,6 +3,7 @@ export { chartRegistry, findChart, type ChartDefinition } from './chartRegistry'
 export { DEFAULT_CHART_TYPE, DEFAULT_COLOR_PALETTE, systemDefaultColorPalettes } from './constants'
 export { ChartHeading } from './components/ChartHeading'
 export { ChartRenderer } from './components/ChartRenderer'
+export { PivotTable } from './components/PivotTable'
 export {
     CHART_TYPES,
     type AxisSettings,
@@ -20,3 +21,4 @@ export {
     toSlices,
     toTreeNodes,
 } from './utils/chartData'
+export { buildPivot, type Pivot } from './utils/pivotTable'
