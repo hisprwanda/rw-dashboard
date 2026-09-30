@@ -18,7 +18,10 @@
     "jsx": "react-jsx",
     "baseUrl": "./",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@dhis2/app-runtime/experimental": [
+        "node_modules/@dhis2/app-runtime/build/types/experimental.d.ts"
+      ]
     }
   },
   "include": ["src", "global.d.ts"],

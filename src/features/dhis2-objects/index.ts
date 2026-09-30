@@ -1,3 +1,4 @@
+export { Dhis2ObjectView } from './components/Dhis2ObjectView'
 export { dhis2ObjectKeys } from './hooks/queryKeys'
 export {
     useDhis2Map,

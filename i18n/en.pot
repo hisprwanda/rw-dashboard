@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-09-30T15:08:34.878Z\n"
-"PO-Revision-Date: 2026-09-30T15:08:34.879Z\n"
+"POT-Creation-Date: 2026-09-30T15:14:20.091Z\n"
+"PO-Revision-Date: 2026-09-30T15:14:20.092Z\n"
 
 msgid "Data items"
 msgstr "Data items"
@@ -917,6 +917,18 @@ msgstr "Token cannot exceed 256 characters"
 
 msgid "Token can only contain letters, numbers, dashes or underscores"
 msgstr "Token can only contain letters, numbers, dashes or underscores"
+
+msgid "Not available"
+msgstr "Not available"
+
+msgid "This item was deleted in DHIS2 or is not shared with you."
+msgstr "This item was deleted in DHIS2 or is not shared with you."
+
+msgid "Could not load this item"
+msgstr "Could not load this item"
+
+msgid "DHIS2 has no image of this item."
+msgstr "DHIS2 has no image of this item."
 
 msgid "Save map"
 msgstr "Save map"

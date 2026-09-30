@@ -1,3 +1,4 @@
+import i18n from '@dhis2/d2-i18n'
 import type { InstanceClient } from '@/shared/api'
 import type {
     Dhis2Map,
@@ -146,12 +147,19 @@ export const fetchMap = (client: InstanceClient, id: string, signal?: AbortSigna
     client.get<Dhis2Map>(`${RESOURCE.map}/${id}`, { fields: MAP_FIELDS }, signal)
 
 /** The server-rendered image of a chart or map (`/api/<resource>/<id>/data.png`). */
-export const fetchObjectImage = (
+export const fetchObjectImage = async (
     client: InstanceClient,
     objectType: Dhis2ObjectType,
     id: string,
     signal?: AbortSignal
-) => client.getBlob(`${RESOURCE[objectType]}/${id}/data.png`, undefined, signal)
+): Promise<Blob> => {
+    const blob = await client.getBlob(`${RESOURCE[objectType]}/${id}/data.png`, undefined, signal)
+    // Pivot tables answer with a JSON grid instead of an image.
+    if (!blob.type.startsWith('image/')) {
+        throw new Error(i18n.t('DHIS2 has no image of this item.'))
+    }
+    return blob
+}
 
 /** Installed apps, to find the plugin of the Data Visualizer and Maps apps. */
 export const fetchInstalledApps = (client: InstanceClient, signal?: AbortSignal) =>
