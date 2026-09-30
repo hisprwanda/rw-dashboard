@@ -63,7 +63,23 @@ Combine multiple visuals to build fully customizable dashboards:
 
 ---
 
-### 4. Presentation Mode  
+### 4. Thematic Maps
+
+Build choropleth maps from any data item: pick data, period and org units (with levels
+and groups), choose labels (area, data, period, value) and an automatic or DHIS2 legend,
+and switch between a light and an OpenStreetMap basemap. Maps can be added to dashboards.
+
+---
+
+### 5. Weekly Epidemiological Bulletin
+
+Pick a week to generate the eIDSR bulletin: weekly reportable diseases, immediate
+reportable events, deaths and community alerts, with texts taken from a dataStore template
+(`DHIS2_BULLETIN_STORE` / `DHIS2_BULLETIN_TEMPLATE_KEY`, default `epide-bulletin/epide`).
+
+---
+
+### 6. Presentation Mode  
 
 Transform dashboards into dynamic slide presentations:  
 
@@ -92,14 +108,31 @@ Data Analytics Lab is evolving! Here are the planned features for future release
 
 ## Key Technologies  
 
-Data Analytics Lab is built using the following technologies:  
+- **React 18 + TypeScript** (strict, `noUncheckedIndexedAccess`) on the **DHIS2 App Platform** (`@dhis2/cli-app-scripts`, Vite).
+- **@dhis2/ui** for components and icons; **Tailwind CSS** for layout only.
+- **TanStack Query** + the **DHIS2 data engine** for all server state (external instances through the same hooks).
+- **Redux Toolkit** for builder state (selection, org units, visualizer, map, dashboard editor).
+- **Recharts** (charts), **react-leaflet** (maps), **react-grid-layout** (dashboards).
+- **React Hook Form + Zod** for forms; **@dhis2/d2-i18n** for translations (English, French).
 
-- **React with TypeScript**: For building the user interface.  
-- **Tailwind CSS**: For designing responsive and modern UI components.  
-- **React Query**: For efficient data fetching and state management.  
-- **DHIS2 App Runtime**: For seamless integration with DHIS2 APIs.  
-- **Recharts & Mantine**: For dynamic and rich visualizations.  
-- **React Hook Form**: For easy and validated form management.  
+---
+
+## Architecture
+
+```
+src/
+  app/        providers, router (lazy routes), Redux store, layout
+  pages/      thin route pages: read the URL, render one feature component
+  features/   one folder per feature, public API in index.ts
+    <feature>/components | hooks | services | store | schemas | types | utils | constants
+  shared/     API clients (engine + external instances), shared components, hooks, types
+```
+
+- A page imports features only through their barrel (`@/features/maps`).
+- Server data is read with `useQuery` over the data engine; writes use `useMutation` and
+  invalidate the feature's query keys. No manual `isLoading`/`isError` state.
+- No React Context for app state (ESLint enforces it).
+- See **CONTRIBUTING.md** for naming, data fetching, i18n and review rules.
 
 ---
 
@@ -115,10 +148,20 @@ We extend our heartfelt gratitude to the following developers who contributed to
 
 ## Getting Started  
 
-To get started with Data Analytics Lab, run the following commands:  
+```bash
+cp .env.example .env        # dataStore namespaces (DHIS2_* variables)
+yarn install
+yarn start --proxy https://play.im.dhis2.org/stable-2-43-1   # or your instance
+```
 
- yarn install
- yarn build:css && yarn start
+Quality gates (also run by the pre-commit hook and CI):
+
+```bash
+yarn typecheck   # tsc, must report 0 errors
+yarn lint        # ESLint, 0 errors (no any, no untranslated JSX text, no floating promises)
+yarn test        # Jest: utils, hooks with a mocked data engine, a smoke test per page
+yarn build       # also extracts translations into i18n/en.pot
+```
 
  ## Contact Us
 For support or feedback, reach out to us at:

@@ -7,3 +7,5 @@ build
 .env.development
 .env.production
 /draft/
+.DS_Store
+

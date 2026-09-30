@@ -4,11 +4,9 @@
 
 @tailwind utilities;
 
-/* Your custom CSS here */
-
-
-* {
-    /* border: 1px solid red; */
+/* The app draws its own header (features/navigation): hide the platform HeaderBar. */
+header:has([data-test='headerbar-logo']) {
+    display: none;
 }
 
 @layer base {

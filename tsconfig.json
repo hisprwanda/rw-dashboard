@@ -8,6 +8,8 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "Node",
     "resolveJsonModule": true,
@@ -19,6 +21,6 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["src", "types"],
+  "include": ["src", "global.d.ts"],
   "exclude": ["node_modules"]
 }
