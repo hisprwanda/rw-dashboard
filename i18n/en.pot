@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-10-01T13:38:15.967Z\n"
-"PO-Revision-Date: 2026-10-01T13:38:15.968Z\n"
+"POT-Creation-Date: 2026-10-01T13:54:20.431Z\n"
+"PO-Revision-Date: 2026-10-01T13:54:20.431Z\n"
 
 msgid "Data items"
 msgstr "Data items"
@@ -1165,6 +1165,9 @@ msgstr "Settings"
 
 msgid "Main"
 msgstr "Main"
+
+msgid "Data Analytics Lab"
+msgstr "Data Analytics Lab"
 
 msgid "DHIS2 home"
 msgstr "DHIS2 home"

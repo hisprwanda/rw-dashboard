@@ -1153,6 +1153,9 @@ msgstr "Accueil DHIS2"
 msgid "{{title}} - Data Analytics Lab"
 msgstr "{{title}} - Data Analytics Lab"
 
+msgid "Data Analytics Lab"
+msgstr "Data Analytics Lab"
+
 msgid "Interpretations"
 msgstr "Interprétations"
 

@@ -1,4 +1,4 @@
-import { filterApps, initialsOf, joinUrl } from './links'
+import { filterApps, initialsOf, isInGlobalShell, joinUrl } from './links'
 
 describe('navigation utils', () => {
     it('joins the base URL with relative server paths', () => {
@@ -22,5 +22,12 @@ describe('navigation utils', () => {
         ]
         expect(filterApps(apps, 'map').map((a) => a.name)).toEqual(['a'])
         expect(filterApps(apps, ' ')).toHaveLength(2)
+    })
+
+    it('is in the Global Shell only when loaded in another page', () => {
+        const page = {}
+        expect(isInGlobalShell({ self: page, top: page })).toBe(false)
+        expect(isInGlobalShell({ self: page, top: {} })).toBe(true)
+        expect(isInGlobalShell()).toBe(false)
     })
 })
