@@ -9,6 +9,9 @@ import { DashboardItemContent, itemTitle, type DashboardItem } from './Dashboard
 
 const AutoWidthGrid = WidthProvider(GridLayout)
 
+/** Inside the drag handle but not a drag start (the remove button). */
+const NO_DRAG_CLASS = 'no-drag'
+
 interface DashboardCanvasProps {
     items: readonly DashboardItem[]
     backgroundColor: string
@@ -35,6 +38,7 @@ const Canvas = ({
             isDraggable={editable}
             isResizable={editable}
             draggableHandle=".drag-handle"
+            draggableCancel={`.${NO_DRAG_CLASS}`}
             resizeHandles={['se', 'sw', 'ne', 'nw', 'e', 'w', 's', 'n']}
             onLayoutChange={onLayoutChange}
         >
@@ -51,7 +55,8 @@ const Canvas = ({
                     >
                         <span className="truncate">{itemTitle(item)}</span>
                         {editable && (
-                            <span className={NO_EXPORT_CLASS}>
+                            // Above the top-right resize handle, which otherwise takes the click.
+                            <span className={`${NO_EXPORT_CLASS} ${NO_DRAG_CLASS} relative z-10`}>
                                 <Button
                                     small
                                     secondary
