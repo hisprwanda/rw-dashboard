@@ -4,6 +4,7 @@ import {
     Button,
     ButtonStrip,
     Checkbox,
+    IconAdd16,
     InputField,
     SingleSelectField,
     SingleSelectOption,
@@ -199,13 +200,17 @@ export const DashboardEditor = ({ dashboardId }: DashboardEditorProps) => {
                 </ButtonStrip>
             </div>
 
-            <div className="grid grid-cols-[1fr_1fr_auto] items-end gap-3">
+            {/* DHIS2 favorites first: the custom visuals and maps are the complement. */}
+            <div className="grid grid-cols-[auto_1fr_1fr] items-end gap-3">
+                <Button primary icon={<IconAdd16 />} onClick={() => setPickingDhis2(true)}>
+                    {i18n.t('Add DHIS2 visualization or map')}
+                </Button>
                 <SingleSelectField
                     dense
                     filterable
                     noMatchText={i18n.t('No match')}
-                    label={i18n.t('Add a visualization')}
-                    placeholder={i18n.t('Select a visualization')}
+                    label={i18n.t('Add a custom visualization')}
+                    placeholder={i18n.t('Select a custom visualization')}
                     loading={visuals.isLoading}
                     selected=""
                     onChange={({ selected }) => {
@@ -226,8 +231,8 @@ export const DashboardEditor = ({ dashboardId }: DashboardEditorProps) => {
                     dense
                     filterable
                     noMatchText={i18n.t('No match')}
-                    label={i18n.t('Add a map')}
-                    placeholder={i18n.t('Select a map')}
+                    label={i18n.t('Add a custom map')}
+                    placeholder={i18n.t('Select a custom map')}
                     loading={maps.isLoading}
                     selected=""
                     onChange={({ selected }) => {
@@ -244,7 +249,6 @@ export const DashboardEditor = ({ dashboardId }: DashboardEditorProps) => {
                         />
                     ))}
                 </SingleSelectField>
-                <Button onClick={() => setPickingDhis2(true)}>{i18n.t('Add from DHIS2')}</Button>
             </div>
             {pickingDhis2 && (
                 <Dhis2ObjectPickerModal

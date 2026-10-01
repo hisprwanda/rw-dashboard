@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-09-30T18:58:51.071Z\n"
-"PO-Revision-Date: 2026-09-30T18:58:51.071Z\n"
+"POT-Creation-Date: 2026-10-01T13:38:15.967Z\n"
+"PO-Revision-Date: 2026-10-01T13:38:15.968Z\n"
 
 msgid "Data items"
 msgstr "Data items"
@@ -617,20 +617,20 @@ msgstr "Save changes"
 msgid "Save dashboard"
 msgstr "Save dashboard"
 
-msgid "Add a visualization"
-msgstr "Add a visualization"
+msgid "Add DHIS2 visualization or map"
+msgstr "Add DHIS2 visualization or map"
 
-msgid "Select a visualization"
-msgstr "Select a visualization"
+msgid "Add a custom visualization"
+msgstr "Add a custom visualization"
 
-msgid "Add a map"
-msgstr "Add a map"
+msgid "Select a custom visualization"
+msgstr "Select a custom visualization"
 
-msgid "Select a map"
-msgstr "Select a map"
+msgid "Add a custom map"
+msgstr "Add a custom map"
 
-msgid "Add from DHIS2"
-msgstr "Add from DHIS2"
+msgid "Select a custom map"
+msgstr "Select a custom map"
 
 msgid "Slide {{current}} of {{total}}"
 msgstr "Slide {{current}} of {{total}}"
@@ -938,6 +938,9 @@ msgstr "This item was deleted in DHIS2 or is not shared with you."
 
 msgid "Could not load this item"
 msgstr "Could not load this item"
+
+msgid "Add from DHIS2"
+msgstr "Add from DHIS2"
 
 msgid ""
 "Visualizations and maps made in the Data Visualizer and Maps apps. They "

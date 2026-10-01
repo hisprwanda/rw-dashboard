@@ -610,20 +610,23 @@ msgstr "Enregistrer les modifications"
 msgid "Save dashboard"
 msgstr "Enregistrer le tableau de bord"
 
-msgid "Add a visualization"
-msgstr "Ajouter une visualisation"
+msgid "Add a custom visualization"
+msgstr "Ajouter une visualisation personnalisée"
 
-msgid "Select a visualization"
-msgstr "Sélectionner une visualisation"
+msgid "Select a custom visualization"
+msgstr "Sélectionner une visualisation personnalisée"
 
-msgid "Add a map"
-msgstr "Ajouter une carte"
+msgid "Add a custom map"
+msgstr "Ajouter une carte personnalisée"
 
-msgid "Select a map"
-msgstr "Sélectionner une carte"
+msgid "Select a custom map"
+msgstr "Sélectionner une carte personnalisée"
 
 msgid "Add from DHIS2"
 msgstr "Ajouter depuis DHIS2"
+
+msgid "Add DHIS2 visualization or map"
+msgstr "Ajouter une visualisation ou une carte DHIS2"
 
 msgid "Slide {{current}} of {{total}}"
 msgstr "Diapositive {{current}} sur {{total}}"
