@@ -18,6 +18,7 @@ const BulletinEditorPage = lazy(() => import('@/pages/bulletins/[id]/BulletinEdi
 const BulletinIssuePage = lazy(() => import('@/pages/bulletins/[id]/BulletinIssuePage'))
 const SettingsPage = lazy(() => import('@/pages/settings/SettingsPage'))
 const DataSourcesPage = lazy(() => import('@/pages/settings/data-sources/DataSourcesPage'))
+const MusicSettingsPage = lazy(() => import('@/pages/settings/music/MusicSettingsPage'))
 const UnauthorizedPage = lazy(() => import('@/pages/UnauthorizedPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
@@ -49,6 +50,7 @@ export const AppRouter = () => (
                 {/* The old single bulletin page. */}
                 <Route path="report" element={<Navigate to="/bulletins" replace />} />
                 <Route path="settings" element={page(SettingsPage)} />
+                <Route path="settings/music" element={page(MusicSettingsPage)} />
                 <Route path="datasource" element={page(DataSourcesPage)} />
                 <Route path="unauthorized" element={page(UnauthorizedPage)} />
                 <Route path="*" element={page(NotFoundPage)} />

@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-10-01T13:54:20.431Z\n"
-"PO-Revision-Date: 2026-10-01T13:54:20.431Z\n"
+"POT-Creation-Date: 2026-10-04T07:52:42.235Z\n"
+"PO-Revision-Date: 2026-10-04T07:52:42.236Z\n"
 
 msgid "Data items"
 msgstr "Data items"
@@ -647,8 +647,8 @@ msgstr "Background music"
 msgid "None"
 msgstr "None"
 
-msgid "Track {{number}}"
-msgstr "Track {{number}}"
+msgid "No tracks uploaded"
+msgstr "No tracks uploaded"
 
 msgid "Pause"
 msgstr "Pause"
@@ -1451,6 +1451,46 @@ msgstr "Last 5 years"
 msgid "Last 10 years"
 msgstr "Last 10 years"
 
+msgid "Choose an MP3 file."
+msgstr "Choose an MP3 file."
+
+msgid "The file is too large (maximum {{size}} MB)."
+msgstr "The file is too large (maximum {{size}} MB)."
+
+msgid "Presentation music"
+msgstr "Presentation music"
+
+msgid ""
+"MP3 tracks users can play as background music during dashboard "
+"presentations."
+msgstr ""
+"MP3 tracks users can play as background music during dashboard "
+"presentations."
+
+msgid "Upload track"
+msgstr "Upload track"
+
+msgid "No tracks yet. Upload an MP3 to use it in presentations."
+msgstr "No tracks yet. Upload an MP3 to use it in presentations."
+
+msgid "Delete track"
+msgstr "Delete track"
+
+msgid "Delete \"{{name}}\"? It will no longer be available in presentations."
+msgstr "Delete \"{{name}}\"? It will no longer be available in presentations."
+
+msgid "Track deleted"
+msgstr "Track deleted"
+
+msgid "Could not delete the track. Please try again."
+msgstr "Could not delete the track. Please try again."
+
+msgid "Track uploaded"
+msgstr "Track uploaded"
+
+msgid "Could not upload the track. Please try again."
+msgstr "Could not upload the track. Please try again."
+
 msgid ""
 "Configure where your data comes from. By default, data is read from this "
 "DHIS2 instance."
@@ -1464,6 +1504,13 @@ msgid ""
 msgstr ""
 "Design bulletins (sections, data, texts, logos) and publish them period by "
 "period."
+
+msgid ""
+"Upload the MP3 tracks users can play as background music during dashboard "
+"presentations."
+msgstr ""
+"Upload the MP3 tracks users can play as background music during dashboard "
+"presentations."
 
 msgid "Select chart type"
 msgstr "Select chart type"

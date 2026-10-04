@@ -15,6 +15,7 @@ export const paths = {
     bulletinIssue: (id: string, periodId?: string) =>
         periodId ? `/bulletins/${id}/${periodId}` : `/bulletins/${id}`,
     settings: '/settings',
+    musicSettings: '/settings/music',
     dataSources: '/datasource',
     unauthorized: '/unauthorized',
 } as const

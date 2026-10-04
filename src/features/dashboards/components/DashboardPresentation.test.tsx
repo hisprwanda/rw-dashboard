@@ -3,6 +3,10 @@ import type { DashboardDhis2Item } from '../types/dashboard.types'
 import type { DashboardItem } from './DashboardItemContent'
 import { DashboardPresentation } from './DashboardPresentation'
 
+jest.mock('@/features/presentation-music', () => ({
+    useMusicTracks: () => ({ data: [] }),
+}))
+
 const mockMounts: string[] = []
 const mockUseEffect = jest.requireActual<typeof import('react')>('react').useEffect
 

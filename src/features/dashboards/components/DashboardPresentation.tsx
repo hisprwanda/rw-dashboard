@@ -9,15 +9,11 @@ import {
     SingleSelectOption,
 } from '@dhis2/ui'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMusicTracks } from '@/features/presentation-music'
 import { useFullscreen } from '@/shared/hooks'
-import track1 from '../assets/track1.mp3'
-import track2 from '../assets/track2.mp3'
-import track3 from '../assets/track3.mp3'
 import { useMountedSlides } from '../hooks/useMountedSlides'
 import { useSlideshow } from '../hooks/useSlideshow'
 import { DashboardItemContent, itemTitle, type DashboardItem } from './DashboardItemContent'
-
-const TRACKS = [track1, track2, track3]
 
 interface DashboardPresentationProps {
     name: string
@@ -33,6 +29,7 @@ export const DashboardPresentation = ({ name, items, onExit }: DashboardPresenta
     const containerRef = useRef<HTMLDivElement>(null)
     const audioRef = useRef<HTMLAudioElement>(null)
     const fullscreen = useFullscreen(containerRef)
+    const { data: tracks = [] } = useMusicTracks()
     const [perView, setPerView] = useState(1)
     const [delaySeconds, setDelaySeconds] = useState(5)
     const [track, setTrack] = useState<string>()
@@ -119,15 +116,18 @@ export const DashboardPresentation = ({ name, items, onExit }: DashboardPresenta
                                 dense
                                 clearable
                                 label={i18n.t('Background music')}
-                                placeholder={i18n.t('None')}
+                                disabled={!tracks.length}
+                                placeholder={
+                                    tracks.length ? i18n.t('None') : i18n.t('No tracks uploaded')
+                                }
                                 selected={track}
                                 onChange={({ selected }) => playTrack(selected || undefined)}
                             >
-                                {TRACKS.map((src, index) => (
+                                {tracks.map((entry) => (
                                     <SingleSelectOption
-                                        key={src}
-                                        value={src}
-                                        label={i18n.t('Track {{number}}', { number: index + 1 })}
+                                        key={entry.id}
+                                        value={entry.src}
+                                        label={entry.name}
                                     />
                                 ))}
                             </SingleSelectField>

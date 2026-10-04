@@ -643,9 +643,6 @@ msgstr "Musique de fond"
 msgid "None"
 msgstr "Aucun"
 
-msgid "Track {{number}}"
-msgstr "Piste {{number}}"
-
 msgid "Pause"
 msgstr "Pause"
 
@@ -1656,6 +1653,48 @@ msgstr "Les données n'ont pas pu être chargées."
 
 msgid "Try again"
 msgstr "Réessayer"
+
+msgid "No tracks uploaded"
+msgstr "Aucune piste téléversée"
+
+msgid "Choose an MP3 file."
+msgstr "Choisissez un fichier MP3."
+
+msgid "The file is too large (maximum {{size}} MB)."
+msgstr "Le fichier est trop volumineux (maximum {{size}} Mo)."
+
+msgid "Presentation music"
+msgstr "Musique de présentation"
+
+msgid "MP3 tracks users can play as background music during dashboard presentations."
+msgstr "Pistes MP3 que les utilisateurs peuvent jouer en musique de fond pendant les présentations de tableaux de bord."
+
+msgid "Upload track"
+msgstr "Téléverser une piste"
+
+msgid "No tracks yet. Upload an MP3 to use it in presentations."
+msgstr "Aucune piste pour l'instant. Téléversez un MP3 pour l'utiliser dans les présentations."
+
+msgid "Delete track"
+msgstr "Supprimer la piste"
+
+msgid "Delete \"{{name}}\"? It will no longer be available in presentations."
+msgstr "Supprimer « {{name}} » ? Elle ne sera plus disponible dans les présentations."
+
+msgid "Track deleted"
+msgstr "Piste supprimée"
+
+msgid "Could not delete the track. Please try again."
+msgstr "Impossible de supprimer la piste. Veuillez réessayer."
+
+msgid "Track uploaded"
+msgstr "Piste téléversée"
+
+msgid "Could not upload the track. Please try again."
+msgstr "Impossible de téléverser la piste. Veuillez réessayer."
+
+msgid "Upload the MP3 tracks users can play as background music during dashboard presentations."
+msgstr "Téléversez les pistes MP3 que les utilisateurs peuvent jouer en musique de fond pendant les présentations de tableaux de bord."
 
 msgctxt "Application title"
 msgid "__MANIFEST_APP_TITLE"
