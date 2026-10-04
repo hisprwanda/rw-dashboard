@@ -8,15 +8,12 @@ import {
     SingleSelectField,
     SingleSelectOption,
 } from '@dhis2/ui'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMusicTracks } from '@/features/presentation-music'
 import { useFullscreen } from '@/shared/hooks'
-import track1 from '../assets/track1.mp3'
-import track2 from '../assets/track2.mp3'
-import track3 from '../assets/track3.mp3'
+import { useMountedSlides } from '../hooks/useMountedSlides'
 import { useSlideshow } from '../hooks/useSlideshow'
 import { DashboardItemContent, itemTitle, type DashboardItem } from './DashboardItemContent'
-
-const TRACKS = [track1, track2, track3]
 
 interface DashboardPresentationProps {
     name: string
@@ -32,12 +29,20 @@ export const DashboardPresentation = ({ name, items, onExit }: DashboardPresenta
     const containerRef = useRef<HTMLDivElement>(null)
     const audioRef = useRef<HTMLAudioElement>(null)
     const fullscreen = useFullscreen(containerRef)
+    const { data: tracks = [] } = useMusicTracks()
     const [perView, setPerView] = useState(1)
     const [delaySeconds, setDelaySeconds] = useState(5)
     const [track, setTrack] = useState<string>()
     const pages = Math.max(Math.ceil(items.length / perView), 1)
     const show = useSlideshow(pages, delaySeconds * 1000)
-    const visible = items.slice(show.index * perView, show.index * perView + perView)
+    const slides = useMemo(
+        () =>
+            Array.from({ length: Math.ceil(items.length / perView) }, (_, slide) =>
+                items.slice(slide * perView, slide * perView + perView)
+            ),
+        [items, perView]
+    )
+    const isMounted = useMountedSlides(show.index, pages)
     const { setPlaying, next, previous } = show
     const toggleFullscreen = fullscreen.toggle
 
@@ -111,15 +116,18 @@ export const DashboardPresentation = ({ name, items, onExit }: DashboardPresenta
                                 dense
                                 clearable
                                 label={i18n.t('Background music')}
-                                placeholder={i18n.t('None')}
+                                disabled={!tracks.length}
+                                placeholder={
+                                    tracks.length ? i18n.t('None') : i18n.t('No tracks uploaded')
+                                }
                                 selected={track}
                                 onChange={({ selected }) => playTrack(selected || undefined)}
                             >
-                                {TRACKS.map((src, index) => (
+                                {tracks.map((entry) => (
                                     <SingleSelectOption
-                                        key={src}
-                                        value={src}
-                                        label={i18n.t('Track {{number}}', { number: index + 1 })}
+                                        key={entry.id}
+                                        value={entry.src}
+                                        label={entry.name}
                                     />
                                 ))}
                             </SingleSelectField>
@@ -150,28 +158,39 @@ export const DashboardPresentation = ({ name, items, onExit }: DashboardPresenta
                     aria-label={i18n.t('Previous slide')}
                     onClick={previous}
                 />
-                <div
-                    className="grid min-h-0 flex-1 gap-3"
-                    style={{
-                        gridTemplateColumns: `repeat(${visible.length || 1}, minmax(0, 1fr))`,
-                    }}
-                >
-                    {visible.map((item, offset) => (
-                        <section
-                            key={item.i}
-                            className="flex min-h-0 flex-col rounded bg-white p-3 shadow"
-                            aria-label={itemTitle(item)}
-                        >
-                            <h3 className="m-0 mb-2 text-center text-base font-medium">
-                                {show.index * perView + offset + 1}. {itemTitle(item)}
-                            </h3>
-                            <div className="min-h-0 flex-1">
-                                <DashboardItemContent item={item} />
+                <div className="relative min-h-0 flex-1">
+                    {/* Slides stay mounted once shown (hidden, same size): no reload on return. */}
+                    {slides.map((slideItems, slide) =>
+                        isMounted(slide) ? (
+                            <div
+                                key={slide}
+                                className={`absolute inset-0 grid gap-3 ${
+                                    slide === show.index ? '' : 'invisible'
+                                }`}
+                                aria-hidden={slide !== show.index}
+                                style={{
+                                    gridTemplateColumns: `repeat(${slideItems.length}, minmax(0, 1fr))`,
+                                }}
+                            >
+                                {slideItems.map((item, offset) => (
+                                    <section
+                                        key={item.i}
+                                        className="flex min-h-0 flex-col rounded bg-white p-3 shadow"
+                                        aria-label={itemTitle(item)}
+                                    >
+                                        <h3 className="m-0 mb-2 text-center text-base font-medium">
+                                            {slide * perView + offset + 1}. {itemTitle(item)}
+                                        </h3>
+                                        <div className="min-h-0 flex-1">
+                                            <DashboardItemContent item={item} />
+                                        </div>
+                                    </section>
+                                ))}
                             </div>
-                        </section>
-                    ))}
+                        ) : null
+                    )}
                     {!items.length && (
-                        <p className="self-center text-center text-gray-500">
+                        <p className="absolute inset-0 flex items-center justify-center text-gray-500">
                             {i18n.t('This dashboard has no items.')}
                         </p>
                     )}

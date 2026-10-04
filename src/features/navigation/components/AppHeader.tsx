@@ -6,7 +6,7 @@ import { Link, NavLink } from 'react-router-dom'
 import { paths } from '@/app/router/paths'
 import { useApplicationTitle } from '@/features/system'
 import { useNotifications } from '../hooks/useNotifications'
-import { joinUrl } from '../utils/links'
+import { isInGlobalShell, joinUrl } from '../utils/links'
 import { AppsMenu } from './AppsMenu'
 import { ProfileMenu } from './ProfileMenu'
 
@@ -43,11 +43,41 @@ const IconLink = ({
     </a>
 )
 
+/** The app's own pages, as tabs under the Global Shell's header bar. */
+const ShellNavigation = () => (
+    <nav
+        className="flex items-center border-b border-gray-200 bg-white text-sm"
+        aria-label={i18n.t('Main')}
+    >
+        <Link
+            to={paths.home}
+            className="border-r border-gray-200 px-3 py-2 font-medium text-gray-900 no-underline"
+        >
+            {i18n.t('Data Analytics Lab')}
+        </Link>
+        {navItems().map((item) => (
+            <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                    `border-b-2 px-3 py-2 no-underline ${
+                        isActive
+                            ? 'border-[#2C6693] text-[#2C6693]'
+                            : 'border-transparent text-gray-700 hover:bg-gray-100'
+                    }`
+                }
+            >
+                {item.label}
+            </NavLink>
+        ))}
+    </nav>
+)
+
 /**
  * The app header (the platform header is hidden in styles/index.css): logo, title,
  * navigation, messages, apps and profile.
  */
-export const AppHeader = () => {
+const FullHeader = () => {
     const { baseUrl } = useConfig()
     const title = useApplicationTitle()
     const { data: notifications } = useNotifications()
@@ -102,3 +132,9 @@ export const AppHeader = () => {
         </nav>
     )
 }
+
+/**
+ * Inside the DHIS2 Global Shell only the app's navigation: the shell already shows the
+ * DHIS2 header bar (logo, messages, apps, profile), which would otherwise appear twice.
+ */
+export const AppHeader = () => (isInGlobalShell() ? <ShellNavigation /> : <FullHeader />)

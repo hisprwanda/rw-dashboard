@@ -129,7 +129,7 @@ describe('route pages render', () => {
     it('home lists my dashboards', () => smoke(HomePage, '/', '/', /Weekly overview/))
     it('dashboards', () => smoke(DashboardsPage, '/dashboards', '/dashboards', /New dashboard/))
     it('new dashboard', () =>
-        smoke(DashboardEditorPage, '/dashboard/:id?', '/dashboard', /Add a visualization/))
+        smoke(DashboardEditorPage, '/dashboard/:id?', '/dashboard', /Add a custom visualization/))
     it('visualizations', () =>
         smoke(VisualizationsPage, '/visualization', '/visualization', /ANC coverage/))
     it('new visualization', () =>

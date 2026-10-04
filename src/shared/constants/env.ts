@@ -25,5 +25,7 @@ export const env = {
     dataSourcesStore: required('DHIS2_DATA_SOURCES_STORE', process.env.DHIS2_DATA_SOURCES_STORE),
     dashboardStore: required('DHIS2_DASHBOARD_STORE', process.env.DHIS2_DASHBOARD_STORE),
     visualsStore: required('DHIS2_VISUALS_STORE', process.env.DHIS2_VISUALS_STORE),
+    /** Uploaded presentation music (track list; files live in DHIS2 documents). */
+    musicStore: process.env.DHIS2_MUSIC_STORE || 'MUSIC_STORE',
     mapsStore: required('DHIS2_MAPS_STORE', process.env.DHIS2_MAPS_STORE),
 } as const

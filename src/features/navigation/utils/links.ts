@@ -23,3 +23,11 @@ export const filterApps = <T extends { name: string; displayName?: string }>(
         ? apps.filter((app) => (app.displayName ?? app.name).toLowerCase().includes(wanted))
         : [...apps]
 }
+
+/**
+ * Whether the app runs inside another page, which is the DHIS2 Global Shell (v42+): it
+ * loads apps in an iframe under its own header bar, apps menu and profile menu.
+ * https://developers.dhis2.org/docs/references/global-shell/
+ */
+export const isInGlobalShell = (win: { self: object; top: object | null } = window): boolean =>
+    win.self !== win.top

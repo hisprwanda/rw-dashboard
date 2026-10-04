@@ -1,5 +1,5 @@
 import i18n from '@dhis2/d2-i18n'
-import { Card, IconDataString24, IconFileDocument24 } from '@dhis2/ui'
+import { Card, IconDataString24, IconFileDocument24, IconVisualizationColumn24 } from '@dhis2/ui'
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { paths } from '@/app/router/paths'
@@ -28,6 +28,14 @@ const settingsLinks = (): SettingsLink[] => [
             'Design bulletins (sections, data, texts, logos) and publish them period by period.'
         ),
         icon: <IconFileDocument24 />,
+    },
+    {
+        to: paths.musicSettings,
+        title: i18n.t('Presentation music'),
+        description: i18n.t(
+            'Upload the MP3 tracks users can play as background music during dashboard presentations.'
+        ),
+        icon: <IconVisualizationColumn24 />,
     },
 ]
 
