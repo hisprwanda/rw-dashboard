@@ -21,7 +21,7 @@
   "devDependencies": {
     "@dhis2/cli-app-scripts": "^12.11.5",
     "@eslint/js": "^9.30",
-    "@tanstack/eslint-plugin-query": "^5.91",
+    "@tanstack/eslint-plugin-query": "^5.104",
     "@testing-library/react": "^14",
     "@types/jest": "^27",
     "@types/leaflet": "^1.9.16",
