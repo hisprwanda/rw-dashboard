@@ -1823,3 +1823,6 @@ msgstr "Types de graphiques"
 
 msgid "Additional types"
 msgstr "Types supplémentaires"
+
+msgid "Download data (CSV)"
+msgstr "Télécharger les données (CSV)"

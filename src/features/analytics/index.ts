@@ -17,6 +17,7 @@ export {
     type AnalyticsRequest,
     type AnalyticsRequestInput,
 } from './utils/buildAnalyticsRequest'
+export { analyticsToCsv } from './utils/analyticsCsv'
 export { formatAnalyticsDimensions, parseAnalyticsDimensions } from './utils/dimensions'
 export { applyLayout, dimensionIdOf, moveDimension, type LayoutArea } from './utils/layout'
 export { buildSelectionRequest } from './utils/selectionRequest'

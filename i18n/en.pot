@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-10-05T11:29:04.441Z\n"
-"PO-Revision-Date: 2026-10-05T11:29:04.441Z\n"
+"POT-Creation-Date: 2026-10-05T11:30:08.934Z\n"
+"PO-Revision-Date: 2026-10-05T11:30:08.935Z\n"
 
 msgid "Data items"
 msgstr "Data items"
@@ -1529,6 +1529,9 @@ msgstr "Search palettes"
 
 msgid "Main dimensions"
 msgstr "Main dimensions"
+
+msgid "Download data (CSV)"
+msgstr "Download data (CSV)"
 
 msgid "File"
 msgstr "File"

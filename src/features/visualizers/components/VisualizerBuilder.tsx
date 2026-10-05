@@ -4,11 +4,13 @@ import { useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { paths } from '@/app/router/paths'
 import { useAppDispatch, useAppSelector } from '@/app/store'
+import { analyticsToCsv } from '@/features/analytics'
 import { DataItemsModal } from '@/features/data-items'
 import { ChartRenderer } from '@/features/charts'
 import { OrgUnitModal } from '@/features/org-units'
 import { PeriodModal } from '@/features/periods'
 import { EmptyState, ErrorState, ExportModal, LoadingState } from '@/shared/components'
+import { downloadText, fileNameOf } from '@/shared/utils/download'
 import type { Visualization } from '../types/visualization.types'
 import { useVisualBuilder } from '../hooks/useVisualBuilder'
 import { visualizerActions } from '../store/visualizerSlice'
@@ -66,6 +68,17 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
     if (builder.isLoading) return <LoadingState />
 
     const close = () => setModal(null)
+
+    const data = analytics.data
+    const downloadData = data
+        ? () =>
+              downloadText(
+                  `${fileNameOf(builder.saved?.visualName ?? titles.visualTitle ?? '', 'visualization')}.csv`,
+                  // The BOM makes Excel read the file as UTF-8.
+                  `\ufeff${analyticsToCsv(data)}`,
+                  'text/csv;charset=utf-8'
+              )
+        : null
 
     const renderChart = () => {
         if (analytics.isFetching) return <LoadingState label={i18n.t('Running analytics')} />
@@ -136,6 +149,7 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
                         isSaved={!!visualId}
                         onSave={() => setModal('save')}
                         onExport={() => setModal('export')}
+                        onDownloadData={downloadData}
                     />
                 </div>
                 <LayoutEditor />

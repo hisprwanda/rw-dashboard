@@ -11,7 +11,8 @@ const PREFIX_BY_NAME: Record<string, string> = {
 }
 
 /** The analytics dimension id of a layout name (`Data` -> `dx`). */
-export const dimensionIdOf = (name: LayoutDimensionName) => PREFIX_BY_NAME[name] ?? name.toLowerCase()
+export const dimensionIdOf = (name: LayoutDimensionName) =>
+    PREFIX_BY_NAME[name] ?? name.toLowerCase()
 
 const byPrefix = (items: readonly string[]) =>
     Object.fromEntries(items.filter(Boolean).map((item) => [item.split(':')[0], item]))
