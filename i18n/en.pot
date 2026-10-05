@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-10-05T10:45:59.297Z\n"
-"PO-Revision-Date: 2026-10-05T10:45:59.298Z\n"
+"POT-Creation-Date: 2026-10-05T11:29:04.441Z\n"
+"PO-Revision-Date: 2026-10-05T11:29:04.441Z\n"
 
 msgid "Data items"
 msgstr "Data items"
@@ -1517,6 +1517,12 @@ msgstr "Select chart type"
 
 msgid "Search chart types"
 msgstr "Search chart types"
+
+msgid "Chart types"
+msgstr "Chart types"
+
+msgid "Additional types"
+msgstr "Additional types"
 
 msgid "Search palettes"
 msgstr "Search palettes"

@@ -1817,3 +1817,9 @@ msgstr "Axes"
 
 msgid "Done"
 msgstr "Terminé"
+
+msgid "Chart types"
+msgstr "Types de graphiques"
+
+msgid "Additional types"
+msgstr "Types supplémentaires"
