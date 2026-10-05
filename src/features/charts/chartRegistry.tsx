@@ -1,6 +1,7 @@
 import type { ComponentType, ReactNode } from 'react'
 import {
     IconVisualizationArea24,
+    IconVisualizationAreaStacked24,
     IconVisualizationBar24,
     IconVisualizationBarStacked24,
     IconVisualizationColumn24,
@@ -55,6 +56,11 @@ export const chartRegistry: readonly ChartDefinition[] = [
     },
     { type: 'Line', icon: <IconVisualizationLine24 />, component: cartesian('Line') },
     { type: 'Area', icon: <IconVisualizationArea24 />, component: cartesian('Area') },
+    {
+        type: 'Stacked Area',
+        icon: <IconVisualizationAreaStacked24 />,
+        component: cartesian('Area'),
+    },
     { type: 'Pie', icon: <IconVisualizationPie24 />, component: PieChart },
     { type: 'Radial', icon: <Target size={24} />, component: RadialChart },
     { type: 'Tree Map', icon: <LayoutGrid size={24} />, component: TreeMapChart },

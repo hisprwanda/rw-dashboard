@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-10-04T07:52:42.235Z\n"
-"PO-Revision-Date: 2026-10-04T07:52:42.236Z\n"
+"POT-Creation-Date: 2026-10-05T10:42:52.354Z\n"
+"PO-Revision-Date: 2026-10-05T10:42:52.354Z\n"
 
 msgid "Data items"
 msgstr "Data items"
@@ -521,6 +521,9 @@ msgstr "Line"
 msgid "Area"
 msgstr "Area"
 
+msgid "Stacked area"
+msgstr "Stacked area"
+
 msgid "Scatter"
 msgstr "Scatter"
 
@@ -987,9 +990,6 @@ msgstr "Year over year (line)"
 
 msgid "Year over year (column)"
 msgstr "Year over year (column)"
-
-msgid "Stacked area"
-msgstr "Stacked area"
 
 msgid "Bubble"
 msgstr "Bubble"

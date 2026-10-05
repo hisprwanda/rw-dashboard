@@ -9,6 +9,7 @@ export const chartTypeLabel = (type: string): string => {
         'Stacked Bar': i18n.t('Stacked bar'),
         Line: i18n.t('Line'),
         Area: i18n.t('Area'),
+        'Stacked Area': i18n.t('Stacked area'),
         Scatter: i18n.t('Scatter'),
         Radar: i18n.t('Radar'),
         Pie: i18n.t('Pie'),

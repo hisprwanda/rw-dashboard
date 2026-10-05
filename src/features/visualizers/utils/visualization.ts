@@ -16,6 +16,7 @@ const VIS_TYPE_BY_CHART_TYPE: Partial<Record<ChartType, VisType>> = {
     'Stacked Bar': 'STACKED_BAR',
     Line: 'LINE',
     Area: 'AREA',
+    'Stacked Area': 'STACKED_AREA',
     Scatter: 'SCATTER',
     Radar: 'RADAR',
     Pie: 'PIE',

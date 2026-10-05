@@ -8,6 +8,7 @@ export const CHART_TYPES = [
     'Stacked Bar',
     'Line',
     'Area',
+    'Stacked Area',
     'Scatter',
     'Radar',
     'Pie',
