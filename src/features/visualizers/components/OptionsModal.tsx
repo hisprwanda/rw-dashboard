@@ -17,6 +17,8 @@ import {
 } from '@dhis2/ui'
 import { useState, type ReactNode } from 'react'
 import { useAppDispatch, useAppSelector } from '@/app/store'
+import { useChartLegendSets } from '@/features/analytics'
+import { supportsLegendSet, visTypeFromChartType } from '../utils/visualization'
 import { visualizerActions } from '../store/visualizerSlice'
 import type {
     HideEmptyRowItems,
@@ -60,6 +62,10 @@ const colorSetLabel = (key: string) => {
 export const OptionsModal = ({ onClose }: OptionsModalProps) => {
     const dispatch = useAppDispatch()
     const options = useAppSelector((state) => state.visualizer.options)
+    const chartType = useAppSelector((state) => state.visualizer.chartType)
+    const dataSource = useAppSelector((state) => state.selection.dataSource)
+    const legendSets = useChartLegendSets(dataSource)
+    const visType = visTypeFromChartType(chartType)
     const [tab, setTab] = useState<Tab>('data')
     const update = (patch: Partial<VisualizerOptions>) =>
         dispatch(visualizerActions.updateOptions(patch))
@@ -217,9 +223,46 @@ export const OptionsModal = ({ onClose }: OptionsModalProps) => {
             </>
         ),
         legend: (
-            <Group title={i18n.t('Series key')}>
-                {check('hideLegend', i18n.t('Hide the legend'))}
-            </Group>
+            <>
+                <Group title={i18n.t('Series key')}>
+                    {check('hideLegend', i18n.t('Hide the legend'))}
+                </Group>
+                {visType && supportsLegendSet(visType) && (
+                    <Group title={i18n.t('Legend set')}>
+                        <SingleSelectField
+                            dense
+                            clearable
+                            clearText={i18n.t('No legend set')}
+                            placeholder={i18n.t('No legend set')}
+                            loading={legendSets.isLoading}
+                            selected={options.legendSetId ?? ''}
+                            onChange={({ selected }) =>
+                                update({ legendSetId: selected || undefined })
+                            }
+                        >
+                            {(legendSets.data ?? []).map(({ id, name }) => (
+                                <SingleSelectOption key={id} value={id} label={name} />
+                            ))}
+                        </SingleSelectField>
+                        {options.legendSetId && (
+                            <div className="flex gap-4">
+                                <Radio
+                                    dense
+                                    label={i18n.t('Color the bars')}
+                                    checked={options.legendStyle === 'FILL'}
+                                    onChange={() => update({ legendStyle: 'FILL' })}
+                                />
+                                <Radio
+                                    dense
+                                    label={i18n.t('Color the text')}
+                                    checked={options.legendStyle === 'TEXT'}
+                                    onChange={() => update({ legendStyle: 'TEXT' })}
+                                />
+                            </div>
+                        )}
+                    </Group>
+                )}
+            </>
         ),
         style: (
             <>

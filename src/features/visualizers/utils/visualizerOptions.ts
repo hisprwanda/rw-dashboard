@@ -1,3 +1,4 @@
+import { supportsLegendSet } from './visualization'
 import type {
     ReferenceLine,
     Visualization,
@@ -17,6 +18,7 @@ export const DEFAULT_VISUALIZER_OPTIONS: VisualizerOptions = {
     sortOrder: 0,
     baseLine: { enabled: false },
     targetLine: { enabled: false },
+    legendStyle: 'FILL',
 }
 
 const toEngineLine = ({ enabled, value, title }: ReferenceLine) => ({
@@ -36,6 +38,9 @@ export const toEngineOptions = (options: VisualizerOptions): VisualizationEngine
     noSpaceBetweenColumns: options.noSpaceBetweenColumns,
     regressionType: options.regressionType,
     sortOrder: options.sortOrder,
+    legend: options.legendSetId
+        ? { strategy: 'FIXED', style: options.legendStyle, set: { id: options.legendSetId } }
+        : undefined,
     axes: [
         {
             type: 'RANGE',
@@ -56,4 +61,10 @@ export const toEngineOptions = (options: VisualizerOptions): VisualizationEngine
 export const withOptions = (
     visualization: Visualization,
     options: VisualizerOptions
-): Visualization => ({ ...visualization, ...toEngineOptions(options) })
+): Visualization => ({
+    ...visualization,
+    // Only some chart types color by legend set; for the others the choice is ignored.
+    ...toEngineOptions(
+        supportsLegendSet(visualization.type) ? options : { ...options, legendSetId: undefined }
+    ),
+})

@@ -21,6 +21,29 @@ describe('DhisChart', () => {
         expect(screen.queryByRole('alert')).toBeNull()
     })
 
+    it('colors the values with a fixed legend set', () => {
+        const legendSet = {
+            id: 'ls1',
+            name: 'Coverage',
+            legends: [
+                { name: 'Low', startValue: 0, endValue: 1000, color: '#ff0000' },
+                { name: 'High', startValue: 1000, endValue: 100000, color: '#00ff00' },
+            ],
+        }
+        const { container } = render(
+            <DhisChart
+                data={response}
+                visualization={{
+                    ...visualization,
+                    legend: { strategy: 'FIXED', style: 'FILL', set: { id: 'ls1' } },
+                }}
+                legendSets={[legendSet]}
+            />
+        )
+        expect(container.querySelector('.highcharts-container')).not.toBeNull()
+        expect(screen.queryByRole('alert')).toBeNull()
+    })
+
     it('shows an error instead of crashing when the layout does not fit the data', () => {
         render(<DhisChart data={response} visualization={{ ...visualization, columns: [] }} />)
         expect(screen.getByRole('alert')).not.toBeNull()

@@ -25,6 +25,19 @@ const VIS_TYPE_BY_CHART_TYPE: Partial<Record<ChartType, VisType>> = {
     Table: 'PIVOT_TABLE',
 }
 
+const LEGEND_SET_TYPES: readonly VisType[] = [
+    'COLUMN',
+    'STACKED_COLUMN',
+    'BAR',
+    'STACKED_BAR',
+    'GAUGE',
+    'SINGLE_VALUE',
+    'PIVOT_TABLE',
+]
+
+/** Whether the chart type can color its values with a legend set. */
+export const supportsLegendSet = (type: VisType): boolean => LEGEND_SET_TYPES.includes(type)
+
 /** The official chart type of a legacy one, or `undefined` when it has no counterpart. */
 export const visTypeFromChartType = (chartType: ChartType): VisType | undefined =>
     VIS_TYPE_BY_CHART_TYPE[chartType]

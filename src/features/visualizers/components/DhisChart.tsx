@@ -7,10 +7,12 @@ interface DhisChartProps {
     /** The analytics response, with its metadata. */
     data: unknown
     visualization: Visualization
+    /** Legend sets the chart colors values with (the one the visualization names). */
+    legendSets?: unknown[]
 }
 
 /** A chart drawn by the official DHIS2 chart engine (Highcharts, DHIS2 palettes and styling). */
-export const DhisChart = ({ data, visualization }: DhisChartProps) => {
+export const DhisChart = ({ data, visualization, legendSets }: DhisChartProps) => {
     const elementRef = useRef<HTMLDivElement>(null)
     const [error, setError] = useState<Error | null>(null)
 
@@ -22,7 +24,7 @@ export const DhisChart = ({ data, visualization }: DhisChartProps) => {
                 data,
                 visualization,
                 element,
-                { dashboard: false },
+                { dashboard: false, legendSets },
                 (message) => {
                     throw new Error(message)
                 }
@@ -32,7 +34,7 @@ export const DhisChart = ({ data, visualization }: DhisChartProps) => {
         } catch (cause) {
             setError(cause instanceof Error ? cause : new Error(String(cause)))
         }
-    }, [data, visualization])
+    }, [data, visualization, legendSets])
 
     return (
         <>

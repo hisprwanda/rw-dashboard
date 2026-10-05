@@ -9,6 +9,11 @@ export const dimensionKeys = {
         [...dimensionKeys.all, instanceKey(instance), dimensionId, 'items'] as const,
 }
 
+export const legendSetKeys = {
+    list: (instance: InstanceConnection | undefined) =>
+        ['legend-sets', instanceKey(instance)] as const,
+}
+
 export const analyticsKeys = {
     all: ['analytics'] as const,
     request: (instance: InstanceConnection | undefined, params: AnalyticsParams | undefined) =>

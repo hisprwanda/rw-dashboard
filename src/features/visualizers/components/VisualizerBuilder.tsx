@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { paths } from '@/app/router/paths'
 import { useAppDispatch, useAppSelector } from '@/app/store'
-import { analyticsToCsv, selectionActions } from '@/features/analytics'
+import { analyticsToCsv, selectionActions, useChartLegendSets } from '@/features/analytics'
 import { DataItemsModal } from '@/features/data-items'
 import { ChartRenderer } from '@/features/charts'
 import { OrgUnitModal } from '@/features/org-units'
@@ -51,6 +51,8 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
     const layout = useAppSelector((state) => state.selection.layout)
     const dataSource = useAppSelector((state) => state.selection.dataSource)
 
+    const legendSets = useChartLegendSets(dataSource)
+    const legendSet = legendSets.data?.find(({ id }) => id === options.legendSetId)
     const visType = visTypeFromChartType(chartType)
     const params = analytics.request?.dataParams
     // Titles stay empty unless set, so the DHIS2 charts generate their own.
@@ -94,7 +96,14 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
                 />
             )
         }
-        if (visualization) return <DhisChart data={analytics.data} visualization={visualization} />
+        if (visualization)
+            return (
+                <DhisChart
+                    data={analytics.data}
+                    visualization={visualization}
+                    legendSets={legendSet ? [legendSet] : undefined}
+                />
+            )
         return (
             <ChartRenderer
                 type={chartType}

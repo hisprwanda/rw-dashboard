@@ -42,6 +42,33 @@ describe('toEngineOptions', () => {
     })
 })
 
+describe('legend', () => {
+    it('uses a fixed legend set only when one is chosen', () => {
+        expect(toEngineOptions(DEFAULT_VISUALIZER_OPTIONS).legend).toBeUndefined()
+        expect(
+            toEngineOptions({
+                ...DEFAULT_VISUALIZER_OPTIONS,
+                legendSetId: 'ls1',
+                legendStyle: 'TEXT',
+            }).legend
+        ).toEqual({ strategy: 'FIXED', style: 'TEXT', set: { id: 'ls1' } })
+    })
+})
+
+describe('withOptions legend sets', () => {
+    const options = { ...DEFAULT_VISUALIZER_OPTIONS, legendSetId: 'ls1' }
+
+    it('keeps the legend set for chart types that support it', () => {
+        const column = withOptions({ type: 'COLUMN', columns: [], rows: [], filters: [] }, options)
+        expect(column.legend?.set.id).toBe('ls1')
+    })
+
+    it('drops it for the others', () => {
+        const line = withOptions({ type: 'LINE', columns: [], rows: [], filters: [] }, options)
+        expect(line.legend).toBeUndefined()
+    })
+})
+
 describe('withOptions', () => {
     it('adds the options to a visualization without touching its layout', () => {
         const result = withOptions(

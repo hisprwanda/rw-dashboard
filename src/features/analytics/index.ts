@@ -1,6 +1,8 @@
 export { analyticsQueryOptions } from './hooks/analyticsQueryOptions'
 export { analyticsKeys, dimensionKeys } from './hooks/queryKeys'
+export { useChartLegendSets } from './hooks/useChartLegendSets'
 export { useDimensionItems, useDimensions } from './hooks/useDimensions'
+export type { ChartLegendSet } from './services/legendSetsService'
 export type { DimensionItem, DimensionSummary } from './services/dimensionsService'
 export { useAnalytics } from './hooks/useAnalytics'
 export { useAnalyticsRun } from './hooks/useAnalyticsRun'

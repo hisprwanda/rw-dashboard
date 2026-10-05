@@ -1832,3 +1832,12 @@ msgstr "Autres dimensions"
 
 msgid "Dimension"
 msgstr "Dimension"
+
+msgid "No legend set"
+msgstr "Aucun jeu de légendes"
+
+msgid "Color the bars"
+msgstr "Colorer les barres"
+
+msgid "Color the text"
+msgstr "Colorer le texte"

@@ -58,6 +58,9 @@ export interface VisualizerOptions {
     rangeAxisTitle?: string
     baseLine: ReferenceLine
     targetLine: ReferenceLine
+    /** A legend set to color values by (the fixed legend of the official app). */
+    legendSetId?: string
+    legendStyle: 'FILL' | 'TEXT'
 }
 
 /** The options as the chart engine reads them from a visualization object. */
@@ -71,6 +74,7 @@ export interface VisualizationEngineOptions {
     noSpaceBetweenColumns: boolean
     regressionType: RegressionType
     sortOrder: number
+    legend?: { strategy: 'FIXED'; style: 'FILL' | 'TEXT'; set: { id: string } }
     axes: Array<{
         type: 'RANGE'
         index: number

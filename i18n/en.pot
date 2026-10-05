@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-10-05T11:34:44.809Z\n"
-"PO-Revision-Date: 2026-10-05T11:34:44.809Z\n"
+"POT-Creation-Date: 2026-10-05T11:39:39.361Z\n"
+"PO-Revision-Date: 2026-10-05T11:39:39.361Z\n"
 
 msgid "Data items"
 msgstr "Data items"
@@ -1649,6 +1649,15 @@ msgstr "Series key"
 
 msgid "Hide the legend"
 msgstr "Hide the legend"
+
+msgid "No legend set"
+msgstr "No legend set"
+
+msgid "Color the bars"
+msgstr "Color the bars"
+
+msgid "Color the text"
+msgstr "Color the text"
 
 msgid "Color set"
 msgstr "Color set"
