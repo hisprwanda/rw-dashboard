@@ -1703,3 +1703,117 @@ msgstr "Data Analytics Lab"
 msgctxt "Application description"
 msgid "__MANIFEST_APP_DESCRIPTION"
 msgstr "Un Data Analytics Lab développé par HISP Rwanda, avec un tableau de bord interactif pouvant être présenté sous forme de diapositives dynamiques et un large choix de visualisations personnalisables pour une meilleure représentation des données."
+
+msgid "Basic"
+msgstr "De base"
+
+msgid "Extended"
+msgstr "Étendu"
+
+msgid "Bright"
+msgstr "Vif"
+
+msgid "Dark"
+msgstr "Sombre"
+
+msgid "Gray"
+msgstr "Gris"
+
+msgid "Color blind"
+msgstr "Daltonien"
+
+msgid "Show line"
+msgstr "Afficher la ligne"
+
+msgid "Values"
+msgstr "Valeurs"
+
+msgid "Show values"
+msgstr "Afficher les valeurs"
+
+msgid "Use cumulative values"
+msgstr "Utiliser les valeurs cumulées"
+
+msgid "Use 100% stacked values"
+msgstr "Utiliser les valeurs empilées à 100 %"
+
+msgid "Empty categories"
+msgstr "Catégories vides"
+
+msgid "Hide empty categories"
+msgstr "Masquer les catégories vides"
+
+msgid "Before first value"
+msgstr "Avant la première valeur"
+
+msgid "After last value"
+msgstr "Après la dernière valeur"
+
+msgid "Before first and after last value"
+msgstr "Avant la première et après la dernière valeur"
+
+msgid "All empty"
+msgstr "Toutes les vides"
+
+msgid "Sort order"
+msgstr "Ordre de tri"
+
+msgid "Low to high"
+msgstr "Du plus bas au plus haut"
+
+msgid "High to low"
+msgstr "Du plus haut au plus bas"
+
+msgid "Vertical (y) axis"
+msgstr "Axe vertical (y)"
+
+msgid "Minimum"
+msgstr "Minimum"
+
+msgid "Maximum"
+msgstr "Maximum"
+
+msgid "Tick steps"
+msgstr "Pas des graduations"
+
+msgid "Axis title"
+msgstr "Titre de l'axe"
+
+msgid "Target line"
+msgstr "Ligne cible"
+
+msgid "Base line"
+msgstr "Ligne de base"
+
+msgid "Trend line"
+msgstr "Courbe de tendance"
+
+msgid "Linear"
+msgstr "Linéaire"
+
+msgid "Polynomial"
+msgstr "Polynomiale"
+
+msgid "Loess"
+msgstr "Loess"
+
+msgid "Series key"
+msgstr "Légende des séries"
+
+msgid "Hide the legend"
+msgstr "Masquer la légende"
+
+msgid "Color set"
+msgstr "Jeu de couleurs"
+
+msgid "No space between columns"
+msgstr "Pas d'espace entre les colonnes"
+
+msgid "Options"
+msgstr "Options"
+
+msgid "Axes"
+msgstr "Axes"
+
+msgid "Done"
+msgstr "Terminé"

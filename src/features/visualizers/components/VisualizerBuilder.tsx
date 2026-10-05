@@ -13,16 +13,18 @@ import type { Visualization } from '../types/visualization.types'
 import { useVisualBuilder } from '../hooks/useVisualBuilder'
 import { visualizerActions } from '../store/visualizerSlice'
 import { buildVisualization, visTypeFromChartType } from '../utils/visualization'
+import { withOptions } from '../utils/visualizerOptions'
 import { ChartTypePicker } from './ChartTypePicker'
 import { DhisChart } from './DhisChart'
 import { DimensionsPanel, type DimensionModal } from './DimensionsPanel'
 import { FileMenu } from './FileMenu'
 import { LayoutEditor } from './LayoutEditor'
+import { OptionsModal } from './OptionsModal'
 import { SaveVisualModal } from './SaveVisualModal'
 import { SettingsPanel } from './SettingsPanel'
 import { TitlesModal } from './TitlesModal'
 
-type Modal = DimensionModal | 'titles' | 'save' | 'export'
+type Modal = DimensionModal | 'titles' | 'options' | 'save' | 'export'
 
 interface VisualizerBuilderProps {
     /** Key of the saved visual to edit; omitted to build a new one. */
@@ -41,6 +43,7 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
     const chartType = useAppSelector((state) => state.visualizer.chartType)
     const titles = useAppSelector((state) => state.visualizer.titles)
     const settings = useAppSelector((state) => state.visualizer.settings)
+    const options = useAppSelector((state) => state.visualizer.options)
     const layout = useAppSelector((state) => state.selection.layout)
     const dataSource = useAppSelector((state) => state.selection.dataSource)
 
@@ -52,11 +55,11 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
             visType &&
             visType !== 'PIVOT_TABLE' &&
             ({
-                ...buildVisualization(visType, layout, params),
+                ...withOptions(buildVisualization(visType, layout, params), options),
                 title: titles.visualTitle || undefined,
                 subtitle: titles.customSubTitle || undefined,
             } satisfies Visualization),
-        [visType, layout, params, titles.visualTitle, titles.customSubTitle]
+        [visType, layout, params, options, titles.visualTitle, titles.customSubTitle]
     )
 
     if (builder.error) return <ErrorState error={builder.error} />
@@ -124,6 +127,11 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
                         value={chartType}
                         onChange={(type) => dispatch(visualizerActions.setChartType(type))}
                     />
+                    {visualization && (
+                        <Button small onClick={() => setModal('options')}>
+                            {i18n.t('Options')}
+                        </Button>
+                    )}
                     <FileMenu
                         isSaved={!!visualId}
                         onSave={() => setModal('save')}
@@ -168,6 +176,7 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
                 />
             )}
             {modal === 'titles' && <TitlesModal onClose={close} />}
+            {modal === 'options' && <OptionsModal onClose={close} />}
             {modal === 'export' && (
                 <ExportModal
                     targetRef={chartRef}

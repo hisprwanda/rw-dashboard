@@ -50,6 +50,7 @@ export const visualToBuilderState = (
             settings: visual.visualSettings ?? initialVisualizer.settings,
             colorPalette:
                 visual.visualSettings?.visualColorPalette ?? initialVisualizer.colorPalette,
+            options: { ...initialVisualizer.options, ...visual.visualOptions },
         },
     }
 }

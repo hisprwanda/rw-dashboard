@@ -6,6 +6,8 @@ import {
     DEFAULT_COLOR_PALETTE,
     DEFAULT_VISUAL_SETTINGS,
 } from '@/features/charts/constants'
+import type { VisualizerOptions } from '../types/visualization.types'
+import { DEFAULT_VISUALIZER_OPTIONS } from '../utils/visualizerOptions'
 
 /** Appearance of the visualization being built. */
 export interface VisualizerState {
@@ -13,6 +15,8 @@ export interface VisualizerState {
     titles: VisualTitles
     settings: VisualSettings
     colorPalette: ColorPalette
+    /** Options of the DHIS2 chart engine (Options dialog). */
+    options: VisualizerOptions
 }
 
 export const initialVisualizer: VisualizerState = {
@@ -24,6 +28,7 @@ export const initialVisualizer: VisualizerState = {
     },
     settings: DEFAULT_VISUAL_SETTINGS,
     colorPalette: DEFAULT_COLOR_PALETTE,
+    options: DEFAULT_VISUALIZER_OPTIONS,
 }
 
 const visualizerSlice = createSlice({
@@ -46,6 +51,9 @@ const visualizerSlice = createSlice({
         },
         updateSettings: (state, action: PayloadAction<Partial<VisualSettings>>) => {
             state.settings = { ...state.settings, ...action.payload }
+        },
+        updateOptions: (state, action: PayloadAction<Partial<VisualizerOptions>>) => {
+            state.options = { ...state.options, ...action.payload }
         },
         /** The automatic subtitle follows the items of the last analytics run. */
         setDefaultSubTitle: (state, action: PayloadAction<VisualTitles['DefaultSubTitle']>) => {

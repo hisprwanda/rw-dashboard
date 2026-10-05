@@ -1,6 +1,7 @@
 import type { AnalyticsLayout, DataItemRef, StoredAnalyticsQuery } from '@/features/analytics'
 import type { ChartType, VisualSettings, VisualTitles } from '@/features/charts'
 import type { Shareable, UserRef } from '@/shared/types/common.types'
+import type { VisualizerOptions } from './visualization.types'
 import type { DataStoreEntry } from '@/shared/types/dhis2.types'
 
 /** A data item picked in the Data modal (kept to restore the modal's selection). */
@@ -14,6 +15,8 @@ export type SavedVisual = Shareable & {
     visualType: ChartType
     visualTitleAndSubTitle: VisualTitles
     visualSettings: VisualSettings
+    /** Options of the DHIS2 chart engine; absent in visuals saved before they existed. */
+    visualOptions?: VisualizerOptions
     query: StoredAnalyticsQuery
     analyticsPayloadDeterminer: AnalyticsLayout
     dataSourceId: string

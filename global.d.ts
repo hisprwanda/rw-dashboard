@@ -21,6 +21,9 @@ declare module '@dhis2/analytics' {
         reflow: () => void
     }
 
+    /** The DHIS2 color sets by key; `PATTERNS` has patterns instead of colors. */
+    export const colorSets: Record<string, { colors?: string[] }>
+
     export const createVisualization: (
         data: unknown,
         layout: unknown,

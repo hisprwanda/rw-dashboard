@@ -74,6 +74,7 @@ export const SaveVisualModal = ({
             visualType: visualizer.chartType,
             visualTitleAndSubTitle: visualizer.titles,
             visualSettings: visualizer.settings,
+            visualOptions: visualizer.options,
             query,
             analyticsPayloadDeterminer: selection.layout,
             dataSourceId: selection.dataSourceId,

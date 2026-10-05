@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-10-05T10:42:52.354Z\n"
-"PO-Revision-Date: 2026-10-05T10:42:52.354Z\n"
+"POT-Creation-Date: 2026-10-05T10:45:59.297Z\n"
+"PO-Revision-Date: 2026-10-05T10:45:59.298Z\n"
 
 msgid "Data items"
 msgstr "Data items"
@@ -1535,6 +1535,120 @@ msgstr "Filter"
 
 msgid "Move to {{area}}"
 msgstr "Move to {{area}}"
+
+msgid "Basic"
+msgstr "Basic"
+
+msgid "Extended"
+msgstr "Extended"
+
+msgid "Bright"
+msgstr "Bright"
+
+msgid "Dark"
+msgstr "Dark"
+
+msgid "Gray"
+msgstr "Gray"
+
+msgid "Color blind"
+msgstr "Color blind"
+
+msgid "Show line"
+msgstr "Show line"
+
+msgid "Values"
+msgstr "Values"
+
+msgid "Show values"
+msgstr "Show values"
+
+msgid "Use cumulative values"
+msgstr "Use cumulative values"
+
+msgid "Use 100% stacked values"
+msgstr "Use 100% stacked values"
+
+msgid "Empty categories"
+msgstr "Empty categories"
+
+msgid "Hide empty categories"
+msgstr "Hide empty categories"
+
+msgid "Before first value"
+msgstr "Before first value"
+
+msgid "After last value"
+msgstr "After last value"
+
+msgid "Before first and after last value"
+msgstr "Before first and after last value"
+
+msgid "All empty"
+msgstr "All empty"
+
+msgid "Sort order"
+msgstr "Sort order"
+
+msgid "Low to high"
+msgstr "Low to high"
+
+msgid "High to low"
+msgstr "High to low"
+
+msgid "Vertical (y) axis"
+msgstr "Vertical (y) axis"
+
+msgid "Minimum"
+msgstr "Minimum"
+
+msgid "Maximum"
+msgstr "Maximum"
+
+msgid "Tick steps"
+msgstr "Tick steps"
+
+msgid "Axis title"
+msgstr "Axis title"
+
+msgid "Target line"
+msgstr "Target line"
+
+msgid "Base line"
+msgstr "Base line"
+
+msgid "Trend line"
+msgstr "Trend line"
+
+msgid "Linear"
+msgstr "Linear"
+
+msgid "Polynomial"
+msgstr "Polynomial"
+
+msgid "Loess"
+msgstr "Loess"
+
+msgid "Series key"
+msgstr "Series key"
+
+msgid "Hide the legend"
+msgstr "Hide the legend"
+
+msgid "Color set"
+msgstr "Color set"
+
+msgid "No space between columns"
+msgstr "No space between columns"
+
+msgid "Options"
+msgstr "Options"
+
+msgid "Axes"
+msgstr "Axes"
+
+msgid "Done"
+msgstr "Done"
 
 msgid "Another visualization already uses this name."
 msgstr "Another visualization already uses this name."
