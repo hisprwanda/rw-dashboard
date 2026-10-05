@@ -1,5 +1,7 @@
 export { analyticsQueryOptions } from './hooks/analyticsQueryOptions'
-export { analyticsKeys } from './hooks/queryKeys'
+export { analyticsKeys, dimensionKeys } from './hooks/queryKeys'
+export { useDimensionItems, useDimensions } from './hooks/useDimensions'
+export type { DimensionItem, DimensionSummary } from './services/dimensionsService'
 export { useAnalytics } from './hooks/useAnalytics'
 export { useAnalyticsRun } from './hooks/useAnalyticsRun'
 export { fetchAnalytics } from './services/analyticsService'
@@ -19,7 +21,13 @@ export {
 } from './utils/buildAnalyticsRequest'
 export { analyticsToCsv } from './utils/analyticsCsv'
 export { formatAnalyticsDimensions, parseAnalyticsDimensions } from './utils/dimensions'
-export { applyLayout, dimensionIdOf, moveDimension, type LayoutArea } from './utils/layout'
+export {
+    applyLayout,
+    dimensionIdOf,
+    moveDimension,
+    placeDimension,
+    type LayoutArea,
+} from './utils/layout'
 export { buildSelectionRequest } from './utils/selectionRequest'
 export {
     getDimensionItems,

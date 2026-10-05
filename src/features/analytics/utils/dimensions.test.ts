@@ -8,6 +8,18 @@ describe('formatAnalyticsDimensions', () => {
         ])
     })
 
+    it('adds the dynamic dimensions after data and period, but never the org units', () => {
+        expect(
+            formatAnalyticsDimensions({
+                dx: ['a'],
+                J5jldMd8OHv: ['x', 'y'],
+                ou: ['o'],
+                pe: ['2024'],
+            })
+        ).toEqual(['dx:a', 'pe:2024', 'J5jldMd8OHv:x;y'])
+        expect(formatAnalyticsDimensions({ dx: ['a'], cat: ['x'] }, true)).toEqual(['dx:a'])
+    })
+
     it('leaves periods out for maps and skips empty dimensions', () => {
         expect(formatAnalyticsDimensions({ dx: ['a'], pe: ['2024'] }, true)).toEqual(['dx:a'])
         expect(formatAnalyticsDimensions({ dx: [], pe: [] })).toEqual([])

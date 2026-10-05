@@ -11,8 +11,7 @@ const PREFIX_BY_NAME: Record<string, string> = {
 }
 
 /** The analytics dimension id of a layout name (`Data` -> `dx`). */
-export const dimensionIdOf = (name: LayoutDimensionName) =>
-    PREFIX_BY_NAME[name] ?? name.toLowerCase()
+export const dimensionIdOf = (name: LayoutDimensionName) => PREFIX_BY_NAME[name] ?? name
 
 const byPrefix = (items: readonly string[]) =>
     Object.fromEntries(items.filter(Boolean).map((item) => [item.split(':')[0], item]))
@@ -62,5 +61,26 @@ export const moveDimension = (
         ...layout,
         [from]: layout[from].filter((name) => name !== item),
         [to]: [...layout[to], item],
+    }
+}
+
+/**
+ * Keeps the layout in step with a dimension's selection: a dimension that gets its first
+ * items is placed in the filter, one left without items leaves the layout.
+ */
+export const placeDimension = (
+    layout: AnalyticsLayout,
+    dimension: LayoutDimensionName,
+    hasItems: boolean
+): AnalyticsLayout => {
+    const placed = [...layout.Columns, ...layout.Rows, ...layout.Filter].includes(dimension)
+    if (hasItems) return placed ? layout : { ...layout, Filter: [...layout.Filter, dimension] }
+    if (!placed) return layout
+    const without = (names: readonly LayoutDimensionName[]) =>
+        names.filter((name) => name !== dimension)
+    return {
+        Columns: without(layout.Columns),
+        Rows: without(layout.Rows),
+        Filter: without(layout.Filter),
     }
 }

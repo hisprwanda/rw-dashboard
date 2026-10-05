@@ -1,4 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { placeDimension } from '../utils/layout'
 import type {
     AnalyticsDimensions,
     AnalyticsLayout,
@@ -39,6 +40,15 @@ const selectionSlice = createSlice({
         },
         setDimensions: (state, action: PayloadAction<AnalyticsDimensions>) => {
             state.dimensions = action.payload
+        },
+        /** Sets the items of one dimension; the layout follows (see `placeDimension`). */
+        setDimensionItems: (
+            state,
+            action: PayloadAction<{ dimension: string; items: string[] }>
+        ) => {
+            const { dimension, items } = action.payload
+            state.dimensions[dimension] = items
+            state.layout = placeDimension(state.layout, dimension, items.length > 0)
         },
         setDimensionItemType: (state, action: PayloadAction<DimensionItemType>) => {
             state.dimensionItemType = action.payload

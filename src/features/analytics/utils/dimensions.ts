@@ -11,6 +11,14 @@ export const formatAnalyticsDimensions = (
     const result: string[] = []
     if (dimensions.dx?.length) result.push(`dx:${dimensions.dx.join(';')}`)
     if (!isMap && dimensions.pe?.length) result.push(`pe:${dimensions.pe.join(';')}`)
+    if (!isMap) {
+        // Dynamic dimensions (categories, group sets…); the org units have their own request part.
+        for (const [id, items] of Object.entries(dimensions)) {
+            if (!['dx', 'pe', 'ou'].includes(id) && items.length) {
+                result.push(`${id}:${items.join(';')}`)
+            }
+        }
+    }
     return result
 }
 
