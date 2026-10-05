@@ -17,6 +17,8 @@ import {
     type LayoutArea,
     type LayoutDimensionName,
 } from '@/features/analytics'
+import { adaptLayoutToVisType } from '../utils/layoutRules'
+import { visTypeFromChartType } from '../utils/visualization'
 
 const ICONS: Record<string, ReactNode> = {
     Data: <IconDimensionData16 />,
@@ -117,6 +119,7 @@ export const LayoutEditor = () => {
     const dispatch = useAppDispatch()
     const layout = useAppSelector((state) => state.selection.layout)
     const dataSource = useAppSelector((state) => state.selection.dataSource)
+    const chartType = useAppSelector((state) => state.visualizer.chartType)
     const dynamicDimensions = useDimensions(dataSource)
     const dynamicNames = new Map(
         (dynamicDimensions.data ?? []).map(({ id, displayName }) => [id, displayName])
@@ -124,17 +127,22 @@ export const LayoutEditor = () => {
     const [dragged, setDragged] = useState<Dragged | null>(null)
     const labels = areaLabels()
 
+    /** The moved layout, as far as the chart type allows (extra dimensions go to the filter). */
+    const moved = (item: LayoutDimensionName, from: LayoutArea, to: LayoutArea) => {
+        const next = moveDimension(layout, item, from, to)
+        const visType = visTypeFromChartType(chartType)
+        return visType ? adaptLayoutToVisType(next, visType) : next
+    }
+
     const drop = (to: LayoutArea) => {
         if (dragged) {
-            dispatch(
-                selectionActions.setLayout(moveDimension(layout, dragged.item, dragged.from, to))
-            )
+            dispatch(selectionActions.setLayout(moved(dragged.item, dragged.from, to)))
         }
         setDragged(null)
     }
 
     const move = (item: LayoutDimensionName, from: LayoutArea, to: LayoutArea) =>
-        dispatch(selectionActions.setLayout(moveDimension(layout, item, from, to)))
+        dispatch(selectionActions.setLayout(moved(item, from, to)))
 
     const area = (name: LayoutArea) => (
         <div className="grid grid-cols-[72px_1fr] items-center gap-2">

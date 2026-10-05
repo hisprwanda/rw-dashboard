@@ -21,6 +21,12 @@ declare module '@dhis2/analytics' {
         reflow: () => void
     }
 
+    /** The layout rules of a chart type: a layout in (ids per axis), the layout it allows out. */
+    export const getAdaptedUiLayoutByType: (
+        layout: { columns: string[]; rows: string[]; filters: string[] },
+        visType: string
+    ) => { columns: string[]; rows: string[]; filters: string[] }
+
     /** The DHIS2 color sets by key; `PATTERNS` has patterns instead of colors. */
     export const colorSets: Record<string, { colors?: string[] }>
 

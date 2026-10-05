@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { paths } from '@/app/router/paths'
 import { useAppDispatch, useAppSelector } from '@/app/store'
-import { analyticsToCsv } from '@/features/analytics'
+import { analyticsToCsv, selectionActions } from '@/features/analytics'
 import { DataItemsModal } from '@/features/data-items'
 import { ChartRenderer } from '@/features/charts'
 import { OrgUnitModal } from '@/features/org-units'
@@ -15,6 +15,7 @@ import type { Visualization } from '../types/visualization.types'
 import { useVisualBuilder } from '../hooks/useVisualBuilder'
 import { visualizerActions } from '../store/visualizerSlice'
 import { buildVisualization, visTypeFromChartType } from '../utils/visualization'
+import { adaptLayoutToVisType } from '../utils/layoutRules'
 import { withOptions } from '../utils/visualizerOptions'
 import { ChartTypePicker } from './ChartTypePicker'
 import { DhisChart } from './DhisChart'
@@ -139,7 +140,16 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
                     </Button>
                     <ChartTypePicker
                         value={chartType}
-                        onChange={(type) => dispatch(visualizerActions.setChartType(type))}
+                        onChange={(type) => {
+                            dispatch(visualizerActions.setChartType(type))
+                            // Each chart type allows its own layout (the official rules).
+                            const next = visTypeFromChartType(type)
+                            if (next) {
+                                dispatch(
+                                    selectionActions.setLayout(adaptLayoutToVisType(layout, next))
+                                )
+                            }
+                        }}
                     />
                     {visualization && (
                         <Button small onClick={() => setModal('options')}>
