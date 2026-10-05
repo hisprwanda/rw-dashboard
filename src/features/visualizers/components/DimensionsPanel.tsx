@@ -1,12 +1,12 @@
 import i18n from '@dhis2/d2-i18n'
 import { Button, IconClock16, IconDimensionData16, IconDimensionOrgUnit16 } from '@dhis2/ui'
 import { useAppDispatch, useAppSelector } from '@/app/store'
-import { selectionActions } from '@/features/analytics'
+import { selectionActions, useDimensions } from '@/features/analytics'
 import { DataSourceSelect } from '@/features/data-sources'
 import { orgUnitSelectionActions } from '@/features/org-units'
 import { visualizerActions } from '../store/visualizerSlice'
 
-export type DimensionModal = 'data' | 'period' | 'orgUnit'
+export type DimensionModal = 'data' | 'period' | 'orgUnit' | `dynamic:${string}`
 
 interface DimensionsPanelProps {
     onOpen: (modal: DimensionModal) => void
@@ -20,6 +20,9 @@ const withCount = (label: string, count: number) => (count ? `${label} (${count}
 export const DimensionsPanel = ({ onOpen, onDataSourceChange }: DimensionsPanelProps) => {
     const dispatch = useAppDispatch()
     const dataSourceId = useAppSelector((state) => state.selection.dataSourceId)
+    const currentSource = useAppSelector((state) => state.selection.dataSource)
+    const selectedDimensions = useAppSelector((state) => state.selection.dimensions)
+    const dynamicDimensions = useDimensions(currentSource)
     const dataCount = useAppSelector((state) => state.selection.dimensions.dx?.length ?? 0)
     const periodCount = useAppSelector((state) => state.selection.dimensions.pe?.length ?? 0)
     const orgUnits = useAppSelector((state) => state.orgUnitSelection)
@@ -51,6 +54,25 @@ export const DimensionsPanel = ({ onOpen, onDataSourceChange }: DimensionsPanelP
             <Button icon={<IconDimensionOrgUnit16 />} onClick={() => onOpen('orgUnit')}>
                 {withCount(i18n.t('Organisation unit'), orgUnitCount)}
             </Button>
+            {!!dynamicDimensions.data?.length && (
+                <>
+                    <span className="text-sm font-medium text-gray-700">
+                        {i18n.t('Other dimensions')}
+                    </span>
+                    <div className="flex max-h-[240px] flex-col gap-1 overflow-y-auto">
+                        {dynamicDimensions.data.map(({ id, displayName }) => (
+                            <Button
+                                key={id}
+                                small
+                                secondary
+                                onClick={() => onOpen(`dynamic:${id}`)}
+                            >
+                                {withCount(displayName, selectedDimensions[id]?.length ?? 0)}
+                            </Button>
+                        ))}
+                    </div>
+                </>
+            )}
         </div>
     )
 }

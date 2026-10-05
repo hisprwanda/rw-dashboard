@@ -18,6 +18,7 @@ import { buildVisualization, visTypeFromChartType } from '../utils/visualization
 import { withOptions } from '../utils/visualizerOptions'
 import { ChartTypePicker } from './ChartTypePicker'
 import { DhisChart } from './DhisChart'
+import { DynamicDimensionModal } from './DynamicDimensionModal'
 import { DimensionsPanel, type DimensionModal } from './DimensionsPanel'
 import { FileMenu } from './FileMenu'
 import { LayoutEditor } from './LayoutEditor'
@@ -184,6 +185,14 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
             {modal === 'orgUnit' && (
                 <OrgUnitModal
                     instance={dataSource}
+                    onClose={close}
+                    onUpdate={builder.runAnalytics}
+                    updating={analytics.isFetching}
+                />
+            )}
+            {modal?.startsWith('dynamic:') && (
+                <DynamicDimensionModal
+                    dimensionId={modal.slice('dynamic:'.length)}
                     onClose={close}
                     onUpdate={builder.runAnalytics}
                     updating={analytics.isFetching}

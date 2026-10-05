@@ -2,6 +2,7 @@ import i18n from '@dhis2/d2-i18n'
 import {
     FlyoutMenu,
     IconClock16,
+    IconDimensionCategoryOptionGroupset16,
     IconDimensionData16,
     IconDimensionOrgUnit16,
     MenuItem,
@@ -12,6 +13,7 @@ import { useAppDispatch, useAppSelector } from '@/app/store'
 import {
     moveDimension,
     selectionActions,
+    useDimensions,
     type LayoutArea,
     type LayoutDimensionName,
 } from '@/features/analytics'
@@ -28,13 +30,17 @@ const areaLabels = (): Record<LayoutArea, string> => ({
     Filter: i18n.t('Filter'),
 })
 
-const dimensionLabel = (name: LayoutDimensionName): string => {
+/** The built-in dimensions by their layout name; any other name is a dynamic dimension id. */
+const dimensionLabel = (
+    name: LayoutDimensionName,
+    dynamicNames: ReadonlyMap<string, string>
+): string => {
     const labels: Record<string, string> = {
         Data: i18n.t('Data'),
         Period: i18n.t('Period'),
         'Organisation unit': i18n.t('Organisation unit'),
     }
-    return labels[name] ?? name
+    return labels[name] ?? dynamicNames.get(name) ?? name
 }
 
 const AREAS: LayoutArea[] = ['Columns', 'Rows', 'Filter']
@@ -110,6 +116,11 @@ interface Dragged {
 export const LayoutEditor = () => {
     const dispatch = useAppDispatch()
     const layout = useAppSelector((state) => state.selection.layout)
+    const dataSource = useAppSelector((state) => state.selection.dataSource)
+    const dynamicDimensions = useDimensions(dataSource)
+    const dynamicNames = new Map(
+        (dynamicDimensions.data ?? []).map(({ id, displayName }) => [id, displayName])
+    )
     const [dragged, setDragged] = useState<Dragged | null>(null)
     const labels = areaLabels()
 
@@ -139,8 +150,8 @@ export const LayoutEditor = () => {
                 {layout[name].map((item) => (
                     <DimensionChip
                         key={item}
-                        label={dimensionLabel(item)}
-                        icon={ICONS[item]}
+                        label={dimensionLabel(item, dynamicNames)}
+                        icon={ICONS[item] ?? <IconDimensionCategoryOptionGroupset16 />}
                         targets={AREAS.filter((to) => to !== name).map((to) => ({
                             label: labels[to],
                             onSelect: () => move(item, name, to),

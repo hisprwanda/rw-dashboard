@@ -1826,3 +1826,9 @@ msgstr "Types supplémentaires"
 
 msgid "Download data (CSV)"
 msgstr "Télécharger les données (CSV)"
+
+msgid "Other dimensions"
+msgstr "Autres dimensions"
+
+msgid "Dimension"
+msgstr "Dimension"
