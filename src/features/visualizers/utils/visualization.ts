@@ -49,6 +49,28 @@ const toAxis = (
         return ids ? [{ dimension, items: ids.map((id) => ({ id })) }] : []
     })
 
+const DEFAULT_LAYOUT: AnalyticsLayout = {
+    Columns: ['Data'],
+    Rows: ['Period'],
+    Filter: ['Organisation unit'],
+}
+
+/** The visualization of a chart type and layout over the dimensions of analytics params. */
+export const buildVisualization = (
+    type: VisType,
+    layout: AnalyticsLayout | undefined,
+    params: AnalyticsParams | undefined
+): Visualization => {
+    const { Columns, Rows, Filter } = layout ?? DEFAULT_LAYOUT
+    const items = itemsByDimension(params)
+    return {
+        type,
+        columns: toAxis(Columns, items),
+        rows: toAxis(Rows, items),
+        filters: toAxis(Filter, items),
+    }
+}
+
 /**
  * Converts a visual saved by the old builder into the visualization object the DHIS2
  * components consume. `undefined` for chart types the official app does not have.
@@ -56,16 +78,5 @@ const toAxis = (
 export const savedVisualToVisualization = (visual: SavedVisual): Visualization | undefined => {
     const type = visTypeFromChartType(visual.visualType)
     if (!type) return undefined
-    const layout: AnalyticsLayout = visual.analyticsPayloadDeterminer ?? {
-        Columns: ['Data'],
-        Rows: ['Period'],
-        Filter: ['Organisation unit'],
-    }
-    const items = itemsByDimension(visual.query?.myData?.params)
-    return {
-        type,
-        columns: toAxis(layout.Columns, items),
-        rows: toAxis(layout.Rows, items),
-        filters: toAxis(layout.Filter, items),
-    }
+    return buildVisualization(type, visual.analyticsPayloadDeterminer, visual.query?.myData?.params)
 }

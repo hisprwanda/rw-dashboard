@@ -29,6 +29,9 @@ export interface VisualizationDimension {
  */
 export interface Visualization {
     type: VisType
+    /** Custom title and subtitle; the charts generate their own when these are absent. */
+    title?: string
+    subtitle?: string
     columns: VisualizationDimension[]
     rows: VisualizationDimension[]
     filters: VisualizationDimension[]

@@ -1,6 +1,6 @@
 import i18n from '@dhis2/d2-i18n'
 import { Button, IconSync16, NoticeBox, Tab, TabBar } from '@dhis2/ui'
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { paths } from '@/app/router/paths'
 import { useAppDispatch, useAppSelector } from '@/app/store'
@@ -9,9 +9,12 @@ import { ChartRenderer } from '@/features/charts'
 import { OrgUnitModal } from '@/features/org-units'
 import { PeriodModal } from '@/features/periods'
 import { EmptyState, ErrorState, ExportModal, LoadingState } from '@/shared/components'
+import type { Visualization } from '../types/visualization.types'
 import { useVisualBuilder } from '../hooks/useVisualBuilder'
 import { visualizerActions } from '../store/visualizerSlice'
+import { buildVisualization, visTypeFromChartType } from '../utils/visualization'
 import { ChartTypePicker } from './ChartTypePicker'
+import { DhisChart } from './DhisChart'
 import { DimensionsPanel, type DimensionModal } from './DimensionsPanel'
 import { FileMenu } from './FileMenu'
 import { LayoutEditor } from './LayoutEditor'
@@ -41,6 +44,21 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
     const layout = useAppSelector((state) => state.selection.layout)
     const dataSource = useAppSelector((state) => state.selection.dataSource)
 
+    const visType = visTypeFromChartType(chartType)
+    const params = analytics.request?.dataParams
+    // Titles stay empty unless set, so the DHIS2 charts generate their own.
+    const visualization = useMemo(
+        () =>
+            visType &&
+            visType !== 'PIVOT_TABLE' &&
+            ({
+                ...buildVisualization(visType, layout, params),
+                title: titles.visualTitle || undefined,
+                subtitle: titles.customSubTitle || undefined,
+            } satisfies Visualization),
+        [visType, layout, params, titles.visualTitle, titles.customSubTitle]
+    )
+
     if (builder.error) return <ErrorState error={builder.error} />
     if (builder.isLoading) return <LoadingState />
 
@@ -58,6 +76,7 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
                 />
             )
         }
+        if (visualization) return <DhisChart data={analytics.data} visualization={visualization} />
         return (
             <ChartRenderer
                 type={chartType}
