@@ -10,7 +10,8 @@ const PREFIX_BY_NAME: Record<string, string> = {
     'Organisation unit': 'ou',
 }
 
-const prefixOf = (name: LayoutDimensionName) => PREFIX_BY_NAME[name] ?? name.toLowerCase()
+/** The analytics dimension id of a layout name (`Data` -> `dx`). */
+export const dimensionIdOf = (name: LayoutDimensionName) => PREFIX_BY_NAME[name] ?? name.toLowerCase()
 
 const byPrefix = (items: readonly string[]) =>
     Object.fromEntries(items.filter(Boolean).map((item) => [item.split(':')[0], item]))
@@ -34,7 +35,7 @@ export const applyLayout = (
         ...byPrefix(filters),
     }
     const pick = (names: readonly LayoutDimensionName[]) =>
-        names.map((name) => available[prefixOf(name)]).filter((v): v is string => !!v)
+        names.map((name) => available[dimensionIdOf(name)]).filter((v): v is string => !!v)
 
     const dimension = pick([...(layout.Columns ?? []), ...(layout.Rows ?? [])])
     const filter = pick(layout.Filter)

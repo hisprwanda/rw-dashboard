@@ -18,7 +18,7 @@ export {
     type AnalyticsRequestInput,
 } from './utils/buildAnalyticsRequest'
 export { formatAnalyticsDimensions, parseAnalyticsDimensions } from './utils/dimensions'
-export { applyLayout, moveDimension, type LayoutArea } from './utils/layout'
+export { applyLayout, dimensionIdOf, moveDimension, type LayoutArea } from './utils/layout'
 export { buildSelectionRequest } from './utils/selectionRequest'
 export {
     getDimensionItems,
