@@ -30,7 +30,14 @@ export {
     placeDimension,
     type LayoutArea,
 } from './utils/layout'
-export { buildSelectionRequest } from './utils/selectionRequest'
+export {
+    buildSelectionRequest,
+    buildSelectionRuns,
+    multiSourceIssues,
+    type MultiSourceIssue,
+    type SelectionRuns,
+    type SourceRequest,
+} from './utils/selectionRequest'
 export {
     getDimensionItems,
     transformMetadataLabels,
