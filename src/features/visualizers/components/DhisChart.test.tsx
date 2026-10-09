@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react'
+import type { AnalyticsResponse } from '@/shared/types/dhis2.types'
 import type { Visualization } from '../types/visualization.types'
 import response from './__fixtures__/analytics-response.json'
 import { DhisChart } from './DhisChart'
@@ -16,9 +17,14 @@ const visualization: Visualization = {
 
 describe('DhisChart', () => {
     it('draws the response with the DHIS2 chart engine', () => {
-        const { container } = render(<DhisChart data={response} visualization={visualization} />)
+        const { container } = render(
+            <DhisChart data={response as AnalyticsResponse} visualization={visualization} />
+        )
         expect(container.querySelector('.highcharts-container')).not.toBeNull()
         expect(screen.queryByRole('alert')).toBeNull()
+        // A series without data shows "No data to display" instead of columns.
+        expect(container.querySelectorAll('.highcharts-point').length).toBeGreaterThan(0)
+        expect(container.textContent).not.toContain('No data')
     })
 
     it('colors the values with a fixed legend set', () => {
@@ -45,7 +51,12 @@ describe('DhisChart', () => {
     })
 
     it('shows an error instead of crashing when the layout does not fit the data', () => {
-        render(<DhisChart data={response} visualization={{ ...visualization, columns: [] }} />)
+        render(
+            <DhisChart
+                data={response as AnalyticsResponse}
+                visualization={{ ...visualization, columns: [] }}
+            />
+        )
         expect(screen.getByRole('alert')).not.toBeNull()
     })
 })

@@ -1,11 +1,13 @@
 import { createVisualization } from '@dhis2/analytics'
 import { useEffect, useRef, useState } from 'react'
 import { ErrorState } from '@/shared/components'
+import type { AnalyticsResponse } from '@/shared/types/dhis2.types'
+import { withHeaderIndexes } from '../utils/analyticsData'
 import type { Visualization } from '../types/visualization.types'
 
 interface DhisChartProps {
     /** The analytics response, with its metadata. */
-    data: unknown
+    data: AnalyticsResponse
     visualization: Visualization
     /** Legend sets the chart colors values with (the one the visualization names). */
     legendSets?: unknown[]
@@ -21,7 +23,7 @@ export const DhisChart = ({ data, visualization, legendSets }: DhisChartProps) =
         if (!element) return
         try {
             const { visualization: chart } = createVisualization(
-                data,
+                withHeaderIndexes(data),
                 visualization,
                 element,
                 { dashboard: false, legendSets },
