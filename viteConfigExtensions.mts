@@ -18,4 +18,9 @@ export default defineConfig({
     // shell's dependencies are deduplicated (as they should be). Keep the cache in
     // the project's own node_modules instead.
     cacheDir: fromRoot('./node_modules/.vite'),
+    css: {
+        // Vite's root is the generated `.d2/shell`, and from there it no longer finds the
+        // project's `postcss.config.js` (Tailwind) on its own: the CSS was served raw.
+        postcss: fromRoot('.'),
+    },
 })
