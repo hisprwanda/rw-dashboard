@@ -22,6 +22,7 @@ export {
     type AnalyticsRequestInput,
 } from './utils/buildAnalyticsRequest'
 export { analyticsToCsv } from './utils/analyticsCsv'
+export { mergeAnalyticsMetaData, mergeAnalyticsResponses } from './utils/mergeAnalytics'
 export { formatAnalyticsDimensions, parseAnalyticsDimensions } from './utils/dimensions'
 export {
     applyLayout,
