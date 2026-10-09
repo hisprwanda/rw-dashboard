@@ -64,3 +64,14 @@ export interface DataItemRef {
     id: string
     label: string
 }
+
+/**
+ * Data items read from another data source than the builder's main one. They share the
+ * main source's periods and org units (org unit UIDs are assumed equal across instances).
+ */
+export interface AdditionalSource {
+    /** Saved data source id, or "1" for the current instance. */
+    dataSourceId: string
+    dataSource: SelectedDataSource
+    items: DataItemRef[]
+}

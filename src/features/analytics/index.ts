@@ -45,4 +45,9 @@ export {
     selectionReducer,
     type SelectionState,
 } from './store/selectionSlice'
-export type { DataItemRef, DimensionItemType, SelectedDataSource } from './types/analytics.types'
+export type {
+    AdditionalSource,
+    DataItemRef,
+    DimensionItemType,
+    SelectedDataSource,
+} from './types/analytics.types'

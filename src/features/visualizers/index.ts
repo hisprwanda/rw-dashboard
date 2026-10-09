@@ -8,7 +8,12 @@ export { useSaveVisual } from './hooks/useSaveVisual'
 export { useVisual } from './hooks/useVisual'
 export { useVisualBuilder } from './hooks/useVisualBuilder'
 export { useVisuals } from './hooks/useVisuals'
-export type { BackedSelectedItem, SavedVisual, SavedVisualEntry } from './types/visual.types'
+export type {
+    BackedSelectedItem,
+    SavedAdditionalSource,
+    SavedVisual,
+    SavedVisualEntry,
+} from './types/visual.types'
 export {
     initialVisualizer,
     visualizerActions,
