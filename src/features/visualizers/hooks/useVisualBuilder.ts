@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useAppDispatch, useAppStore } from '@/app/store'
 import {
-    buildSelectionRequest,
+    buildSelectionRuns,
     getDimensionItems,
+    multiSourceIssues,
     selectionActions,
     transformMetadataLabels,
-    useAnalyticsRun,
+    useCombinedAnalyticsRun,
+    type AdditionalSource,
     type SelectedDataSource,
 } from '@/features/analytics'
 import { useDisplayProperty } from '@/features/auth'
@@ -28,7 +30,7 @@ export const useVisualBuilder = (visualId: string | undefined) => {
     const store = useAppStore()
     const applicationTitle = useApplicationTitle()
     const displayProperty = useDisplayProperty()
-    const analytics = useAnalyticsRun()
+    const analytics = useCombinedAnalyticsRun()
     const { run, reset } = analytics
     const visual = useVisual(visualId)
     const dataSources = useDataSources()
@@ -39,8 +41,10 @@ export const useVisualBuilder = (visualId: string | undefined) => {
     /** Runs the analytics of the current selection (no-op while it is incomplete). */
     const runAnalytics = useCallback(async () => {
         const { selection, orgUnitSelection } = store.getState()
-        const request = buildSelectionRequest(selection, orgUnitSelection, displayProperty)
-        if (request) await run(request, selection.dataSource)
+        // Selections that cannot be combined are explained in the builder, not run.
+        if (multiSourceIssues(selection).length) return
+        const runs = buildSelectionRuns(selection, orgUnitSelection, displayProperty)
+        if (runs) await run(runs)
     }, [store, run, displayProperty])
 
     useEffect(() => {
@@ -65,21 +69,31 @@ export const useVisualBuilder = (visualId: string | undefined) => {
         if (!visual.data || !dataSources.data) return
         const saved = visual.data
         const currentInstance = { isCurrentInstance: true, instanceName: applicationTitle }
-        const isCurrent = !saved.dataSourceId || saved.dataSourceId === CURRENT_INSTANCE_ID
-        const dataSource: SelectedDataSource | undefined = isCurrent
-            ? currentInstance
-            : dataSources.data.find((entry) => entry.key === saved.dataSourceId)?.value
+        const resolve = (id: string | undefined): SelectedDataSource | undefined =>
+            !id || id === CURRENT_INSTANCE_ID
+                ? currentInstance
+                : dataSources.data?.find((entry) => entry.key === id)?.value
+        const dataSource = resolve(saved.dataSourceId)
+        const additional = (saved.additionalSources ?? []).map(({ dataSourceId, dataItems }) => ({
+            dataSourceId,
+            dataSource: resolve(dataSourceId),
+            items: dataItems,
+        }))
+        const available = additional.filter(
+            (source): source is AdditionalSource => !!source.dataSource
+        )
+        const missing = !dataSource || available.length < additional.length
 
         // A deleted (or unshared) data source: show the visual's settings, but do not run.
-        const state = visualToBuilderState(saved, dataSource ?? currentInstance)
+        const state = visualToBuilderState(saved, dataSource ?? currentInstance, available)
         dispatch(selectionActions.setSelection(state.selection))
         dispatch(orgUnitSelectionActions.setOrgUnitSelection(state.orgUnits))
         dispatch(visualizerActions.setVisualizer(state.visualizer))
-        setMissingDataSource(!dataSource)
+        setMissingDataSource(missing)
         setLoadedId(target)
 
-        const request = buildSelectionRequest(state.selection, state.orgUnits, displayProperty)
-        if (dataSource && request) void run(request, dataSource)
+        const runs = buildSelectionRuns(state.selection, state.orgUnits, displayProperty)
+        if (!missing && runs && !multiSourceIssues(state.selection).length) void run(runs)
         else reset()
     }, [
         visualId,

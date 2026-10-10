@@ -78,6 +78,9 @@ export const SaveVisualModal = ({
             query,
             analyticsPayloadDeterminer: selection.layout,
             dataSourceId: selection.dataSourceId,
+            additionalSources: selection.additionalSources
+                .filter(({ items }) => items.length > 0)
+                .map(({ dataSourceId, items }) => ({ dataSourceId, dataItems: items })),
             backedSelectedItems: selection.selectedDataItems,
             organizationTree: orgUnits.selectedTreePaths,
             selectedOrgUnitLevel: orgUnits.selectedLevels ?? undefined,
