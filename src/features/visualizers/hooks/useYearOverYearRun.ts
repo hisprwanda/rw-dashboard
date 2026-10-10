@@ -11,14 +11,15 @@ interface Committed extends YearOverYearRun {
 }
 
 /**
- * Year-over-year analytics on demand: one request per year, run by `run()`; running the
- * same requests again re-fetches. `data` holds one response per year, newest first.
+ * Year-over-year analytics: one query per year (cached per request). `data` holds one
+ * response per year, newest first, once all have answered. Pass `undefined` to wait.
  */
-export const useYearOverYearRun = () => {
+export const useYearOverYearAnalytics = (
+    instance: InstanceConnection | undefined,
+    run: Pick<YearOverYearRun, 'params' | 'years'> | undefined
+) => {
     const engine = useDataEngine()
-    const queryClient = useQueryClient()
-    const [committed, setCommitted] = useState<Committed | null>(null)
-
+    const years = run?.years
     const combine = useCallback(
         (results: UseQueryResult<AnalyticsResponse>[]) => {
             const responses = results.flatMap(({ data }) => (data ? [data] : []))
@@ -26,22 +27,30 @@ export const useYearOverYearRun = () => {
             return {
                 data: complete ? responses : undefined,
                 extraOptions:
-                    complete && committed
-                        ? yearOverYearExtraOptions(responses, committed.years)
-                        : undefined,
+                    complete && years ? yearOverYearExtraOptions(responses, years) : undefined,
+                isLoading: results.some((result) => result.isLoading),
                 isFetching: results.some((result) => result.isFetching),
                 error: results.find((result) => result.error)?.error ?? null,
             }
         },
-        [committed]
+        [years]
     )
-
-    const result = useQueries({
-        queries: (committed?.params ?? []).map((params) =>
-            analyticsQueryOptions(engine, committed?.instance, params)
+    return useQueries({
+        queries: (instance && run ? run.params : []).map((params) =>
+            analyticsQueryOptions(engine, instance, params)
         ),
         combine,
     })
+}
+
+/**
+ * Year-over-year analytics on demand: one request per year, run by `run()`; running the
+ * same requests again re-fetches. `data` holds one response per year, newest first.
+ */
+export const useYearOverYearRun = () => {
+    const queryClient = useQueryClient()
+    const [committed, setCommitted] = useState<Committed | null>(null)
+    const result = useYearOverYearAnalytics(committed?.instance, committed ?? undefined)
 
     const run = useCallback(
         async (next: YearOverYearRun, instance: InstanceConnection) => {

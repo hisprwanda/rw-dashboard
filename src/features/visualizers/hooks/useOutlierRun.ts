@@ -24,23 +24,31 @@ interface Committed {
     request: AnalyticsRequest | null
 }
 
+/** Outlier detection of one request (cached per request). Pass `undefined` params to wait. */
+export const useOutliers = (
+    instance: InstanceConnection | undefined,
+    params: OutlierParams | undefined
+) => {
+    const engine = useDataEngine()
+    return useQuery({
+        queryKey: outlierKeys.request(instance, params),
+        queryFn:
+            instance && params
+                ? ({ signal }) =>
+                      createInstanceClient(engine, instance).get<OutlierResponse>(
+                          'analytics/outlierDetection',
+                          params,
+                          signal
+                      )
+                : skipToken,
+    })
+}
+
 /** Outlier detection on demand: nothing is fetched until `run()`; running again re-fetches. */
 export const useOutlierRun = () => {
-    const engine = useDataEngine()
     const queryClient = useQueryClient()
     const [committed, setCommitted] = useState<Committed | null>(null)
-
-    const query = useQuery({
-        queryKey: outlierKeys.request(committed?.instance, committed?.params),
-        queryFn: committed
-            ? ({ signal }) =>
-                  createInstanceClient(engine, committed.instance).get<OutlierResponse>(
-                      'analytics/outlierDetection',
-                      committed.params,
-                      signal
-                  )
-            : skipToken,
-    })
+    const query = useOutliers(committed?.instance, committed?.params)
 
     const run = useCallback(
         async (next: Committed) => {
