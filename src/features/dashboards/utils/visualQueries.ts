@@ -51,7 +51,12 @@ export const visualItemQueries = (
         if (!source) missing = true
         else if (ids.length) {
             const { instanceName, ...instance } = source
-            queries.push({ instance, instanceName, dataParams: withDataItems(params, ids) })
+            queries.push({
+                instance,
+                instanceName,
+                // The DHIS2 renderers read the dimension types of the metadata.
+                dataParams: { ...withDataItems(params, ids), includeMetadataDetails: true },
+            })
         }
     }
     return { queries, dataOrder, missing }

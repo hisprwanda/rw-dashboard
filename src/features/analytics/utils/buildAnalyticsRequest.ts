@@ -64,9 +64,10 @@ export const buildAnalyticsRequest = ({
     }
 
     return {
+        // The DHIS2 chart engine and pivot table read the dimension types of the metadata.
         dataParams: map
             ? { ...base, skipData: false, skipMeta: true }
-            : applyLayout(original, layout),
+            : { ...applyLayout(original, layout), includeMetadataDetails: true },
         metadataParams: map
             ? { ...base, skipMeta: false, skipData: true, includeMetadataDetails: true }
             : labelsParams,

@@ -36,12 +36,20 @@ describe('visualItemQueries', () => {
             {
                 instance: { isCurrentInstance: true },
                 instanceName: 'Here',
-                dataParams: { dimension: ['dx:a', 'pe:2024'], filter: 'ou:ou1' },
+                dataParams: {
+                    dimension: ['dx:a', 'pe:2024'],
+                    filter: 'ou:ou1',
+                    includeMetadataDetails: true,
+                },
             },
             {
                 instance: { isCurrentInstance: false, url: 'u', token: 't' },
                 instanceName: 'Ext',
-                dataParams: { dimension: ['dx:b', 'pe:2024'], filter: 'ou:ou1' },
+                dataParams: {
+                    dimension: ['dx:b', 'pe:2024'],
+                    filter: 'ou:ou1',
+                    includeMetadataDetails: true,
+                },
             },
         ])
     })
