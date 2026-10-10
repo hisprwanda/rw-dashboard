@@ -2153,3 +2153,18 @@ msgstr "Dessinés par DHIS2, comme dans l'application Data Visualizer."
 
 msgid "Drawn by this app, with their own options."
 msgstr "Dessinés par cette application, avec leurs propres options."
+
+msgid "Bubble size from {{min}} to {{max}}"
+msgstr "Taille des bulles de {{min}} à {{max}}"
+
+msgid "Unclassified"
+msgstr "Non classé"
+
+msgid "Facility"
+msgstr "Établissement"
+
+msgid "Level {{level}}"
+msgstr "Niveau {{level}}"
+
+msgid "Thematic layer"
+msgstr "Couche thématique"

@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-10-10T13:32:53.548Z\n"
-"PO-Revision-Date: 2026-10-10T13:32:53.549Z\n"
+"POT-Creation-Date: 2026-10-10T18:28:46.764Z\n"
+"PO-Revision-Date: 2026-10-10T18:28:46.764Z\n"
 
 msgid "Data items"
 msgstr "Data items"
@@ -1003,6 +1003,15 @@ msgstr "Page {{page}} of {{pages}}"
 msgid "Next"
 msgstr "Next"
 
+msgid "Legend"
+msgstr "Legend"
+
+msgid "Bubble size from {{min}} to {{max}}"
+msgstr "Bubble size from {{min}} to {{max}}"
+
+msgid "Facilities"
+msgstr "Facilities"
+
 msgid "DHIS2 has no image of this item."
 msgstr "DHIS2 has no image of this item."
 
@@ -1017,9 +1026,6 @@ msgstr "Events"
 
 msgid "Tracked entities"
 msgstr "Tracked entities"
-
-msgid "Facilities"
-msgstr "Facilities"
 
 msgid "Boundaries"
 msgstr "Boundaries"
@@ -1038,6 +1044,21 @@ msgstr "GeoJSON layer"
 
 msgid "Map"
 msgstr "Map"
+
+msgid "Unclassified"
+msgstr "Unclassified"
+
+msgid "Facility"
+msgstr "Facility"
+
+msgid "Level {{level}}"
+msgstr "Level {{level}}"
+
+msgid "No data"
+msgstr "No data"
+
+msgid "Thematic layer"
+msgstr "Thematic layer"
 
 msgid "Save map"
 msgstr "Save map"
@@ -1109,9 +1130,6 @@ msgstr "Data name"
 msgid "Labels"
 msgstr "Labels"
 
-msgid "Legend"
-msgstr "Legend"
-
 msgid "Automatic (5 classes)"
 msgstr "Automatic (5 classes)"
 
@@ -1129,9 +1147,6 @@ msgstr "Update layer"
 
 msgid "Add layer"
 msgstr "Add layer"
-
-msgid "No data"
-msgstr "No data"
 
 msgid "Very low"
 msgstr "Very low"
