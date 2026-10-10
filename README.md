@@ -3,7 +3,7 @@
 **One DHIS2 app to analyse data from all your DHIS2 instances, and turn it into dashboards,
 slide shows and bulletins.**
 
-Developed by **HISP Rwanda**, Data Analytics Lab picks up where the core DHIS2 apps stop.
+Data Analytics Lab picks up where the core DHIS2 apps stop.
 The Data Visualizer, Maps and Dashboard apps work well on the instance they run on. Most
 countries, though, run several instances: routine reporting, disease surveillance, programs.
 Their results also have to reach meetings, screens and printed bulletins, not just a browser
