@@ -13,10 +13,18 @@ interface DhisChartProps {
     legendSets?: unknown[]
     /** Extra engine options, e.g. the year-over-year series and categories. */
     extraOptions?: Record<string, unknown>
+    /** Fill the parent (dashboard tiles) instead of the builder's fixed height. */
+    fill?: boolean
 }
 
 /** A chart drawn by the official DHIS2 chart engine (Highcharts, DHIS2 palettes and styling). */
-export const DhisChart = ({ data, visualization, legendSets, extraOptions }: DhisChartProps) => {
+export const DhisChart = ({
+    data,
+    visualization,
+    legendSets,
+    extraOptions,
+    fill = false,
+}: DhisChartProps) => {
     const elementRef = useRef<HTMLDivElement>(null)
     const [error, setError] = useState<Error | null>(null)
 
@@ -34,7 +42,13 @@ export const DhisChart = ({ data, visualization, legendSets, extraOptions }: Dhi
                 }
             )
             setError(null)
-            return () => chart.destroy()
+            // Highcharts sizes itself once; follow the element when it is resized.
+            const observer = new ResizeObserver(() => chart.reflow())
+            observer.observe(element)
+            return () => {
+                observer.disconnect()
+                chart.destroy()
+            }
         } catch (cause) {
             setError(cause instanceof Error ? cause : new Error(String(cause)))
         }
@@ -43,7 +57,11 @@ export const DhisChart = ({ data, visualization, legendSets, extraOptions }: Dhi
     return (
         <>
             {error && <ErrorState error={error} />}
-            <div ref={elementRef} className="h-[480px] w-full" hidden={!!error} />
+            <div
+                ref={elementRef}
+                className={fill ? 'h-full min-h-[160px] w-full' : 'h-[480px] w-full'}
+                hidden={!!error}
+            />
         </>
     )
 }
