@@ -25,7 +25,7 @@ export const DhisPivotTable = ({
     return (
         // The table sizes itself to its parent.
         <div
-            className={`relative w-full overflow-hidden ${fill ? 'h-full min-h-[160px]' : 'h-[480px]'}`}
+            className={`relative w-full overflow-hidden ${fill ? 'h-full min-h-[160px] flex-1' : 'h-[480px]'}`}
         >
             <PivotTable visualization={visualization} data={indexed} legendSets={legendSets} />
         </div>

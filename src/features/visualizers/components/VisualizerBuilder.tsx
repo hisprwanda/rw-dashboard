@@ -147,6 +147,7 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
             }
             return (
                 <DhisChart
+                    fill
                     data={yearOverYear.data}
                     visualization={visualization}
                     extraOptions={yearOverYear.extraOptions}
@@ -166,6 +167,7 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
         if (visualization?.type === 'PIVOT_TABLE')
             return (
                 <DhisPivotTable
+                    fill
                     data={analytics.data}
                     visualization={visualization}
                     legendSets={legendSet ? [legendSet] : undefined}
@@ -174,6 +176,7 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
         if (visualization && isHighchartsType(visualization.type))
             return (
                 <DhisChart
+                    fill
                     data={analytics.data}
                     visualization={visualization}
                     legendSets={legendSet ? [legendSet] : undefined}
@@ -192,12 +195,13 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
     }
 
     return (
-        <div className="flex items-start gap-3 p-2">
-            <aside className="w-[240px] flex-shrink-0 rounded bg-white p-2 shadow">
+        // The builder fills the page: the chart gets all the space the panels leave.
+        <div className="flex h-full min-h-[560px] gap-2 p-2">
+            <aside className="w-[240px] flex-shrink-0 overflow-y-auto rounded bg-white p-2 shadow">
                 <DimensionsPanel onOpen={setModal} onDataSourceChange={analytics.reset} />
             </aside>
 
-            <main className="flex-grow rounded bg-white shadow">
+            <main className="flex min-w-0 flex-grow flex-col rounded bg-white shadow">
                 <div className="flex items-center gap-2 border-b border-gray-200 p-2">
                     <Button
                         small
@@ -302,7 +306,10 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
                         </NoticeBox>
                     </div>
                 )}
-                <div ref={chartRef} className="min-h-[420px] p-2">
+                <div
+                    ref={chartRef}
+                    className="flex min-h-[420px] flex-1 flex-col overflow-auto p-2"
+                >
                     {renderChart()}
                 </div>
             </main>

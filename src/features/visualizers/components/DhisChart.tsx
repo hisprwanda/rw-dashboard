@@ -59,7 +59,7 @@ export const DhisChart = ({
             {error && <ErrorState error={error} />}
             <div
                 ref={elementRef}
-                className={fill ? 'h-full min-h-[160px] w-full' : 'h-[480px] w-full'}
+                className={fill ? 'h-full min-h-[160px] w-full flex-1' : 'h-[480px] w-full'}
                 hidden={!!error}
             />
         </>
