@@ -1,6 +1,7 @@
 import type { AnalyticsLayout, DataItemRef, StoredAnalyticsQuery } from '@/features/analytics'
 import type { ChartType, VisualSettings, VisualTitles } from '@/features/charts'
 import type { Shareable, UserRef } from '@/shared/types/common.types'
+import type { YearOverYearSelection } from '../utils/yearOverYear'
 import type { VisualizerOptions } from './visualization.types'
 import type { DataStoreEntry } from '@/shared/types/dhis2.types'
 
@@ -23,6 +24,8 @@ export type SavedVisual = Shareable & {
     visualSettings: VisualSettings
     /** Options of the DHIS2 chart engine; absent in visuals saved before they existed. */
     visualOptions?: VisualizerOptions
+    /** Years and periods of a year-over-year visual. */
+    yearOverYear?: YearOverYearSelection
     query: StoredAnalyticsQuery
     analyticsPayloadDeterminer: AnalyticsLayout
     dataSourceId: string

@@ -6,15 +6,17 @@ import { withHeaderIndexes } from '../utils/analyticsData'
 import type { Visualization } from '../types/visualization.types'
 
 interface DhisChartProps {
-    /** The analytics response, with its metadata. */
-    data: AnalyticsResponse
+    /** The analytics response, with its metadata (one per year for year-over-year charts). */
+    data: AnalyticsResponse | AnalyticsResponse[]
     visualization: Visualization
     /** Legend sets the chart colors values with (the one the visualization names). */
     legendSets?: unknown[]
+    /** Extra engine options, e.g. the year-over-year series and categories. */
+    extraOptions?: Record<string, unknown>
 }
 
 /** A chart drawn by the official DHIS2 chart engine (Highcharts, DHIS2 palettes and styling). */
-export const DhisChart = ({ data, visualization, legendSets }: DhisChartProps) => {
+export const DhisChart = ({ data, visualization, legendSets, extraOptions }: DhisChartProps) => {
     const elementRef = useRef<HTMLDivElement>(null)
     const [error, setError] = useState<Error | null>(null)
 
@@ -23,10 +25,10 @@ export const DhisChart = ({ data, visualization, legendSets }: DhisChartProps) =
         if (!element) return
         try {
             const { visualization: chart } = createVisualization(
-                withHeaderIndexes(data),
+                Array.isArray(data) ? data.map(withHeaderIndexes) : withHeaderIndexes(data),
                 visualization,
                 element,
-                { dashboard: false, legendSets },
+                { dashboard: false, legendSets, ...extraOptions },
                 (message) => {
                     throw new Error(message)
                 }
@@ -36,7 +38,7 @@ export const DhisChart = ({ data, visualization, legendSets }: DhisChartProps) =
         } catch (cause) {
             setError(cause instanceof Error ? cause : new Error(String(cause)))
         }
-    }, [data, visualization, legendSets])
+    }, [data, visualization, legendSets, extraOptions])
 
     return (
         <>

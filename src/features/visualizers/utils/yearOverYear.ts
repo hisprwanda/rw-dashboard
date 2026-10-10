@@ -1,4 +1,13 @@
-import type { AnalyticsParams } from '@/features/analytics'
+import {
+    buildSelectionRequest,
+    type AnalyticsLayout,
+    type AnalyticsParams,
+    type AnalyticsRequest,
+    type DisplayProperty,
+    type SelectionState,
+} from '@/features/analytics'
+import type { ChartType } from '@/features/charts'
+import type { OrgUnitSelectionState } from '@/features/org-units'
 import type { AnalyticsResponse } from '@/shared/types/dhis2.types'
 
 /** The periods of a year-over-year chart: one series per year, the periods of a year as categories. */
@@ -102,3 +111,47 @@ export const yearOverYearExtraOptions = (
     )
     return { yearlySeries: years.map(String), xAxisLabels, periodKeyAxisIndexMap }
 }
+
+/** Whether a chart type compares years (one analytics request per year). */
+export const isYearOverYearChart = (type: ChartType) =>
+    type === 'Year Over Year Line' || type === 'Year Over Year Column'
+
+/** The requests of a year-over-year chart. */
+export interface YearOverYearRun {
+    /** The request with the category periods: what gets saved with the visual. */
+    request: AnalyticsRequest
+    /** One request per year, newest first. */
+    params: AnalyticsParams[]
+    years: number[]
+}
+
+/** The year-over-year requests of a builder selection; `null` while it is incomplete. */
+export const buildYearOverYearRun = (
+    selection: Pick<SelectionState, 'dimensions' | 'layout'>,
+    orgUnits: OrgUnitSelectionState,
+    displayProperty: DisplayProperty,
+    { years, category }: YearOverYearSelection,
+    today: Date = new Date()
+): YearOverYearRun | null => {
+    const resolved = resolveYears(years, today)
+    const request = buildSelectionRequest(
+        { ...selection, dimensions: { ...selection.dimensions, pe: [category] } },
+        orgUnits,
+        displayProperty
+    )
+    if (!request || resolved.length === 0) return null
+    return {
+        request,
+        params: yearOverYearParams(request.storedQuery.myData.params, category, resolved),
+        years: resolved,
+    }
+}
+
+/** The layout of a year-over-year chart: years as series, periods as category, the rest filters. */
+export const yearOverYearLayout = (layout: AnalyticsLayout): AnalyticsLayout => ({
+    Columns: [],
+    Rows: ['Period'],
+    Filter: [...layout.Columns, ...layout.Rows, ...layout.Filter].filter(
+        (name) => name !== 'Period'
+    ),
+})

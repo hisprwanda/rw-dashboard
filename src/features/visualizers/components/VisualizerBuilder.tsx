@@ -6,6 +6,7 @@ import { paths } from '@/app/router/paths'
 import { useAppDispatch, useAppSelector } from '@/app/store'
 import {
     analyticsToCsv,
+    mergeAnalyticsResponses,
     multiSourceIssues,
     selectionActions,
     useChartLegendSets,
@@ -22,6 +23,7 @@ import { visualizerActions } from '../store/visualizerSlice'
 import { buildVisualization, visTypeFromChartType } from '../utils/visualization'
 import { adaptLayoutToVisType } from '../utils/layoutRules'
 import { withOptions } from '../utils/visualizerOptions'
+import { isYearOverYearChart, yearOverYearLayout } from '../utils/yearOverYear'
 import { AdditionalSourceModal } from './AdditionalSourceModal'
 import { ChartTypePicker } from './ChartTypePicker'
 import { DhisChart } from './DhisChart'
@@ -34,10 +36,14 @@ import { OptionsModal } from './OptionsModal'
 import { SaveVisualModal } from './SaveVisualModal'
 import { SettingsPanel } from './SettingsPanel'
 import { TitlesModal } from './TitlesModal'
+import { YearOverYearPeriodModal } from './YearOverYearPeriodModal'
 
 /** Types drawn by the DHIS2 chart engine from one analytics response. */
 const isHighchartsType = (type: VisType) =>
     !['PIVOT_TABLE', 'OUTLIER_TABLE', 'YEAR_OVER_YEAR_LINE', 'YEAR_OVER_YEAR_COLUMN'].includes(type)
+
+const hasEditableLayout = (type: VisType) =>
+    !['OUTLIER_TABLE', 'YEAR_OVER_YEAR_LINE', 'YEAR_OVER_YEAR_COLUMN'].includes(type)
 
 type Modal = DimensionModal | 'titles' | 'options' | 'save' | 'export'
 
@@ -51,7 +57,7 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
     const navigate = useNavigate()
     const dispatch = useAppDispatch()
     const builder = useVisualBuilder(visualId)
-    const { analytics } = builder
+    const { analytics, yearOverYear } = builder
     const [tab, setTab] = useState<'dimensions' | 'settings'>('dimensions')
     const [modal, setModal] = useState<Modal | null>(null)
     const chartRef = useRef<HTMLDivElement>(null)
@@ -71,17 +77,21 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
     const legendSets = useChartLegendSets(dataSource)
     const legendSet = legendSets.data?.find(({ id }) => id === options.legendSetId)
     const visType = visTypeFromChartType(chartType)
-    const params = analytics.request?.dataParams
+    const isYearOverYear = isYearOverYearChart(chartType)
+    const request = isYearOverYear ? yearOverYear.request : analytics.request
+    const params = request?.dataParams
+    const visualLayout = isYearOverYear ? yearOverYearLayout(layout) : layout
+    const isFetching = analytics.isFetching || yearOverYear.isFetching
     // Titles stay empty unless set, so the DHIS2 charts generate their own.
     const visualization = useMemo(
         () =>
             visType &&
             ({
-                ...withOptions(buildVisualization(visType, layout, params), options),
+                ...withOptions(buildVisualization(visType, visualLayout, params), options),
                 title: titles.visualTitle || undefined,
                 subtitle: titles.customSubTitle || undefined,
             } satisfies Visualization),
-        [visType, layout, params, options, titles.visualTitle, titles.customSubTitle]
+        [visType, visualLayout, params, options, titles.visualTitle, titles.customSubTitle]
     )
 
     if (builder.error) return <ErrorState error={builder.error} />
@@ -89,7 +99,9 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
 
     const close = () => setModal(null)
 
-    const data = analytics.data
+    const data = isYearOverYear
+        ? yearOverYear.data && mergeAnalyticsResponses(yearOverYear.data)
+        : analytics.data
     const downloadData = data
         ? () =>
               downloadText(
@@ -101,7 +113,26 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
         : null
 
     const renderChart = () => {
-        if (analytics.isFetching) return <LoadingState label={i18n.t('Running analytics')} />
+        if (isFetching) return <LoadingState label={i18n.t('Running analytics')} />
+        if (isYearOverYear) {
+            if (yearOverYear.error) return <ErrorState error={yearOverYear.error} />
+            if (!yearOverYear.data || !visualization) {
+                return (
+                    <EmptyState
+                        message={i18n.t(
+                            'Select data, years and organisation unit, then click Update.'
+                        )}
+                    />
+                )
+            }
+            return (
+                <DhisChart
+                    data={yearOverYear.data}
+                    visualization={visualization}
+                    extraOptions={yearOverYear.extraOptions}
+                />
+            )
+        }
         if (analytics.error) return <ErrorState error={analytics.error} />
         if (!analytics.data) {
             return (
@@ -166,7 +197,7 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
                         small
                         primary
                         icon={<IconSync16 />}
-                        loading={analytics.isFetching}
+                        loading={isFetching}
                         onClick={() => void builder.runAnalytics()}
                     >
                         {i18n.t('Update')}
@@ -176,8 +207,10 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
                         onChange={(type) => {
                             dispatch(visualizerActions.setChartType(type))
                             // Each chart type allows its own layout (the official rules).
+                            // Year-over-year and outlier tables have fixed layouts, derived
+                            // when drawing: the stored one is kept for the other types.
                             const next = visTypeFromChartType(type)
-                            if (next) {
+                            if (next && hasEditableLayout(next)) {
                                 dispatch(
                                     selectionActions.setLayout(adaptLayoutToVisType(layout, next))
                                 )
@@ -206,7 +239,16 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
                         </NoticeBox>
                     </div>
                 )}
-                {issues.length > 0 && (
+                {isYearOverYear && hasAdditionalData && (
+                    <div className="p-2">
+                        <NoticeBox warning title={i18n.t('Data from other sources')}>
+                            {i18n.t(
+                                'This chart type reads one data source only. Remove the other data sources to run it.'
+                            )}
+                        </NoticeBox>
+                    </div>
+                )}
+                {!isYearOverYear && issues.length > 0 && (
                     <div className="p-2">
                         <NoticeBox warning title={i18n.t('Data from other sources')}>
                             {issues.includes('dataInFilter') && (
@@ -258,7 +300,14 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
                     updating={analytics.isFetching}
                 />
             )}
-            {modal === 'period' && (
+            {modal === 'period' && isYearOverYear && (
+                <YearOverYearPeriodModal
+                    onClose={close}
+                    onUpdate={builder.runAnalytics}
+                    updating={isFetching}
+                />
+            )}
+            {modal === 'period' && !isYearOverYear && (
                 <PeriodModal
                     onClose={close}
                     onUpdate={builder.runAnalytics}
@@ -302,7 +351,7 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
                 <SaveVisualModal
                     visualId={visualId}
                     saved={builder.saved}
-                    query={analytics.request?.storedQuery}
+                    query={request?.storedQuery}
                     onClose={close}
                     onSaved={(key) => {
                         close()

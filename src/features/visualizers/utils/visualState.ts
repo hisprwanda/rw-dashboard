@@ -61,6 +61,7 @@ export const visualToBuilderState = (
             colorPalette:
                 visual.visualSettings?.visualColorPalette ?? initialVisualizer.colorPalette,
             options: { ...initialVisualizer.options, ...visual.visualOptions },
+            yearOverYear: visual.yearOverYear ?? initialVisualizer.yearOverYear,
         },
     }
 }

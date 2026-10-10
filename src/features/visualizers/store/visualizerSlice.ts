@@ -8,6 +8,7 @@ import {
 } from '@/features/charts/constants'
 import type { VisualizerOptions } from '../types/visualization.types'
 import { DEFAULT_VISUALIZER_OPTIONS } from '../utils/visualizerOptions'
+import { DEFAULT_YEAR_OVER_YEAR, type YearOverYearSelection } from '../utils/yearOverYear'
 
 /** Appearance of the visualization being built. */
 export interface VisualizerState {
@@ -17,6 +18,8 @@ export interface VisualizerState {
     colorPalette: ColorPalette
     /** Options of the DHIS2 chart engine (Options dialog). */
     options: VisualizerOptions
+    /** Years and periods of the year-over-year chart types. */
+    yearOverYear: YearOverYearSelection
 }
 
 export const initialVisualizer: VisualizerState = {
@@ -29,6 +32,7 @@ export const initialVisualizer: VisualizerState = {
     settings: DEFAULT_VISUAL_SETTINGS,
     colorPalette: DEFAULT_COLOR_PALETTE,
     options: DEFAULT_VISUALIZER_OPTIONS,
+    yearOverYear: DEFAULT_YEAR_OVER_YEAR,
 }
 
 const visualizerSlice = createSlice({
@@ -54,6 +58,9 @@ const visualizerSlice = createSlice({
         },
         updateOptions: (state, action: PayloadAction<Partial<VisualizerOptions>>) => {
             state.options = { ...state.options, ...action.payload }
+        },
+        setYearOverYear: (state, action: PayloadAction<YearOverYearSelection>) => {
+            state.yearOverYear = action.payload
         },
         /** The automatic subtitle follows the items of the last analytics run. */
         setDefaultSubTitle: (state, action: PayloadAction<VisualTitles['DefaultSubTitle']>) => {

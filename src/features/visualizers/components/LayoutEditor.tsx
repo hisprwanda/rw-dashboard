@@ -19,6 +19,7 @@ import {
 } from '@/features/analytics'
 import { adaptLayoutToVisType } from '../utils/layoutRules'
 import { visTypeFromChartType } from '../utils/visualization'
+import { isYearOverYearChart, yearOverYearLayout } from '../utils/yearOverYear'
 
 const ICONS: Record<string, ReactNode> = {
     Data: <IconDimensionData16 />,
@@ -171,6 +172,35 @@ export const LayoutEditor = () => {
             </div>
         </div>
     )
+
+    if (isYearOverYearChart(chartType)) {
+        const fixed = yearOverYearLayout(layout)
+        const row = (label: string, names: readonly LayoutDimensionName[]) => (
+            <div className="grid grid-cols-[72px_1fr] items-center gap-2">
+                <span className="text-sm font-medium text-gray-600">{label}</span>
+                <div className="flex min-h-[30px] flex-wrap gap-1 rounded border border-gray-200 bg-gray-50 p-1 text-sm">
+                    {names.map((name) => (
+                        <span
+                            key={name}
+                            className="flex items-center gap-1 rounded bg-white px-2 py-1"
+                        >
+                            {ICONS[name] ?? <IconDimensionCategoryOptionGroupset16 />}
+                            {dimensionLabel(name, dynamicNames)}
+                        </span>
+                    ))}
+                </div>
+            </div>
+        )
+        return (
+            <div className="grid grid-cols-2 gap-2 border-b border-gray-200 p-2">
+                <div className="flex flex-col gap-1">
+                    {row(i18n.t('Series'), [i18n.t('Years')])}
+                    {row(i18n.t('Category'), fixed.Rows)}
+                </div>
+                {row(labels.Filter, fixed.Filter)}
+            </div>
+        )
+    }
 
     return (
         <div className="grid grid-cols-2 gap-2 border-b border-gray-200 p-2">

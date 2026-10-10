@@ -9,12 +9,15 @@ import {
     useCombinedAnalyticsRun,
     type AdditionalSource,
     type SelectedDataSource,
+    type SelectionState,
 } from '@/features/analytics'
 import { useDisplayProperty } from '@/features/auth'
 import { CURRENT_INSTANCE_ID, useDataSources } from '@/features/data-sources'
-import { orgUnitSelectionActions } from '@/features/org-units'
+import { orgUnitSelectionActions, type OrgUnitSelectionState } from '@/features/org-units'
 import { useApplicationTitle } from '@/features/system'
-import { visualizerActions } from '../store/visualizerSlice'
+import { visualizerActions, type VisualizerState } from '../store/visualizerSlice'
+import { buildYearOverYearRun, isYearOverYearChart } from '../utils/yearOverYear'
+import { useYearOverYearRun } from './useYearOverYearRun'
 import { visualToBuilderState } from '../utils/visualState'
 import { useVisual } from './useVisual'
 
@@ -31,21 +34,50 @@ export const useVisualBuilder = (visualId: string | undefined) => {
     const applicationTitle = useApplicationTitle()
     const displayProperty = useDisplayProperty()
     const analytics = useCombinedAnalyticsRun()
+    const yearOverYear = useYearOverYearRun()
     const { run, reset } = analytics
+    const { run: runYearOverYear, reset: resetYearOverYear } = yearOverYear
     const visual = useVisual(visualId)
     const dataSources = useDataSources()
     /** The visual whose state is in the store; the store is (re)initialised once per visual. */
     const [loadedId, setLoadedId] = useState<string | null>(null)
     const [missingDataSource, setMissingDataSource] = useState(false)
 
-    /** Runs the analytics of the current selection (no-op while it is incomplete). */
+    /**
+     * Runs the analytics of a selection the way its chart type needs them (no-op while it
+     * is incomplete). Selections that cannot be run are explained in the builder.
+     */
+    const start = useCallback(
+        async (
+            selection: SelectionState,
+            orgUnits: OrgUnitSelectionState,
+            visualizer: VisualizerState
+        ) => {
+            if (isYearOverYearChart(visualizer.chartType)) {
+                reset()
+                if (selection.additionalSources.some(({ items }) => items.length)) return
+                const next = buildYearOverYearRun(
+                    selection,
+                    orgUnits,
+                    displayProperty,
+                    visualizer.yearOverYear
+                )
+                if (next) await runYearOverYear(next, selection.dataSource)
+                return
+            }
+            resetYearOverYear()
+            if (multiSourceIssues(selection).length) return
+            const runs = buildSelectionRuns(selection, orgUnits, displayProperty)
+            if (runs) await run(runs)
+        },
+        [displayProperty, run, reset, runYearOverYear, resetYearOverYear]
+    )
+
+    /** Runs the analytics of the current selection. */
     const runAnalytics = useCallback(async () => {
-        const { selection, orgUnitSelection } = store.getState()
-        // Selections that cannot be combined are explained in the builder, not run.
-        if (multiSourceIssues(selection).length) return
-        const runs = buildSelectionRuns(selection, orgUnitSelection, displayProperty)
-        if (runs) await run(runs)
-    }, [store, run, displayProperty])
+        const { selection, orgUnitSelection, visualizer } = store.getState()
+        await start(selection, orgUnitSelection, visualizer)
+    }, [store, start])
 
     useEffect(() => {
         const target = visualId ?? NEW_VISUAL
@@ -61,6 +93,7 @@ export const useVisualBuilder = (visualId: string | undefined) => {
             dispatch(orgUnitSelectionActions.resetOrgUnitSelection())
             dispatch(visualizerActions.resetVisualizer())
             reset()
+            resetYearOverYear()
             setMissingDataSource(false)
             setLoadedId(target)
             return
@@ -92,19 +125,19 @@ export const useVisualBuilder = (visualId: string | undefined) => {
         setMissingDataSource(missing)
         setLoadedId(target)
 
-        const runs = buildSelectionRuns(state.selection, state.orgUnits, displayProperty)
-        if (!missing && runs && !multiSourceIssues(state.selection).length) void run(runs)
-        else reset()
+        reset()
+        resetYearOverYear()
+        if (!missing) void start(state.selection, state.orgUnits, state.visualizer)
     }, [
         visualId,
         visual.data,
         dataSources.data,
         loadedId,
         applicationTitle,
-        displayProperty,
         dispatch,
-        run,
+        start,
         reset,
+        resetYearOverYear,
     ])
 
     // The automatic subtitle lists the items of the last result.
@@ -125,6 +158,7 @@ export const useVisualBuilder = (visualId: string | undefined) => {
 
     return {
         analytics,
+        yearOverYear,
         runAnalytics,
         adopt,
         saved: visual.data,
