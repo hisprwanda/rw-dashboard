@@ -5,7 +5,11 @@
 import type { ChartType, VisualSettings } from '../types/chart.types'
 import { DEFAULT_COLOR_PALETTE } from './colorPalettes'
 
-export { DEFAULT_COLOR_PALETTE, systemDefaultColorPalettes } from './colorPalettes'
+export {
+    ACCESSIBLE_COLOR_PALETTE,
+    DEFAULT_COLOR_PALETTE,
+    systemDefaultColorPalettes,
+} from './colorPalettes'
 
 /** Appearance of a new visualization (and of favorites drawn from another app). */
 export const DEFAULT_VISUAL_SETTINGS: VisualSettings = {

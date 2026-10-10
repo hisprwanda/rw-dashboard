@@ -41,6 +41,7 @@ export const paletteLabel = (name: string): string => {
         'Pastel Dreams': i18n.t('Pastel Dreams'),
         'Autumn Serenity': i18n.t('Autumn Serenity'),
         Default: i18n.t('Default'),
+        Accessible: i18n.t('Accessible'),
     }
     return labels[name] ?? name
 }

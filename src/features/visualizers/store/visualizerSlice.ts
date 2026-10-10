@@ -2,8 +2,8 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { ChartType, ColorPalette, VisualSettings, VisualTitles } from '@/features/charts'
 // The light entry: importing the charts barrel would put recharts in the main bundle.
 import {
+    ACCESSIBLE_COLOR_PALETTE,
     DEFAULT_CHART_TYPE,
-    DEFAULT_COLOR_PALETTE,
     DEFAULT_VISUAL_SETTINGS,
 } from '@/features/charts/constants'
 import type { VisualizerOptions } from '../types/visualization.types'
@@ -29,8 +29,9 @@ export const initialVisualizer: VisualizerState = {
         customSubTitle: '',
         DefaultSubTitle: { periods: [], orgUnits: [], dataElements: [] },
     },
-    settings: DEFAULT_VISUAL_SETTINGS,
-    colorPalette: DEFAULT_COLOR_PALETTE,
+    // New visuals start with the accessible palette; saved ones keep theirs.
+    settings: { ...DEFAULT_VISUAL_SETTINGS, visualColorPalette: ACCESSIBLE_COLOR_PALETTE },
+    colorPalette: ACCESSIBLE_COLOR_PALETTE,
     options: DEFAULT_VISUALIZER_OPTIONS,
     yearOverYear: DEFAULT_YEAR_OVER_YEAR,
 }
