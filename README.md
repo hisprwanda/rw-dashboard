@@ -167,8 +167,10 @@ Combine your work on a grid:
   - on this instance, by DHIS2's own plugins, as in the official Dashboard app;
   - on external instances, the saved DHIS2 visualization itself goes to the same DHIS2 chart
     engine and pivot table, so it looks as in DHIS2. This includes its colors, axes, legend and totals.
-  - single-layer thematic maps are drawn by the app. Other map layers (events, facilities,
-    Earth Engine) show a link to open the map in DHIS2.
+  - maps from external instances are drawn by the official DHIS2 map engine, with the same
+    classes, colors, bubbles and legends as in DHIS2 Maps. This covers thematic (choropleth and
+    bubble), boundary and facility layers. Maps with event, tracked entity or Earth Engine
+    layers, or timeline views, show DHIS2's image or a link to open them in DHIS2.
 - **Organise:**
   - mark a dashboard as **official**, which pins it on the home page;
   - **star** dashboards to add them to your favorites;
