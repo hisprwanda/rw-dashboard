@@ -16,6 +16,7 @@ export type VisType =
     | 'SINGLE_VALUE'
     | 'PIVOT_TABLE'
     | 'SCATTER'
+    | 'OUTLIER_TABLE'
 
 /** One dimension on an axis, e.g. `{ dimension: 'dx', items: [{ id: 'abc' }] }`. */
 export interface VisualizationDimension {

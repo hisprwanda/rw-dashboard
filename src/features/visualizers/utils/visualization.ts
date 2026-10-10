@@ -23,6 +23,9 @@ const VIS_TYPE_BY_CHART_TYPE: Partial<Record<ChartType, VisType>> = {
     Gauge: 'GAUGE',
     'Single Value': 'SINGLE_VALUE',
     Table: 'PIVOT_TABLE',
+    'Year Over Year Line': 'YEAR_OVER_YEAR_LINE',
+    'Year Over Year Column': 'YEAR_OVER_YEAR_COLUMN',
+    'Outlier Table': 'OUTLIER_TABLE',
 }
 
 const LEGEND_SET_TYPES: readonly VisType[] = [

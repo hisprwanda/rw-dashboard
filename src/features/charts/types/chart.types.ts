@@ -17,6 +17,9 @@ export const CHART_TYPES = [
     'Single Value',
     'Tree Map',
     'Table',
+    'Year Over Year Line',
+    'Year Over Year Column',
+    'Outlier Table',
 ] as const
 
 export type ChartType = (typeof CHART_TYPES)[number]

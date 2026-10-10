@@ -17,7 +17,10 @@ export const chartTypeLabel = (type: string): string => {
         Gauge: i18n.t('Gauge'),
         'Single Value': i18n.t('Single value'),
         'Tree Map': i18n.t('Tree map'),
-        Table: i18n.t('Table'),
+        Table: i18n.t('Pivot table'),
+        'Year Over Year Line': i18n.t('Year over year (line)'),
+        'Year Over Year Column': i18n.t('Year over year (column)'),
+        'Outlier Table': i18n.t('Outlier table'),
     }
     return labels[type] ?? type
 }

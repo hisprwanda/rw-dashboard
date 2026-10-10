@@ -16,7 +16,7 @@ import { OrgUnitModal } from '@/features/org-units'
 import { PeriodModal } from '@/features/periods'
 import { EmptyState, ErrorState, ExportModal, LoadingState } from '@/shared/components'
 import { downloadText, fileNameOf } from '@/shared/utils/download'
-import type { Visualization } from '../types/visualization.types'
+import type { VisType, Visualization } from '../types/visualization.types'
 import { useVisualBuilder } from '../hooks/useVisualBuilder'
 import { visualizerActions } from '../store/visualizerSlice'
 import { buildVisualization, visTypeFromChartType } from '../utils/visualization'
@@ -33,6 +33,10 @@ import { OptionsModal } from './OptionsModal'
 import { SaveVisualModal } from './SaveVisualModal'
 import { SettingsPanel } from './SettingsPanel'
 import { TitlesModal } from './TitlesModal'
+
+/** Types drawn by the DHIS2 chart engine from one analytics response. */
+const isHighchartsType = (type: VisType) =>
+    !['PIVOT_TABLE', 'OUTLIER_TABLE', 'YEAR_OVER_YEAR_LINE', 'YEAR_OVER_YEAR_COLUMN'].includes(type)
 
 type Modal = DimensionModal | 'titles' | 'options' | 'save' | 'export'
 
@@ -71,7 +75,7 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
     const visualization = useMemo(
         () =>
             visType &&
-            visType !== 'PIVOT_TABLE' &&
+            isHighchartsType(visType) &&
             ({
                 ...withOptions(buildVisualization(visType, layout, params), options),
                 title: titles.visualTitle || undefined,

@@ -5,9 +5,12 @@ import {
     IconVisualizationBar24,
     IconVisualizationBarStacked24,
     IconVisualizationColumn24,
+    IconVisualizationColumnMulti24,
     IconVisualizationColumnStacked24,
     IconVisualizationGauge24,
     IconVisualizationLine24,
+    IconVisualizationLineMulti24,
+    IconVisualizationOutlierTable24,
     IconVisualizationPie24,
     IconVisualizationPivotTable24,
     IconVisualizationRadar24,
@@ -67,6 +70,19 @@ export const chartRegistry: readonly ChartDefinition[] = [
     { type: 'Single Value', icon: <IconVisualizationSingleValue24 />, component: SingleValueChart },
     { type: 'Radar', icon: <IconVisualizationRadar24 />, component: RadarChart },
     { type: 'Scatter', icon: <IconVisualizationScatter24 />, component: cartesian('Scatter') },
+    // Drawn by the DHIS2 components (see the visualizers feature); the legacy component is
+    // only a fallback.
+    {
+        type: 'Year Over Year Line',
+        icon: <IconVisualizationLineMulti24 />,
+        component: cartesian('Line'),
+    },
+    {
+        type: 'Year Over Year Column',
+        icon: <IconVisualizationColumnMulti24 />,
+        component: cartesian('Column'),
+    },
+    { type: 'Outlier Table', icon: <IconVisualizationOutlierTable24 />, component: TableChart },
 ]
 
 export const findChart = (type: string | undefined) =>
