@@ -26,9 +26,8 @@ import { useResolveSource } from '../hooks/useResolveSource'
 import type { DashboardVisualItem } from '../types/dashboard.types'
 import { visualItemQueries } from '../utils/visualQueries'
 
-/** Chart types a dashboard draws with the DHIS2 components instead of the legacy charts. */
-export const isOfficialDashboardType = (type: string) =>
-    type === 'Table' || type === 'Outlier Table' || isYearOverYearChart(type as ChartType)
+/** Chart types a dashboard draws with the DHIS2 components (all but the app's own types). */
+export const isOfficialDashboardType = (type: string) => !!visTypeFromChartType(type as ChartType)
 
 const Loading = () => (
     <div className="flex h-full items-center justify-center">
@@ -63,17 +62,20 @@ const useVisualization = (item: DashboardVisualItem, yearOverYear = false) => {
     const params = item.visualQuery?.myData?.params
     const options = item.visualOptions
     const title = item.visualTitleAndSubTitle?.visualTitle
+    const subtitle = item.visualTitleAndSubTitle?.customSubTitle
     return useMemo(() => {
         if (!type) return undefined
         const visualization = buildVisualization(type, layout, params)
         return {
             ...(options ? withOptions(visualization, options) : visualization),
             title: title || undefined,
+            subtitle: subtitle || undefined,
         }
-    }, [type, layout, params, options, title])
+    }, [type, layout, params, options, title, subtitle])
 }
 
-const PivotView = ({ item, instance }: ViewProps) => {
+/** Pivot tables and charts: one analytics request per data source, merged. */
+const AnalyticsView = ({ item, instance }: ViewProps) => {
     const { resolve } = useResolveSource()
     const plan = useMemo(
         () => (resolve ? visualItemQueries(item, resolve) : undefined),
@@ -82,7 +84,7 @@ const PivotView = ({ item, instance }: ViewProps) => {
     const visualization = useVisualization(item)
     const legendSets = useChartLegendSets(instance)
     const legendSet = legendSets.data?.find(({ id }) => id === item.visualOptions?.legendSetId)
-    const { data, isLoading, error } = useCombinedAnalytics(
+    const { data, isLoading, error, sourceErrors } = useCombinedAnalytics(
         plan?.missing ? undefined : plan?.queries,
         plan?.dataOrder,
         { withMetadata: false }
@@ -91,12 +93,32 @@ const PivotView = ({ item, instance }: ViewProps) => {
     if (isLoading || !plan) return <Loading />
     if (error) return <Failure error={error} />
     if (!data || !visualization) return null
+    const legendSetList = legendSet ? [legendSet] : undefined
     return (
-        <DhisPivotTable
-            data={data}
-            visualization={visualization}
-            legendSets={legendSet ? [legendSet] : undefined}
-        />
+        <div className="flex h-full flex-col">
+            {sourceErrors.length > 0 && (
+                <NoticeBox warning title={i18n.t('Some data could not be loaded')}>
+                    {sourceErrors.map(({ instanceName }) => instanceName).join(', ')}
+                </NoticeBox>
+            )}
+            <div className="min-h-0 flex-grow">
+                {visualization.type === 'PIVOT_TABLE' ? (
+                    <DhisPivotTable
+                        fill
+                        data={data}
+                        visualization={visualization}
+                        legendSets={legendSetList}
+                    />
+                ) : (
+                    <DhisChart
+                        fill
+                        data={data}
+                        visualization={visualization}
+                        legendSets={legendSetList}
+                    />
+                )}
+            </div>
+        </div>
     )
 }
 
@@ -114,7 +136,7 @@ const YearOverYearView = ({ item, instance }: ViewProps) => {
     if (isLoading) return <Loading />
     if (error) return <Failure error={error} />
     if (!data || !visualization) return null
-    return <DhisChart data={data} visualization={visualization} extraOptions={extraOptions} />
+    return <DhisChart fill data={data} visualization={visualization} extraOptions={extraOptions} />
 }
 
 const OutlierView = ({ item, instance }: ViewProps) => {
@@ -132,7 +154,7 @@ const OutlierView = ({ item, instance }: ViewProps) => {
     return data ? <OutlierTable data={data} /> : null
 }
 
-/** A pivot table, year-over-year chart or outlier table on a dashboard, drawn as in DHIS2. */
+/** A visual of an official DHIS2 type on a dashboard, drawn exactly as in the builder. */
 export const DashboardOfficialVisual = ({ item }: { item: DashboardVisualItem }) => {
     const { resolve, isLoading, error } = useResolveSource()
     if (error) return <Failure error={error} />
@@ -140,10 +162,11 @@ export const DashboardOfficialVisual = ({ item }: { item: DashboardVisualItem })
     const source = resolve(item.dataSourceId)
     if (!source) return <Missing />
     const { instanceName: _name, ...instance } = source
-    const views: Record<string, (props: ViewProps) => ReactNode> = {
-        Table: PivotView,
-        'Outlier Table': OutlierView,
-    }
-    const View = views[item.visualType] ?? YearOverYearView
+    const View: (props: ViewProps) => ReactNode =
+        item.visualType === 'Outlier Table'
+            ? OutlierView
+            : isYearOverYearChart(item.visualType as ChartType)
+              ? YearOverYearView
+              : AnalyticsView
     return <View item={item} instance={instance} />
 }
