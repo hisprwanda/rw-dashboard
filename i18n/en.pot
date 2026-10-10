@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-10-10T12:54:55.484Z\n"
-"PO-Revision-Date: 2026-10-10T12:54:55.484Z\n"
+"POT-Creation-Date: 2026-10-10T13:19:43.032Z\n"
+"PO-Revision-Date: 2026-10-10T13:19:43.033Z\n"
 
 msgid "Data items"
 msgstr "Data items"
@@ -491,14 +491,23 @@ msgstr "Value"
 msgid "Total"
 msgstr "Total"
 
+msgid "{{share}} of total"
+msgstr "{{share}} of total"
+
+msgid "Other"
+msgstr "Other"
+
+msgid "Values"
+msgstr "Values"
+
 msgid "Search in table..."
 msgstr "Search in table..."
 
-msgid "Item"
-msgstr "Item"
+msgid "{{series}} of {{name}}, {{total}} of total"
+msgstr "{{series}} of {{name}}, {{total}} of total"
 
-msgid "Size {{value}}"
-msgstr "Size {{value}}"
+msgid "{{total}} of total"
+msgstr "{{total}} of total"
 
 msgid "Required headers (value and a category) are missing"
 msgstr "Required headers (value and a category) are missing"
@@ -596,6 +605,9 @@ msgstr "Autumn Serenity"
 msgid "Default"
 msgstr "Default"
 
+msgid "Accessible"
+msgstr "Accessible"
+
 msgid "Remove {{name}}"
 msgstr "Remove {{name}}"
 
@@ -653,6 +665,9 @@ msgstr "Data source not found"
 msgid "A data source of this visualization was deleted or is not shared with you."
 msgstr "A data source of this visualization was deleted or is not shared with you."
 
+msgid "Some data could not be loaded"
+msgstr "Some data could not be loaded"
+
 msgid "Slide {{current}} of {{total}}"
 msgstr "Slide {{current}} of {{total}}"
 
@@ -691,9 +706,6 @@ msgstr "This dashboard has no items."
 
 msgid "Next slide"
 msgstr "Next slide"
-
-msgid "Some data could not be loaded"
-msgstr "Some data could not be loaded"
 
 msgid "You have not created any dashboard yet."
 msgstr "You have not created any dashboard yet."
@@ -1527,8 +1539,17 @@ msgstr "Visualization type"
 msgid "Search visualization types"
 msgstr "Search visualization types"
 
+msgid "DHIS2 types"
+msgstr "DHIS2 types"
+
+msgid "Drawn by DHIS2, as in the Data Visualizer app. Set them up with Options."
+msgstr "Drawn by DHIS2, as in the Data Visualizer app. Set them up with Options."
+
 msgid "Additional types"
 msgstr "Additional types"
+
+msgid "Drawn by this app. Set them up in the Style tab."
+msgstr "Drawn by this app. Set them up in the Style tab."
 
 msgid "No visualization types found"
 msgstr "No visualization types found"
@@ -1716,9 +1737,6 @@ msgstr "Keep row headers visible"
 msgid "Show line"
 msgstr "Show line"
 
-msgid "Values"
-msgstr "Values"
-
 msgid "Show values"
 msgstr "Show values"
 
@@ -1836,29 +1854,46 @@ msgstr "Save visualization"
 msgid "Select data, period and organisation unit, then click Update."
 msgstr "Select data, period and organisation unit, then click Update."
 
+msgid "{{type}} is drawn by DHIS2"
+msgstr "{{type}} is drawn by DHIS2"
+
+msgid ""
+"Its colors, values, axes and legend are set in Options, above the chart. It "
+"looks the same here, on dashboards and in DHIS2."
+msgstr ""
+"Its colors, values, axes and legend are set in Options, above the chart. It "
+"looks the same here, on dashboards and in DHIS2."
+
+msgid ""
+"The Style tab is for Radial and Tree map, the chart types this app draws "
+"itself."
+msgstr ""
+"The Style tab is for Radial and Tree map, the chart types this app draws "
+"itself."
+
+msgid "Open options"
+msgstr "Open options"
+
+msgid "Style of the {{type}} chart."
+msgstr "Style of the {{type}} chart."
+
+msgid "Series colors"
+msgstr "Series colors"
+
+msgid "Each data item keeps its color, in the order of the palette."
+msgstr "Each data item keeps its color, in the order of the palette."
+
 msgid "Color"
 msgstr "Color"
 
+msgid "Size"
+msgstr "Size"
+
+msgid "Background color"
+msgstr "Background color"
+
 msgid "Titles"
 msgstr "Titles"
-
-msgid "Edit title and subtitle"
-msgstr "Edit title and subtitle"
-
-msgid "Colors"
-msgstr "Colors"
-
-msgid "Fill"
-msgstr "Fill"
-
-msgid "Color palette"
-msgstr "Color palette"
-
-msgid "X axis"
-msgstr "X axis"
-
-msgid "Y axis"
-msgstr "Y axis"
 
 msgid "Chart title"
 msgstr "Chart title"

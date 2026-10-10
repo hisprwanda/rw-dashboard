@@ -2096,3 +2096,54 @@ msgstr "Comparer des valeurs sous forme de barres autour d'un cercle."
 
 msgid "Show parts of a whole as nested rectangles."
 msgstr "Montrer les parties d'un tout sous forme de rectangles imbriqués."
+
+msgid "{{share}} of total"
+msgstr "{{share}} du total"
+
+msgid "Other"
+msgstr "Autres"
+
+msgid "{{series}} of {{name}}, {{total}} of total"
+msgstr "{{series}} de {{name}}, {{total}} du total"
+
+msgid "{{total}} of total"
+msgstr "{{total}} du total"
+
+msgid "Accessible"
+msgstr "Accessible"
+
+msgid "DHIS2 types"
+msgstr "Types DHIS2"
+
+msgid "Drawn by DHIS2, as in the Data Visualizer app. Set them up with Options."
+msgstr "Dessinés par DHIS2, comme dans l'application Data Visualizer. Configurez-les avec Options."
+
+msgid "Drawn by this app. Set them up in the Style tab."
+msgstr "Dessinés par cette application. Configurez-les dans l'onglet Style."
+
+msgid "{{type}} is drawn by DHIS2"
+msgstr "{{type}} est dessiné par DHIS2"
+
+msgid "Its colors, values, axes and legend are set in Options, above the chart. It looks the same here, on dashboards and in DHIS2."
+msgstr "Ses couleurs, valeurs, axes et légende se règlent dans Options, au-dessus du graphique. Il s'affiche de la même façon ici, dans les tableaux de bord et dans DHIS2."
+
+msgid "The Style tab is for Radial and Tree map, the chart types this app draws itself."
+msgstr "L'onglet Style concerne Radial et Carte proportionnelle, les types de graphiques que cette application dessine elle-même."
+
+msgid "Open options"
+msgstr "Ouvrir les options"
+
+msgid "Style of the {{type}} chart."
+msgstr "Style du graphique {{type}}."
+
+msgid "Series colors"
+msgstr "Couleurs des séries"
+
+msgid "Each data item keeps its color, in the order of the palette."
+msgstr "Chaque élément de données garde sa couleur, dans l'ordre de la palette."
+
+msgid "Size"
+msgstr "Taille"
+
+msgid "Background color"
+msgstr "Couleur de fond"
