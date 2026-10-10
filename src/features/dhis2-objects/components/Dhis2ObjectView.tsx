@@ -52,7 +52,8 @@ const CurrentInstanceView = (props: NativeProps) => {
 /**
  * A DHIS2 visualization or map, live (read on every view, so edits made in DHIS2 show
  * up). On the current instance the official plugin draws it; on external instances
- * (API token, no browser session) this app draws it, or shows DHIS2's image.
+ * (API token, no browser session) the app hands it to the same DHIS2 chart engine and
+ * pivot table, or shows DHIS2's image for types they cannot draw.
  */
 export const Dhis2ObjectView = ({ dataSourceId, ...props }: Dhis2ObjectViewProps) => {
     const source = useDataSourceInstance(dataSourceId)
