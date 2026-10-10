@@ -13,6 +13,34 @@ as it does in DHIS2.
 
 ---
 
+## The problem it solves
+
+Health programs rarely keep all their data in one place. In Rwanda, as in many countries,
+routine reporting, disease surveillance (eIDSR) and other programs run on **separate DHIS2
+instances**. That makes everyday analysis harder than it should be:
+
+- **Data is split across instances.** The DHIS2 apps only see the instance they run on. Comparing
+  routine data with surveillance data means exporting from each system and joining the data
+  by hand in spreadsheets, which is slow, error-prone and quickly out of date.
+- **Results are hard to present.** DHIS2 dashboards are made for desk work. Meetings, review
+  sessions and screens in offices need slides that play on their own and look professional,
+  so teams rebuild the same charts in PowerPoint again and again.
+- **Bulletins are produced by hand.** Weekly and monthly bulletins are typically copied into Word
+  or Excel each period, then reformatted and translated. That takes hours and invites mistakes.
+- **Custom tools do not travel.** Tools built for one country tend to hard-code its program and
+  data element ids, so other countries and new programs cannot reuse them.
+
+Data Analytics Lab brings this work into one DHIS2 app:
+
+- **Connect several instances.** Analyse data from one or several of them, even in the same
+  chart, with the familiar DHIS2 chart types.
+- **Turn the results into dashboards** that play as slide shows or export to PowerPoint.
+- **Generate bulletins from live data**, for any period and in several languages.
+- **Keep it configuration-free.** Nothing country-specific is in the code: every template,
+  dashboard and data source is set up in the app, so any DHIS2 country can use it.
+
+---
+
 ## At a glance
 
 | Area | What you can do |
