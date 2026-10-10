@@ -1,9 +1,10 @@
 import { useDataEngine } from '@dhis2/app-runtime'
 import { useQueries, type UseQueryResult } from '@tanstack/react-query'
 import { useCallback } from 'react'
+import type { InstanceConnection } from '@/shared/api'
 import type { AnalyticsResponse } from '@/shared/types/dhis2.types'
+import type { AnalyticsParams } from '../types/analytics.types'
 import { mergeAnalyticsMetaData, mergeAnalyticsResponses } from '../utils/mergeAnalytics'
-import type { SourceRequest } from '../utils/selectionRequest'
 import { analyticsQueryOptions } from './analyticsQueryOptions'
 
 /** A data source whose analytics failed while the others succeeded. */
@@ -23,7 +24,15 @@ export interface CombinedAnalytics {
     sourceErrors: SourceError[]
 }
 
-type Which = keyof Pick<SourceRequest['request'], 'dataParams' | 'metadataParams'>
+/** The analytics of one data source. */
+export interface SourceQuery {
+    instance: InstanceConnection
+    /** Shown when this source fails. */
+    instanceName: string
+    dataParams: AnalyticsParams
+    /** Needed when `withMetadata` is on. */
+    metadataParams?: AnalyticsParams
+}
 
 /**
  * Analytics of several data sources as one result: one query per source (cached per
@@ -31,14 +40,13 @@ type Which = keyof Pick<SourceRequest['request'], 'dataParams' | 'metadataParams
  * `useAnalytics`. Pass `undefined` parts to wait.
  */
 export const useCombinedAnalytics = (
-    parts: readonly SourceRequest[] | undefined,
+    parts: readonly SourceQuery[] | undefined,
     dataOrder?: readonly string[],
     { withMetadata = true }: { withMetadata?: boolean } = {}
 ): CombinedAnalytics => {
     const engine = useDataEngine()
     const sources = parts ?? []
-    const which: Which[] = withMetadata ? ['dataParams', 'metadataParams'] : ['dataParams']
-    const names = sources.map(({ instance }) => instance.instanceName).join('\u0000')
+    const names = sources.map(({ instanceName }) => instanceName).join('\u0000')
 
     const combine = useCallback(
         (results: UseQueryResult<AnalyticsResponse>[]): CombinedAnalytics => {
@@ -85,8 +93,10 @@ export const useCombinedAnalytics = (
     )
 
     return useQueries({
-        queries: sources.flatMap(({ instance, request }) =>
-            which.map((key) => analyticsQueryOptions(engine, instance, request[key]))
+        queries: sources.flatMap(({ instance, dataParams, metadataParams }) =>
+            (withMetadata ? [dataParams, metadataParams ?? {}] : [dataParams]).map((params) =>
+                analyticsQueryOptions(engine, instance, params)
+            )
         ),
         combine,
     })

@@ -11,6 +11,7 @@ export {
     useCombinedAnalytics,
     type CombinedAnalytics,
     type SourceError,
+    type SourceQuery,
 } from './hooks/useCombinedAnalytics'
 export { fetchAnalytics } from './services/analyticsService'
 export type {

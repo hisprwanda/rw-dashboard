@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query'
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import type { SelectionRuns } from '../utils/selectionRequest'
 import { analyticsKeys } from './queryKeys'
 import { useCombinedAnalytics } from './useCombinedAnalytics'
@@ -11,7 +11,17 @@ import { useCombinedAnalytics } from './useCombinedAnalytics'
 export const useCombinedAnalyticsRun = () => {
     const queryClient = useQueryClient()
     const [committed, setCommitted] = useState<SelectionRuns | null>(null)
-    const combined = useCombinedAnalytics(committed?.parts, committed?.dataOrder)
+    const queries = useMemo(
+        () =>
+            committed?.parts.map(({ instance, request }) => ({
+                instance,
+                instanceName: instance.instanceName,
+                dataParams: request.dataParams,
+                metadataParams: request.metadataParams,
+            })),
+        [committed]
+    )
+    const combined = useCombinedAnalytics(queries, committed?.dataOrder)
 
     const run = useCallback(
         async (runs: SelectionRuns) => {
