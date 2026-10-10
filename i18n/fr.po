@@ -1865,3 +1865,234 @@ msgstr "Unités d'organisation de l'utilisateur"
 
 msgid "On other data sources, user organisation units are those of the account behind the access token. Pick organisation units to compare the same places."
 msgstr "Sur les autres sources de données, les unités d'organisation de l'utilisateur sont celles du compte lié au jeton d'accès. Choisissez des unités d'organisation pour comparer les mêmes lieux."
+
+msgid "Visualization type"
+msgstr "Type de visualisation"
+
+msgid "Search visualization types"
+msgstr "Rechercher des types de visualisation"
+
+msgid "No visualization types found"
+msgstr "Aucun type de visualisation trouvé"
+
+msgid "Series"
+msgstr "Séries"
+
+msgid "Absolute deviation"
+msgstr "Écart absolu"
+
+msgid "Z-score"
+msgstr "Score z"
+
+msgid "Modified z-score"
+msgstr "Score z modifié"
+
+msgid "Mean"
+msgstr "Moyenne"
+
+msgid "Median"
+msgstr "Médiane"
+
+msgid "Standard deviation"
+msgstr "Écart type"
+
+msgid "Median absolute deviation"
+msgstr "Écart absolu médian"
+
+msgid "Lower boundary"
+msgstr "Limite inférieure"
+
+msgid "Upper boundary"
+msgstr "Limite supérieure"
+
+msgid "Outlier detection method"
+msgstr "Méthode de détection des valeurs aberrantes"
+
+msgid "Method"
+msgstr "Méthode"
+
+msgid "Threshold factor"
+msgstr "Facteur de seuil"
+
+msgid "Values further than this many scores from the center are outliers."
+msgstr "Les valeurs plus éloignées du centre que ce nombre de scores sont des valeurs aberrantes."
+
+msgid "Results"
+msgstr "Résultats"
+
+msgid "Maximum number of results"
+msgstr "Nombre maximal de résultats"
+
+msgid "Sort by"
+msgstr "Trier par"
+
+msgid "Totals"
+msgstr "Totaux"
+
+msgid "Columns totals"
+msgstr "Totaux des colonnes"
+
+msgid "Columns sub-totals"
+msgstr "Sous-totaux des colonnes"
+
+msgid "Rows totals"
+msgstr "Totaux des lignes"
+
+msgid "Rows sub-totals"
+msgstr "Sous-totaux des lignes"
+
+msgid "Empty data"
+msgstr "Données vides"
+
+msgid "Hide empty columns"
+msgstr "Masquer les colonnes vides"
+
+msgid "Hide empty rows"
+msgstr "Masquer les lignes vides"
+
+msgid "Display"
+msgstr "Affichage"
+
+msgid "Number type"
+msgstr "Type de nombre"
+
+msgid "Percentage of row"
+msgstr "Pourcentage de la ligne"
+
+msgid "Percentage of column"
+msgstr "Pourcentage de la colonne"
+
+msgid "Display density"
+msgstr "Densité d'affichage"
+
+msgid "Comfortable"
+msgstr "Confortable"
+
+msgid "Normal"
+msgstr "Normale"
+
+msgid "Compact"
+msgstr "Compacte"
+
+msgid "Large"
+msgstr "Grande"
+
+msgid "Small"
+msgstr "Petite"
+
+msgid "Show dimension labels"
+msgstr "Afficher les libellés des dimensions"
+
+msgid "Show organisation unit hierarchy"
+msgstr "Afficher la hiérarchie des unités d'organisation"
+
+msgid "Headers"
+msgstr "En-têtes"
+
+msgid "Keep column headers visible"
+msgstr "Garder les en-têtes de colonnes visibles"
+
+msgid "Keep row headers visible"
+msgstr "Garder les en-têtes de lignes visibles"
+
+msgid "Color the cells"
+msgstr "Colorer les cellules"
+
+msgid "No outliers found"
+msgstr "Aucune valeur aberrante trouvée"
+
+msgid "No value is an outlier with the current method and threshold."
+msgstr "Aucune valeur n'est aberrante avec la méthode et le seuil actuels."
+
+msgid "Outlier table not available"
+msgstr "Tableau des valeurs aberrantes indisponible"
+
+msgid "The outlier table needs DHIS2 2.41 or newer."
+msgstr "Le tableau des valeurs aberrantes nécessite DHIS2 2.41 ou plus récent."
+
+msgid "Select data elements, period and organisation unit, then click Update."
+msgstr "Sélectionnez des éléments de données, une période et une unité d'organisation, puis cliquez sur Mettre à jour."
+
+msgid "Select data, years and organisation unit, then click Update."
+msgstr "Sélectionnez des données, des années et une unité d'organisation, puis cliquez sur Mettre à jour."
+
+msgid "This chart type reads one data source only. Remove the other data sources to run it."
+msgstr "Ce type de graphique ne lit qu'une seule source de données. Retirez les autres sources de données pour l'exécuter."
+
+msgid "The outlier table only uses data elements."
+msgstr "Le tableau des valeurs aberrantes n'utilise que des éléments de données."
+
+msgid "Days per year"
+msgstr "Jours par année"
+
+msgid "Weeks per year"
+msgstr "Semaines par année"
+
+msgid "Months per year"
+msgstr "Mois par année"
+
+msgid "Bi-months per year"
+msgstr "Bimestres par année"
+
+msgid "Quarters per year"
+msgstr "Trimestres par année"
+
+msgid "Six-months per year"
+msgstr "Semestres par année"
+
+msgid "Years to compare (series)"
+msgstr "Années à comparer (séries)"
+
+msgid "Each year is drawn as its own line or set of columns."
+msgstr "Chaque année est dessinée comme sa propre ligne ou son propre groupe de colonnes."
+
+msgid "Periods within a year (category)"
+msgstr "Périodes d'une année (catégorie)"
+
+msgid "Compare changes over time between multiple time periods."
+msgstr "Comparer l'évolution dans le temps entre plusieurs périodes."
+
+msgid "View data and indicators in a manipulatable table."
+msgstr "Afficher les données et les indicateurs dans un tableau manipulable."
+
+msgid "Compare sizes of related elements vertically. Recommend period as filter."
+msgstr "Comparer verticalement la taille d'éléments liés. Période recommandée comme filtre."
+
+msgid "Compare parts of a whole against related elements vertically. Recommend data or organisation unit as series."
+msgstr "Comparer verticalement les parties d'un tout entre éléments liés. Données ou unité d'organisation recommandées comme séries."
+
+msgid "Same as column chart, only with horizontal bars."
+msgstr "Comme le graphique en colonnes, mais avec des barres horizontales."
+
+msgid "Same as stacked column chart, only with horizontal bars."
+msgstr "Comme le graphique en colonnes empilées, mais avec des barres horizontales."
+
+msgid "Track or compare changes over time. Recommend period as category."
+msgstr "Suivre ou comparer l'évolution dans le temps. Période recommandée comme catégorie."
+
+msgid "Track or compare changes over time of parts of a whole. Recommend period as category."
+msgstr "Suivre ou comparer l'évolution dans le temps des parties d'un tout. Période recommandée comme catégorie."
+
+msgid "Compare parts of a whole at a single point in time. Recommend period as filter."
+msgstr "Comparer les parties d'un tout à un moment donné. Période recommandée comme filtre."
+
+msgid "Compare several items against multiple variables."
+msgstr "Comparer plusieurs éléments selon plusieurs variables."
+
+msgid "Compare a percentage indicator against a 100% scale. Recommend period as filter."
+msgstr "Comparer un indicateur en pourcentage à une échelle de 100 %. Période recommandée comme filtre."
+
+msgid "Display a single value. Recommend relative period to show latest data."
+msgstr "Afficher une seule valeur. Période relative recommandée pour montrer les dernières données."
+
+msgid "View the relationship between two data items at a place or time. Recommend organisation unit as point."
+msgstr "Afficher la relation entre deux éléments de données en un lieu ou un moment. Unité d'organisation recommandée comme point."
+
+msgid "View outlier values of data elements in a table."
+msgstr "Afficher les valeurs aberrantes des éléments de données dans un tableau."
+
+msgid "Compare values as bars around a circle."
+msgstr "Comparer des valeurs sous forme de barres autour d'un cercle."
+
+msgid "Show parts of a whole as nested rectangles."
+msgstr "Montrer les parties d'un tout sous forme de rectangles imbriqués."
