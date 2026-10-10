@@ -2147,3 +2147,9 @@ msgstr "Taille"
 
 msgid "Background color"
 msgstr "Couleur de fond"
+
+msgid "Drawn by DHIS2, as in the Data Visualizer app."
+msgstr "Dessinés par DHIS2, comme dans l'application Data Visualizer."
+
+msgid "Drawn by this app, with their own options."
+msgstr "Dessinés par cette application, avec leurs propres options."

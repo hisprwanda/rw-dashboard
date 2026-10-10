@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-10-10T13:19:43.032Z\n"
-"PO-Revision-Date: 2026-10-10T13:19:43.033Z\n"
+"POT-Creation-Date: 2026-10-10T13:32:53.548Z\n"
+"PO-Revision-Date: 2026-10-10T13:32:53.549Z\n"
 
 msgid "Data items"
 msgstr "Data items"
@@ -1533,6 +1533,24 @@ msgstr "Data from other sources"
 msgid "Add a data source"
 msgstr "Add a data source"
 
+msgid "Style of the {{type}} chart."
+msgstr "Style of the {{type}} chart."
+
+msgid "Series colors"
+msgstr "Series colors"
+
+msgid "Each data item keeps its color, in the order of the palette."
+msgstr "Each data item keeps its color, in the order of the palette."
+
+msgid "Color"
+msgstr "Color"
+
+msgid "Size"
+msgstr "Size"
+
+msgid "Background color"
+msgstr "Background color"
+
 msgid "Visualization type"
 msgstr "Visualization type"
 
@@ -1542,14 +1560,14 @@ msgstr "Search visualization types"
 msgid "DHIS2 types"
 msgstr "DHIS2 types"
 
-msgid "Drawn by DHIS2, as in the Data Visualizer app. Set them up with Options."
-msgstr "Drawn by DHIS2, as in the Data Visualizer app. Set them up with Options."
+msgid "Drawn by DHIS2, as in the Data Visualizer app."
+msgstr "Drawn by DHIS2, as in the Data Visualizer app."
 
 msgid "Additional types"
 msgstr "Additional types"
 
-msgid "Drawn by this app. Set them up in the Style tab."
-msgstr "Drawn by this app. Set them up in the Style tab."
+msgid "Drawn by this app, with their own options."
+msgstr "Drawn by this app, with their own options."
 
 msgid "No visualization types found"
 msgstr "No visualization types found"
@@ -1854,44 +1872,6 @@ msgstr "Save visualization"
 msgid "Select data, period and organisation unit, then click Update."
 msgstr "Select data, period and organisation unit, then click Update."
 
-msgid "{{type}} is drawn by DHIS2"
-msgstr "{{type}} is drawn by DHIS2"
-
-msgid ""
-"Its colors, values, axes and legend are set in Options, above the chart. It "
-"looks the same here, on dashboards and in DHIS2."
-msgstr ""
-"Its colors, values, axes and legend are set in Options, above the chart. It "
-"looks the same here, on dashboards and in DHIS2."
-
-msgid ""
-"The Style tab is for Radial and Tree map, the chart types this app draws "
-"itself."
-msgstr ""
-"The Style tab is for Radial and Tree map, the chart types this app draws "
-"itself."
-
-msgid "Open options"
-msgstr "Open options"
-
-msgid "Style of the {{type}} chart."
-msgstr "Style of the {{type}} chart."
-
-msgid "Series colors"
-msgstr "Series colors"
-
-msgid "Each data item keeps its color, in the order of the palette."
-msgstr "Each data item keeps its color, in the order of the palette."
-
-msgid "Color"
-msgstr "Color"
-
-msgid "Size"
-msgstr "Size"
-
-msgid "Background color"
-msgstr "Background color"
-
 msgid "Titles"
 msgstr "Titles"
 
@@ -1915,9 +1895,6 @@ msgstr "Select data elements, period and organisation unit, then click Update."
 
 msgid "Select data, years and organisation unit, then click Update."
 msgstr "Select data, years and organisation unit, then click Update."
-
-msgid "Dimensions"
-msgstr "Dimensions"
 
 msgid ""
 "A data source of this visualization was deleted or is not shared with you. "
