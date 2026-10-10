@@ -9,7 +9,7 @@ import {
     getLegendItems,
     getPredefinedLegendItems,
     precisionRound,
-} from './classify'
+} from './mapClassify'
 
 // Expectations follow the DHIS2 Maps app's own tests (src/util/__tests__/classify.spec.js).
 describe('getLegendItemForValue', () => {

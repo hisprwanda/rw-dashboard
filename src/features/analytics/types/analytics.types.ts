@@ -36,6 +36,9 @@ export type AnalyticsParams = {
     measureCriteria?: string
     /** Only data of complete data set registrations. */
     completedOnly?: boolean
+    /** A date range instead of periods (`yyyy-MM-dd`). */
+    startDate?: string
+    endDate?: string
 }
 
 /** The org-unit part of a request, as picked in the org-unit modal. */
