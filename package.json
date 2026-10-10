@@ -49,6 +49,7 @@
     "@dhis2/analytics": "^29.8.1",
     "@dhis2/app-runtime": "^3.17.4",
     "@dhis2/d2-i18n": "^1.2.0",
+    "@dhis2/maps-gl": "4.4.3",
     "@dhis2/multi-calendar-dates": "2.1.2",
     "@dhis2/ui": "^10.17.0",
     "@hookform/resolvers": "^4.1.3",

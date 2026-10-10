@@ -11,7 +11,15 @@ export default defineConfig({
         // The platform copies `src/` into `.d2/shell/src/D2App/` and builds that copy,
         // so `@` must point there. Pointing it at the original `src/` would load every
         // module twice (once via `@/…`, once via relative imports).
-        alias: { '@': fromRoot('./.d2/shell/src/D2App') },
+        alias: [
+            { find: '@', replacement: fromRoot('./.d2/shell/src/D2App') },
+            // `@dhis2/maps-gl` imports its 1.4 MB Earth Engine worker eagerly; the app draws
+            // no Earth Engine layers, so that import gets a small stub.
+            {
+                find: /^\.\.?\/earthengine\/index\.js$/,
+                replacement: fromRoot('./src/shared/stubs/earthEngineWorker.ts'),
+            },
+        ],
     },
     // Vite's default cache lives in `.d2/shell/node_modules`, a symlink to
     // `node_modules/@dhis2/app-shell/node_modules`, which does not exist when the

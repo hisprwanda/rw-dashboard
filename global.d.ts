@@ -47,3 +47,27 @@ declare module '@dhis2/analytics' {
         renderCounter?: number
     }>
 }
+
+/** The part of `@dhis2/maps-gl` (the DHIS2 Maps engine, which ships no types) that the app uses. */
+declare module '@dhis2/maps-gl' {
+    export interface MapGLLayer {
+        addLayer?: (config: Record<string, unknown>) => void
+    }
+
+    export default class MapGL {
+        constructor(element: HTMLElement, options?: Record<string, unknown>)
+        on(event: 'ready' | string, handler: () => void): void
+        createLayer(config: Record<string, unknown>): MapGLLayer
+        addLayer(layer: MapGLLayer): Promise<void>
+        getLayersBounds(): unknown
+        fitBounds(bounds: unknown, options?: Record<string, unknown>): void
+        resize(): void
+        remove(): void
+    }
+
+    /** A point inside a polygon, where its label (or bubble) goes. */
+    export const poleOfInaccessibility: (geometry: {
+        type: string
+        coordinates: unknown
+    }) => [number, number]
+}
