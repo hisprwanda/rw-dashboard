@@ -26,6 +26,8 @@ export type AnalyticsParams = {
     skipMeta?: boolean
     skipData?: boolean
     includeMetadataDetails?: boolean
+    /** The date relative periods are computed from (e.g. `2023-12-31`). */
+    relativePeriodDate?: string
 }
 
 /** The org-unit part of a request, as picked in the org-unit modal. */
