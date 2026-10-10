@@ -1,8 +1,7 @@
-import type { Dhis2Map, Dhis2Visualization } from '../types/dhis2Object.types'
+import type { Dhis2Visualization } from '../types/dhis2Object.types'
 import {
     favoriteOutlierParams,
     favoriteYearOverYear,
-    mapToThematic,
     visualizationToRequest,
     yearOverYearAxes,
 } from './favoriteRequest'
@@ -34,27 +33,6 @@ const pivotTable: Dhis2Visualization = {
     ],
     rows: [{ dimension: 'ou', items: [{ id: 'ImspTQPwCqd' }, { id: 'LEVEL-4' }] }],
     filters: [],
-}
-
-const thematicMap: Dhis2Map = {
-    id: 'zDP78aJU8nX',
-    name: 'ANC: 1st visit coverage (%) by district last year',
-    mapViews: [
-        {
-            layer: 'thematic1',
-            columns: [{ dimension: 'dx', items: [{ id: 'Uvn6LCg7dVU' }] }],
-            rows: [{ dimension: 'ou', items: [{ id: 'ImspTQPwCqd' }, { id: 'LEVEL-2' }] }],
-            filters: [{ dimension: 'pe', items: [{ id: 'THIS_YEAR' }] }],
-            legendSet: {
-                id: 'fqs276KXCXi',
-                name: 'ANC Coverage',
-                legends: [
-                    { name: 'Great', startValue: 90, endValue: 120, color: '#FFFFB2' },
-                    { name: 'High Plus', startValue: 80, endValue: 90, color: '#FED976' },
-                ],
-            },
-        },
-    ],
 }
 
 describe('visualizationToRequest', () => {
@@ -187,39 +165,5 @@ describe('favoriteOutlierParams', () => {
         expect(
             favoriteOutlierParams({ ...favorite, outlierAnalysis: { outlierMethod: 'IQR' } })
         ).toBeNull()
-    })
-})
-
-describe('mapToThematic', () => {
-    it("builds this app's thematic map with the favorite's legend set", () => {
-        const result = mapToThematic(thematicMap)
-        expect(result?.analyticsQuery.myData.params).toEqual({
-            dimension: ['dx:Uvn6LCg7dVU', 'ou:ImspTQPwCqd;LEVEL-2'],
-            filter: 'pe:THIS_YEAR',
-            displayProperty: 'NAME',
-        })
-        expect(result?.geoFeaturesQuery.result.params).toEqual({
-            ou: 'ou:ImspTQPwCqd;LEVEL-2',
-            displayProperty: 'NAME',
-        })
-        expect(result?.settings.legendType).toBe('dhis2')
-        expect(result?.settings.legend.legends?.map((l) => l.name)).toEqual(['High Plus', 'Great'])
-    })
-
-    it('ignores boundary layers and falls back to auto legends', () => {
-        const [view] = thematicMap.mapViews
-        if (!view) throw new Error('fixture')
-        const result = mapToThematic({
-            mapViews: [{ layer: 'boundary' }, { ...view, legendSet: undefined }],
-        })
-        expect(result?.settings.legendType).toBe('auto')
-    })
-
-    it('refuses what the native map cannot draw', () => {
-        expect(mapToThematic({ mapViews: [{ layer: 'event', rows: [] }] })).toBeNull()
-        const [view] = thematicMap.mapViews
-        if (!view) throw new Error('fixture')
-        expect(mapToThematic({ mapViews: [view, { ...view, layer: 'thematic2' }] })).toBeNull()
-        expect(mapToThematic({ mapViews: [{ ...view, filters: [] }] })).toBeNull()
     })
 })

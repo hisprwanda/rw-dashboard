@@ -19,17 +19,11 @@ interface Dhis2ObjectViewProps {
 
 type NativeProps = Omit<Dhis2ObjectViewProps, 'dataSourceId'> & {
     instance: InstanceConnection
-    dataSourceId: string
 }
 
-const NativeView = ({ objectType, instance, objectId, name, dataSourceId }: NativeProps) =>
+const NativeView = ({ objectType, instance, objectId, name }: NativeProps) =>
     objectType === 'map' ? (
-        <Dhis2NativeMap
-            instance={instance}
-            dataSourceId={dataSourceId}
-            objectId={objectId}
-            name={name}
-        />
+        <Dhis2NativeMap instance={instance} objectId={objectId} name={name} />
     ) : (
         <Dhis2NativeVisualization instance={instance} objectId={objectId} name={name} />
     )
@@ -43,7 +37,6 @@ const CurrentInstanceView = (props: NativeProps) => {
             objectType={props.objectType}
             objectId={props.objectId}
             name={props.name}
-            dataSourceId={props.dataSourceId}
             pluginSource={pluginSource}
         />
     )
@@ -62,8 +55,8 @@ export const Dhis2ObjectView = ({ dataSourceId, ...props }: Dhis2ObjectViewProps
     }
     if (source.isLoading || !source.instance) return <LoadingState />
     return source.instance.isCurrentInstance ? (
-        <CurrentInstanceView {...props} instance={source.instance} dataSourceId={dataSourceId} />
+        <CurrentInstanceView {...props} instance={source.instance} />
     ) : (
-        <NativeView {...props} instance={source.instance} dataSourceId={dataSourceId} />
+        <NativeView {...props} instance={source.instance} />
     )
 }

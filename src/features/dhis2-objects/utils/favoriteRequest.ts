@@ -1,20 +1,13 @@
-import type {
-    AnalyticsLayout,
-    AnalyticsParams,
-    DisplayProperty,
-    StoredAnalyticsQuery,
-} from '@/features/analytics'
+import type { AnalyticsLayout, AnalyticsParams, DisplayProperty } from '@/features/analytics'
 import {
     DEFAULT_OUTLIER_OPTIONS,
     outlierParamsFromQuery,
     type OutlierParams,
     type YearOverYearSelection,
 } from '@/features/visualizers'
-import type { MapSettings, StoredGeoFeaturesQuery } from '@/features/maps'
 import type {
     Dhis2Axes,
     Dhis2Dimension,
-    Dhis2Map,
     Dhis2MapView,
     Dhis2Visualization,
 } from '../types/dhis2Object.types'
@@ -160,68 +153,3 @@ export const favoriteOutlierParams = (
 
 /** The layer kind of a map view: `thematic1` -> `thematic`. */
 export const layerKind = (view: Pick<Dhis2MapView, 'layer'>) => view.layer.replace(/\d+$/, '')
-
-export interface ThematicMapQuery {
-    analyticsQuery: StoredAnalyticsQuery
-    geoFeaturesQuery: StoredGeoFeaturesQuery
-    settings: MapSettings
-}
-
-const find = (axes: readonly Dhis2Dimension[] | undefined, dimension: string) =>
-    (axes ?? []).find((axis) => axis.dimension === dimension && axis.items?.length)
-
-/**
- * The queries of this app's thematic map for a Maps favorite, or `null` when the map
- * cannot be drawn natively: other layer kinds (events, facilities, Earth Engine…), several
- * layers, or no data, org unit or period dimension.
- */
-export const mapToThematic = (
-    map: Pick<Dhis2Map, 'mapViews'>,
-    displayProperty: DisplayProperty = 'NAME'
-): ThematicMapQuery | null => {
-    const layers = map.mapViews.filter((view) => layerKind(view) !== 'boundary')
-    const [view] = layers
-    if (layers.length !== 1 || !view || layerKind(view) !== 'thematic') return null
-
-    const axes = [...(view.columns ?? []), ...(view.rows ?? []), ...(view.filters ?? [])]
-    const dx = find(axes, 'dx')
-    const ou = find(axes, 'ou')
-    const pe = find(axes, 'pe')
-    if (!dx || !ou || !pe) return null
-
-    const orgUnits = dimensionParam(ou)
-    const legends = view.legendSet?.legends ?? []
-    return {
-        analyticsQuery: {
-            myData: {
-                resource: 'analytics',
-                params: {
-                    dimension: [dimensionParam(dx), orgUnits],
-                    filter: dimensionParam(pe),
-                    displayProperty,
-                },
-            },
-        },
-        geoFeaturesQuery: {
-            result: { resource: 'geoFeatures', params: { ou: orgUnits, displayProperty } },
-        },
-        settings: {
-            appliedLabels: [],
-            selectedLabels: [],
-            legend: legends.length
-                ? {
-                      name: view.legendSet?.name ?? '',
-                      legends: [...legends]
-                          .sort((a, b) => a.startValue - b.startValue)
-                          .map((legend) => ({
-                              name: legend.name ?? `${legend.startValue} - ${legend.endValue}`,
-                              startValue: legend.startValue,
-                              endValue: legend.endValue,
-                              color: legend.color,
-                          })),
-                  }
-                : {},
-            legendType: legends.length ? 'dhis2' : 'auto',
-        },
-    }
-}

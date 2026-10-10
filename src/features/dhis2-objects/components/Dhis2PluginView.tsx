@@ -43,7 +43,6 @@ interface Dhis2PluginViewProps {
     objectType: Dhis2ObjectType
     objectId: string
     name: string
-    dataSourceId: string
     /** `…/dhis-web-data-visualizer/plugin.html` or `…/dhis-web-maps/plugin.html`. */
     pluginSource: string
 }
@@ -57,7 +56,6 @@ export const Dhis2PluginView = ({
     objectType,
     objectId,
     name,
-    dataSourceId,
     pluginSource,
 }: Dhis2PluginViewProps) => {
     const { data: me } = useMe()
@@ -86,12 +84,7 @@ export const Dhis2PluginView = ({
 
     if (failed || handshake.silent) {
         return objectType === 'map' ? (
-            <Dhis2NativeMap
-                instance={CURRENT_INSTANCE}
-                dataSourceId={dataSourceId}
-                objectId={objectId}
-                name={name}
-            />
+            <Dhis2NativeMap instance={CURRENT_INSTANCE} objectId={objectId} name={name} />
         ) : (
             <Dhis2NativeVisualization instance={CURRENT_INSTANCE} objectId={objectId} name={name} />
         )
