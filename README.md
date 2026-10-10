@@ -21,7 +21,7 @@ options, so nothing has to be relearned. The difference is everything around the
 |---|---|---|
 | Analyse data from **another DHIS2 instance** | Only the instance the app runs on | Connect any number of instances with an access token |
 | Put data from **several instances in the same chart** | Not possible | Add data items from as many connected instances as you need to one chart |
-| Build **one dashboard across instances** | Items from the local instance only | Mix your own visuals, maps and live DHIS2 favorites from any connected instance |
+| Build **one dashboard across instances** | Items from the local instance only | Mix your own visuals, maps and live DHIS2 visualizations and maps from any connected instance |
 | **Present** in a meeting or on an office screen | Full-screen view, one item at a time | Automatic slide show, several items per slide, timing and background music |
 | Share results **outside DHIS2** | Print the dashboard, or download items one by one | Export a whole dashboard to PowerPoint; export visuals as PNG, JPEG, PDF or PowerPoint |
 | Publish a **weekly or monthly bulletin** | Built by hand outside DHIS2, or coded as an HTML report | Bulletin templates filled from live data, for any period, in several languages, printed or saved as PDF |
@@ -52,7 +52,7 @@ to DHIS2 and updates on its own.
 | **Data sources** | Connect other DHIS2 instances with a personal access token, and switch between them while you build. |
 | **Visualizer** | Build every Data Visualizer chart type, plus two extra types, from one or several instances. |
 | **Maps** | Build thematic (choropleth) maps with DHIS2 or automatic legends. |
-| **Dashboards** | Arrange your visuals, your maps and live DHIS2 favorites on a grid. Share, pin, favorite and export them. |
+| **Dashboards** | Arrange your visuals, your maps and live DHIS2 visualizations and maps on a grid. Share, pin, star and export them. |
 | **Presentation mode** | Play a dashboard as a full-screen slide show with background music. |
 | **Bulletins** | Design bulletin templates and publish issues for any period, in several languages. |
 | **Languages** | The interface is in English and French, with Kinyarwanda in progress. |
@@ -166,13 +166,13 @@ Combine your work on a grid:
     on the dashboard.
 - **How DHIS2 items are drawn:**
   - on this instance, by DHIS2's own plugins, as in the official Dashboard app;
-  - on external instances, the favorite itself goes to the same DHIS2 chart engine and pivot
-    table, so it looks as in DHIS2. This includes its colors, axes, legend and totals.
+  - on external instances, the saved DHIS2 visualization itself goes to the same DHIS2 chart
+    engine and pivot table, so it looks as in DHIS2. This includes its colors, axes, legend and totals.
   - single-layer thematic maps are drawn by the app. Other map layers (events, facilities,
     Earth Engine) show a link to open the map in DHIS2.
 - **Organise:**
   - mark a dashboard as **official**, which pins it on the home page;
-  - add dashboards to your **favorites**;
+  - **star** dashboards to add them to your favorites;
   - browse *My dashboards* and *Shared with me*, as cards or as a list.
 - **Share** dashboards with users and user groups, using DHIS2 sharing.
 - **Background color**, **full screen** and **export to PowerPoint**.
