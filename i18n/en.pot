@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-10-05T11:39:39.361Z\n"
-"PO-Revision-Date: 2026-10-05T11:39:39.361Z\n"
+"POT-Creation-Date: 2026-10-10T08:57:51.321Z\n"
+"PO-Revision-Date: 2026-10-10T08:57:51.321Z\n"
 
 msgid "Data items"
 msgstr "Data items"
@@ -677,11 +677,14 @@ msgstr "Next slide"
 msgid "Data source not found"
 msgstr "Data source not found"
 
-msgid "The data source of this visualization was deleted or is not shared with you."
-msgstr "The data source of this visualization was deleted or is not shared with you."
+msgid "A data source of this visualization was deleted or is not shared with you."
+msgstr "A data source of this visualization was deleted or is not shared with you."
 
 msgid "Could not load this visualization"
 msgstr "Could not load this visualization"
+
+msgid "Some data could not be loaded"
+msgstr "Some data could not be loaded"
 
 msgid "You have not created any dashboard yet."
 msgstr "You have not created any dashboard yet."
@@ -1512,6 +1515,15 @@ msgstr ""
 "Upload the MP3 tracks users can play as background music during dashboard "
 "presentations."
 
+msgid "Data from {{source}}"
+msgstr "Data from {{source}}"
+
+msgid "Data from other sources"
+msgstr "Data from other sources"
+
+msgid "Add a data source"
+msgstr "Add a data source"
+
 msgid "Select chart type"
 msgstr "Select chart type"
 
@@ -1732,11 +1744,35 @@ msgid "Dimensions"
 msgstr "Dimensions"
 
 msgid ""
-"The data source of this visualization was deleted or is not shared with "
-"you. Pick another data source."
+"A data source of this visualization was deleted or is not shared with you. "
+"Pick another data source."
 msgstr ""
-"The data source of this visualization was deleted or is not shared with "
-"you. Pick another data source."
+"A data source of this visualization was deleted or is not shared with you. "
+"Pick another data source."
+
+msgid ""
+"Move Data to the columns or rows. Values of different data sources cannot "
+"be added up in a filter."
+msgstr ""
+"Move Data to the columns or rows. Values of different data sources cannot "
+"be added up in a filter."
+
+msgid ""
+"Remove the other dimensions (categories, group sets…). They only exist on "
+"the main data source."
+msgstr ""
+"Remove the other dimensions (categories, group sets…). They only exist on "
+"the main data source."
+
+msgid "User organisation units"
+msgstr "User organisation units"
+
+msgid ""
+"On other data sources, user organisation units are those of the account "
+"behind the access token. Pick organisation units to compare the same places."
+msgstr ""
+"On other data sources, user organisation units are those of the account "
+"behind the access token. Pick organisation units to compare the same places."
 
 msgid "New visualization"
 msgstr "New visualization"

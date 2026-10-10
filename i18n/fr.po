@@ -667,8 +667,8 @@ msgstr "Diapositive suivante"
 msgid "Data source not found"
 msgstr "Source de données introuvable"
 
-msgid "The data source of this visualization was deleted or is not shared with you."
-msgstr "La source de données de cette visualisation a été supprimée ou n'est pas partagée avec vous."
+msgid "A data source of this visualization was deleted or is not shared with you."
+msgstr "Une source de données de cette visualisation a été supprimée ou n'est pas partagée avec vous."
 
 msgid "Could not load this visualization"
 msgstr "Impossible de charger cette visualisation"
@@ -1516,8 +1516,8 @@ msgstr "Calcul des analyses en cours"
 msgid "Dimensions"
 msgstr "Dimensions"
 
-msgid "The data source of this visualization was deleted or is not shared with you. Pick another data source."
-msgstr "La source de données de cette visualisation a été supprimée ou n'est pas partagée avec vous. Choisissez une autre source de données."
+msgid "A data source of this visualization was deleted or is not shared with you. Pick another data source."
+msgstr "Une source de données de cette visualisation a été supprimée ou n'est pas partagée avec vous. Choisissez une autre source de données."
 
 msgid "New visualization"
 msgstr "Nouvelle visualisation"
@@ -1841,3 +1841,27 @@ msgstr "Colorer les barres"
 
 msgid "Color the text"
 msgstr "Colorer le texte"
+
+msgid "Some data could not be loaded"
+msgstr "Certaines données n'ont pas pu être chargées"
+
+msgid "Data from {{source}}"
+msgstr "Données de {{source}}"
+
+msgid "Data from other sources"
+msgstr "Données d'autres sources"
+
+msgid "Add a data source"
+msgstr "Ajouter une source de données"
+
+msgid "Move Data to the columns or rows. Values of different data sources cannot be added up in a filter."
+msgstr "Placez Données dans les colonnes ou les lignes. Les valeurs de sources de données différentes ne peuvent pas être additionnées dans un filtre."
+
+msgid "Remove the other dimensions (categories, group sets…). They only exist on the main data source."
+msgstr "Retirez les autres dimensions (catégories, ensembles de groupes…). Elles n'existent que sur la source de données principale."
+
+msgid "User organisation units"
+msgstr "Unités d'organisation de l'utilisateur"
+
+msgid "On other data sources, user organisation units are those of the account behind the access token. Pick organisation units to compare the same places."
+msgstr "Sur les autres sources de données, les unités d'organisation de l'utilisateur sont celles du compte lié au jeton d'accès. Choisissez des unités d'organisation pour comparer les mêmes lieux."
