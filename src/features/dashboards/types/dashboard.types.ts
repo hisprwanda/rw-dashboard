@@ -4,6 +4,7 @@ import type { Dhis2ObjectType } from '@/features/dhis2-objects'
 import type { BasemapType, MapSettings, StoredGeoFeaturesQuery } from '@/features/maps'
 import type { Shareable, UserRef } from '@/shared/types/common.types'
 import type { DataStoreEntry } from '@/shared/types/dhis2.types'
+import type { SavedAdditionalSource } from '@/features/visualizers'
 
 /** Position of an item in the react-grid-layout grid. */
 export interface GridPosition {
@@ -22,6 +23,8 @@ export interface DashboardVisualItem extends GridPosition {
     visualQuery: StoredAnalyticsQuery
     analyticsPayloadDeterminer: AnalyticsLayout
     dataSourceId: string
+    /** Data items read from other data sources (multi-source visuals only). */
+    additionalSources?: SavedAdditionalSource[]
     visualTitleAndSubTitle: VisualTitles
     visualSettings: VisualSettings
 }

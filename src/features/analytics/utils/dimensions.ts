@@ -1,4 +1,4 @@
-import type { AnalyticsDimensions } from '../types/analytics.types'
+import type { AnalyticsDimensions, AnalyticsParams } from '../types/analytics.types'
 
 /**
  * `{ dx: ['a', 'b'], pe: ['2024'] }` -> `['dx:a;b', 'pe:2024']`.
@@ -36,4 +36,20 @@ export const parseAnalyticsDimensions = (input: unknown): AnalyticsDimensions =>
         result[parts[0]] = parts[1].split(';')
     }
     return result
+}
+
+/**
+ * The params with other data items: the `dx:` entry is replaced wherever it is (dimension
+ * or filter). Used to read a saved query's items from several data sources.
+ */
+export const withDataItems = (params: AnalyticsParams, ids: readonly string[]): AnalyticsParams => {
+    const replace = (entry: string) => (entry.startsWith('dx:') ? `dx:${ids.join(';')}` : entry)
+    const { filter } = params
+    return {
+        ...params,
+        dimension: params.dimension?.map(replace),
+        ...(filter === undefined
+            ? {}
+            : { filter: Array.isArray(filter) ? filter.map(replace) : replace(filter) }),
+    }
 }

@@ -32,6 +32,9 @@ export const toVisualItem = (entry: SavedVisualEntry, count: number): DashboardV
     visualSettings: entry.value.visualSettings,
     visualTitleAndSubTitle: entry.value.visualTitleAndSubTitle,
     dataSourceId: entry.value.dataSourceId,
+    ...(entry.value.additionalSources?.length
+        ? { additionalSources: entry.value.additionalSources }
+        : {}),
 })
 
 /** A saved map as a dashboard item. */

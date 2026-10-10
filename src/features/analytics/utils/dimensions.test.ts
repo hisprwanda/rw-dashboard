@@ -1,4 +1,4 @@
-import { formatAnalyticsDimensions, parseAnalyticsDimensions } from './dimensions'
+import { formatAnalyticsDimensions, parseAnalyticsDimensions, withDataItems } from './dimensions'
 
 describe('formatAnalyticsDimensions', () => {
     it('joins items per dimension', () => {
@@ -39,5 +39,17 @@ describe('parseAnalyticsDimensions', () => {
         expect(parseAnalyticsDimensions(['dx:a', 'broken'])).toEqual({})
         expect(parseAnalyticsDimensions(['dx:'])).toEqual({})
         expect(parseAnalyticsDimensions([42])).toEqual({})
+    })
+})
+
+describe('withDataItems', () => {
+    it('replaces the data items in the dimensions or the filter', () => {
+        expect(withDataItems({ dimension: ['dx:a;b', 'pe:2024'], filter: 'ou:x' }, ['b'])).toEqual({
+            dimension: ['dx:b', 'pe:2024'],
+            filter: 'ou:x',
+        })
+        expect(
+            withDataItems({ dimension: ['pe:2024'], filter: ['dx:a;b', 'ou:x'] }, ['a'])
+        ).toEqual({ dimension: ['pe:2024'], filter: ['dx:a', 'ou:x'] })
     })
 })
