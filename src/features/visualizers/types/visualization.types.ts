@@ -62,6 +62,25 @@ export interface VisualizerOptions {
     /** A legend set to color values by (the fixed legend of the official app). */
     legendSetId?: string
     legendStyle: 'FILL' | 'TEXT'
+    /** Options of the pivot table; absent in visuals saved before it existed. */
+    pivot?: PivotTableOptions
+}
+
+/** The options of the official pivot table, named as the DHIS2 visualization object names them. */
+export interface PivotTableOptions {
+    colTotals: boolean
+    rowTotals: boolean
+    colSubTotals: boolean
+    rowSubTotals: boolean
+    hideEmptyColumns: boolean
+    hideEmptyRows: boolean
+    showHierarchy: boolean
+    showDimensionLabels: boolean
+    fixColumnHeaders: boolean
+    fixRowHeaders: boolean
+    displayDensity: 'COMFORTABLE' | 'NORMAL' | 'COMPACT'
+    fontSize: 'LARGE' | 'NORMAL' | 'SMALL'
+    numberType: 'VALUE' | 'ROW_PERCENTAGE' | 'COLUMN_PERCENTAGE'
 }
 
 /** The options as the chart engine reads them from a visualization object. */
@@ -92,7 +111,9 @@ export interface VisualizationEngineOptions {
  * The part of a DHIS2 visualization object that `@dhis2/analytics` reads: the chart type
  * and which dimensions sit on the series (columns), category (rows) and filter axes.
  */
-export interface Visualization extends Partial<VisualizationEngineOptions> {
+export interface Visualization
+    extends Partial<VisualizationEngineOptions>,
+        Partial<PivotTableOptions> {
     type: VisType
     /** Custom title and subtitle; the charts generate their own when these are absent. */
     title?: string

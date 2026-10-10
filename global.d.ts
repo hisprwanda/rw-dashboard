@@ -38,4 +38,12 @@ declare module '@dhis2/analytics' {
         onError?: (message: string) => void,
         onWarning?: (message: string) => void
     ) => { visualization: HighchartsChart }
+
+    /** The official pivot table; it sizes itself to its parent element. */
+    export const PivotTable: import('react').ComponentType<{
+        visualization: unknown
+        data: unknown
+        legendSets?: unknown[]
+        renderCounter?: number
+    }>
 }

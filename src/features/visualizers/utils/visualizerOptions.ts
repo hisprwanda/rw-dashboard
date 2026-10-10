@@ -1,10 +1,27 @@
 import { supportsLegendSet } from './visualization'
 import type {
+    PivotTableOptions,
     ReferenceLine,
     Visualization,
     VisualizationEngineOptions,
     VisualizerOptions,
 } from '../types/visualization.types'
+
+export const DEFAULT_PIVOT_TABLE_OPTIONS: PivotTableOptions = {
+    colTotals: false,
+    rowTotals: false,
+    colSubTotals: false,
+    rowSubTotals: false,
+    hideEmptyColumns: false,
+    hideEmptyRows: false,
+    showHierarchy: false,
+    showDimensionLabels: true,
+    fixColumnHeaders: false,
+    fixRowHeaders: false,
+    displayDensity: 'NORMAL',
+    fontSize: 'NORMAL',
+    numberType: 'VALUE',
+}
 
 export const DEFAULT_VISUALIZER_OPTIONS: VisualizerOptions = {
     colorSet: 'DEFAULT',
@@ -19,6 +36,7 @@ export const DEFAULT_VISUALIZER_OPTIONS: VisualizerOptions = {
     baseLine: { enabled: false },
     targetLine: { enabled: false },
     legendStyle: 'FILL',
+    pivot: DEFAULT_PIVOT_TABLE_OPTIONS,
 }
 
 const toEngineLine = ({ enabled, value, title }: ReferenceLine) => ({
@@ -67,4 +85,7 @@ export const withOptions = (
     ...toEngineOptions(
         supportsLegendSet(visualization.type) ? options : { ...options, legendSetId: undefined }
     ),
+    ...(visualization.type === 'PIVOT_TABLE'
+        ? { ...DEFAULT_PIVOT_TABLE_OPTIONS, ...options.pivot }
+        : {}),
 })

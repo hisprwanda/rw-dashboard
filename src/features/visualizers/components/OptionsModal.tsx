@@ -20,8 +20,10 @@ import { useAppDispatch, useAppSelector } from '@/app/store'
 import { useChartLegendSets } from '@/features/analytics'
 import { supportsLegendSet, visTypeFromChartType } from '../utils/visualization'
 import { visualizerActions } from '../store/visualizerSlice'
+import { DEFAULT_PIVOT_TABLE_OPTIONS } from '../utils/visualizerOptions'
 import type {
     HideEmptyRowItems,
+    PivotTableOptions,
     ReferenceLine,
     RegressionType,
     VisualizerOptions,
@@ -69,6 +71,100 @@ export const OptionsModal = ({ onClose }: OptionsModalProps) => {
     const [tab, setTab] = useState<Tab>('data')
     const update = (patch: Partial<VisualizerOptions>) =>
         dispatch(visualizerActions.updateOptions(patch))
+    const isPivot = visType === 'PIVOT_TABLE'
+    const pivot = { ...DEFAULT_PIVOT_TABLE_OPTIONS, ...options.pivot }
+    const updatePivot = (patch: Partial<PivotTableOptions>) =>
+        update({ pivot: { ...pivot, ...patch } })
+    const pivotCheck = (
+        key: {
+            [K in keyof PivotTableOptions]: PivotTableOptions[K] extends boolean ? K : never
+        }[keyof PivotTableOptions],
+        label: string
+    ) => (
+        <Checkbox
+            dense
+            label={label}
+            checked={pivot[key]}
+            onChange={({ checked }) => updatePivot({ [key]: checked })}
+        />
+    )
+
+    const pivotTabs: Partial<Record<Tab, ReactNode>> = {
+        data: (
+            <>
+                <Group title={i18n.t('Totals')}>
+                    {pivotCheck('colTotals', i18n.t('Columns totals'))}
+                    {pivotCheck('colSubTotals', i18n.t('Columns sub-totals'))}
+                    {pivotCheck('rowTotals', i18n.t('Rows totals'))}
+                    {pivotCheck('rowSubTotals', i18n.t('Rows sub-totals'))}
+                </Group>
+                <Group title={i18n.t('Empty data')}>
+                    {pivotCheck('hideEmptyColumns', i18n.t('Hide empty columns'))}
+                    {pivotCheck('hideEmptyRows', i18n.t('Hide empty rows'))}
+                </Group>
+                <Group title={i18n.t('Display')}>
+                    <SingleSelectField
+                        dense
+                        label={i18n.t('Number type')}
+                        selected={pivot.numberType}
+                        onChange={({ selected }) =>
+                            updatePivot({ numberType: selected as PivotTableOptions['numberType'] })
+                        }
+                    >
+                        <SingleSelectOption value="VALUE" label={i18n.t('Value')} />
+                        <SingleSelectOption
+                            value="ROW_PERCENTAGE"
+                            label={i18n.t('Percentage of row')}
+                        />
+                        <SingleSelectOption
+                            value="COLUMN_PERCENTAGE"
+                            label={i18n.t('Percentage of column')}
+                        />
+                    </SingleSelectField>
+                </Group>
+            </>
+        ),
+        style: (
+            <>
+                <Group title={i18n.t('Table')}>
+                    <SingleSelectField
+                        dense
+                        label={i18n.t('Display density')}
+                        selected={pivot.displayDensity}
+                        onChange={({ selected }) =>
+                            updatePivot({
+                                displayDensity: selected as PivotTableOptions['displayDensity'],
+                            })
+                        }
+                    >
+                        <SingleSelectOption value="COMFORTABLE" label={i18n.t('Comfortable')} />
+                        <SingleSelectOption value="NORMAL" label={i18n.t('Normal')} />
+                        <SingleSelectOption value="COMPACT" label={i18n.t('Compact')} />
+                    </SingleSelectField>
+                    <SingleSelectField
+                        dense
+                        label={i18n.t('Font size')}
+                        selected={pivot.fontSize}
+                        onChange={({ selected }) =>
+                            updatePivot({ fontSize: selected as PivotTableOptions['fontSize'] })
+                        }
+                    >
+                        <SingleSelectOption value="LARGE" label={i18n.t('Large')} />
+                        <SingleSelectOption value="NORMAL" label={i18n.t('Normal')} />
+                        <SingleSelectOption value="SMALL" label={i18n.t('Small')} />
+                    </SingleSelectField>
+                </Group>
+                <Group title={i18n.t('Labels')}>
+                    {pivotCheck('showDimensionLabels', i18n.t('Show dimension labels'))}
+                    {pivotCheck('showHierarchy', i18n.t('Show organisation unit hierarchy'))}
+                </Group>
+                <Group title={i18n.t('Headers')}>
+                    {pivotCheck('fixColumnHeaders', i18n.t('Keep column headers visible'))}
+                    {pivotCheck('fixRowHeaders', i18n.t('Keep row headers visible'))}
+                </Group>
+            </>
+        ),
+    }
 
     const check = (key: keyof VisualizerOptions, label: string) => (
         <Checkbox
@@ -224,9 +320,11 @@ export const OptionsModal = ({ onClose }: OptionsModalProps) => {
         ),
         legend: (
             <>
-                <Group title={i18n.t('Series key')}>
-                    {check('hideLegend', i18n.t('Hide the legend'))}
-                </Group>
+                {!isPivot && (
+                    <Group title={i18n.t('Series key')}>
+                        {check('hideLegend', i18n.t('Hide the legend'))}
+                    </Group>
+                )}
                 {visType && supportsLegendSet(visType) && (
                     <Group title={i18n.t('Legend set')}>
                         <SingleSelectField
@@ -248,7 +346,11 @@ export const OptionsModal = ({ onClose }: OptionsModalProps) => {
                             <div className="flex gap-4">
                                 <Radio
                                     dense
-                                    label={i18n.t('Color the bars')}
+                                    label={
+                                        isPivot
+                                            ? i18n.t('Color the cells')
+                                            : i18n.t('Color the bars')
+                                    }
                                     checked={options.legendStyle === 'FILL'}
                                     onChange={() => update({ legendStyle: 'FILL' })}
                                 />
@@ -306,9 +408,11 @@ export const OptionsModal = ({ onClose }: OptionsModalProps) => {
                     <Tab selected={tab === 'data'} onClick={() => setTab('data')}>
                         {i18n.t('Data')}
                     </Tab>
-                    <Tab selected={tab === 'axes'} onClick={() => setTab('axes')}>
-                        {i18n.t('Axes')}
-                    </Tab>
+                    {!isPivot && (
+                        <Tab selected={tab === 'axes'} onClick={() => setTab('axes')}>
+                            {i18n.t('Axes')}
+                        </Tab>
+                    )}
                     <Tab selected={tab === 'legend'} onClick={() => setTab('legend')}>
                         {i18n.t('Legend')}
                     </Tab>
@@ -316,7 +420,9 @@ export const OptionsModal = ({ onClose }: OptionsModalProps) => {
                         {i18n.t('Style')}
                     </Tab>
                 </TabBar>
-                <div className="flex min-h-[320px] flex-col gap-3 pt-3">{tabs[tab]}</div>
+                <div className="flex min-h-[320px] flex-col gap-3 pt-3">
+                    {(isPivot && pivotTabs[tab]) || tabs[tab]}
+                </div>
             </ModalContent>
             <ModalActions>
                 <ButtonStrip>

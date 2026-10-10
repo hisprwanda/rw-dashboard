@@ -25,6 +25,7 @@ import { withOptions } from '../utils/visualizerOptions'
 import { AdditionalSourceModal } from './AdditionalSourceModal'
 import { ChartTypePicker } from './ChartTypePicker'
 import { DhisChart } from './DhisChart'
+import { DhisPivotTable } from './DhisPivotTable'
 import { DynamicDimensionModal } from './DynamicDimensionModal'
 import { DimensionsPanel, type DimensionModal } from './DimensionsPanel'
 import { FileMenu } from './FileMenu'
@@ -75,7 +76,6 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
     const visualization = useMemo(
         () =>
             visType &&
-            isHighchartsType(visType) &&
             ({
                 ...withOptions(buildVisualization(visType, layout, params), options),
                 title: titles.visualTitle || undefined,
@@ -112,7 +112,15 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
                 />
             )
         }
-        if (visualization)
+        if (visualization?.type === 'PIVOT_TABLE')
+            return (
+                <DhisPivotTable
+                    data={analytics.data}
+                    visualization={visualization}
+                    legendSets={legendSet ? [legendSet] : undefined}
+                />
+            )
+        if (visualization && isHighchartsType(visualization.type))
             return (
                 <DhisChart
                     data={analytics.data}
