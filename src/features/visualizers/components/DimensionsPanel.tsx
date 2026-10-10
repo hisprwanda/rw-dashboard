@@ -5,8 +5,14 @@ import { selectionActions, useDimensions } from '@/features/analytics'
 import { DataSourceSelect } from '@/features/data-sources'
 import { orgUnitSelectionActions } from '@/features/org-units'
 import { visualizerActions } from '../store/visualizerSlice'
+import { AdditionalSourcesSection } from './AdditionalSourcesSection'
 
-export type DimensionModal = 'data' | 'period' | 'orgUnit' | `dynamic:${string}`
+export type DimensionModal =
+    | 'data'
+    | 'period'
+    | 'orgUnit'
+    | `dynamic:${string}`
+    | `source:${string}`
 
 interface DimensionsPanelProps {
     onOpen: (modal: DimensionModal) => void
@@ -73,6 +79,10 @@ export const DimensionsPanel = ({ onOpen, onDataSourceChange }: DimensionsPanelP
                     </div>
                 </>
             )}
+            <AdditionalSourcesSection
+                onOpen={(id) => onOpen(`source:${id}`)}
+                onRemove={onDataSourceChange}
+            />
         </div>
     )
 }

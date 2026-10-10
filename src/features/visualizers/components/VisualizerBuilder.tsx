@@ -4,7 +4,12 @@ import { useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { paths } from '@/app/router/paths'
 import { useAppDispatch, useAppSelector } from '@/app/store'
-import { analyticsToCsv, selectionActions, useChartLegendSets } from '@/features/analytics'
+import {
+    analyticsToCsv,
+    multiSourceIssues,
+    selectionActions,
+    useChartLegendSets,
+} from '@/features/analytics'
 import { DataItemsModal } from '@/features/data-items'
 import { ChartRenderer } from '@/features/charts'
 import { OrgUnitModal } from '@/features/org-units'
@@ -17,6 +22,7 @@ import { visualizerActions } from '../store/visualizerSlice'
 import { buildVisualization, visTypeFromChartType } from '../utils/visualization'
 import { adaptLayoutToVisType } from '../utils/layoutRules'
 import { withOptions } from '../utils/visualizerOptions'
+import { AdditionalSourceModal } from './AdditionalSourceModal'
 import { ChartTypePicker } from './ChartTypePicker'
 import { DhisChart } from './DhisChart'
 import { DynamicDimensionModal } from './DynamicDimensionModal'
@@ -50,6 +56,12 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
     const options = useAppSelector((state) => state.visualizer.options)
     const layout = useAppSelector((state) => state.selection.layout)
     const dataSource = useAppSelector((state) => state.selection.dataSource)
+    const selection = useAppSelector((state) => state.selection)
+    const issues = useMemo(() => multiSourceIssues(selection), [selection])
+    const hasAdditionalData = selection.additionalSources.some(({ items }) => items.length)
+    const usesUserOrgUnits = useAppSelector(
+        (state) => state.orgUnitSelection.useCurrentUserOrgUnits
+    )
 
     const legendSets = useChartLegendSets(dataSource)
     const legendSet = legendSets.data?.find(({ id }) => id === options.legendSetId)
@@ -177,8 +189,48 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
                     <div className="p-2">
                         <NoticeBox warning title={i18n.t('Data source not available')}>
                             {i18n.t(
-                                'The data source of this visualization was deleted or is not shared with you. Pick another data source.'
+                                'A data source of this visualization was deleted or is not shared with you. Pick another data source.'
                             )}
+                        </NoticeBox>
+                    </div>
+                )}
+                {issues.length > 0 && (
+                    <div className="p-2">
+                        <NoticeBox warning title={i18n.t('Data from other sources')}>
+                            {issues.includes('dataInFilter') && (
+                                <p>
+                                    {i18n.t(
+                                        'Move Data to the columns or rows. Values of different data sources cannot be added up in a filter.'
+                                    )}
+                                </p>
+                            )}
+                            {issues.includes('dynamicDimensions') && (
+                                <p>
+                                    {i18n.t(
+                                        'Remove the other dimensions (categories, group sets…). They only exist on the main data source.'
+                                    )}
+                                </p>
+                            )}
+                        </NoticeBox>
+                    </div>
+                )}
+                {hasAdditionalData && usesUserOrgUnits && (
+                    <div className="p-2">
+                        <NoticeBox title={i18n.t('User organisation units')}>
+                            {i18n.t(
+                                'On other data sources, user organisation units are those of the account behind the access token. Pick organisation units to compare the same places.'
+                            )}
+                        </NoticeBox>
+                    </div>
+                )}
+                {analytics.sourceErrors.length > 0 && (
+                    <div className="p-2">
+                        <NoticeBox warning title={i18n.t('Some data could not be loaded')}>
+                            {analytics.sourceErrors.map(({ instanceName, error }) => (
+                                <p key={instanceName}>
+                                    {instanceName}: {error.message}
+                                </p>
+                            ))}
                         </NoticeBox>
                     </div>
                 )}
@@ -212,6 +264,14 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
             {modal?.startsWith('dynamic:') && (
                 <DynamicDimensionModal
                     dimensionId={modal.slice('dynamic:'.length)}
+                    onClose={close}
+                    onUpdate={builder.runAnalytics}
+                    updating={analytics.isFetching}
+                />
+            )}
+            {modal?.startsWith('source:') && (
+                <AdditionalSourceModal
+                    dataSourceId={modal.slice('source:'.length)}
                     onClose={close}
                     onUpdate={builder.runAnalytics}
                     updating={analytics.isFetching}
