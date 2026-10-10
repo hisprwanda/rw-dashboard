@@ -4,7 +4,11 @@ import type { Dhis2ObjectType } from '@/features/dhis2-objects'
 import type { BasemapType, MapSettings, StoredGeoFeaturesQuery } from '@/features/maps'
 import type { Shareable, UserRef } from '@/shared/types/common.types'
 import type { DataStoreEntry } from '@/shared/types/dhis2.types'
-import type { SavedAdditionalSource } from '@/features/visualizers'
+import type {
+    SavedAdditionalSource,
+    VisualizerOptions,
+    YearOverYearSelection,
+} from '@/features/visualizers'
 
 /** Position of an item in the react-grid-layout grid. */
 export interface GridPosition {
@@ -27,6 +31,10 @@ export interface DashboardVisualItem extends GridPosition {
     additionalSources?: SavedAdditionalSource[]
     visualTitleAndSubTitle: VisualTitles
     visualSettings: VisualSettings
+    /** Options of the DHIS2 renderers (pivot table, year over year, outlier table). */
+    visualOptions?: VisualizerOptions
+    /** Years and periods of a year-over-year visual. */
+    yearOverYear?: YearOverYearSelection
 }
 
 /** A map copied into a dashboard. */

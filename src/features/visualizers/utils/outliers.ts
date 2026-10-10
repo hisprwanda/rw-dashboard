@@ -1,5 +1,7 @@
 import {
     buildOrgUnitDimension,
+    parseAnalyticsDimensions,
+    type AnalyticsParams,
     type DisplayProperty,
     type SelectionState,
 } from '@/features/analytics'
@@ -58,6 +60,27 @@ export type OutlierParams = {
     displayProperty?: DisplayProperty
 }
 
+const buildOutlierParamsFrom = (
+    dx: readonly string[],
+    pe: readonly string[],
+    ou: string,
+    options: OutlierOptions,
+    displayProperty: DisplayProperty = 'NAME'
+): OutlierParams | null => {
+    if (!dx.length || !pe.length || !ou) return null
+    return {
+        dx: dx.join(';'),
+        pe: pe.join(';'),
+        ou,
+        algorithm: options.algorithm,
+        threshold: options.threshold > 0 ? options.threshold : DEFAULT_OUTLIER_OPTIONS.threshold,
+        maxResults: Math.min(Math.max(1, Math.round(options.maxResults)), MAX_OUTLIER_RESULTS),
+        orderBy: withAlgorithm(options, options.algorithm).orderBy,
+        sortOrder: options.sortOrder,
+        displayProperty,
+    }
+}
+
 /**
  * The outlier detection request of a builder selection: its data elements, periods and
  * org units. `null` while one of them is missing.
@@ -77,17 +100,23 @@ export const buildOutlierParams = (
         levelIds: orgUnits.selectedLevelIds,
         groupIds: orgUnits.selectedGroupIds,
     }).replace(/^ou:/, '')
-    if (!dx.length || !pe.length || !ou) return null
-    const algorithm = options.algorithm
-    return {
-        dx: dx.join(';'),
-        pe: pe.join(';'),
-        ou,
-        algorithm,
-        threshold: options.threshold > 0 ? options.threshold : DEFAULT_OUTLIER_OPTIONS.threshold,
-        maxResults: Math.min(Math.max(1, Math.round(options.maxResults)), MAX_OUTLIER_RESULTS),
-        orderBy: withAlgorithm(options, algorithm).orderBy,
-        sortOrder: options.sortOrder,
-        displayProperty,
-    }
+    return buildOutlierParamsFrom(dx, pe, ou, options, displayProperty)
+}
+
+/** The outlier detection request of a saved query (its data elements, periods and org units). */
+export const outlierParamsFromQuery = (
+    params: AnalyticsParams | undefined,
+    options: OutlierOptions = DEFAULT_OUTLIER_OPTIONS
+): OutlierParams | null => {
+    const entries = [...(params?.dimension ?? []), ...[params?.filter ?? []].flat()]
+    const dimensions = parseAnalyticsDimensions(entries)
+    const ou = dimensions.ou ?? []
+    if (!ou.length) return null
+    return buildOutlierParamsFrom(
+        dimensions.dx ?? [],
+        dimensions.pe ?? [],
+        ou.join(';'),
+        options,
+        params?.displayProperty
+    )
 }

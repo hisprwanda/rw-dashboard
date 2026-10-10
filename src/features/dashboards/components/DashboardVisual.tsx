@@ -3,26 +3,30 @@ import { CircularLoader, NoticeBox } from '@dhis2/ui'
 import { useMemo } from 'react'
 import { useCombinedAnalytics } from '@/features/analytics'
 import { ChartRenderer } from '@/features/charts'
-import { CURRENT_INSTANCE_ID, useDataSources } from '@/features/data-sources'
-import { useApplicationTitle } from '@/features/system'
 import type { DashboardVisualItem } from '../types/dashboard.types'
-import { visualItemQueries, type ResolveSource } from '../utils/visualQueries'
+import { DashboardOfficialVisual, isOfficialDashboardType } from './DashboardOfficialVisual'
+import { useResolveSource } from '../hooks/useResolveSource'
+import { visualItemQueries } from '../utils/visualQueries'
 
 /**
  * A visualization inside a dashboard: runs its saved query against its data source (one
  * query per data source when its data items come from several).
  */
-export const DashboardVisual = ({ item }: { item: DashboardVisualItem }) => {
-    const applicationTitle = useApplicationTitle()
-    const sources = useDataSources()
-    const plan = useMemo(() => {
-        if (!sources.data) return undefined
-        const resolve: ResolveSource = (id) =>
-            !id || id === CURRENT_INSTANCE_ID
-                ? { isCurrentInstance: true, instanceName: applicationTitle }
-                : sources.data?.find((entry) => entry.key === id)?.value
-        return visualItemQueries(item, resolve)
-    }, [item, sources.data, applicationTitle])
+export const DashboardVisual = ({ item }: { item: DashboardVisualItem }) =>
+    isOfficialDashboardType(item.visualType) ? (
+        <DashboardOfficialVisual item={item} />
+    ) : (
+        <DashboardChartVisual item={item} />
+    )
+
+/** A visual drawn by the app's own charts. */
+const DashboardChartVisual = ({ item }: { item: DashboardVisualItem }) => {
+    const sources = useResolveSource()
+    const { resolve } = sources
+    const plan = useMemo(
+        () => (resolve ? visualItemQueries(item, resolve) : undefined),
+        [item, resolve]
+    )
     const { data, isLoading, error, sourceErrors } = useCombinedAnalytics(
         plan?.missing ? undefined : plan?.queries,
         plan?.dataOrder,

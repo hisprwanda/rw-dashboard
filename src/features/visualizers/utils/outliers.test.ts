@@ -3,6 +3,7 @@ import { initialOrgUnitSelection } from '@/features/org-units'
 import {
     buildOutlierParams,
     DEFAULT_OUTLIER_OPTIONS,
+    outlierParamsFromQuery,
     orderByOptions,
     withAlgorithm,
 } from './outliers'
@@ -48,5 +49,17 @@ describe('withAlgorithm', () => {
             withAlgorithm({ ...DEFAULT_OUTLIER_OPTIONS, orderBy: 'lowerbound' }, 'Z_SCORE').orderBy
         ).toBe('lowerbound')
         expect(orderByOptions('MODIFIED_Z_SCORE')).toContain('modifiedzscore')
+    })
+})
+
+describe('outlierParamsFromQuery', () => {
+    it('reads a saved query', () => {
+        expect(
+            outlierParamsFromQuery({
+                dimension: ['dx:a', 'pe:LAST_12_MONTHS'],
+                filter: 'ou:ou1;LEVEL-3',
+            })
+        ).toMatchObject({ dx: 'a', pe: 'LAST_12_MONTHS', ou: 'ou1;LEVEL-3' })
+        expect(outlierParamsFromQuery({ dimension: ['dx:a', 'pe:2024'] })).toBeNull()
     })
 })
