@@ -178,8 +178,8 @@ country-specific configuration in the code.
 - **Issues:** open a period, fill in the notes and the outbreak rows, save a draft or publish,
   then print or save as PDF.
 - **Import and export:**
-  - templates are JSON files;
-  - `docs/bulletin-presets/rwanda-eidsr.json` is the Rwanda eIDSR bulletin, as an example;
+  - templates are exported and imported as JSON files, so a bulletin built on one instance
+    can be reused on another (its data items, programs and org units must exist there);
   - *Import old bulletin texts* brings over the texts of the previous bulletin app.
 
 ---
