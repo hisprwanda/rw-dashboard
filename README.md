@@ -20,7 +20,7 @@ options, so nothing has to be relearned. The difference is everything around the
 | You want to… | Core DHIS2 apps | Data Analytics Lab |
 |---|---|---|
 | Analyse data from **another DHIS2 instance** | Only the instance the app runs on | Connect any number of instances with an access token |
-| Put data from **two instances in the same chart** | Not possible | Add data items from other instances to one chart |
+| Put data from **several instances in the same chart** | Not possible | Add data items from as many connected instances as you need to one chart |
 | Build **one dashboard across instances** | Items from the local instance only | Mix your own visuals, maps and live DHIS2 favorites from any connected instance |
 | **Present** in a meeting or on an office screen | Full-screen view, one item at a time | Automatic slide show, several items per slide, timing and background music |
 | Share results **outside DHIS2** | Print the dashboard, or download items one by one | Export a whole dashboard to PowerPoint; export visuals as PNG, JPEG, PDF or PowerPoint |
