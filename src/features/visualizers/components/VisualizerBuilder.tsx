@@ -201,14 +201,14 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
                         {i18n.t('Dimensions')}
                     </Tab>
                     <Tab selected={tab === 'settings'} onClick={() => setTab('settings')}>
-                        {i18n.t('Settings')}
+                        {i18n.t('Style')}
                     </Tab>
                 </TabBar>
                 <div className="pt-3">
                     {tab === 'dimensions' ? (
                         <DimensionsPanel onOpen={setModal} onDataSourceChange={analytics.reset} />
                     ) : (
-                        <SettingsPanel onEditTitles={() => setModal('titles')} />
+                        <SettingsPanel onOpenOptions={() => setModal('options')} />
                     )}
                 </div>
             </aside>
@@ -246,6 +246,9 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
                             }
                         }}
                     />
+                    <Button small onClick={() => setModal('titles')}>
+                        {i18n.t('Title')}
+                    </Button>
                     {visualization && (
                         <Button small onClick={() => setModal('options')}>
                             {i18n.t('Options')}

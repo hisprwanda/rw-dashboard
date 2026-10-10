@@ -54,15 +54,30 @@ export const ChartTypePicker = ({ value, onChange }: ChartTypePickerProps) => {
                         />
                         <div className="mt-3 flex max-h-[480px] flex-col gap-3 overflow-y-auto">
                             {[
-                                { title: i18n.t('All types'), charts: official },
-                                { title: i18n.t('Additional types'), charts: additional },
+                                {
+                                    title: i18n.t('DHIS2 types'),
+                                    hint: i18n.t(
+                                        'Drawn by DHIS2, as in the Data Visualizer app. Set them up with Options.'
+                                    ),
+                                    charts: official,
+                                },
+                                {
+                                    title: i18n.t('Additional types'),
+                                    hint: i18n.t(
+                                        'Drawn by this app. Set them up in the Style tab.'
+                                    ),
+                                    charts: additional,
+                                },
                             ]
                                 .filter((group) => group.charts.length > 0)
                                 .map((group) => (
                                     <section key={group.title}>
-                                        <h4 className="m-0 mb-2 text-sm font-semibold text-gray-700">
+                                        <h4 className="m-0 text-sm font-semibold text-gray-800">
                                             {group.title}
                                         </h4>
+                                        <p className="m-0 mb-2 text-xs text-gray-600">
+                                            {group.hint}
+                                        </p>
                                         <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                                             {group.charts.map((chart) => (
                                                 <button
