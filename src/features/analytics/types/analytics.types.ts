@@ -28,6 +28,14 @@ export type AnalyticsParams = {
     includeMetadataDetails?: boolean
     /** The date relative periods are computed from (e.g. `2023-12-31`). */
     relativePeriodDate?: string
+    /** Org unit names with their ancestors (pivot tables showing the hierarchy). */
+    showHierarchy?: boolean
+    /** Overrides the aggregation type of the data items (e.g. `AVERAGE`). */
+    aggregationType?: string
+    /** Keeps only values within bounds, e.g. `GE:10;LT:50`. */
+    measureCriteria?: string
+    /** Only data of complete data set registrations. */
+    completedOnly?: boolean
 }
 
 /** The org-unit part of a request, as picked in the org-unit modal. */

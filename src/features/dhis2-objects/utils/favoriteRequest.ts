@@ -7,6 +7,7 @@ import type {
 import type { ChartType } from '@/features/charts'
 import type { MapSettings, StoredGeoFeaturesQuery } from '@/features/maps'
 import type {
+    Dhis2Axes,
     Dhis2Dimension,
     Dhis2Map,
     Dhis2MapView,
@@ -36,13 +37,35 @@ export interface FavoriteRequest {
     layout: AnalyticsLayout
 }
 
+/** A favorite's axes, plus any of its options (read when they have the expected type). */
+type FavoriteDefinition = Dhis2Axes & { type?: string; [option: string]: unknown }
+
+const text = (value: unknown) => (typeof value === 'string' && value ? value : undefined)
+
+/** The analytics options a favorite sets, as Data Visualizer sends them with its request. */
+const favoriteOptions = (visualization: FavoriteDefinition): AnalyticsParams => {
+    const aggregationType = text(visualization.aggregationType)
+    const measureCriteria = text(visualization.measureCriteria)
+    const relativePeriodDate = text(visualization.relativePeriodDate)
+    return {
+        ...(visualization.showHierarchy === true ? { showHierarchy: true } : {}),
+        ...(aggregationType && aggregationType !== 'DEFAULT' ? { aggregationType } : {}),
+        ...(measureCriteria ? { measureCriteria } : {}),
+        ...(visualization.completedOnly === true ? { completedOnly: true } : {}),
+        ...(relativePeriodDate ? { relativePeriodDate } : {}),
+        // Pivot tables can show numerators and denominators of indicators.
+        ...(visualization.type === 'PIVOT_TABLE' ? { includeNumDen: true } : {}),
+    }
+}
+
 /**
  * The analytics request of a Data Visualizer favorite: its columns and rows become
- * `dimension`, its filters `filter`. Items are sent as they are (relative periods,
- * `USER_ORGUNIT_CHILDREN`, `LEVEL-2`… are understood by the analytics API).
+ * `dimension`, its filters `filter`, and its analytics options are sent along. Items are
+ * sent as they are (relative periods, `USER_ORGUNIT_CHILDREN`, `LEVEL-2`… are understood
+ * by the analytics API).
  */
 export const visualizationToRequest = (
-    visualization: Pick<Dhis2Visualization, 'columns' | 'rows' | 'filters'>,
+    visualization: FavoriteDefinition,
     displayProperty: DisplayProperty = 'NAME'
 ): FavoriteRequest => {
     const filter = filterParam(visualization.filters)
@@ -53,6 +76,7 @@ export const visualizationToRequest = (
             ),
             ...(filter === undefined ? {} : { filter }),
             displayProperty,
+            ...favoriteOptions(visualization),
         },
         layout: {
             Columns: layoutNames(visualization.columns),

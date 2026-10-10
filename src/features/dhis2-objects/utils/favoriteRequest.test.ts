@@ -77,6 +77,7 @@ describe('visualizationToRequest', () => {
                 'ou:ImspTQPwCqd;LEVEL-4',
             ],
             displayProperty: 'SHORTNAME',
+            includeNumDen: true,
         })
         expect(layout.Columns).toEqual(['Data', 'Period'])
     })
@@ -89,6 +90,37 @@ describe('visualizationToRequest', () => {
         })
         expect(params.dimension).toEqual(['Cow9nZikDgD'])
         expect(params.filter).toEqual(['pe:LAST_YEAR', 'x'])
+    })
+})
+
+describe('visualizationToRequest options', () => {
+    it("sends the favorite's analytics options", () => {
+        const { params } = visualizationToRequest({
+            ...pivotTable,
+            type: 'PIVOT_TABLE',
+            showHierarchy: true,
+            aggregationType: 'AVERAGE',
+            measureCriteria: 'GE:10',
+            completedOnly: true,
+            relativePeriodDate: '2024-06-30',
+        })
+        expect(params).toMatchObject({
+            showHierarchy: true,
+            aggregationType: 'AVERAGE',
+            measureCriteria: 'GE:10',
+            completedOnly: true,
+            relativePeriodDate: '2024-06-30',
+            includeNumDen: true,
+        })
+    })
+
+    it('leaves out default and unset options', () => {
+        const { params } = visualizationToRequest({
+            ...stackedColumn,
+            aggregationType: 'DEFAULT',
+            showHierarchy: false,
+        })
+        expect(Object.keys(params).sort()).toEqual(['dimension', 'displayProperty', 'filter'])
     })
 })
 
