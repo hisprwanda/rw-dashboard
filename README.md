@@ -259,7 +259,7 @@ src/
 
 We extend our heartfelt gratitude to the following developers who contributed to this project:
 
-- **Mulisa Jules Maurice**: [mouricej@hisprwanda.org]
+- **MULISA Jules Maurice**: [mouricej@hisprwanda.org]
 - **NSENGIYUMVA Christian**: [cristiannsengi@gmail.com]
 - **IRADUKUNDA Derrick**: [iradukundaderrick7@gmail.com]
 
