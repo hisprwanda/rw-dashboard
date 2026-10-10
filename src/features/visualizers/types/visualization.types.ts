@@ -1,3 +1,4 @@
+import type { OutlierOptions } from '../utils/outliers'
 /** Chart types of the DHIS2 visualization object (`@dhis2/analytics` `VIS_TYPE_*`). */
 export type VisType =
     | 'COLUMN'
@@ -64,6 +65,8 @@ export interface VisualizerOptions {
     legendStyle: 'FILL' | 'TEXT'
     /** Options of the pivot table; absent in visuals saved before it existed. */
     pivot?: PivotTableOptions
+    /** Options of the outlier table; absent in visuals saved before it existed. */
+    outlier?: OutlierOptions
 }
 
 /** The options of the official pivot table, named as the DHIS2 visualization object names them. */

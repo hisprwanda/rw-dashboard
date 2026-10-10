@@ -11,7 +11,7 @@ import {
     selectionActions,
     useChartLegendSets,
 } from '@/features/analytics'
-import { DataItemsModal } from '@/features/data-items'
+import { DATA_ITEM_TYPES, DataItemsModal } from '@/features/data-items'
 import { ChartRenderer } from '@/features/charts'
 import { OrgUnitModal } from '@/features/org-units'
 import { PeriodModal } from '@/features/periods'
@@ -33,6 +33,7 @@ import { DimensionsPanel, type DimensionModal } from './DimensionsPanel'
 import { FileMenu } from './FileMenu'
 import { LayoutEditor } from './LayoutEditor'
 import { OptionsModal } from './OptionsModal'
+import { OutlierError, OutlierTable } from './OutlierTable'
 import { SaveVisualModal } from './SaveVisualModal'
 import { SettingsPanel } from './SettingsPanel'
 import { TitlesModal } from './TitlesModal'
@@ -57,7 +58,7 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
     const navigate = useNavigate()
     const dispatch = useAppDispatch()
     const builder = useVisualBuilder(visualId)
-    const { analytics, yearOverYear } = builder
+    const { analytics, yearOverYear, outliers } = builder
     const [tab, setTab] = useState<'dimensions' | 'settings'>('dimensions')
     const [modal, setModal] = useState<Modal | null>(null)
     const chartRef = useRef<HTMLDivElement>(null)
@@ -78,10 +79,16 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
     const legendSet = legendSets.data?.find(({ id }) => id === options.legendSetId)
     const visType = visTypeFromChartType(chartType)
     const isYearOverYear = isYearOverYearChart(chartType)
-    const request = isYearOverYear ? yearOverYear.request : analytics.request
+    const isOutlier = chartType === 'Outlier Table'
+    const request = isOutlier
+        ? outliers.request
+        : isYearOverYear
+          ? yearOverYear.request
+          : analytics.request
     const params = request?.dataParams
     const visualLayout = isYearOverYear ? yearOverYearLayout(layout) : layout
-    const isFetching = analytics.isFetching || yearOverYear.isFetching
+    const isFetching = analytics.isFetching || yearOverYear.isFetching || outliers.isFetching
+    const singleSourceOnly = isYearOverYear || isOutlier
     // Titles stay empty unless set, so the DHIS2 charts generate their own.
     const visualization = useMemo(
         () =>
@@ -99,9 +106,11 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
 
     const close = () => setModal(null)
 
-    const data = isYearOverYear
-        ? yearOverYear.data && mergeAnalyticsResponses(yearOverYear.data)
-        : analytics.data
+    const data = isOutlier
+        ? undefined
+        : isYearOverYear
+          ? yearOverYear.data && mergeAnalyticsResponses(yearOverYear.data)
+          : analytics.data
     const downloadData = data
         ? () =>
               downloadText(
@@ -114,6 +123,19 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
 
     const renderChart = () => {
         if (isFetching) return <LoadingState label={i18n.t('Running analytics')} />
+        if (isOutlier) {
+            if (outliers.error) return <OutlierError error={outliers.error} />
+            if (!outliers.data) {
+                return (
+                    <EmptyState
+                        message={i18n.t(
+                            'Select data elements, period and organisation unit, then click Update.'
+                        )}
+                    />
+                )
+            }
+            return <OutlierTable data={outliers.data} />
+        }
         if (isYearOverYear) {
             if (yearOverYear.error) return <ErrorState error={yearOverYear.error} />
             if (!yearOverYear.data || !visualization) {
@@ -206,6 +228,13 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
                         value={chartType}
                         onChange={(type) => {
                             dispatch(visualizerActions.setChartType(type))
+                            // Outliers are detected in data element values only.
+                            const dataElements = DATA_ITEM_TYPES.find(
+                                (option) => option.value === 'dataElements'
+                            )
+                            if (type === 'Outlier Table' && dataElements) {
+                                dispatch(selectionActions.setDimensionItemType(dataElements))
+                            }
                             // Each chart type allows its own layout (the official rules).
                             // Year-over-year and outlier tables have fixed layouts, derived
                             // when drawing: the stored one is kept for the other types.
@@ -239,7 +268,7 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
                         </NoticeBox>
                     </div>
                 )}
-                {isYearOverYear && hasAdditionalData && (
+                {singleSourceOnly && hasAdditionalData && (
                     <div className="p-2">
                         <NoticeBox warning title={i18n.t('Data from other sources')}>
                             {i18n.t(
@@ -248,7 +277,7 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
                         </NoticeBox>
                     </div>
                 )}
-                {!isYearOverYear && issues.length > 0 && (
+                {!singleSourceOnly && issues.length > 0 && (
                     <div className="p-2">
                         <NoticeBox warning title={i18n.t('Data from other sources')}>
                             {issues.includes('dataInFilter') && (
@@ -295,6 +324,9 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
 
             {modal === 'data' && (
                 <DataItemsModal
+                    notice={
+                        isOutlier ? i18n.t('The outlier table only uses data elements.') : undefined
+                    }
                     onClose={close}
                     onUpdate={builder.runAnalytics}
                     updating={analytics.isFetching}

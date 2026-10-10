@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useAppDispatch, useAppStore } from '@/app/store'
 import {
+    buildSelectionRequest,
     buildSelectionRuns,
     getDimensionItems,
     multiSourceIssues,
@@ -16,7 +17,9 @@ import { CURRENT_INSTANCE_ID, useDataSources } from '@/features/data-sources'
 import { orgUnitSelectionActions, type OrgUnitSelectionState } from '@/features/org-units'
 import { useApplicationTitle } from '@/features/system'
 import { visualizerActions, type VisualizerState } from '../store/visualizerSlice'
+import { buildOutlierParams, DEFAULT_OUTLIER_OPTIONS } from '../utils/outliers'
 import { buildYearOverYearRun, isYearOverYearChart } from '../utils/yearOverYear'
+import { useOutlierRun } from './useOutlierRun'
 import { useYearOverYearRun } from './useYearOverYearRun'
 import { visualToBuilderState } from '../utils/visualState'
 import { useVisual } from './useVisual'
@@ -37,6 +40,8 @@ export const useVisualBuilder = (visualId: string | undefined) => {
     const yearOverYear = useYearOverYearRun()
     const { run, reset } = analytics
     const { run: runYearOverYear, reset: resetYearOverYear } = yearOverYear
+    const outliers = useOutlierRun()
+    const { run: runOutliers, reset: resetOutliers } = outliers
     const visual = useVisual(visualId)
     const dataSources = useDataSources()
     /** The visual whose state is in the store; the store is (re)initialised once per visual. */
@@ -53,9 +58,30 @@ export const useVisualBuilder = (visualId: string | undefined) => {
             orgUnits: OrgUnitSelectionState,
             visualizer: VisualizerState
         ) => {
+            const singleSource = !selection.additionalSources.some(({ items }) => items.length)
+            if (visualizer.chartType === 'Outlier Table') {
+                reset()
+                resetYearOverYear()
+                if (!singleSource) return
+                const params = buildOutlierParams(
+                    selection,
+                    orgUnits,
+                    { ...DEFAULT_OUTLIER_OPTIONS, ...visualizer.options.outlier },
+                    displayProperty
+                )
+                if (params) {
+                    await runOutliers({
+                        instance: selection.dataSource,
+                        params,
+                        request: buildSelectionRequest(selection, orgUnits, displayProperty),
+                    })
+                }
+                return
+            }
+            resetOutliers()
             if (isYearOverYearChart(visualizer.chartType)) {
                 reset()
-                if (selection.additionalSources.some(({ items }) => items.length)) return
+                if (!singleSource) return
                 const next = buildYearOverYearRun(
                     selection,
                     orgUnits,
@@ -70,7 +96,15 @@ export const useVisualBuilder = (visualId: string | undefined) => {
             const runs = buildSelectionRuns(selection, orgUnits, displayProperty)
             if (runs) await run(runs)
         },
-        [displayProperty, run, reset, runYearOverYear, resetYearOverYear]
+        [
+            displayProperty,
+            run,
+            reset,
+            runYearOverYear,
+            resetYearOverYear,
+            runOutliers,
+            resetOutliers,
+        ]
     )
 
     /** Runs the analytics of the current selection. */
@@ -94,6 +128,7 @@ export const useVisualBuilder = (visualId: string | undefined) => {
             dispatch(visualizerActions.resetVisualizer())
             reset()
             resetYearOverYear()
+            resetOutliers()
             setMissingDataSource(false)
             setLoadedId(target)
             return
@@ -127,6 +162,7 @@ export const useVisualBuilder = (visualId: string | undefined) => {
 
         reset()
         resetYearOverYear()
+        resetOutliers()
         if (!missing) void start(state.selection, state.orgUnits, state.visualizer)
     }, [
         visualId,
@@ -138,6 +174,7 @@ export const useVisualBuilder = (visualId: string | undefined) => {
         start,
         reset,
         resetYearOverYear,
+        resetOutliers,
     ])
 
     // The automatic subtitle lists the items of the last result.
@@ -159,6 +196,7 @@ export const useVisualBuilder = (visualId: string | undefined) => {
     return {
         analytics,
         yearOverYear,
+        outliers,
         runAnalytics,
         adopt,
         saved: visual.data,

@@ -20,6 +20,14 @@ import { useAppDispatch, useAppSelector } from '@/app/store'
 import { useChartLegendSets } from '@/features/analytics'
 import { supportsLegendSet, visTypeFromChartType } from '../utils/visualization'
 import { visualizerActions } from '../store/visualizerSlice'
+import {
+    DEFAULT_OUTLIER_OPTIONS,
+    MAX_OUTLIER_RESULTS,
+    orderByOptions,
+    withAlgorithm,
+    type OutlierAlgorithm,
+    type OutlierOptions,
+} from '../utils/outliers'
 import { DEFAULT_PIVOT_TABLE_OPTIONS } from '../utils/visualizerOptions'
 import type {
     HideEmptyRowItems,
@@ -60,6 +68,21 @@ const colorSetLabel = (key: string) => {
     return labels[key] ?? key
 }
 
+const outlierColumnLabel = (key: string) => {
+    const labels: Record<string, string> = {
+        absdev: i18n.t('Absolute deviation'),
+        zscore: i18n.t('Z-score'),
+        modifiedzscore: i18n.t('Modified z-score'),
+        mean: i18n.t('Mean'),
+        median: i18n.t('Median'),
+        stddev: i18n.t('Standard deviation'),
+        medianabsdeviation: i18n.t('Median absolute deviation'),
+        lowerbound: i18n.t('Lower boundary'),
+        upperbound: i18n.t('Upper boundary'),
+    }
+    return labels[key] ?? key
+}
+
 /** The chart options of the official Data Visualizer: Data, Axes, Legend and Style tabs. */
 export const OptionsModal = ({ onClose }: OptionsModalProps) => {
     const dispatch = useAppDispatch()
@@ -87,6 +110,86 @@ export const OptionsModal = ({ onClose }: OptionsModalProps) => {
             checked={pivot[key]}
             onChange={({ checked }) => updatePivot({ [key]: checked })}
         />
+    )
+
+    const outlier = { ...DEFAULT_OUTLIER_OPTIONS, ...options.outlier }
+    const updateOutlier = (next: OutlierOptions) => update({ outlier: next })
+    const outlierOptions = (
+        <>
+            <Group title={i18n.t('Outlier detection method')}>
+                <SingleSelectField
+                    dense
+                    label={i18n.t('Method')}
+                    selected={outlier.algorithm}
+                    onChange={({ selected }) =>
+                        updateOutlier(withAlgorithm(outlier, selected as OutlierAlgorithm))
+                    }
+                >
+                    <SingleSelectOption
+                        value="MODIFIED_Z_SCORE"
+                        label={i18n.t('Modified z-score')}
+                    />
+                    <SingleSelectOption value="Z_SCORE" label={i18n.t('Z-score')} />
+                </SingleSelectField>
+                <InputField
+                    dense
+                    type="number"
+                    min="0.1"
+                    step="0.1"
+                    label={i18n.t('Threshold factor')}
+                    helpText={i18n.t(
+                        'Values further than this many scores from the center are outliers.'
+                    )}
+                    value={String(outlier.threshold)}
+                    onChange={({ value }) =>
+                        updateOutlier({
+                            ...outlier,
+                            threshold: parseNumber(value) ?? DEFAULT_OUTLIER_OPTIONS.threshold,
+                        })
+                    }
+                />
+            </Group>
+            <Group title={i18n.t('Results')}>
+                <InputField
+                    dense
+                    type="number"
+                    min="1"
+                    max={String(MAX_OUTLIER_RESULTS)}
+                    label={i18n.t('Maximum number of results')}
+                    value={String(outlier.maxResults)}
+                    onChange={({ value }) =>
+                        updateOutlier({
+                            ...outlier,
+                            maxResults: parseNumber(value) ?? DEFAULT_OUTLIER_OPTIONS.maxResults,
+                        })
+                    }
+                />
+                <SingleSelectField
+                    dense
+                    label={i18n.t('Sort by')}
+                    selected={outlier.orderBy}
+                    onChange={({ selected }) => updateOutlier({ ...outlier, orderBy: selected })}
+                >
+                    {orderByOptions(outlier.algorithm).map((key) => (
+                        <SingleSelectOption key={key} value={key} label={outlierColumnLabel(key)} />
+                    ))}
+                </SingleSelectField>
+                <SingleSelectField
+                    dense
+                    label={i18n.t('Sort order')}
+                    selected={outlier.sortOrder}
+                    onChange={({ selected }) =>
+                        updateOutlier({
+                            ...outlier,
+                            sortOrder: selected === 'ASC' ? 'ASC' : 'DESC',
+                        })
+                    }
+                >
+                    <SingleSelectOption value="DESC" label={i18n.t('High to low')} />
+                    <SingleSelectOption value="ASC" label={i18n.t('Low to high')} />
+                </SingleSelectField>
+            </Group>
+        </>
     )
 
     const pivotTabs: Partial<Record<Tab, ReactNode>> = {
@@ -404,25 +507,31 @@ export const OptionsModal = ({ onClose }: OptionsModalProps) => {
         <Modal onClose={onClose} position="middle" large>
             <ModalTitle>{i18n.t('Options')}</ModalTitle>
             <ModalContent>
-                <TabBar>
-                    <Tab selected={tab === 'data'} onClick={() => setTab('data')}>
-                        {i18n.t('Data')}
-                    </Tab>
-                    {!isPivot && (
-                        <Tab selected={tab === 'axes'} onClick={() => setTab('axes')}>
-                            {i18n.t('Axes')}
-                        </Tab>
-                    )}
-                    <Tab selected={tab === 'legend'} onClick={() => setTab('legend')}>
-                        {i18n.t('Legend')}
-                    </Tab>
-                    <Tab selected={tab === 'style'} onClick={() => setTab('style')}>
-                        {i18n.t('Style')}
-                    </Tab>
-                </TabBar>
-                <div className="flex min-h-[320px] flex-col gap-3 pt-3">
-                    {(isPivot && pivotTabs[tab]) || tabs[tab]}
-                </div>
+                {visType === 'OUTLIER_TABLE' ? (
+                    <div className="flex flex-col gap-3">{outlierOptions}</div>
+                ) : (
+                    <>
+                        <TabBar>
+                            <Tab selected={tab === 'data'} onClick={() => setTab('data')}>
+                                {i18n.t('Data')}
+                            </Tab>
+                            {!isPivot && (
+                                <Tab selected={tab === 'axes'} onClick={() => setTab('axes')}>
+                                    {i18n.t('Axes')}
+                                </Tab>
+                            )}
+                            <Tab selected={tab === 'legend'} onClick={() => setTab('legend')}>
+                                {i18n.t('Legend')}
+                            </Tab>
+                            <Tab selected={tab === 'style'} onClick={() => setTab('style')}>
+                                {i18n.t('Style')}
+                            </Tab>
+                        </TabBar>
+                        <div className="flex min-h-[320px] flex-col gap-3 pt-3">
+                            {(isPivot && pivotTabs[tab]) || tabs[tab]}
+                        </div>
+                    </>
+                )}
             </ModalContent>
             <ModalActions>
                 <ButtonStrip>
