@@ -20,6 +20,7 @@ import { useAppDispatch, useAppSelector } from '@/app/store'
 import { useChartLegendSets } from '@/features/analytics'
 import { supportsLegendSet, visTypeFromChartType } from '../utils/visualization'
 import { visualizerActions } from '../store/visualizerSlice'
+import { AppChartStyleOptions } from './AppChartStyleOptions'
 import {
     DEFAULT_OUTLIER_OPTIONS,
     MAX_OUTLIER_RESULTS,
@@ -507,7 +508,9 @@ export const OptionsModal = ({ onClose }: OptionsModalProps) => {
         <Modal onClose={onClose} position="middle" large>
             <ModalTitle>{i18n.t('Options')}</ModalTitle>
             <ModalContent>
-                {visType === 'OUTLIER_TABLE' ? (
+                {!visType ? (
+                    <AppChartStyleOptions />
+                ) : visType === 'OUTLIER_TABLE' ? (
                     <div className="flex flex-col gap-3">{outlierOptions}</div>
                 ) : (
                     <>

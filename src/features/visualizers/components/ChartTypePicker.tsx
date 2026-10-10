@@ -56,16 +56,12 @@ export const ChartTypePicker = ({ value, onChange }: ChartTypePickerProps) => {
                             {[
                                 {
                                     title: i18n.t('DHIS2 types'),
-                                    hint: i18n.t(
-                                        'Drawn by DHIS2, as in the Data Visualizer app. Set them up with Options.'
-                                    ),
+                                    hint: i18n.t('Drawn by DHIS2, as in the Data Visualizer app.'),
                                     charts: official,
                                 },
                                 {
                                     title: i18n.t('Additional types'),
-                                    hint: i18n.t(
-                                        'Drawn by this app. Set them up in the Style tab.'
-                                    ),
+                                    hint: i18n.t('Drawn by this app, with their own options.'),
                                     charts: additional,
                                 },
                             ]

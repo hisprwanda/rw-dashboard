@@ -1,5 +1,5 @@
 import i18n from '@dhis2/d2-i18n'
-import { Button, IconSync16, NoticeBox, Tab, TabBar } from '@dhis2/ui'
+import { Button, IconSync16, NoticeBox } from '@dhis2/ui'
 import { useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { paths } from '@/app/router/paths'
@@ -35,7 +35,6 @@ import { LayoutEditor } from './LayoutEditor'
 import { OptionsModal } from './OptionsModal'
 import { OutlierError, OutlierTable } from './OutlierTable'
 import { SaveVisualModal } from './SaveVisualModal'
-import { SettingsPanel } from './SettingsPanel'
 import { TitlesModal } from './TitlesModal'
 import { YearOverYearPeriodModal } from './YearOverYearPeriodModal'
 
@@ -59,7 +58,6 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
     const dispatch = useAppDispatch()
     const builder = useVisualBuilder(visualId)
     const { analytics, yearOverYear, outliers } = builder
-    const [tab, setTab] = useState<'dimensions' | 'settings'>('dimensions')
     const [modal, setModal] = useState<Modal | null>(null)
     const chartRef = useRef<HTMLDivElement>(null)
     const chartType = useAppSelector((state) => state.visualizer.chartType)
@@ -196,21 +194,7 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
     return (
         <div className="flex items-start gap-3 p-2">
             <aside className="w-1/4 min-w-[260px] rounded bg-white p-3 shadow">
-                <TabBar fixed>
-                    <Tab selected={tab === 'dimensions'} onClick={() => setTab('dimensions')}>
-                        {i18n.t('Dimensions')}
-                    </Tab>
-                    <Tab selected={tab === 'settings'} onClick={() => setTab('settings')}>
-                        {i18n.t('Style')}
-                    </Tab>
-                </TabBar>
-                <div className="pt-3">
-                    {tab === 'dimensions' ? (
-                        <DimensionsPanel onOpen={setModal} onDataSourceChange={analytics.reset} />
-                    ) : (
-                        <SettingsPanel onOpenOptions={() => setModal('options')} />
-                    )}
-                </div>
+                <DimensionsPanel onOpen={setModal} onDataSourceChange={analytics.reset} />
             </aside>
 
             <main className="flex-grow rounded bg-white shadow">
@@ -249,11 +233,9 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
                     <Button small onClick={() => setModal('titles')}>
                         {i18n.t('Title')}
                     </Button>
-                    {visualization && (
-                        <Button small onClick={() => setModal('options')}>
-                            {i18n.t('Options')}
-                        </Button>
-                    )}
+                    <Button small onClick={() => setModal('options')}>
+                        {i18n.t('Options')}
+                    </Button>
                     <FileMenu
                         isSaved={!!visualId}
                         onSave={() => setModal('save')}
