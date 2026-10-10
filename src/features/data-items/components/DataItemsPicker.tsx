@@ -2,7 +2,12 @@ import i18n from '@dhis2/d2-i18n'
 import { NoticeBox, SingleSelectField, SingleSelectOption, Transfer } from '@dhis2/ui'
 import { useMemo, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '@/app/store'
-import { selectionActions } from '@/features/analytics'
+import {
+    selectionActions,
+    type DataItemRef,
+    type DimensionItemType,
+    type SelectedDataSource,
+} from '@/features/analytics'
 import { useDebouncedValue } from '@/shared/hooks'
 import { DATA_ITEM_TYPES, DATA_SET_METRICS } from '../constants/dataItemTypes'
 import { dataItemGroupLabel, dataItemTypeLabel, dataSetMetricLabel } from '../utils/labels'
@@ -29,9 +34,47 @@ export const DataItemsPicker = () => {
     const { dataSource, dimensionItemType, dimensions, selectedDataItems } = useAppSelector(
         (state) => state.selection
     )
+    const picked = useMemo(() => {
+        const labels = new Map(selectedDataItems.map(({ id, label }) => [id, label]))
+        return (dimensions.dx ?? []).map((id) => ({ id, label: labels.get(id) ?? id }))
+    }, [dimensions.dx, selectedDataItems])
+
+    return (
+        <DataItemsSelector
+            instance={dataSource}
+            itemType={dimensionItemType}
+            onItemTypeChange={(option) => dispatch(selectionActions.setDimensionItemType(option))}
+            picked={picked}
+            onChange={(next) => {
+                dispatch(
+                    selectionActions.setDimensions({ ...dimensions, dx: next.map(({ id }) => id) })
+                )
+                dispatch(selectionActions.setSelectedDataItems(next))
+            }}
+        />
+    )
+}
+
+interface DataItemsSelectorProps {
+    /** The data source the items are read from. */
+    instance: SelectedDataSource
+    itemType: DimensionItemType
+    onItemTypeChange: (option: DimensionItemType) => void
+    /** The picked items, in order. */
+    picked: DataItemRef[]
+    onChange: (next: DataItemRef[]) => void
+}
+
+/** The data items picker of any data source, controlled by its parent. */
+export const DataItemsSelector = ({
+    instance,
+    itemType,
+    onItemTypeChange,
+    picked,
+    onChange: onChangeItems,
+}: DataItemsSelectorProps) => {
     const type: DataItemTypeValue =
-        DATA_ITEM_TYPES.find((option) => option.value === dimensionItemType.value)?.value ??
-        'dataItems'
+        DATA_ITEM_TYPES.find((option) => option.value === itemType.value)?.value ?? 'dataItems'
 
     const [search, setSearch] = useState('')
     const [groupId, setGroupId] = useState('')
@@ -43,10 +86,10 @@ export const DataItemsPicker = () => {
         () => ({ type, search: debouncedSearch, groupId, disaggregation, metric }),
         [type, debouncedSearch, groupId, disaggregation, metric]
     )
-    const items = useDataItems(dataSource, filters)
-    const groups = useDataItemGroups(dataSource, type)
+    const items = useDataItems(instance, filters)
+    const groups = useDataItemGroups(instance, type)
 
-    const selected = useMemo(() => dimensions.dx ?? [], [dimensions.dx])
+    const selected = useMemo(() => picked.map(({ id }) => id), [picked])
     const options = useMemo(
         () => uniqueOptions(toPickerOptions(items.items, filters)),
         [items.items, filters]
@@ -54,9 +97,9 @@ export const DataItemsPicker = () => {
     const selectedLookup = useMemo(
         () =>
             Object.fromEntries(
-                selectedDataItems.map((item) => [item.id, { label: item.label, value: item.id }])
+                picked.map((item) => [item.id, { label: item.label, value: item.id }])
             ),
-        [selectedDataItems]
+        [picked]
     )
 
     const onChange = ({ selected: next }: { selected: string[] }) => {
@@ -64,16 +107,13 @@ export const DataItemsPicker = () => {
             options.find((option: PickerOption) => option.value === id)?.label ??
             selectedLookup[id]?.label ??
             id
-        dispatch(selectionActions.setDimensions({ ...dimensions, dx: next }))
-        dispatch(
-            selectionActions.setSelectedDataItems(next.map((id) => ({ id, label: labelOf(id) })))
-        )
+        onChangeItems(next.map((id) => ({ id, label: labelOf(id) })))
     }
 
     const changeType = (value: string) => {
         const option = DATA_ITEM_TYPES.find((candidate) => candidate.value === value)
         if (!option) return
-        dispatch(selectionActions.setDimensionItemType(option))
+        onItemTypeChange(option)
         setGroupId('')
         setMetric('')
         setDisaggregation('totals')
