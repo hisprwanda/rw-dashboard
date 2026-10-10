@@ -1,43 +1,47 @@
 # Data Analytics Lab
 
-Data Analytics Lab is a DHIS2 app developed by **HISP Rwanda** for analysing and presenting
-health data. Inside one app you can build charts, tables and maps, combine them into
-dashboards, present those dashboards as slide shows, and publish periodic bulletins.
+**One DHIS2 app to analyse data from all your DHIS2 instances, and turn it into dashboards,
+slide shows and bulletins.**
 
-It reads data from the DHIS2 instance it is installed on **and from other DHIS2 instances**,
-and a single chart can even combine data items from several instances.
+Developed by **HISP Rwanda**, Data Analytics Lab picks up where the core DHIS2 apps stop.
+The Data Visualizer, Maps and Dashboard apps work well on the instance they run on. Most
+countries, though, run several instances: routine reporting, disease surveillance, programs.
+Their results also have to reach meetings, screens and printed bulletins, not just a browser
+tab. Data Analytics Lab covers that last mile, and keeps the DHIS2 look and feel users already
+know.
 
-The chart builder follows the official DHIS2 Data Visualizer: the same chart types, layout
-rules and options, drawn by the same DHIS2 chart engine. What you build here looks the same
-as it does in DHIS2.
+---
+
+## Why use it when DHIS2 already has a Data Visualizer?
+
+The charts are the same: the app uses the official DHIS2 chart engine, chart types and
+options, so nothing has to be relearned. The difference is everything around them.
+
+| You want to… | Core DHIS2 apps | Data Analytics Lab |
+|---|---|---|
+| Analyse data from **another DHIS2 instance** | Only the instance the app runs on | Connect any number of instances with an access token |
+| Put data from **two instances in the same chart** | Not possible | Add data items from other instances to one chart |
+| Build **one dashboard across instances** | Items from the local instance only | Mix your own visuals, maps and live DHIS2 favorites from any connected instance |
+| **Present** in a meeting or on an office screen | Full-screen view, one item at a time | Automatic slide show, several items per slide, timing and background music |
+| Share results **outside DHIS2** | Print the dashboard, or download items one by one | Export a whole dashboard to PowerPoint; export visuals as PNG, JPEG, PDF or PowerPoint |
+| Publish a **weekly or monthly bulletin** | Built by hand outside DHIS2, or coded as an HTML report | Bulletin templates filled from live data, for any period, in several languages, printed or saved as PDF |
 
 ---
 
 ## The problem it solves
 
-Health programs rarely keep all their data in one place. In Rwanda, as in many countries,
-routine reporting, disease surveillance (eIDSR) and other programs run on **separate DHIS2
-instances**. That makes everyday analysis harder than it should be:
+- **Data is split across instances.** Comparing routine data with surveillance data usually
+  means exporting from each system and joining the data in spreadsheets. That is slow,
+  error-prone and quickly out of date.
+- **Results are rebuilt for every meeting.** Teams copy the same charts into PowerPoint for
+  review meetings and office screens, period after period.
+- **Bulletins are produced by hand.** Weekly and monthly bulletins are copied into Word or Excel,
+  then reformatted and translated each time. That takes hours and invites mistakes.
+- **Country tools do not travel.** Tools that hard-code a country's program and data element ids
+  cannot be reused by other countries or programs.
 
-- **Data is split across instances.** The DHIS2 apps only see the instance they run on. Comparing
-  routine data with surveillance data means exporting from each system and joining the data
-  by hand in spreadsheets, which is slow, error-prone and quickly out of date.
-- **Results are hard to present.** DHIS2 dashboards are made for desk work. Meetings, review
-  sessions and screens in offices need slides that play on their own and look professional,
-  so teams rebuild the same charts in PowerPoint again and again.
-- **Bulletins are produced by hand.** Weekly and monthly bulletins are typically copied into Word
-  or Excel each period, then reformatted and translated. That takes hours and invites mistakes.
-- **Custom tools do not travel.** Tools built for one country tend to hard-code its program and
-  data element ids, so other countries and new programs cannot reuse them.
-
-Data Analytics Lab brings this work into one DHIS2 app:
-
-- **Connect several instances.** Analyse data from one or several of them, even in the same
-  chart, with the familiar DHIS2 chart types.
-- **Turn the results into dashboards** that play as slide shows or export to PowerPoint.
-- **Generate bulletins from live data**, for any period and in several languages.
-- **Keep it configuration-free.** Nothing country-specific is in the code: every template,
-  dashboard and data source is set up in the app, so any DHIS2 country can use it.
+Data Analytics Lab replaces those manual steps with live data: what you build stays connected
+to DHIS2 and updates on its own.
 
 ---
 
