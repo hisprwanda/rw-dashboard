@@ -193,7 +193,7 @@ export const VisualizerBuilder = ({ visualId }: VisualizerBuilderProps) => {
 
     return (
         <div className="flex items-start gap-3 p-2">
-            <aside className="w-1/4 min-w-[260px] rounded bg-white p-3 shadow">
+            <aside className="w-[240px] flex-shrink-0 rounded bg-white p-2 shadow">
                 <DimensionsPanel onOpen={setModal} onDataSourceChange={analytics.reset} />
             </aside>
 

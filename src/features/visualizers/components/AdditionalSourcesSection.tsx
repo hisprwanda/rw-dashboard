@@ -1,9 +1,16 @@
 import i18n from '@dhis2/d2-i18n'
-import { Button, IconCross16, SingleSelectField, SingleSelectOption } from '@dhis2/ui'
+import {
+    Button,
+    IconCross16,
+    IconDimensionData16,
+    SingleSelectField,
+    SingleSelectOption,
+} from '@dhis2/ui'
 import { useAppDispatch, useAppSelector } from '@/app/store'
 import { selectionActions } from '@/features/analytics'
 import { CURRENT_INSTANCE_ID, useDataSources } from '@/features/data-sources'
 import { useApplicationTitle } from '@/features/system'
+import { DimensionRow, PanelHeading } from './DimensionRow'
 
 interface AdditionalSourcesSectionProps {
     /** Opens the data items of an additional source. */
@@ -29,18 +36,17 @@ export const AdditionalSourcesSection = ({ onOpen, onRemove }: AdditionalSources
     ].filter(({ key }) => key !== mainId && !added.some(({ dataSourceId }) => dataSourceId === key))
 
     return (
-        <div className="flex flex-col gap-2">
-            <span className="text-sm font-medium text-gray-700">
-                {i18n.t('Data from other sources')}
-            </span>
+        <div className="flex flex-col">
+            <PanelHeading>{i18n.t('Data from other sources')}</PanelHeading>
             {added.map(({ dataSourceId, dataSource, items }) => (
-                <div key={dataSourceId} className="flex items-center gap-1">
-                    <div className="flex-grow">
-                        <Button small secondary onClick={() => onOpen(dataSourceId)}>
-                            {items.length
-                                ? `${dataSource.instanceName} (${items.length})`
-                                : dataSource.instanceName}
-                        </Button>
+                <div key={dataSourceId} className="flex items-center">
+                    <div className="min-w-0 flex-grow">
+                        <DimensionRow
+                            icon={<IconDimensionData16 />}
+                            label={dataSource.instanceName}
+                            count={items.length}
+                            onClick={() => onOpen(dataSourceId)}
+                        />
                     </div>
                     <Button
                         small
@@ -56,27 +62,29 @@ export const AdditionalSourcesSection = ({ onOpen, onRemove }: AdditionalSources
                 </div>
             ))}
             {candidates.length > 0 && (
-                <SingleSelectField
-                    dense
-                    loading={isLoading}
-                    placeholder={i18n.t('Add a data source')}
-                    selected=""
-                    onChange={({ selected }) => {
-                        const source = candidates.find(({ key }) => key === selected)
-                        if (!source) return
-                        dispatch(
-                            selectionActions.addSource({
-                                id: source.key,
-                                dataSource: source.value,
-                            })
-                        )
-                        onOpen(source.key)
-                    }}
-                >
-                    {candidates.map(({ key, value }) => (
-                        <SingleSelectOption key={key} value={key} label={value.instanceName} />
-                    ))}
-                </SingleSelectField>
+                <div className="px-2 pt-1">
+                    <SingleSelectField
+                        dense
+                        loading={isLoading}
+                        placeholder={i18n.t('Add a data source')}
+                        selected=""
+                        onChange={({ selected }) => {
+                            const source = candidates.find(({ key }) => key === selected)
+                            if (!source) return
+                            dispatch(
+                                selectionActions.addSource({
+                                    id: source.key,
+                                    dataSource: source.value,
+                                })
+                            )
+                            onOpen(source.key)
+                        }}
+                    >
+                        {candidates.map(({ key, value }) => (
+                            <SingleSelectOption key={key} value={key} label={value.instanceName} />
+                        ))}
+                    </SingleSelectField>
+                </div>
             )}
         </div>
     )
