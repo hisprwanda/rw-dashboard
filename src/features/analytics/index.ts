@@ -6,6 +6,7 @@ export type { ChartLegendSet } from './services/legendSetsService'
 export type { DimensionItem, DimensionSummary } from './services/dimensionsService'
 export { useAnalytics } from './hooks/useAnalytics'
 export { useAnalyticsRun } from './hooks/useAnalyticsRun'
+export { useCombinedAnalyticsRun } from './hooks/useCombinedAnalyticsRun'
 export {
     useCombinedAnalytics,
     type CombinedAnalytics,
