@@ -4,7 +4,12 @@ import type {
     DisplayProperty,
     StoredAnalyticsQuery,
 } from '@/features/analytics'
-import type { ChartType } from '@/features/charts'
+import {
+    DEFAULT_OUTLIER_OPTIONS,
+    outlierParamsFromQuery,
+    type OutlierParams,
+    type YearOverYearSelection,
+} from '@/features/visualizers'
 import type { MapSettings, StoredGeoFeaturesQuery } from '@/features/maps'
 import type {
     Dhis2Axes,
@@ -48,6 +53,8 @@ const favoriteOptions = (visualization: FavoriteDefinition): AnalyticsParams => 
     const measureCriteria = text(visualization.measureCriteria)
     const relativePeriodDate = text(visualization.relativePeriodDate)
     return {
+        // The DHIS2 chart engine and pivot table read the dimension types of the metadata.
+        includeMetadataDetails: true,
         ...(visualization.showHierarchy === true ? { showHierarchy: true } : {}),
         ...(aggregationType && aggregationType !== 'DEFAULT' ? { aggregationType } : {}),
         ...(measureCriteria ? { measureCriteria } : {}),
@@ -86,25 +93,70 @@ export const visualizationToRequest = (
     }
 }
 
-const CHART_TYPE: Record<string, ChartType> = {
-    COLUMN: 'Column',
-    STACKED_COLUMN: 'Stacked Col',
-    BAR: 'Bar',
-    STACKED_BAR: 'Stacked Bar',
-    LINE: 'Line',
-    AREA: 'Area',
-    STACKED_AREA: 'Area',
-    PIE: 'Pie',
-    RADAR: 'Radar',
-    GAUGE: 'Gauge',
-    SINGLE_VALUE: 'Single Value',
-    SCATTER: 'Scatter',
+export const isPivotTable = (type: string) => type === 'PIVOT_TABLE'
+
+/** The years (series) and periods (category) of a year-over-year favorite, or `null`. */
+export const favoriteYearOverYear = (
+    visualization: Pick<Dhis2Visualization, 'rows' | 'columns'> & { yearlySeries?: unknown }
+): YearOverYearSelection | null => {
+    const years = Array.isArray(visualization.yearlySeries)
+        ? visualization.yearlySeries.filter((year): year is string => typeof year === 'string')
+        : []
+    const periods = [...(visualization.rows ?? []), ...(visualization.columns ?? [])].find(
+        ({ dimension }) => dimension === 'pe'
+    )
+    const category = (periods?.items ?? []).map(({ id }) => id).join(';')
+    return years.length && category ? { years, category } : null
 }
 
-/** This app's chart type for a Data Visualizer type; `null` when it has no equivalent. */
-export const dhis2ChartType = (type: string): ChartType | null => CHART_TYPE[type] ?? null
+/**
+ * A year-over-year favorite's axes as the chart engine reads them with one response per
+ * year: no series axis, the periods as category, everything else as filters.
+ */
+export const yearOverYearAxes = <T extends Dhis2Axes>(visualization: T): T => {
+    const all = [
+        ...(visualization.columns ?? []),
+        ...(visualization.rows ?? []),
+        ...(visualization.filters ?? []),
+    ]
+    return {
+        ...visualization,
+        columns: [],
+        rows: all.filter(({ dimension }) => dimension === 'pe'),
+        filters: all.filter(({ dimension }) => dimension !== 'pe'),
+    }
+}
 
-export const isPivotTable = (type: string) => type === 'PIVOT_TABLE'
+const OUTLIER_METHODS: Record<string, OutlierParams['algorithm']> = {
+    STANDARD_Z_SCORE: 'Z_SCORE',
+    Z_SCORE: 'Z_SCORE',
+    MODIFIED_Z_SCORE: 'MODIFIED_Z_SCORE',
+}
+
+/**
+ * The outlier detection request of an outlier table favorite, or `null` when its method
+ * has no analytics counterpart (IQR) or it misses data, periods or org units.
+ */
+export const favoriteOutlierParams = (
+    visualization: FavoriteDefinition,
+    displayProperty: DisplayProperty = 'NAME'
+): OutlierParams | null => {
+    const analysis =
+        typeof visualization.outlierAnalysis === 'object' && visualization.outlierAnalysis
+            ? (visualization.outlierAnalysis as Record<string, unknown>)
+            : {}
+    const method = typeof analysis.outlierMethod === 'string' ? analysis.outlierMethod : undefined
+    const algorithm = method ? OUTLIER_METHODS[method] : DEFAULT_OUTLIER_OPTIONS.algorithm
+    if (!algorithm) return null
+    const number = (value: unknown, fallback: number) =>
+        typeof value === 'number' && value > 0 ? value : fallback
+    return outlierParamsFromQuery(visualizationToRequest(visualization, displayProperty).params, {
+        ...DEFAULT_OUTLIER_OPTIONS,
+        algorithm,
+        threshold: number(analysis.thresholdFactor, DEFAULT_OUTLIER_OPTIONS.threshold),
+        maxResults: number(analysis.maxResults, DEFAULT_OUTLIER_OPTIONS.maxResults),
+    })
+}
 
 /** The layer kind of a map view: `thematic1` -> `thematic`. */
 export const layerKind = (view: Pick<Dhis2MapView, 'layer'>) => view.layer.replace(/\d+$/, '')

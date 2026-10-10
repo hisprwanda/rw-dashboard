@@ -125,3 +125,9 @@ export interface Visualization
     rows: VisualizationDimension[]
     filters: VisualizationDimension[]
 }
+
+/**
+ * What the DHIS2 chart engine and pivot table draw: a visualization built by this app,
+ * or a Data Visualizer favorite object as the API returns it.
+ */
+export type EngineVisualization = Visualization | { type: string; [option: string]: unknown }

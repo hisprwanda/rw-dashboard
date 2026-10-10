@@ -20,3 +20,8 @@ window.matchMedia =
         addEventListener() {},
         removeEventListener() {},
     }))
+
+// The DHIS2 pivot table measures text on a 2D canvas, which jsdom does not implement.
+HTMLCanvasElement.prototype.getContext = function getContext() {
+    return { font: '', measureText: (text) => ({ width: String(text).length * 7 }) }
+}

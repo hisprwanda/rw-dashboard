@@ -1,9 +1,10 @@
 import type { Dhis2Map, Dhis2Visualization } from '../types/dhis2Object.types'
 import {
-    dhis2ChartType,
-    isPivotTable,
+    favoriteOutlierParams,
+    favoriteYearOverYear,
     mapToThematic,
     visualizationToRequest,
+    yearOverYearAxes,
 } from './favoriteRequest'
 
 // Definitions of the play.dhis2.org demo (2.43), trimmed to the fields read here.
@@ -63,6 +64,7 @@ describe('visualizationToRequest', () => {
                 dimension: ['dx:cYeuwXTCPkU;Jtf34kNZhzP;hfdmMSPBgLG', 'ou:USER_ORGUNIT_CHILDREN'],
                 filter: 'pe:THIS_YEAR',
                 displayProperty: 'NAME',
+                includeMetadataDetails: true,
             },
             layout: { Columns: ['Data'], Rows: ['Organisation unit'], Filter: ['Period'] },
         })
@@ -77,6 +79,7 @@ describe('visualizationToRequest', () => {
                 'ou:ImspTQPwCqd;LEVEL-4',
             ],
             displayProperty: 'SHORTNAME',
+            includeMetadataDetails: true,
             includeNumDen: true,
         })
         expect(layout.Columns).toEqual(['Data', 'Period'])
@@ -120,17 +123,70 @@ describe('visualizationToRequest options', () => {
             aggregationType: 'DEFAULT',
             showHierarchy: false,
         })
-        expect(Object.keys(params).sort()).toEqual(['dimension', 'displayProperty', 'filter'])
+        expect(Object.keys(params).sort()).toEqual([
+            'dimension',
+            'displayProperty',
+            'filter',
+            'includeMetadataDetails',
+        ])
     })
 })
 
-describe('dhis2ChartType', () => {
-    it('maps Data Visualizer types onto this app', () => {
-        expect(dhis2ChartType('STACKED_COLUMN')).toBe('Stacked Col')
-        expect(dhis2ChartType('STACKED_AREA')).toBe('Area')
-        expect(dhis2ChartType('YEAR_OVER_YEAR_LINE')).toBeNull()
-        expect(dhis2ChartType('PIVOT_TABLE')).toBeNull()
-        expect(isPivotTable('PIVOT_TABLE')).toBe(true)
+describe('favoriteYearOverYear', () => {
+    const favorite = {
+        type: 'YEAR_OVER_YEAR_LINE',
+        yearlySeries: ['THIS_YEAR', 'LAST_YEAR'],
+        columns: [{ dimension: 'dx', items: [{ id: 'a' }] }],
+        rows: [{ dimension: 'pe', items: [{ id: 'MONTHS_THIS_YEAR' }] }],
+        filters: [{ dimension: 'ou', items: [{ id: 'ou1' }] }],
+    }
+
+    it('reads the years and the category periods', () => {
+        expect(favoriteYearOverYear(favorite)).toEqual({
+            years: ['THIS_YEAR', 'LAST_YEAR'],
+            category: 'MONTHS_THIS_YEAR',
+        })
+        expect(favoriteYearOverYear({ ...favorite, yearlySeries: [] })).toBeNull()
+    })
+
+    it('puts the periods on the category and the rest in the filter', () => {
+        const axes = yearOverYearAxes(favorite)
+        expect(axes.columns).toEqual([])
+        expect(axes.rows.map(({ dimension }) => dimension)).toEqual(['pe'])
+        expect(axes.filters.map(({ dimension }) => dimension)).toEqual(['dx', 'ou'])
+    })
+})
+
+describe('favoriteOutlierParams', () => {
+    const favorite = {
+        type: 'OUTLIER_TABLE',
+        columns: [
+            { dimension: 'dx', items: [{ id: 'de1' }] },
+            { dimension: 'pe', items: [{ id: 'LAST_12_MONTHS' }] },
+            { dimension: 'ou', items: [{ id: 'ou1' }] },
+        ],
+        outlierAnalysis: {
+            outlierMethod: 'STANDARD_Z_SCORE',
+            thresholdFactor: 2.5,
+            maxResults: 100,
+        },
+    }
+
+    it("maps the favorite's method, threshold and limit", () => {
+        expect(favoriteOutlierParams(favorite)).toMatchObject({
+            dx: 'de1',
+            pe: 'LAST_12_MONTHS',
+            ou: 'ou1',
+            algorithm: 'Z_SCORE',
+            threshold: 2.5,
+            maxResults: 100,
+        })
+    })
+
+    it('has no counterpart for the IQR method', () => {
+        expect(
+            favoriteOutlierParams({ ...favorite, outlierAnalysis: { outlierMethod: 'IQR' } })
+        ).toBeNull()
     })
 })
 

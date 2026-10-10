@@ -30,6 +30,7 @@ export {
     DEFAULT_OUTLIER_OPTIONS,
     outlierParamsFromQuery,
     type OutlierOptions,
+    type OutlierParams,
 } from './utils/outliers'
 export { buildVisualization, visTypeFromChartType } from './utils/visualization'
 export { withOptions } from './utils/visualizerOptions'

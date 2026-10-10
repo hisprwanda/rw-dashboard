@@ -2,12 +2,12 @@ import { PivotTable } from '@dhis2/analytics'
 import { useMemo } from 'react'
 import type { AnalyticsResponse } from '@/shared/types/dhis2.types'
 import { withHeaderIndexes } from '../utils/analyticsData'
-import type { Visualization } from '../types/visualization.types'
+import type { EngineVisualization } from '../types/visualization.types'
 
 interface DhisPivotTableProps {
     /** The analytics response, with its metadata. */
     data: AnalyticsResponse
-    visualization: Visualization
+    visualization: EngineVisualization
     /** Legend sets the table colors values with (the one the visualization names). */
     legendSets?: unknown[]
     /** Fill the parent (dashboard tiles) instead of the builder's fixed height. */

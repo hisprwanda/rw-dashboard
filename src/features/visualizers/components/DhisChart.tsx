@@ -3,12 +3,12 @@ import { useEffect, useRef, useState } from 'react'
 import { ErrorState } from '@/shared/components'
 import type { AnalyticsResponse } from '@/shared/types/dhis2.types'
 import { withHeaderIndexes } from '../utils/analyticsData'
-import type { Visualization } from '../types/visualization.types'
+import type { EngineVisualization } from '../types/visualization.types'
 
 interface DhisChartProps {
     /** The analytics response, with its metadata (one per year for year-over-year charts). */
     data: AnalyticsResponse | AnalyticsResponse[]
-    visualization: Visualization
+    visualization: EngineVisualization
     /** Legend sets the chart colors values with (the one the visualization names). */
     legendSets?: unknown[]
     /** Extra engine options, e.g. the year-over-year series and categories. */

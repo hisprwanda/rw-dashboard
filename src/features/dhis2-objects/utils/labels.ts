@@ -1,20 +1,28 @@
 import i18n from '@dhis2/d2-i18n'
-import { chartTypeLabel } from '@/features/charts'
 import type { Dhis2ObjectSummary } from '../types/dhis2Object.types'
-import { dhis2ChartType } from './favoriteRequest'
 
 /** Display name of a Data Visualizer type. */
 export const visualizationTypeLabel = (type: string): string => {
     const labels: Record<string, string> = {
         PIVOT_TABLE: i18n.t('Pivot table'),
+        COLUMN: i18n.t('Column'),
+        STACKED_COLUMN: i18n.t('Stacked column'),
+        BAR: i18n.t('Bar'),
+        STACKED_BAR: i18n.t('Stacked bar'),
+        LINE: i18n.t('Line'),
+        AREA: i18n.t('Area'),
+        STACKED_AREA: i18n.t('Stacked area'),
+        PIE: i18n.t('Pie'),
+        RADAR: i18n.t('Radar'),
+        GAUGE: i18n.t('Gauge'),
         YEAR_OVER_YEAR_LINE: i18n.t('Year over year (line)'),
         YEAR_OVER_YEAR_COLUMN: i18n.t('Year over year (column)'),
-        STACKED_AREA: i18n.t('Stacked area'),
+        SINGLE_VALUE: i18n.t('Single value'),
+        SCATTER: i18n.t('Scatter'),
         BUBBLE: i18n.t('Bubble'),
         OUTLIER_TABLE: i18n.t('Outlier table'),
     }
-    const chartType = dhis2ChartType(type)
-    return labels[type] ?? (chartType ? chartTypeLabel(chartType) : type)
+    return labels[type] ?? type
 }
 
 /** Display name of a map layer kind. */
