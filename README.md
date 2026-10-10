@@ -37,8 +37,7 @@ options, so nothing has to be relearned. The difference is everything around the
   review meetings and office screens, period after period.
 - **Bulletins are produced by hand.** Weekly and monthly bulletins are copied into Word or Excel,
   then reformatted and translated each time. That takes hours and invites mistakes.
-- **Country tools do not travel.** Tools that hard-code a country's program and data element ids
-  cannot be reused by other countries or programs.
+
 
 Data Analytics Lab replaces those manual steps with live data: what you build stays connected
 to DHIS2 and updates on its own.
@@ -214,14 +213,6 @@ country-specific configuration in the code.
     can be reused on another (its data items, programs and org units must exist there);
   - *Import old bulletin texts* brings over the texts of the previous bulletin app.
 
----
-
-## What's next?
-
-1. **AI-assisted analysis**: quick insights and summaries of dashboards.
-2. **Dashboard folders**: organise dashboards into groups.
-3. **Non-DHIS2 data sources**: read data from other systems for cross-platform analysis.
-4. **Import existing DHIS2 dashboards** as a whole.
 
 ---
 
