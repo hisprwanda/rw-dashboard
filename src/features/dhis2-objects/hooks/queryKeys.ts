@@ -15,4 +15,19 @@ export const dhis2ObjectKeys = {
     image: (instance: InstanceConnection | undefined, objectType: Dhis2ObjectType, id: string) =>
         [...dhis2ObjectKeys.all, instanceKey(instance), objectType, id, 'image'] as const,
     apps: () => [...dhis2ObjectKeys.all, 'current', 'apps'] as const,
+    /** Keyed by the map definition itself: an edit made in DHIS2 reloads the layers. */
+    mapLayers: (
+        instance: InstanceConnection | undefined,
+        map: unknown,
+        displayProperty: string,
+        baseUrl: string | undefined
+    ) =>
+        [
+            ...dhis2ObjectKeys.all,
+            instanceKey(instance),
+            'mapLayers',
+            map ?? null,
+            displayProperty,
+            baseUrl ?? null,
+        ] as const,
 }

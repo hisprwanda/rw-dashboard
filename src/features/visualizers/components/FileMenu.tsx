@@ -6,10 +6,12 @@ interface FileMenuProps {
     isSaved: boolean
     onSave: () => void
     onExport: () => void
+    /** Downloads the data of the current result; disabled while there is none. */
+    onDownloadData: (() => void) | null
 }
 
 /** Builder "File" menu: save (or update) and export. */
-export const FileMenu = ({ isSaved, onSave, onExport }: FileMenuProps) => {
+export const FileMenu = ({ isSaved, onSave, onExport, onDownloadData }: FileMenuProps) => {
     const [open, setOpen] = useState(false)
     const run = (action: () => void) => () => {
         setOpen(false)
@@ -31,6 +33,12 @@ export const FileMenu = ({ isSaved, onSave, onExport }: FileMenuProps) => {
                         icon={<IconDownload16 />}
                         label={i18n.t('Export')}
                         onClick={run(onExport)}
+                    />
+                    <MenuItem
+                        icon={<IconDownload16 />}
+                        label={i18n.t('Download data (CSV)')}
+                        disabled={!onDownloadData}
+                        onClick={onDownloadData ? run(onDownloadData) : undefined}
                     />
                 </FlyoutMenu>
             }

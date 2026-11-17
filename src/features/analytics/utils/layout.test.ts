@@ -1,4 +1,4 @@
-import { applyLayout, moveDimension } from './layout'
+import { applyLayout, moveDimension, placeDimension } from './layout'
 
 const params = {
     dimension: ['dx:a', 'pe:2024'],
@@ -66,5 +66,27 @@ describe('moveDimension', () => {
     it('ignores moves to the same area or of a missing item', () => {
         expect(moveDimension(layout, 'Data', 'Columns', 'Columns')).toBe(layout)
         expect(moveDimension(layout, 'Data', 'Rows', 'Filter')).toBe(layout)
+    })
+})
+
+describe('placeDimension', () => {
+    const layout = { Columns: ['Data'], Rows: ['Period'], Filter: ['Organisation unit'] }
+
+    it('puts a dimension that gets items in the filter', () => {
+        expect(placeDimension(layout, 'cat1', true).Filter).toEqual(['Organisation unit', 'cat1'])
+    })
+
+    it('leaves a dimension that is already placed where it is', () => {
+        const placed = { ...layout, Rows: ['Period', 'cat1'] }
+        expect(placeDimension(placed, 'cat1', true)).toBe(placed)
+    })
+
+    it('removes a dimension that is left without items', () => {
+        const placed = { ...layout, Rows: ['Period', 'cat1'] }
+        expect(placeDimension(placed, 'cat1', false).Rows).toEqual(['Period'])
+    })
+
+    it('does nothing for an absent dimension without items', () => {
+        expect(placeDimension(layout, 'cat1', false)).toBe(layout)
     })
 })

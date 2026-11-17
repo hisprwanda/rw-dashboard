@@ -1,7 +1,18 @@
 export { analyticsQueryOptions } from './hooks/analyticsQueryOptions'
-export { analyticsKeys } from './hooks/queryKeys'
+export { analyticsKeys, dimensionKeys } from './hooks/queryKeys'
+export { useChartLegendSets } from './hooks/useChartLegendSets'
+export { useDimensionItems, useDimensions } from './hooks/useDimensions'
+export type { ChartLegendSet } from './services/legendSetsService'
+export type { DimensionItem, DimensionSummary } from './services/dimensionsService'
 export { useAnalytics } from './hooks/useAnalytics'
 export { useAnalyticsRun } from './hooks/useAnalyticsRun'
+export { useCombinedAnalyticsRun } from './hooks/useCombinedAnalyticsRun'
+export {
+    useCombinedAnalytics,
+    type CombinedAnalytics,
+    type SourceError,
+    type SourceQuery,
+} from './hooks/useCombinedAnalytics'
 export { fetchAnalytics } from './services/analyticsService'
 export type {
     AnalyticsDimensions,
@@ -17,9 +28,28 @@ export {
     type AnalyticsRequest,
     type AnalyticsRequestInput,
 } from './utils/buildAnalyticsRequest'
-export { formatAnalyticsDimensions, parseAnalyticsDimensions } from './utils/dimensions'
-export { applyLayout, moveDimension, type LayoutArea } from './utils/layout'
-export { buildSelectionRequest } from './utils/selectionRequest'
+export { analyticsToCsv } from './utils/analyticsCsv'
+export { mergeAnalyticsMetaData, mergeAnalyticsResponses } from './utils/mergeAnalytics'
+export {
+    formatAnalyticsDimensions,
+    parseAnalyticsDimensions,
+    withDataItems,
+} from './utils/dimensions'
+export {
+    applyLayout,
+    dimensionIdOf,
+    moveDimension,
+    placeDimension,
+    type LayoutArea,
+} from './utils/layout'
+export {
+    buildSelectionRequest,
+    buildSelectionRuns,
+    multiSourceIssues,
+    type MultiSourceIssue,
+    type SelectionRuns,
+    type SourceRequest,
+} from './utils/selectionRequest'
 export {
     getDimensionItems,
     transformMetadataLabels,
@@ -34,4 +64,9 @@ export {
     selectionReducer,
     type SelectionState,
 } from './store/selectionSlice'
-export type { DataItemRef, DimensionItemType, SelectedDataSource } from './types/analytics.types'
+export type {
+    AdditionalSource,
+    DataItemRef,
+    DimensionItemType,
+    SelectedDataSource,
+} from './types/analytics.types'

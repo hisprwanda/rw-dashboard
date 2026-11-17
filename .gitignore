@@ -1,5 +1,6 @@
 # DHIS2 Platform
 node_modules
+CLAUDE.md
 .d2
 src/locales
 build

@@ -58,4 +58,15 @@ describe('visualToBuilderState', () => {
         expect(state.visualizer.chartType).toBe('Line')
         expect(state.visualizer.colorPalette).toEqual(initialVisualizer.settings.visualColorPalette)
     })
+
+    it('keeps the items of additional sources out of the main source', () => {
+        const other = {
+            dataSourceId: 'other',
+            dataSource: { isCurrentInstance: true, instanceName: 'Here' },
+            items: [{ id: 'b', label: 'B' }],
+        }
+        const restored = visualToBuilderState(visual, dataSource, [other])
+        expect(restored.selection.dimensions.dx).toEqual(['a'])
+        expect(restored.selection.additionalSources).toEqual([other])
+    })
 })

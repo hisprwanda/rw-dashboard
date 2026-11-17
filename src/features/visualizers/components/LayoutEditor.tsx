@@ -2,6 +2,7 @@ import i18n from '@dhis2/d2-i18n'
 import {
     FlyoutMenu,
     IconClock16,
+    IconDimensionCategoryOptionGroupset16,
     IconDimensionData16,
     IconDimensionOrgUnit16,
     MenuItem,
@@ -12,9 +13,13 @@ import { useAppDispatch, useAppSelector } from '@/app/store'
 import {
     moveDimension,
     selectionActions,
+    useDimensions,
     type LayoutArea,
     type LayoutDimensionName,
 } from '@/features/analytics'
+import { adaptLayoutToVisType } from '../utils/layoutRules'
+import { visTypeFromChartType } from '../utils/visualization'
+import { isYearOverYearChart, yearOverYearLayout } from '../utils/yearOverYear'
 
 const ICONS: Record<string, ReactNode> = {
     Data: <IconDimensionData16 />,
@@ -28,13 +33,17 @@ const areaLabels = (): Record<LayoutArea, string> => ({
     Filter: i18n.t('Filter'),
 })
 
-const dimensionLabel = (name: LayoutDimensionName): string => {
+/** The built-in dimensions by their layout name; any other name is a dynamic dimension id. */
+const dimensionLabel = (
+    name: LayoutDimensionName,
+    dynamicNames: ReadonlyMap<string, string>
+): string => {
     const labels: Record<string, string> = {
         Data: i18n.t('Data'),
         Period: i18n.t('Period'),
         'Organisation unit': i18n.t('Organisation unit'),
     }
-    return labels[name] ?? name
+    return labels[name] ?? dynamicNames.get(name) ?? name
 }
 
 const AREAS: LayoutArea[] = ['Columns', 'Rows', 'Filter']
@@ -110,20 +119,31 @@ interface Dragged {
 export const LayoutEditor = () => {
     const dispatch = useAppDispatch()
     const layout = useAppSelector((state) => state.selection.layout)
+    const dataSource = useAppSelector((state) => state.selection.dataSource)
+    const chartType = useAppSelector((state) => state.visualizer.chartType)
+    const dynamicDimensions = useDimensions(dataSource)
+    const dynamicNames = new Map(
+        (dynamicDimensions.data ?? []).map(({ id, displayName }) => [id, displayName])
+    )
     const [dragged, setDragged] = useState<Dragged | null>(null)
     const labels = areaLabels()
 
+    /** The moved layout, as far as the chart type allows (extra dimensions go to the filter). */
+    const moved = (item: LayoutDimensionName, from: LayoutArea, to: LayoutArea) => {
+        const next = moveDimension(layout, item, from, to)
+        const visType = visTypeFromChartType(chartType)
+        return visType ? adaptLayoutToVisType(next, visType) : next
+    }
+
     const drop = (to: LayoutArea) => {
         if (dragged) {
-            dispatch(
-                selectionActions.setLayout(moveDimension(layout, dragged.item, dragged.from, to))
-            )
+            dispatch(selectionActions.setLayout(moved(dragged.item, dragged.from, to)))
         }
         setDragged(null)
     }
 
     const move = (item: LayoutDimensionName, from: LayoutArea, to: LayoutArea) =>
-        dispatch(selectionActions.setLayout(moveDimension(layout, item, from, to)))
+        dispatch(selectionActions.setLayout(moved(item, from, to)))
 
     const area = (name: LayoutArea) => (
         <div className="grid grid-cols-[72px_1fr] items-center gap-2">
@@ -139,8 +159,8 @@ export const LayoutEditor = () => {
                 {layout[name].map((item) => (
                     <DimensionChip
                         key={item}
-                        label={dimensionLabel(item)}
-                        icon={ICONS[item]}
+                        label={dimensionLabel(item, dynamicNames)}
+                        icon={ICONS[item] ?? <IconDimensionCategoryOptionGroupset16 />}
                         targets={AREAS.filter((to) => to !== name).map((to) => ({
                             label: labels[to],
                             onSelect: () => move(item, name, to),
@@ -152,6 +172,35 @@ export const LayoutEditor = () => {
             </div>
         </div>
     )
+
+    if (isYearOverYearChart(chartType)) {
+        const fixed = yearOverYearLayout(layout)
+        const row = (label: string, names: readonly LayoutDimensionName[]) => (
+            <div className="grid grid-cols-[72px_1fr] items-center gap-2">
+                <span className="text-sm font-medium text-gray-600">{label}</span>
+                <div className="flex min-h-[30px] flex-wrap gap-1 rounded border border-gray-200 bg-gray-50 p-1 text-sm">
+                    {names.map((name) => (
+                        <span
+                            key={name}
+                            className="flex items-center gap-1 rounded bg-white px-2 py-1"
+                        >
+                            {ICONS[name] ?? <IconDimensionCategoryOptionGroupset16 />}
+                            {dimensionLabel(name, dynamicNames)}
+                        </span>
+                    ))}
+                </div>
+            </div>
+        )
+        return (
+            <div className="grid grid-cols-2 gap-2 border-b border-gray-200 p-2">
+                <div className="flex flex-col gap-1">
+                    {row(i18n.t('Series'), [i18n.t('Years')])}
+                    {row(i18n.t('Category'), fixed.Rows)}
+                </div>
+                {row(labels.Filter, fixed.Filter)}
+            </div>
+        )
+    }
 
     return (
         <div className="grid grid-cols-2 gap-2 border-b border-gray-200 p-2">

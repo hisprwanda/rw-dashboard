@@ -667,8 +667,8 @@ msgstr "Diapositive suivante"
 msgid "Data source not found"
 msgstr "Source de données introuvable"
 
-msgid "The data source of this visualization was deleted or is not shared with you."
-msgstr "La source de données de cette visualisation a été supprimée ou n'est pas partagée avec vous."
+msgid "A data source of this visualization was deleted or is not shared with you."
+msgstr "Une source de données de cette visualisation a été supprimée ou n'est pas partagée avec vous."
 
 msgid "Could not load this visualization"
 msgstr "Impossible de charger cette visualisation"
@@ -1516,8 +1516,8 @@ msgstr "Calcul des analyses en cours"
 msgid "Dimensions"
 msgstr "Dimensions"
 
-msgid "The data source of this visualization was deleted or is not shared with you. Pick another data source."
-msgstr "La source de données de cette visualisation a été supprimée ou n'est pas partagée avec vous. Choisissez une autre source de données."
+msgid "A data source of this visualization was deleted or is not shared with you. Pick another data source."
+msgstr "Une source de données de cette visualisation a été supprimée ou n'est pas partagée avec vous. Choisissez une autre source de données."
 
 msgid "New visualization"
 msgstr "Nouvelle visualisation"
@@ -1703,3 +1703,468 @@ msgstr "Data Analytics Lab"
 msgctxt "Application description"
 msgid "__MANIFEST_APP_DESCRIPTION"
 msgstr "Un Data Analytics Lab développé par HISP Rwanda, avec un tableau de bord interactif pouvant être présenté sous forme de diapositives dynamiques et un large choix de visualisations personnalisables pour une meilleure représentation des données."
+
+msgid "Basic"
+msgstr "De base"
+
+msgid "Extended"
+msgstr "Étendu"
+
+msgid "Bright"
+msgstr "Vif"
+
+msgid "Dark"
+msgstr "Sombre"
+
+msgid "Gray"
+msgstr "Gris"
+
+msgid "Color blind"
+msgstr "Daltonien"
+
+msgid "Show line"
+msgstr "Afficher la ligne"
+
+msgid "Values"
+msgstr "Valeurs"
+
+msgid "Show values"
+msgstr "Afficher les valeurs"
+
+msgid "Use cumulative values"
+msgstr "Utiliser les valeurs cumulées"
+
+msgid "Use 100% stacked values"
+msgstr "Utiliser les valeurs empilées à 100 %"
+
+msgid "Empty categories"
+msgstr "Catégories vides"
+
+msgid "Hide empty categories"
+msgstr "Masquer les catégories vides"
+
+msgid "Before first value"
+msgstr "Avant la première valeur"
+
+msgid "After last value"
+msgstr "Après la dernière valeur"
+
+msgid "Before first and after last value"
+msgstr "Avant la première et après la dernière valeur"
+
+msgid "All empty"
+msgstr "Toutes les vides"
+
+msgid "Sort order"
+msgstr "Ordre de tri"
+
+msgid "Low to high"
+msgstr "Du plus bas au plus haut"
+
+msgid "High to low"
+msgstr "Du plus haut au plus bas"
+
+msgid "Vertical (y) axis"
+msgstr "Axe vertical (y)"
+
+msgid "Minimum"
+msgstr "Minimum"
+
+msgid "Maximum"
+msgstr "Maximum"
+
+msgid "Tick steps"
+msgstr "Pas des graduations"
+
+msgid "Axis title"
+msgstr "Titre de l'axe"
+
+msgid "Target line"
+msgstr "Ligne cible"
+
+msgid "Base line"
+msgstr "Ligne de base"
+
+msgid "Trend line"
+msgstr "Courbe de tendance"
+
+msgid "Linear"
+msgstr "Linéaire"
+
+msgid "Polynomial"
+msgstr "Polynomiale"
+
+msgid "Loess"
+msgstr "Loess"
+
+msgid "Series key"
+msgstr "Légende des séries"
+
+msgid "Hide the legend"
+msgstr "Masquer la légende"
+
+msgid "Color set"
+msgstr "Jeu de couleurs"
+
+msgid "No space between columns"
+msgstr "Pas d'espace entre les colonnes"
+
+msgid "Options"
+msgstr "Options"
+
+msgid "Axes"
+msgstr "Axes"
+
+msgid "Done"
+msgstr "Terminé"
+
+msgid "Chart types"
+msgstr "Types de graphiques"
+
+msgid "Additional types"
+msgstr "Types supplémentaires"
+
+msgid "Download data (CSV)"
+msgstr "Télécharger les données (CSV)"
+
+msgid "Other dimensions"
+msgstr "Autres dimensions"
+
+msgid "Dimension"
+msgstr "Dimension"
+
+msgid "No legend set"
+msgstr "Aucun jeu de légendes"
+
+msgid "Color the bars"
+msgstr "Colorer les barres"
+
+msgid "Color the text"
+msgstr "Colorer le texte"
+
+msgid "Some data could not be loaded"
+msgstr "Certaines données n'ont pas pu être chargées"
+
+msgid "Data from {{source}}"
+msgstr "Données de {{source}}"
+
+msgid "Data from other sources"
+msgstr "Données d'autres sources"
+
+msgid "Add a data source"
+msgstr "Ajouter une source de données"
+
+msgid "Move Data to the columns or rows. Values of different data sources cannot be added up in a filter."
+msgstr "Placez Données dans les colonnes ou les lignes. Les valeurs de sources de données différentes ne peuvent pas être additionnées dans un filtre."
+
+msgid "Remove the other dimensions (categories, group sets…). They only exist on the main data source."
+msgstr "Retirez les autres dimensions (catégories, ensembles de groupes…). Elles n'existent que sur la source de données principale."
+
+msgid "User organisation units"
+msgstr "Unités d'organisation de l'utilisateur"
+
+msgid "On other data sources, user organisation units are those of the account behind the access token. Pick organisation units to compare the same places."
+msgstr "Sur les autres sources de données, les unités d'organisation de l'utilisateur sont celles du compte lié au jeton d'accès. Choisissez des unités d'organisation pour comparer les mêmes lieux."
+
+msgid "Visualization type"
+msgstr "Type de visualisation"
+
+msgid "Search visualization types"
+msgstr "Rechercher des types de visualisation"
+
+msgid "No visualization types found"
+msgstr "Aucun type de visualisation trouvé"
+
+msgid "Series"
+msgstr "Séries"
+
+msgid "Absolute deviation"
+msgstr "Écart absolu"
+
+msgid "Z-score"
+msgstr "Score z"
+
+msgid "Modified z-score"
+msgstr "Score z modifié"
+
+msgid "Mean"
+msgstr "Moyenne"
+
+msgid "Median"
+msgstr "Médiane"
+
+msgid "Standard deviation"
+msgstr "Écart type"
+
+msgid "Median absolute deviation"
+msgstr "Écart absolu médian"
+
+msgid "Lower boundary"
+msgstr "Limite inférieure"
+
+msgid "Upper boundary"
+msgstr "Limite supérieure"
+
+msgid "Outlier detection method"
+msgstr "Méthode de détection des valeurs aberrantes"
+
+msgid "Method"
+msgstr "Méthode"
+
+msgid "Threshold factor"
+msgstr "Facteur de seuil"
+
+msgid "Values further than this many scores from the center are outliers."
+msgstr "Les valeurs plus éloignées du centre que ce nombre de scores sont des valeurs aberrantes."
+
+msgid "Results"
+msgstr "Résultats"
+
+msgid "Maximum number of results"
+msgstr "Nombre maximal de résultats"
+
+msgid "Sort by"
+msgstr "Trier par"
+
+msgid "Totals"
+msgstr "Totaux"
+
+msgid "Columns totals"
+msgstr "Totaux des colonnes"
+
+msgid "Columns sub-totals"
+msgstr "Sous-totaux des colonnes"
+
+msgid "Rows totals"
+msgstr "Totaux des lignes"
+
+msgid "Rows sub-totals"
+msgstr "Sous-totaux des lignes"
+
+msgid "Empty data"
+msgstr "Données vides"
+
+msgid "Hide empty columns"
+msgstr "Masquer les colonnes vides"
+
+msgid "Hide empty rows"
+msgstr "Masquer les lignes vides"
+
+msgid "Display"
+msgstr "Affichage"
+
+msgid "Number type"
+msgstr "Type de nombre"
+
+msgid "Percentage of row"
+msgstr "Pourcentage de la ligne"
+
+msgid "Percentage of column"
+msgstr "Pourcentage de la colonne"
+
+msgid "Display density"
+msgstr "Densité d'affichage"
+
+msgid "Comfortable"
+msgstr "Confortable"
+
+msgid "Normal"
+msgstr "Normale"
+
+msgid "Compact"
+msgstr "Compacte"
+
+msgid "Large"
+msgstr "Grande"
+
+msgid "Small"
+msgstr "Petite"
+
+msgid "Show dimension labels"
+msgstr "Afficher les libellés des dimensions"
+
+msgid "Show organisation unit hierarchy"
+msgstr "Afficher la hiérarchie des unités d'organisation"
+
+msgid "Headers"
+msgstr "En-têtes"
+
+msgid "Keep column headers visible"
+msgstr "Garder les en-têtes de colonnes visibles"
+
+msgid "Keep row headers visible"
+msgstr "Garder les en-têtes de lignes visibles"
+
+msgid "Color the cells"
+msgstr "Colorer les cellules"
+
+msgid "No outliers found"
+msgstr "Aucune valeur aberrante trouvée"
+
+msgid "No value is an outlier with the current method and threshold."
+msgstr "Aucune valeur n'est aberrante avec la méthode et le seuil actuels."
+
+msgid "Outlier table not available"
+msgstr "Tableau des valeurs aberrantes indisponible"
+
+msgid "The outlier table needs DHIS2 2.41 or newer."
+msgstr "Le tableau des valeurs aberrantes nécessite DHIS2 2.41 ou plus récent."
+
+msgid "Select data elements, period and organisation unit, then click Update."
+msgstr "Sélectionnez des éléments de données, une période et une unité d'organisation, puis cliquez sur Mettre à jour."
+
+msgid "Select data, years and organisation unit, then click Update."
+msgstr "Sélectionnez des données, des années et une unité d'organisation, puis cliquez sur Mettre à jour."
+
+msgid "This chart type reads one data source only. Remove the other data sources to run it."
+msgstr "Ce type de graphique ne lit qu'une seule source de données. Retirez les autres sources de données pour l'exécuter."
+
+msgid "The outlier table only uses data elements."
+msgstr "Le tableau des valeurs aberrantes n'utilise que des éléments de données."
+
+msgid "Days per year"
+msgstr "Jours par année"
+
+msgid "Weeks per year"
+msgstr "Semaines par année"
+
+msgid "Months per year"
+msgstr "Mois par année"
+
+msgid "Bi-months per year"
+msgstr "Bimestres par année"
+
+msgid "Quarters per year"
+msgstr "Trimestres par année"
+
+msgid "Six-months per year"
+msgstr "Semestres par année"
+
+msgid "Years to compare (series)"
+msgstr "Années à comparer (séries)"
+
+msgid "Each year is drawn as its own line or set of columns."
+msgstr "Chaque année est dessinée comme sa propre ligne ou son propre groupe de colonnes."
+
+msgid "Periods within a year (category)"
+msgstr "Périodes d'une année (catégorie)"
+
+msgid "Compare changes over time between multiple time periods."
+msgstr "Comparer l'évolution dans le temps entre plusieurs périodes."
+
+msgid "View data and indicators in a manipulatable table."
+msgstr "Afficher les données et les indicateurs dans un tableau manipulable."
+
+msgid "Compare sizes of related elements vertically. Recommend period as filter."
+msgstr "Comparer verticalement la taille d'éléments liés. Période recommandée comme filtre."
+
+msgid "Compare parts of a whole against related elements vertically. Recommend data or organisation unit as series."
+msgstr "Comparer verticalement les parties d'un tout entre éléments liés. Données ou unité d'organisation recommandées comme séries."
+
+msgid "Same as column chart, only with horizontal bars."
+msgstr "Comme le graphique en colonnes, mais avec des barres horizontales."
+
+msgid "Same as stacked column chart, only with horizontal bars."
+msgstr "Comme le graphique en colonnes empilées, mais avec des barres horizontales."
+
+msgid "Track or compare changes over time. Recommend period as category."
+msgstr "Suivre ou comparer l'évolution dans le temps. Période recommandée comme catégorie."
+
+msgid "Track or compare changes over time of parts of a whole. Recommend period as category."
+msgstr "Suivre ou comparer l'évolution dans le temps des parties d'un tout. Période recommandée comme catégorie."
+
+msgid "Compare parts of a whole at a single point in time. Recommend period as filter."
+msgstr "Comparer les parties d'un tout à un moment donné. Période recommandée comme filtre."
+
+msgid "Compare several items against multiple variables."
+msgstr "Comparer plusieurs éléments selon plusieurs variables."
+
+msgid "Compare a percentage indicator against a 100% scale. Recommend period as filter."
+msgstr "Comparer un indicateur en pourcentage à une échelle de 100 %. Période recommandée comme filtre."
+
+msgid "Display a single value. Recommend relative period to show latest data."
+msgstr "Afficher une seule valeur. Période relative recommandée pour montrer les dernières données."
+
+msgid "View the relationship between two data items at a place or time. Recommend organisation unit as point."
+msgstr "Afficher la relation entre deux éléments de données en un lieu ou un moment. Unité d'organisation recommandée comme point."
+
+msgid "View outlier values of data elements in a table."
+msgstr "Afficher les valeurs aberrantes des éléments de données dans un tableau."
+
+msgid "Compare values as bars around a circle."
+msgstr "Comparer des valeurs sous forme de barres autour d'un cercle."
+
+msgid "Show parts of a whole as nested rectangles."
+msgstr "Montrer les parties d'un tout sous forme de rectangles imbriqués."
+
+msgid "{{share}} of total"
+msgstr "{{share}} du total"
+
+msgid "Other"
+msgstr "Autres"
+
+msgid "{{series}} of {{name}}, {{total}} of total"
+msgstr "{{series}} de {{name}}, {{total}} du total"
+
+msgid "{{total}} of total"
+msgstr "{{total}} du total"
+
+msgid "Accessible"
+msgstr "Accessible"
+
+msgid "DHIS2 types"
+msgstr "Types DHIS2"
+
+msgid "Drawn by DHIS2, as in the Data Visualizer app. Set them up with Options."
+msgstr "Dessinés par DHIS2, comme dans l'application Data Visualizer. Configurez-les avec Options."
+
+msgid "Drawn by this app. Set them up in the Style tab."
+msgstr "Dessinés par cette application. Configurez-les dans l'onglet Style."
+
+msgid "{{type}} is drawn by DHIS2"
+msgstr "{{type}} est dessiné par DHIS2"
+
+msgid "Its colors, values, axes and legend are set in Options, above the chart. It looks the same here, on dashboards and in DHIS2."
+msgstr "Ses couleurs, valeurs, axes et légende se règlent dans Options, au-dessus du graphique. Il s'affiche de la même façon ici, dans les tableaux de bord et dans DHIS2."
+
+msgid "The Style tab is for Radial and Tree map, the chart types this app draws itself."
+msgstr "L'onglet Style concerne Radial et Carte proportionnelle, les types de graphiques que cette application dessine elle-même."
+
+msgid "Open options"
+msgstr "Ouvrir les options"
+
+msgid "Style of the {{type}} chart."
+msgstr "Style du graphique {{type}}."
+
+msgid "Series colors"
+msgstr "Couleurs des séries"
+
+msgid "Each data item keeps its color, in the order of the palette."
+msgstr "Chaque élément de données garde sa couleur, dans l'ordre de la palette."
+
+msgid "Size"
+msgstr "Taille"
+
+msgid "Background color"
+msgstr "Couleur de fond"
+
+msgid "Drawn by DHIS2, as in the Data Visualizer app."
+msgstr "Dessinés par DHIS2, comme dans l'application Data Visualizer."
+
+msgid "Drawn by this app, with their own options."
+msgstr "Dessinés par cette application, avec leurs propres options."
+
+msgid "Bubble size from {{min}} to {{max}}"
+msgstr "Taille des bulles de {{min}} à {{max}}"
+
+msgid "Unclassified"
+msgstr "Non classé"
+
+msgid "Facility"
+msgstr "Établissement"
+
+msgid "Level {{level}}"
+msgstr "Niveau {{level}}"
+
+msgid "Thematic layer"
+msgstr "Couche thématique"

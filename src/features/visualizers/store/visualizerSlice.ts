@@ -2,10 +2,13 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { ChartType, ColorPalette, VisualSettings, VisualTitles } from '@/features/charts'
 // The light entry: importing the charts barrel would put recharts in the main bundle.
 import {
+    ACCESSIBLE_COLOR_PALETTE,
     DEFAULT_CHART_TYPE,
-    DEFAULT_COLOR_PALETTE,
     DEFAULT_VISUAL_SETTINGS,
 } from '@/features/charts/constants'
+import type { VisualizerOptions } from '../types/visualization.types'
+import { DEFAULT_VISUALIZER_OPTIONS } from '../utils/visualizerOptions'
+import { DEFAULT_YEAR_OVER_YEAR, type YearOverYearSelection } from '../utils/yearOverYear'
 
 /** Appearance of the visualization being built. */
 export interface VisualizerState {
@@ -13,6 +16,10 @@ export interface VisualizerState {
     titles: VisualTitles
     settings: VisualSettings
     colorPalette: ColorPalette
+    /** Options of the DHIS2 chart engine (Options dialog). */
+    options: VisualizerOptions
+    /** Years and periods of the year-over-year chart types. */
+    yearOverYear: YearOverYearSelection
 }
 
 export const initialVisualizer: VisualizerState = {
@@ -22,8 +29,11 @@ export const initialVisualizer: VisualizerState = {
         customSubTitle: '',
         DefaultSubTitle: { periods: [], orgUnits: [], dataElements: [] },
     },
-    settings: DEFAULT_VISUAL_SETTINGS,
-    colorPalette: DEFAULT_COLOR_PALETTE,
+    // New visuals start with the accessible palette; saved ones keep theirs.
+    settings: { ...DEFAULT_VISUAL_SETTINGS, visualColorPalette: ACCESSIBLE_COLOR_PALETTE },
+    colorPalette: ACCESSIBLE_COLOR_PALETTE,
+    options: DEFAULT_VISUALIZER_OPTIONS,
+    yearOverYear: DEFAULT_YEAR_OVER_YEAR,
 }
 
 const visualizerSlice = createSlice({
@@ -46,6 +56,12 @@ const visualizerSlice = createSlice({
         },
         updateSettings: (state, action: PayloadAction<Partial<VisualSettings>>) => {
             state.settings = { ...state.settings, ...action.payload }
+        },
+        updateOptions: (state, action: PayloadAction<Partial<VisualizerOptions>>) => {
+            state.options = { ...state.options, ...action.payload }
+        },
+        setYearOverYear: (state, action: PayloadAction<YearOverYearSelection>) => {
+            state.yearOverYear = action.payload
         },
         /** The automatic subtitle follows the items of the last analytics run. */
         setDefaultSubTitle: (state, action: PayloadAction<VisualTitles['DefaultSubTitle']>) => {

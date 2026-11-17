@@ -9,6 +9,7 @@ export const chartTypeLabel = (type: string): string => {
         'Stacked Bar': i18n.t('Stacked bar'),
         Line: i18n.t('Line'),
         Area: i18n.t('Area'),
+        'Stacked Area': i18n.t('Stacked area'),
         Scatter: i18n.t('Scatter'),
         Radar: i18n.t('Radar'),
         Pie: i18n.t('Pie'),
@@ -16,7 +17,10 @@ export const chartTypeLabel = (type: string): string => {
         Gauge: i18n.t('Gauge'),
         'Single Value': i18n.t('Single value'),
         'Tree Map': i18n.t('Tree map'),
-        Table: i18n.t('Table'),
+        Table: i18n.t('Pivot table'),
+        'Year Over Year Line': i18n.t('Year over year (line)'),
+        'Year Over Year Column': i18n.t('Year over year (column)'),
+        'Outlier Table': i18n.t('Outlier table'),
     }
     return labels[type] ?? type
 }
@@ -37,6 +41,7 @@ export const paletteLabel = (name: string): string => {
         'Pastel Dreams': i18n.t('Pastel Dreams'),
         'Autumn Serenity': i18n.t('Autumn Serenity'),
         Default: i18n.t('Default'),
+        Accessible: i18n.t('Accessible'),
     }
     return labels[name] ?? name
 }

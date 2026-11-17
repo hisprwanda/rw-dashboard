@@ -1,4 +1,4 @@
-import { act, screen, waitFor } from '@testing-library/react'
+import { act, waitFor } from '@testing-library/react'
 import { renderWithProviders } from '@/shared/testing'
 import { Dhis2ObjectView } from './Dhis2ObjectView'
 import { PLUGIN_HANDSHAKE_MS } from './Dhis2PluginView'
@@ -18,16 +18,36 @@ const pivotTable = {
 
 const analytics = {
     headers: [
-        { name: 'dx', column: 'Data', meta: true },
-        { name: 'ou', column: 'Organisation unit', meta: true },
-        { name: 'value', column: 'Value', meta: false },
+        { name: 'dx', column: 'Data', valueType: 'TEXT', type: 'java.lang.String', meta: true },
+        {
+            name: 'ou',
+            column: 'Organisation unit',
+            valueType: 'TEXT',
+            type: 'java.lang.String',
+            meta: true,
+        },
+        {
+            name: 'value',
+            column: 'Value',
+            valueType: 'NUMBER',
+            type: 'java.lang.Double',
+            meta: false,
+        },
     ],
     rows: [
         ['anc1', 'bo', '1200'],
         ['anc1', 'ke', '800'],
     ],
     metaData: {
-        items: { anc1: { name: 'ANC 1st visit' }, bo: { name: 'Bo' }, ke: { name: 'Kenema' } },
+        items: {
+            anc1: { name: 'ANC 1st visit' },
+            bo: { name: 'Bo' },
+            ke: { name: 'Kenema' },
+            dx: { name: 'Data', dimensionType: 'DATA_X' },
+            ou: { name: 'Organisation unit', dimensionType: 'ORGANISATION_UNIT' },
+            pe: { name: 'Period', dimensionType: 'PERIOD' },
+            '2025': { name: '2025' },
+        },
         dimensions: { dx: ['anc1'], ou: ['bo', 'ke'], pe: ['2025'] },
     },
     width: 3,
@@ -51,8 +71,8 @@ describe('Dhis2ObjectView (current instance)', () => {
         expect(container.querySelector('iframe')?.getAttribute('src')).toBe(PLUGIN)
     })
 
-    it('draws a pivot table itself when there is no plugin (DHIS2 < 2.40)', async () => {
-        renderWithProviders(view, {
+    it('draws the official pivot table itself when there is no plugin (DHIS2 < 2.40)', async () => {
+        const { container } = renderWithProviders(view, {
             data: {
                 apps: [],
                 'visualizations/pt1': pivotTable,
@@ -60,10 +80,11 @@ describe('Dhis2ObjectView (current instance)', () => {
                 me: { id: 'u1', settings: {} },
             },
         })
-        expect(await screen.findByText('Kenema')).toBeTruthy()
-        expect(screen.getByText('ANC 1st visit')).toBeTruthy()
-        // Column total of 1,200 + 800.
-        expect(screen.getByText('2,000')).toBeTruthy()
+        // The DHIS2 pivot table (it sizes itself to its parent: jsdom has no layout, so
+        // only its container is rendered here).
+        await waitFor(() =>
+            expect(container.querySelector('[data-test="visualization-container"]')).not.toBeNull()
+        )
     })
 
     it('draws the favorite itself when the plugin stays silent (frame refused)', async () => {
@@ -81,7 +102,11 @@ describe('Dhis2ObjectView (current instance)', () => {
             act(() => {
                 jest.advanceTimersByTime(PLUGIN_HANDSHAKE_MS + 1)
             })
-            expect(await screen.findByText('Kenema')).toBeTruthy()
+            await waitFor(() =>
+                expect(
+                    container.querySelector('[data-test="visualization-container"]')
+                ).not.toBeNull()
+            )
             expect(container.querySelector('iframe')).toBeNull()
         } finally {
             jest.useRealTimers()

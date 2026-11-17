@@ -21,6 +21,7 @@ import { useVisuals } from '../hooks/useVisuals'
 import { saveVisualSchema, type SaveVisualFormValues } from '../schemas/saveVisualSchema'
 import type { SavedVisual } from '../types/visual.types'
 import { isVisualNameTaken } from '../utils/visualNames'
+import { isYearOverYearChart } from '../utils/yearOverYear'
 
 interface SaveVisualModalProps {
     /** Key of the visual being updated; omitted for a new visual. */
@@ -74,9 +75,16 @@ export const SaveVisualModal = ({
             visualType: visualizer.chartType,
             visualTitleAndSubTitle: visualizer.titles,
             visualSettings: visualizer.settings,
+            visualOptions: visualizer.options,
+            yearOverYear: isYearOverYearChart(visualizer.chartType)
+                ? visualizer.yearOverYear
+                : undefined,
             query,
             analyticsPayloadDeterminer: selection.layout,
             dataSourceId: selection.dataSourceId,
+            additionalSources: selection.additionalSources
+                .filter(({ items }) => items.length > 0)
+                .map(({ dataSourceId, items }) => ({ dataSourceId, dataItems: items })),
             backedSelectedItems: selection.selectedDataItems,
             organizationTree: orgUnits.selectedTreePaths,
             selectedOrgUnitLevel: orgUnits.selectedLevels ?? undefined,

@@ -9,7 +9,9 @@ import {
     fetchVisualization,
     searchObjects,
 } from '../services/dhis2ObjectService'
-import type { Dhis2ObjectType } from '../types/dhis2Object.types'
+import type { DisplayProperty } from '@/features/analytics'
+import { loadMapLayers } from '../services/dhis2MapLayersService'
+import type { Dhis2Map, Dhis2ObjectType } from '../types/dhis2Object.types'
 import { pluginUrl } from '../utils/pluginUrl'
 import { dhis2ObjectKeys } from './queryKeys'
 
@@ -72,6 +74,33 @@ export const useDhis2Map = (instance: InstanceConnection | undefined, id: string
                 : skipToken,
         staleTime: FIVE_MINUTES,
         retry: retryUnlessNotFound,
+    })
+}
+
+/**
+ * The layers of a DHIS2 map, loaded from its instance and styled as the DHIS2 Maps app
+ * does (data, classes, colors, legends). Pass `undefined` to wait for the map.
+ */
+export const useDhis2MapLayers = (
+    instance: InstanceConnection | undefined,
+    map: Dhis2Map | undefined,
+    displayProperty: DisplayProperty
+) => {
+    const engine = useDataEngine()
+    const { baseUrl } = useConfig()
+    const instanceUrl = instance?.isCurrentInstance ? baseUrl : instance?.url
+    return useQuery({
+        queryKey: dhis2ObjectKeys.mapLayers(instance, map, displayProperty, instanceUrl),
+        queryFn:
+            instance && map && instanceUrl
+                ? ({ signal }) =>
+                      loadMapLayers(createInstanceClient(engine, instance), map, {
+                          displayProperty,
+                          baseUrl: instanceUrl,
+                          signal,
+                      })
+                : skipToken,
+        staleTime: FIVE_MINUTES,
     })
 }
 

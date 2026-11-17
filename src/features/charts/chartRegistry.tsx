@@ -1,12 +1,16 @@
 import type { ComponentType, ReactNode } from 'react'
 import {
     IconVisualizationArea24,
+    IconVisualizationAreaStacked24,
     IconVisualizationBar24,
     IconVisualizationBarStacked24,
     IconVisualizationColumn24,
+    IconVisualizationColumnMulti24,
     IconVisualizationColumnStacked24,
     IconVisualizationGauge24,
     IconVisualizationLine24,
+    IconVisualizationLineMulti24,
+    IconVisualizationOutlierTable24,
     IconVisualizationPie24,
     IconVisualizationPivotTable24,
     IconVisualizationRadar24,
@@ -55,12 +59,30 @@ export const chartRegistry: readonly ChartDefinition[] = [
     },
     { type: 'Line', icon: <IconVisualizationLine24 />, component: cartesian('Line') },
     { type: 'Area', icon: <IconVisualizationArea24 />, component: cartesian('Area') },
+    {
+        type: 'Stacked Area',
+        icon: <IconVisualizationAreaStacked24 />,
+        component: cartesian('Area'),
+    },
     { type: 'Pie', icon: <IconVisualizationPie24 />, component: PieChart },
     { type: 'Radial', icon: <Target size={24} />, component: RadialChart },
     { type: 'Tree Map', icon: <LayoutGrid size={24} />, component: TreeMapChart },
     { type: 'Single Value', icon: <IconVisualizationSingleValue24 />, component: SingleValueChart },
     { type: 'Radar', icon: <IconVisualizationRadar24 />, component: RadarChart },
     { type: 'Scatter', icon: <IconVisualizationScatter24 />, component: cartesian('Scatter') },
+    // Drawn by the DHIS2 components (see the visualizers feature); the legacy component is
+    // only a fallback.
+    {
+        type: 'Year Over Year Line',
+        icon: <IconVisualizationLineMulti24 />,
+        component: cartesian('Line'),
+    },
+    {
+        type: 'Year Over Year Column',
+        icon: <IconVisualizationColumnMulti24 />,
+        component: cartesian('Column'),
+    },
+    { type: 'Outlier Table', icon: <IconVisualizationOutlierTable24 />, component: TableChart },
 ]
 
 export const findChart = (type: string | undefined) =>

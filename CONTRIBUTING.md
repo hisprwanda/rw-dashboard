@@ -107,7 +107,9 @@ the only contexts.
   fallback for icons DHIS2 lacks. shadcn/Radix/Mantine were removed: do not add them back.
 - Tailwind is used for layout and spacing only; DHIS2 colors are available as `dhis2-*`
   (from `@dhis2/ui-constants`, e.g. `bg-dhis2-blue800`).
-- Charts: recharts (inside `features/charts`). Maps: react-leaflet. Dashboard grid: react-grid-layout.
+- Charts: the visualizer builder draws charts with the DHIS2 chart engine (`@dhis2/analytics`, in
+  `features/visualizers`: `DhisChart`, options, color sets); dashboards and bulletins still use recharts
+  (inside `features/charts`). Maps: react-leaflet. Dashboard grid: react-grid-layout.
 - Forms: react-hook-form + zod, rendered with `@dhis2/ui` fields.
 
 ## i18n

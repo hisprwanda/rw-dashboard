@@ -1,5 +1,5 @@
 export { DataItemsModal } from './components/DataItemsModal'
-export { DataItemsPicker } from './components/DataItemsPicker'
+export { DataItemsPicker, DataItemsSelector } from './components/DataItemsPicker'
 export { DATA_ITEM_TYPES, DATA_SET_METRICS } from './constants/dataItemTypes'
 export { dataItemKeys } from './hooks/queryKeys'
 export { useDataItemGroups } from './hooks/useDataItemGroups'

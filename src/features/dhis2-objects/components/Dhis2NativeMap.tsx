@@ -1,57 +1,44 @@
-import { useMemo } from 'react'
+import { lazy, Suspense } from 'react'
 import { useDisplayProperty } from '@/features/auth'
-import { SavedMapView, type BasemapType } from '@/features/maps'
 import type { InstanceConnection } from '@/shared/api'
 import { LoadingState } from '@/shared/components'
-import { useDhis2Map } from '../hooks/useDhis2Objects'
-import type { Dhis2Map } from '../types/dhis2Object.types'
-import { mapToThematic } from '../utils/favoriteRequest'
+import { useDhis2Map, useDhis2MapLayers } from '../hooks/useDhis2Objects'
+import { isSupportedMap } from '../services/dhis2MapLayersService'
 import { Dhis2ImageView } from './Dhis2ImageView'
 import { Dhis2ObjectError } from './Dhis2ObjectError'
 
-const basemapOf = (map: Dhis2Map): BasemapType | undefined => {
-    const id = typeof map.basemap === 'string' ? map.basemap : map.basemap?.id
-    if (id === 'openStreetMap') return 'osm-detailed'
-    if (id === 'osmLight') return 'osm-light'
-    return undefined
-}
+// The DHIS2 map engine (MapLibre, WebGL) is a large chunk: loaded only when a map shows.
+const Dhis2GlMap = lazy(() => import('./Dhis2GlMap'))
 
 interface Dhis2NativeMapProps {
     instance: InstanceConnection
-    /** Data source of the item, handed to the map view that resolves it again. */
-    dataSourceId: string
     objectId: string
     name: string
 }
 
 /**
- * A Maps favorite drawn by this app when it is a single thematic layer; other maps
- * (events, facilities, Earth Engine, several layers) show DHIS2's image.
+ * A Maps favorite drawn by the official DHIS2 map engine: its thematic, org unit and
+ * facility layers are loaded from its instance and styled as the DHIS2 Maps app does.
+ * Maps with other layers (events, Earth Engine, timelines…) show DHIS2's image.
  */
-export const Dhis2NativeMap = ({ instance, dataSourceId, objectId, name }: Dhis2NativeMapProps) => {
+export const Dhis2NativeMap = ({ instance, objectId, name }: Dhis2NativeMapProps) => {
     const displayProperty = useDisplayProperty()
     const map = useDhis2Map(instance, objectId)
-    const thematic = useMemo(
-        () => (map.data ? mapToThematic(map.data, displayProperty) : null),
-        [map.data, displayProperty]
-    )
+    const supported = !!map.data && isSupportedMap(map.data)
+    const layers = useDhis2MapLayers(instance, supported ? map.data : undefined, displayProperty)
 
     if (map.error) return <Dhis2ObjectError error={map.error} />
     if (!map.data) return <LoadingState />
-    if (!thematic) {
+    if (!supported) {
         return (
             <Dhis2ImageView instance={instance} objectType="map" objectId={objectId} name={name} />
         )
     }
+    if (layers.error) return <Dhis2ObjectError error={layers.error} />
+    if (!layers.data) return <LoadingState />
     return (
-        <div className="h-full w-full">
-            <SavedMapView
-                geoFeaturesQuery={thematic.geoFeaturesQuery}
-                analyticsQuery={thematic.analyticsQuery}
-                basemap={basemapOf(map.data)}
-                settings={thematic.settings}
-                dataSourceId={dataSourceId}
-            />
-        </div>
+        <Suspense fallback={<LoadingState />}>
+            <Dhis2GlMap layers={layers.data} basemap={map.data.basemap} />
+        </Suspense>
     )
 }

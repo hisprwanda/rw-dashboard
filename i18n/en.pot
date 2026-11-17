@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-10-04T07:52:42.235Z\n"
-"PO-Revision-Date: 2026-10-04T07:52:42.236Z\n"
+"POT-Creation-Date: 2026-10-10T18:28:46.764Z\n"
+"PO-Revision-Date: 2026-10-10T18:28:46.764Z\n"
 
 msgid "Data items"
 msgstr "Data items"
@@ -491,14 +491,23 @@ msgstr "Value"
 msgid "Total"
 msgstr "Total"
 
+msgid "{{share}} of total"
+msgstr "{{share}} of total"
+
+msgid "Other"
+msgstr "Other"
+
+msgid "Values"
+msgstr "Values"
+
 msgid "Search in table..."
 msgstr "Search in table..."
 
-msgid "Item"
-msgstr "Item"
+msgid "{{series}} of {{name}}, {{total}} of total"
+msgstr "{{series}} of {{name}}, {{total}} of total"
 
-msgid "Size {{value}}"
-msgstr "Size {{value}}"
+msgid "{{total}} of total"
+msgstr "{{total}} of total"
 
 msgid "Required headers (value and a category) are missing"
 msgstr "Required headers (value and a category) are missing"
@@ -521,6 +530,9 @@ msgstr "Line"
 msgid "Area"
 msgstr "Area"
 
+msgid "Stacked area"
+msgstr "Stacked area"
+
 msgid "Scatter"
 msgstr "Scatter"
 
@@ -542,8 +554,17 @@ msgstr "Single value"
 msgid "Tree map"
 msgstr "Tree map"
 
-msgid "Table"
-msgstr "Table"
+msgid "Pivot table"
+msgstr "Pivot table"
+
+msgid "Year over year (line)"
+msgstr "Year over year (line)"
+
+msgid "Year over year (column)"
+msgstr "Year over year (column)"
+
+msgid "Outlier table"
+msgstr "Outlier table"
 
 msgid "Nature Essence"
 msgstr "Nature Essence"
@@ -583,6 +604,9 @@ msgstr "Autumn Serenity"
 
 msgid "Default"
 msgstr "Default"
+
+msgid "Accessible"
+msgstr "Accessible"
 
 msgid "Remove {{name}}"
 msgstr "Remove {{name}}"
@@ -632,6 +656,18 @@ msgstr "Add a custom map"
 msgid "Select a custom map"
 msgstr "Select a custom map"
 
+msgid "Could not load this visualization"
+msgstr "Could not load this visualization"
+
+msgid "Data source not found"
+msgstr "Data source not found"
+
+msgid "A data source of this visualization was deleted or is not shared with you."
+msgstr "A data source of this visualization was deleted or is not shared with you."
+
+msgid "Some data could not be loaded"
+msgstr "Some data could not be loaded"
+
 msgid "Slide {{current}} of {{total}}"
 msgstr "Slide {{current}} of {{total}}"
 
@@ -670,15 +706,6 @@ msgstr "This dashboard has no items."
 
 msgid "Next slide"
 msgstr "Next slide"
-
-msgid "Data source not found"
-msgstr "Data source not found"
-
-msgid "The data source of this visualization was deleted or is not shared with you."
-msgstr "The data source of this visualization was deleted or is not shared with you."
-
-msgid "Could not load this visualization"
-msgstr "Could not load this visualization"
 
 msgid "You have not created any dashboard yet."
 msgstr "You have not created any dashboard yet."
@@ -976,26 +1003,20 @@ msgstr "Page {{page}} of {{pages}}"
 msgid "Next"
 msgstr "Next"
 
+msgid "Legend"
+msgstr "Legend"
+
+msgid "Bubble size from {{min}} to {{max}}"
+msgstr "Bubble size from {{min}} to {{max}}"
+
+msgid "Facilities"
+msgstr "Facilities"
+
 msgid "DHIS2 has no image of this item."
 msgstr "DHIS2 has no image of this item."
 
-msgid "Pivot table"
-msgstr "Pivot table"
-
-msgid "Year over year (line)"
-msgstr "Year over year (line)"
-
-msgid "Year over year (column)"
-msgstr "Year over year (column)"
-
-msgid "Stacked area"
-msgstr "Stacked area"
-
 msgid "Bubble"
 msgstr "Bubble"
-
-msgid "Outlier table"
-msgstr "Outlier table"
 
 msgid "Thematic"
 msgstr "Thematic"
@@ -1005,9 +1026,6 @@ msgstr "Events"
 
 msgid "Tracked entities"
 msgstr "Tracked entities"
-
-msgid "Facilities"
-msgstr "Facilities"
 
 msgid "Boundaries"
 msgstr "Boundaries"
@@ -1026,6 +1044,21 @@ msgstr "GeoJSON layer"
 
 msgid "Map"
 msgstr "Map"
+
+msgid "Unclassified"
+msgstr "Unclassified"
+
+msgid "Facility"
+msgstr "Facility"
+
+msgid "Level {{level}}"
+msgstr "Level {{level}}"
+
+msgid "No data"
+msgstr "No data"
+
+msgid "Thematic layer"
+msgstr "Thematic layer"
 
 msgid "Save map"
 msgstr "Save map"
@@ -1097,9 +1130,6 @@ msgstr "Data name"
 msgid "Labels"
 msgstr "Labels"
 
-msgid "Legend"
-msgstr "Legend"
-
 msgid "Automatic (5 classes)"
 msgstr "Automatic (5 classes)"
 
@@ -1117,9 +1147,6 @@ msgstr "Update layer"
 
 msgid "Add layer"
 msgstr "Add layer"
-
-msgid "No data"
-msgstr "No data"
 
 msgid "Very low"
 msgstr "Very low"
@@ -1512,17 +1539,68 @@ msgstr ""
 "Upload the MP3 tracks users can play as background music during dashboard "
 "presentations."
 
-msgid "Select chart type"
-msgstr "Select chart type"
+msgid "Data from {{source}}"
+msgstr "Data from {{source}}"
 
-msgid "Search chart types"
-msgstr "Search chart types"
+msgid "Data from other sources"
+msgstr "Data from other sources"
+
+msgid "Add a data source"
+msgstr "Add a data source"
+
+msgid "Style of the {{type}} chart."
+msgstr "Style of the {{type}} chart."
+
+msgid "Series colors"
+msgstr "Series colors"
+
+msgid "Each data item keeps its color, in the order of the palette."
+msgstr "Each data item keeps its color, in the order of the palette."
+
+msgid "Color"
+msgstr "Color"
+
+msgid "Size"
+msgstr "Size"
+
+msgid "Background color"
+msgstr "Background color"
+
+msgid "Visualization type"
+msgstr "Visualization type"
+
+msgid "Search visualization types"
+msgstr "Search visualization types"
+
+msgid "DHIS2 types"
+msgstr "DHIS2 types"
+
+msgid "Drawn by DHIS2, as in the Data Visualizer app."
+msgstr "Drawn by DHIS2, as in the Data Visualizer app."
+
+msgid "Additional types"
+msgstr "Additional types"
+
+msgid "Drawn by this app, with their own options."
+msgstr "Drawn by this app, with their own options."
+
+msgid "No visualization types found"
+msgstr "No visualization types found"
 
 msgid "Search palettes"
 msgstr "Search palettes"
 
 msgid "Main dimensions"
 msgstr "Main dimensions"
+
+msgid "Other dimensions"
+msgstr "Other dimensions"
+
+msgid "Dimension"
+msgstr "Dimension"
+
+msgid "Download data (CSV)"
+msgstr "Download data (CSV)"
 
 msgid "File"
 msgstr "File"
@@ -1536,6 +1614,267 @@ msgstr "Filter"
 msgid "Move to {{area}}"
 msgstr "Move to {{area}}"
 
+msgid "Series"
+msgstr "Series"
+
+msgid "Basic"
+msgstr "Basic"
+
+msgid "Extended"
+msgstr "Extended"
+
+msgid "Bright"
+msgstr "Bright"
+
+msgid "Dark"
+msgstr "Dark"
+
+msgid "Gray"
+msgstr "Gray"
+
+msgid "Color blind"
+msgstr "Color blind"
+
+msgid "Absolute deviation"
+msgstr "Absolute deviation"
+
+msgid "Z-score"
+msgstr "Z-score"
+
+msgid "Modified z-score"
+msgstr "Modified z-score"
+
+msgid "Mean"
+msgstr "Mean"
+
+msgid "Median"
+msgstr "Median"
+
+msgid "Standard deviation"
+msgstr "Standard deviation"
+
+msgid "Median absolute deviation"
+msgstr "Median absolute deviation"
+
+msgid "Lower boundary"
+msgstr "Lower boundary"
+
+msgid "Upper boundary"
+msgstr "Upper boundary"
+
+msgid "Outlier detection method"
+msgstr "Outlier detection method"
+
+msgid "Method"
+msgstr "Method"
+
+msgid "Threshold factor"
+msgstr "Threshold factor"
+
+msgid "Values further than this many scores from the center are outliers."
+msgstr "Values further than this many scores from the center are outliers."
+
+msgid "Results"
+msgstr "Results"
+
+msgid "Maximum number of results"
+msgstr "Maximum number of results"
+
+msgid "Sort by"
+msgstr "Sort by"
+
+msgid "Sort order"
+msgstr "Sort order"
+
+msgid "High to low"
+msgstr "High to low"
+
+msgid "Low to high"
+msgstr "Low to high"
+
+msgid "Totals"
+msgstr "Totals"
+
+msgid "Columns totals"
+msgstr "Columns totals"
+
+msgid "Columns sub-totals"
+msgstr "Columns sub-totals"
+
+msgid "Rows totals"
+msgstr "Rows totals"
+
+msgid "Rows sub-totals"
+msgstr "Rows sub-totals"
+
+msgid "Empty data"
+msgstr "Empty data"
+
+msgid "Hide empty columns"
+msgstr "Hide empty columns"
+
+msgid "Hide empty rows"
+msgstr "Hide empty rows"
+
+msgid "Display"
+msgstr "Display"
+
+msgid "Number type"
+msgstr "Number type"
+
+msgid "Percentage of row"
+msgstr "Percentage of row"
+
+msgid "Percentage of column"
+msgstr "Percentage of column"
+
+msgid "Table"
+msgstr "Table"
+
+msgid "Display density"
+msgstr "Display density"
+
+msgid "Comfortable"
+msgstr "Comfortable"
+
+msgid "Normal"
+msgstr "Normal"
+
+msgid "Compact"
+msgstr "Compact"
+
+msgid "Font size"
+msgstr "Font size"
+
+msgid "Large"
+msgstr "Large"
+
+msgid "Small"
+msgstr "Small"
+
+msgid "Show dimension labels"
+msgstr "Show dimension labels"
+
+msgid "Show organisation unit hierarchy"
+msgstr "Show organisation unit hierarchy"
+
+msgid "Headers"
+msgstr "Headers"
+
+msgid "Keep column headers visible"
+msgstr "Keep column headers visible"
+
+msgid "Keep row headers visible"
+msgstr "Keep row headers visible"
+
+msgid "Show line"
+msgstr "Show line"
+
+msgid "Show values"
+msgstr "Show values"
+
+msgid "Use cumulative values"
+msgstr "Use cumulative values"
+
+msgid "Use 100% stacked values"
+msgstr "Use 100% stacked values"
+
+msgid "Empty categories"
+msgstr "Empty categories"
+
+msgid "Hide empty categories"
+msgstr "Hide empty categories"
+
+msgid "Before first value"
+msgstr "Before first value"
+
+msgid "After last value"
+msgstr "After last value"
+
+msgid "Before first and after last value"
+msgstr "Before first and after last value"
+
+msgid "All empty"
+msgstr "All empty"
+
+msgid "Vertical (y) axis"
+msgstr "Vertical (y) axis"
+
+msgid "Minimum"
+msgstr "Minimum"
+
+msgid "Maximum"
+msgstr "Maximum"
+
+msgid "Tick steps"
+msgstr "Tick steps"
+
+msgid "Axis title"
+msgstr "Axis title"
+
+msgid "Target line"
+msgstr "Target line"
+
+msgid "Base line"
+msgstr "Base line"
+
+msgid "Trend line"
+msgstr "Trend line"
+
+msgid "Linear"
+msgstr "Linear"
+
+msgid "Polynomial"
+msgstr "Polynomial"
+
+msgid "Loess"
+msgstr "Loess"
+
+msgid "Series key"
+msgstr "Series key"
+
+msgid "Hide the legend"
+msgstr "Hide the legend"
+
+msgid "No legend set"
+msgstr "No legend set"
+
+msgid "Color the cells"
+msgstr "Color the cells"
+
+msgid "Color the bars"
+msgstr "Color the bars"
+
+msgid "Color the text"
+msgstr "Color the text"
+
+msgid "Color set"
+msgstr "Color set"
+
+msgid "No space between columns"
+msgstr "No space between columns"
+
+msgid "Options"
+msgstr "Options"
+
+msgid "Axes"
+msgstr "Axes"
+
+msgid "Done"
+msgstr "Done"
+
+msgid "No outliers found"
+msgstr "No outliers found"
+
+msgid "No value is an outlier with the current method and threshold."
+msgstr "No value is an outlier with the current method and threshold."
+
+msgid "Outlier table not available"
+msgstr "Outlier table not available"
+
+msgid "The outlier table needs DHIS2 2.41 or newer."
+msgstr "The outlier table needs DHIS2 2.41 or newer."
+
 msgid "Another visualization already uses this name."
 msgstr "Another visualization already uses this name."
 
@@ -1548,32 +1887,8 @@ msgstr "Save visualization"
 msgid "Select data, period and organisation unit, then click Update."
 msgstr "Select data, period and organisation unit, then click Update."
 
-msgid "Color"
-msgstr "Color"
-
-msgid "Font size"
-msgstr "Font size"
-
 msgid "Titles"
 msgstr "Titles"
-
-msgid "Edit title and subtitle"
-msgstr "Edit title and subtitle"
-
-msgid "Colors"
-msgstr "Colors"
-
-msgid "Fill"
-msgstr "Fill"
-
-msgid "Color palette"
-msgstr "Color palette"
-
-msgid "X axis"
-msgstr "X axis"
-
-msgid "Y axis"
-msgstr "Y axis"
 
 msgid "Chart title"
 msgstr "Chart title"
@@ -1590,15 +1905,52 @@ msgstr "Automatic (filter items)"
 msgid "Running analytics"
 msgstr "Running analytics"
 
-msgid "Dimensions"
-msgstr "Dimensions"
+msgid "Select data elements, period and organisation unit, then click Update."
+msgstr "Select data elements, period and organisation unit, then click Update."
+
+msgid "Select data, years and organisation unit, then click Update."
+msgstr "Select data, years and organisation unit, then click Update."
 
 msgid ""
-"The data source of this visualization was deleted or is not shared with "
-"you. Pick another data source."
+"A data source of this visualization was deleted or is not shared with you. "
+"Pick another data source."
 msgstr ""
-"The data source of this visualization was deleted or is not shared with "
-"you. Pick another data source."
+"A data source of this visualization was deleted or is not shared with you. "
+"Pick another data source."
+
+msgid ""
+"This chart type reads one data source only. Remove the other data sources "
+"to run it."
+msgstr ""
+"This chart type reads one data source only. Remove the other data sources "
+"to run it."
+
+msgid ""
+"Move Data to the columns or rows. Values of different data sources cannot "
+"be added up in a filter."
+msgstr ""
+"Move Data to the columns or rows. Values of different data sources cannot "
+"be added up in a filter."
+
+msgid ""
+"Remove the other dimensions (categories, group sets…). They only exist on "
+"the main data source."
+msgstr ""
+"Remove the other dimensions (categories, group sets…). They only exist on "
+"the main data source."
+
+msgid "User organisation units"
+msgstr "User organisation units"
+
+msgid ""
+"On other data sources, user organisation units are those of the account "
+"behind the access token. Pick organisation units to compare the same places."
+msgstr ""
+"On other data sources, user organisation units are those of the account "
+"behind the access token. Pick organisation units to compare the same places."
+
+msgid "The outlier table only uses data elements."
+msgstr "The outlier table only uses data elements."
 
 msgid "New visualization"
 msgstr "New visualization"
@@ -1615,6 +1967,33 @@ msgstr "No visualization is shared with you."
 msgid "Delete visualization"
 msgstr "Delete visualization"
 
+msgid "Days per year"
+msgstr "Days per year"
+
+msgid "Weeks per year"
+msgstr "Weeks per year"
+
+msgid "Months per year"
+msgstr "Months per year"
+
+msgid "Bi-months per year"
+msgstr "Bi-months per year"
+
+msgid "Quarters per year"
+msgstr "Quarters per year"
+
+msgid "Six-months per year"
+msgstr "Six-months per year"
+
+msgid "Years to compare (series)"
+msgstr "Years to compare (series)"
+
+msgid "Each year is drawn as its own line or set of columns."
+msgstr "Each year is drawn as its own line or set of columns."
+
+msgid "Periods within a year (category)"
+msgstr "Periods within a year (category)"
+
 msgid "Visualization deleted"
 msgstr "Visualization deleted"
 
@@ -1626,6 +2005,74 @@ msgstr "Visualization saved"
 
 msgid "Could not save the visualization. Please try again."
 msgstr "Could not save the visualization. Please try again."
+
+msgid "Compare changes over time between multiple time periods."
+msgstr "Compare changes over time between multiple time periods."
+
+msgid "View data and indicators in a manipulatable table."
+msgstr "View data and indicators in a manipulatable table."
+
+msgid "Compare sizes of related elements vertically. Recommend period as filter."
+msgstr "Compare sizes of related elements vertically. Recommend period as filter."
+
+msgid ""
+"Compare parts of a whole against related elements vertically. Recommend "
+"data or organisation unit as series."
+msgstr ""
+"Compare parts of a whole against related elements vertically. Recommend "
+"data or organisation unit as series."
+
+msgid "Same as column chart, only with horizontal bars."
+msgstr "Same as column chart, only with horizontal bars."
+
+msgid "Same as stacked column chart, only with horizontal bars."
+msgstr "Same as stacked column chart, only with horizontal bars."
+
+msgid "Track or compare changes over time. Recommend period as category."
+msgstr "Track or compare changes over time. Recommend period as category."
+
+msgid ""
+"Track or compare changes over time of parts of a whole. Recommend period as "
+"category."
+msgstr ""
+"Track or compare changes over time of parts of a whole. Recommend period as "
+"category."
+
+msgid ""
+"Compare parts of a whole at a single point in time. Recommend period as "
+"filter."
+msgstr ""
+"Compare parts of a whole at a single point in time. Recommend period as "
+"filter."
+
+msgid "Compare several items against multiple variables."
+msgstr "Compare several items against multiple variables."
+
+msgid ""
+"Compare a percentage indicator against a 100% scale. Recommend period as "
+"filter."
+msgstr ""
+"Compare a percentage indicator against a 100% scale. Recommend period as "
+"filter."
+
+msgid "Display a single value. Recommend relative period to show latest data."
+msgstr "Display a single value. Recommend relative period to show latest data."
+
+msgid ""
+"View the relationship between two data items at a place or time. Recommend "
+"organisation unit as point."
+msgstr ""
+"View the relationship between two data items at a place or time. Recommend "
+"organisation unit as point."
+
+msgid "View outlier values of data elements in a table."
+msgstr "View outlier values of data elements in a table."
+
+msgid "Compare values as bars around a circle."
+msgstr "Compare values as bars around a circle."
+
+msgid "Show parts of a whole as nested rectangles."
+msgstr "Show parts of a whole as nested rectangles."
 
 msgid "Page not found"
 msgstr "Page not found"

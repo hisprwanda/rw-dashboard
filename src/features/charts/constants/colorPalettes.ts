@@ -1,7 +1,26 @@
 import type { ColorPalette } from '../types/chart.types'
 
-/** Palettes offered in the visualizer settings. The first one is the default. */
+/**
+ * Eight hues checked for color-vision deficiency and contrast on a light surface, in
+ * the order they are assigned (never cycled). The default of new visuals.
+ */
+export const ACCESSIBLE_COLOR_PALETTE: ColorPalette = {
+    name: 'Accessible',
+    itemsBackgroundColors: [
+        '#2a78d6',
+        '#eb6834',
+        '#1baf7a',
+        '#eda100',
+        '#e87ba4',
+        '#008300',
+        '#6250d6',
+        '#e34948',
+    ],
+}
+
+/** Palettes offered in the visualizer settings. */
 export const systemDefaultColorPalettes: ColorPalette[] = [
+    ACCESSIBLE_COLOR_PALETTE,
     {
         name: 'Nature Essence',
         itemsBackgroundColors: [
@@ -179,7 +198,7 @@ export const systemDefaultColorPalettes: ColorPalette[] = [
     },
 ]
 
-export const DEFAULT_COLOR_PALETTE: ColorPalette = systemDefaultColorPalettes[0] ?? {
+export const DEFAULT_COLOR_PALETTE: ColorPalette = systemDefaultColorPalettes[1] ?? {
     name: 'Default',
     itemsBackgroundColors: ['#2C6693'],
 }

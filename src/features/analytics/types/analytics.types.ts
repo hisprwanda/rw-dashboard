@@ -26,6 +26,19 @@ export type AnalyticsParams = {
     skipMeta?: boolean
     skipData?: boolean
     includeMetadataDetails?: boolean
+    /** The date relative periods are computed from (e.g. `2023-12-31`). */
+    relativePeriodDate?: string
+    /** Org unit names with their ancestors (pivot tables showing the hierarchy). */
+    showHierarchy?: boolean
+    /** Overrides the aggregation type of the data items (e.g. `AVERAGE`). */
+    aggregationType?: string
+    /** Keeps only values within bounds, e.g. `GE:10;LT:50`. */
+    measureCriteria?: string
+    /** Only data of complete data set registrations. */
+    completedOnly?: boolean
+    /** A date range instead of periods (`yyyy-MM-dd`). */
+    startDate?: string
+    endDate?: string
 }
 
 /** The org-unit part of a request, as picked in the org-unit modal. */
@@ -63,4 +76,15 @@ export interface DimensionItemType {
 export interface DataItemRef {
     id: string
     label: string
+}
+
+/**
+ * Data items read from another data source than the builder's main one. They share the
+ * main source's periods and org units (org unit UIDs are assumed equal across instances).
+ */
+export interface AdditionalSource {
+    /** Saved data source id, or "1" for the current instance. */
+    dataSourceId: string
+    dataSource: SelectedDataSource
+    items: DataItemRef[]
 }

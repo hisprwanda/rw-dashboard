@@ -17,9 +17,4 @@ export type {
     Dhis2Visualization,
 } from './types/dhis2Object.types'
 export { summaryTypeLabel } from './utils/labels'
-export {
-    dhis2ChartType,
-    isPivotTable,
-    mapToThematic,
-    visualizationToRequest,
-} from './utils/favoriteRequest'
+export { isPivotTable, visualizationToRequest } from './utils/favoriteRequest'
